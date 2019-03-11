@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE schema PUBLIC "-//W3C//DTD XMLSCHEMA 200010//EN" "http://www.w3.org/2000/10/XMLSchema.dtd"> 
+<xs:schema xmlns="http://www.w3.org/2000/10/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://home-lib.net/xml/myhomelib/1.0" version="1.0">
+	<xs:element name="Collection">
+		<xs:complexType>
+		<xs:sequence id="id">
+		    <xs:element name="Info"> 
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation>Details about collection</xs:documentation>
+					</xs:annotation>				
+					<xs:attribute name="Name" type="string"/>
+					<xs:attribute name="Code" type="positiveInteger" minOccurs="0"/>
+					<xs:attribute name="Type" type="positiveInteger" minOccurs="0"/>
+					<xs:attribute name="Comment" type="string" minOccurs="0"/>
+				</xs:complexType>
+			</xs:element>	
+
+			<xs:element name="BookList">
+			<xs:complexType>
+				<xs:annotation>
+					<xs:documentation>Book list</xs:documentation>
+				</xs:annotation>	
+			<xs:sequence>			
+			
+			<xs:element name="Book">
+				<xs:complexType>
+					<xs:annotation>
+						<xs:documentation>Details about a single book</xs:documentation>
+					</xs:annotation>	
+					<xs:attribute name="Title" type="string"/>
+					<xs:attribute name="Series" type="string"/>
+					<xs:attribute name="No" type="positiveInteger" minOccurs="0"/>
+					<xs:attribute name="Rate" type="positiveInteger" minOccurs="0"/>
+					<xs:sequence>	
+						<xs:element name="GenreList">
+						<xs:complexType>
+							<xs:annotation>
+								<xs:documentation>Genre list</xs:documentation>
+							</xs:annotation>	
+							<xs:sequence>
+								<xs:element name="Genre">
+								<xs:complexType>							
+									<xs:attribute name="Alias" type="string"/>
+									<xs:attribute name="MHL_Code" type="string"/>
+									<xs:attribute name="fb2_Code" type="string"/>
+								</xs:complexType>
+								</xs:element>
+							</xs:sequence>	
+						</xs:complexType>	
+						</xs:element>						
+						<xs:element name="File">
+							<xs:complexType>
+							<xs:annotation>
+								<xs:documentation>Details about file</xs:documentation>
+							</xs:annotation>							
+							<xs:attribute name="Folder" type="string"/>
+							<xs:attribute name="Name" type="string"/>
+							<xs:attribute name="Ext" type="string"/>
+							<xs:attribute name="Size" type="positiveInteger" minOccurs="0"/>
+							<xs:attribute name="Inside_no" type="positiveInteger" minOccurs="0"/>
+							</xs:complexType>	
+						</xs:element>
+						<xs:element name="AuthorList">
+							<xs:complexType>
+								<xs:annotation>
+									<xs:documentation>Author List</xs:documentation>
+								</xs:annotation>	
+								<xs:sequence>						
+									<xs:element name="Author">
+										<xs:complexType>
+											<xs:annotation>
+												<xs:documentation>Details about author</xs:documentation>
+											</xs:annotation>							
+											<xs:attribute name="Name" type="string"/>
+											<xs:attribute name="Family" type="string"/>
+											<xs:attribute name="Middle" type="string"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>	
+							</xs:complexType>	
+						</xs:element>	
+					</xs:sequence>
+				</xs:complexType>	
+			</xs:element>
+			</xs:sequence>
+			</xs:complexType>	
+			</xs:element>					
+		
+		</xs:sequence>
+		</xs:complexType>	
+	</xs:element>	
+</xs:schema>

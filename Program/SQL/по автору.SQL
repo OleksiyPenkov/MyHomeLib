@@ -1,0 +1,1 @@
+Select * FROM Books WHERE ID IN (Select BookID FROM Author_List WHERE AuthID IN (SELECT ID FROM Authors WHERE Upper(Family) LIKE "юадск%"))

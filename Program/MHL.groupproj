@@ -1,0 +1,48 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{03FBE2DA-0E6E-4A56-9500-1147B87C3C24}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="MyhomeLib.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\Components\MHLComponents\MHLComponents.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="MyhomeLib">
+        <MSBuild Projects="MyhomeLib.dproj"/>
+    </Target>
+    <Target Name="MyhomeLib:Clean">
+        <MSBuild Projects="MyhomeLib.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MyhomeLib:Make">
+        <MSBuild Projects="MyhomeLib.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="MHLComponents">
+        <MSBuild Projects="..\Components\MHLComponents\MHLComponents.dproj"/>
+    </Target>
+    <Target Name="MHLComponents:Clean">
+        <MSBuild Projects="..\Components\MHLComponents\MHLComponents.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MHLComponents:Make">
+        <MSBuild Projects="..\Components\MHLComponents\MHLComponents.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="MyhomeLib;MHLComponents"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="MyhomeLib:Clean;MHLComponents:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="MyhomeLib:Make;MHLComponents:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{0e0e5963-527e-47a6-984c-c35abd0c5ab0}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
+    <DCC_DependencyCheckOutputName>Release\Bin\MyhomeLib.exe</DCC_DependencyCheckOutputName>
+    <MainSource>MyhomeLib.dpr</MainSource>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_LocalDebugSymbols>False</DCC_LocalDebugSymbols>
+    <DCC_SymbolReferenceInfo>0</DCC_SymbolReferenceInfo>
+    <DCC_Define>RELEASE</DCC_Define>
+    <DCC_ExeOutput>Release\Bin</DCC_ExeOutput>
+    <DCC_DcuOutput>Release\Units</DCC_DcuOutput>
+    <DCC_ObjOutput>Release\Units</DCC_ObjOutput>
+    <DCC_HppOutput>Release\Units</DCC_HppOutput>
+    <DCC_AssertionsAtRuntime>False</DCC_AssertionsAtRuntime>
+    <DCC_DebugInformation>False</DCC_DebugInformation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Version>7.0</Version>
+    <DCC_Define>DEBUG</DCC_Define>
+    <DCC_MapFile>3</DCC_MapFile>
+    <DCC_Optimize>False</DCC_Optimize>
+    <DCC_DebugInfoInExe>True</DCC_DebugInfoInExe>
+    <DCC_DebugVN>True</DCC_DebugVN>
+    <DCC_DcuOutput>Debug\Units</DCC_DcuOutput>
+    <DCC_ObjOutput>Debug\Units</DCC_ObjOutput>
+    <DCC_HppOutput>Debug\Units</DCC_HppOutput>
+    <DCC_ExeOutput>Debug\Bin</DCC_ExeOutput>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <Borland.Personality>Delphi.Personality</Borland.Personality>
+    <Borland.ProjectType />
+    <BorlandProject>
+<BorlandProject><Delphi.Personality><Parameters><Parameters Name="UseLauncher">False</Parameters><Parameters Name="LoadAllSymbols">True</Parameters><Parameters Name="LoadUnspecifiedSymbols">False</Parameters></Parameters><VersionInfo><VersionInfo Name="IncludeVerInfo">True</VersionInfo><VersionInfo Name="AutoIncBuild">False</VersionInfo><VersionInfo Name="MajorVer">1</VersionInfo><VersionInfo Name="MinorVer">2</VersionInfo><VersionInfo Name="Release">0</VersionInfo><VersionInfo Name="Build">378</VersionInfo><VersionInfo Name="Debug">False</VersionInfo><VersionInfo Name="PreRelease">True</VersionInfo><VersionInfo Name="Special">False</VersionInfo><VersionInfo Name="Private">False</VersionInfo><VersionInfo Name="DLL">False</VersionInfo><VersionInfo Name="Locale">1049</VersionInfo><VersionInfo Name="CodePage">1251</VersionInfo></VersionInfo><VersionInfoKeys><VersionInfoKeys Name="CompanyName"></VersionInfoKeys><VersionInfoKeys Name="FileDescription"></VersionInfoKeys><VersionInfoKeys Name="FileVersion">1.2.0.378</VersionInfoKeys><VersionInfoKeys Name="InternalName"></VersionInfoKeys><VersionInfoKeys Name="LegalCopyright">Алексей Пеньков</VersionInfoKeys><VersionInfoKeys Name="LegalTrademarks"></VersionInfoKeys><VersionInfoKeys Name="OriginalFilename"></VersionInfoKeys><VersionInfoKeys Name="ProductName">MyHomeLib</VersionInfoKeys><VersionInfoKeys Name="ProductVersion">1.0</VersionInfoKeys><VersionInfoKeys Name="Comments"></VersionInfoKeys></VersionInfoKeys><Source><Source Name="MainSource">MyhomeLib.dpr</Source></Source><Excluded_Packages>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <Excluded_Packages Name="$(BDS)\bin\dcloffice2k100.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+      <Excluded_Packages Name="$(BDS)\bin\dclofficexp100.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+    </Excluded_Packages></Delphi.Personality><ModelSupport>False</ModelSupport></BorlandProject></BorlandProject>
+  </ProjectExtensions>
+  <Import Project="$(MSBuildBinPath)\Borland.Delphi.Targets" />
+  <ItemGroup>
+    <DelphiCompile Include="MyhomeLib.dpr">
+      <MainSource>MainSource</MainSource>
+    </DelphiCompile>
+    <DCCReference Include="Components\files_list.pas" />
+    <DCCReference Include="Components\MHLComponents_Register.pas" />
+    <DCCReference Include="Components\unit_AutoCompleteEdit.pas" />
+    <DCCReference Include="Components\unit_CoverPanel.pas" />
+    <DCCReference Include="Components\unit_InfoPanel.pas" />
+    <DCCReference Include="Components\unit_StaticTip.pas" />
+    <DCCReference Include="database.pas" />
+    <DCCReference Include="dm_main.pas">
+      <Form>DMMain</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="dm_user.pas">
+      <Form>DMUser</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="DwnldImpl\frm_DownloadProgressForm.pas">
+      <Form>DownloadProgressForm</Form>
+    </DCCReference>
+    <DCCReference Include="DwnldImpl\unit_DownloadBooksThread.pas" />
+    <DCCReference Include="fictionbook_21.pas" />
+    <DCCReference Include="frm_about.pas">
+      <Form>frmAbout</Form>
+    </DCCReference>
+    <DCCReference Include="frm_add_nonfb2.pas">
+      <Form>frmAddnonfb2</Form>
+    </DCCReference>
+    <DCCReference Include="frm_bases.pas">
+      <Form>frmBases</Form>
+    </DCCReference>
+    <DCCReference Include="frm_book_info.pas">
+      <Form>frmBookDetails</Form>
+    </DCCReference>
+    <DCCReference Include="frm_edit_author.pas">
+      <Form>frmEditAuthor</Form>
+    </DCCReference>
+    <DCCReference Include="frm_edit_book_info.pas">
+      <Form>frmEditBookInfo</Form>
+    </DCCReference>
+    <DCCReference Include="frm_edit_reader.pas">
+      <Form>frmEditReader</Form>
+    </DCCReference>
+    <DCCReference Include="frm_edit_script.pas">
+      <Form>frmEditScript</Form>
+    </DCCReference>
+    <DCCReference Include="frm_genre_tree.pas">
+      <Form>frmGenreTree</Form>
+    </DCCReference>
+    <DCCReference Include="frm_main.pas">
+      <Form>frmMain</Form>
+    </DCCReference>
+    <DCCReference Include="frm_settings.pas">
+      <Form>frmSettings</Form>
+    </DCCReference>
+    <DCCReference Include="frm_splash.pas">
+      <Form>frmSplash</Form>
+    </DCCReference>
+    <DCCReference Include="frm_statistic.pas">
+      <Form>frmStat</Form>
+    </DCCReference>
+    <DCCReference Include="globals.pas" />
+    <DCCReference Include="ImportImpl\frm_BaseProgressForm.pas">
+      <Form>ProgressFormBase</Form>
+    </DCCReference>
+    <DCCReference Include="ImportImpl\frm_ExportProgressForm.pas">
+      <Form>ExportProgressForm</Form>
+    </DCCReference>
+    <DCCReference Include="ImportImpl\frm_ImportProgressForm.pas">
+      <Form>ImportProgressForm</Form>
+    </DCCReference>
+    <DCCReference Include="ImportImpl\frm_ImportProgressFormEx.pas">
+      <Form>ImportProgressFormEx</Form>
+    </DCCReference>
+    <DCCReference Include="ImportImpl\unit_Export.pas" />
+    <DCCReference Include="ImportImpl\unit_ExportXMLThread.pas" />
+    <DCCReference Include="ImportImpl\unit_Import.pas" />
+    <DCCReference Include="ImportImpl\unit_ImportFB2Thread.pas" />
+    <DCCReference Include="ImportImpl\unit_ImportFB2ThreadBase.pas" />
+    <DCCReference Include="ImportImpl\unit_ImportFB2ZIPThread.pas" />
+    <DCCReference Include="ImportImpl\unit_ImportLibRusEcThread.pas" />
+    <DCCReference Include="ImportImpl\unit_ImportXMLThread.pas" />
+    <DCCReference Include="ImportImpl\unit_WorkerThread.pas" />
+    <DCCReference Include="LcUnit.pas" />
+    <DCCReference Include="mhl_strings.pas" />
+    <DCCReference Include="MHL_xml.pas" />
+    <DCCReference Include="PrevInst.pas" />
+    <DCCReference Include="TreeUtils.pas" />
+    <DCCReference Include="unit_Consts.pas" />
+    <DCCReference Include="unit_Errors.pas" />
+    <DCCReference Include="unit_Helpers.pas" />
+    <DCCReference Include="unit_Readers.pas" />
+    <DCCReference Include="unit_Scripts.pas" />
+    <DCCReference Include="unit_Settings.pas" />
+    <DCCReference Include="UtilsImpl\fb2ToText.pas" />
+    <DCCReference Include="UtilsImpl\frm_ExportToDeviceProgressForm.pas">
+      <Form>ExportToDeviceProgressForm</Form>
+    </DCCReference>
+    <DCCReference Include="UtilsImpl\frm_SyncOnLineProgressForm.pas">
+      <Form>SyncOnLineProgressForm</Form>
+    </DCCReference>
+    <DCCReference Include="UtilsImpl\StoHtmlHelp.pas" />
+    <DCCReference Include="UtilsImpl\unit_Columns.pas" />
+    <DCCReference Include="UtilsImpl\unit_ExportToDevice.pas" />
+    <DCCReference Include="UtilsImpl\unit_ExportToDeviceThread.pas" />
+    <DCCReference Include="UtilsImpl\unit_libupdateThread.pas" />
+    <DCCReference Include="UtilsImpl\unit_SyncFoldersThread.pas" />
+    <DCCReference Include="UtilsImpl\unit_SyncOnLineThread.pas" />
+    <DCCReference Include="UtilsImpl\unit_Utils.pas" />
+    <DCCReference Include="Wizards\frame_DecorativePageBase.pas">
+      <Form>DecorativePageBase</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_InteriorPageBase.pas">
+      <Form>InteriorPageBase</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWCollectionFileTypes.pas">
+      <Form>frameNCWCollectionFileTypes</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWCollectionNameAndLocation.pas">
+      <Form>frameNCWNameAndLocation</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWCollectionType.pas">
+      <Form>frameNCWCollectionType</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWFinish.pas">
+      <Form>frameNCWFinish</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWImport.pas">
+      <Form>frameNCWImport</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWOperation.pas">
+      <Form>frameNCWOperation</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWProgress.pas">
+      <Form>frameNCWProgress</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWSelectGenreFile.pas">
+      <Form>frameNCWSelectGenreFile</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_NCWWelcom.pas">
+      <Form>frameNCWWelcom</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frame_WizardPageBase.pas">
+      <Form>WizardPageBase</Form>
+      <DesignClass>TFrame</DesignClass>
+    </DCCReference>
+    <DCCReference Include="Wizards\frm_NCWizard.pas">
+      <Form>frmNCWizard</Form>
+    </DCCReference>
+    <DCCReference Include="Wizards\unit_NCWParams.pas" />
+  </ItemGroup>
+</Project>
