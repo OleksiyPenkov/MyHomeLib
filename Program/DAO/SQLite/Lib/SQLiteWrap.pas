@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -9,7 +9,7 @@
   * Created             04.09.2010
   * Description         Simple SQLite wrapper.
   *                     Based on work by
-  *                     Lukбљ Gebauer at http://www.ararat.cz/doku.php/en:sqlitewrap and
+  *                     LukР±С™ Gebauer at http://www.ararat.cz/doku.php/en:sqlitewrap and
   *                     Tim Anderson (tim@itwriting.com)
   *
   * $Id: SQLiteWrap.pas 1126 2013-03-29 03:42:19Z koreec $
@@ -143,7 +143,7 @@ type
     destructor Destroy; override;
 
     //
-    // Установка параметров
+    // РЈСЃС‚Р°РЅРѕРІРєР° РїР°СЂР°РјРµС‚СЂРѕРІ
     //
     procedure ParamsClear; inline;
 
@@ -183,7 +183,7 @@ type
     function FieldAsBlobString(I: Integer): string;
 
     //
-    // Навигация и выплнение запросов
+    // РќР°РІРёРіР°С†РёСЏ Рё РІС‹РїР»РЅРµРЅРёРµ Р·Р°РїСЂРѕСЃРѕРІ
     //
     procedure ExecSQL; inline;
     procedure Open; inline;
@@ -191,7 +191,7 @@ type
     procedure Reset; inline;
 
     //
-    // Свойства, для упрощения текста. В большинстве своем бесполезные.
+    // РЎРІРѕР№СЃС‚РІР°, РґР»СЏ СѓРїСЂРѕС‰РµРЅРёСЏ С‚РµРєСЃС‚Р°. Р’ Р±РѕР»СЊС€РёРЅСЃС‚РІРµ СЃРІРѕРµРј Р±РµСЃРїРѕР»РµР·РЅС‹Рµ.
     //
     {: Return value of some field in current row.}
     property Fields[const I: Integer]: string read GetFields;

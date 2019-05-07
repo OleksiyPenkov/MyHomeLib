@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -74,11 +74,11 @@ uses
   frm_main;
 
 resourcestring
-  rstrDownloaded = 'Скачано файлов: %u из %u';
-  rstrConnecting = 'Подключение...';
-  rstrIgnoreDownloadErrors = 'Игнорировать ошибки загрузки ?';
-  rstrDone = 'Готово';
-  rstrOperationCompleted = 'Завершение операции ...';
+  rstrDownloaded = 'РЎРєР°С‡Р°РЅРѕ С„Р°Р№Р»РѕРІ: %u РёР· %u';
+  rstrConnecting = 'РџРѕРґРєР»СЋС‡РµРЅРёРµ...';
+  rstrIgnoreDownloadErrors = 'РРіРЅРѕСЂРёСЂРѕРІР°С‚СЊ РѕС€РёР±РєРё Р·Р°РіСЂСѓР·РєРё ?';
+  rstrDone = 'Р“РѕС‚РѕРІРѕ';
+  rstrOperationCompleted = 'Р—Р°РІРµСЂС€РµРЅРёРµ РѕРїРµСЂР°С†РёРё ...';
 
 procedure TDownloadBooksThread.WorkFunction;
 var
@@ -106,9 +106,9 @@ begin
 
         FBookIdList[i].Res := FDownloader.Download(FSystemDB, FBookIdList[i].BookKey);
         if
-          (not Canceled) and                // это реальная ошибка, а не отмена операции пользователем
+          (not Canceled) and                // СЌС‚Рѕ СЂРµР°Р»СЊРЅР°СЏ РѕС€РёР±РєР°, Р° РЅРµ РѕС‚РјРµРЅР° РѕРїРµСЂР°С†РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
           (not FBookIdList[i].Res) and      //
-          (i < totalBooks - 1) and          // для последней книги вопрос смысла не имеет
+          (i < totalBooks - 1) and          // РґР»СЏ РїРѕСЃР»РµРґРЅРµР№ РєРЅРёРіРё РІРѕРїСЂРѕСЃ СЃРјС‹СЃР»Р° РЅРµ РёРјРµРµС‚
           (not Settings.ErrorLog) and       //
           (not FIgnoreErrors)               //
         then

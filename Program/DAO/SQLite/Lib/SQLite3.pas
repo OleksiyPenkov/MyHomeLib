@@ -1,4 +1,4 @@
-unit SQLite3;
+﻿unit SQLite3;
 
 {
   Simplified interface for SQLite.
@@ -7,7 +7,7 @@ unit SQLite3;
   V2.0.0  29 June 2010
 
   History
-  Reworked by Luk� Gebauer at http://www.ararat.cz/doku.php/en:sqlitewrap.
+  Reworked by Lukáš Gebauer at http://www.ararat.cz/doku.php/en:sqlitewrap.
   Updated for Sqlite 3 by Tim Anderson (tim@itwriting.com)
   Note: NOT COMPLETE for version 3, just minimal functionality
   Adapted from file created by Pablo Pissanetzky (pablo@myhtpc.net)
@@ -488,7 +488,8 @@ function SQLiteErrorStr(SQLiteErrorCode: Integer): string;
 //  TSQLiteResult = ^PAnsiChar;
 //  PPAnsiCharArray = ^TPAnsiCharArray;
 //  TPAnsiCharArray = array[0 .. (MaxInt div SizeOf(PAnsiChar))-1] of PAnsiChar;
-//  TSQLiteExecCallback = function(UserData: Pointer; NumCols: integer; ColValues: PPAnsiCharArray; ColNames: PPAnsiCharArray): integer; cdecl;
+
+//  TSQLiteExecCallback = function(UserData: Pointer; NumCols: integer; ColValues: PPAnsiCharArray; ColNames: PPAnsiCharArray): integer; cdecl;
 //  TSQLiteBusyHandlerCallback = function(UserData: Pointer; P2: integer): integer; cdecl;
 //function SQLite3_Exec(db: TSQLiteDB; SQLStatement: PAnsiChar; CallbackPtr: TSQLiteExecCallback; UserData: Pointer; var ErrMsg: PAnsiChar): integer; cdecl; external SQLiteDLL name 'sqlite3_exec';
 //function SQLite3_GetTable(db: TSQLiteDB; SQLStatement: PAnsiChar; var ResultPtr: TSQLiteResult; var RowCount: Cardinal; var ColCount: Cardinal; var ErrMsg: PAnsiChar): integer; cdecl; external SQLiteDLL name 'sqlite3_get_table';

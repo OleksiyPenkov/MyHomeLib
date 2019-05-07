@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -136,7 +136,7 @@ type
 
   private const
     //
-    // При изменении схемы базы данных необходимо изменить следующее значение
+    // РџСЂРё РёР·РјРµРЅРµРЅРёРё СЃС…РµРјС‹ Р±Р°Р·С‹ РґР°РЅРЅС‹С… РЅРµРѕР±С…РѕРґРёРјРѕ РёР·РјРµРЅРёС‚СЊ СЃР»РµРґСѓСЋС‰РµРµ Р·РЅР°С‡РµРЅРёРµ
     //
     DATABASE_VERSION = '{FEC8CB6F-300A-4b92-86D1-7B40867F782B}';
 
@@ -192,7 +192,7 @@ type
     procedure SetSeriesID(const BookKey: TBookKey; const SeriesID: Integer);
 
     //
-    // манипуляции с авторами и жанрами книги
+    // РјР°РЅРёРїСѓР»СЏС†РёРё СЃ Р°РІС‚РѕСЂР°РјРё Рё Р¶Р°РЅСЂР°РјРё РєРЅРёРіРё
     //
     procedure SetBookAuthors(const BookID: Integer; const Authors: TBookAuthors; Replace: Boolean);
     procedure SetBookGenres(const BookID: Integer; const Genres: TBookGenres; Replace: Boolean);
@@ -202,7 +202,7 @@ type
     procedure ChangeBookSeriesID(const OldSeriesID: Integer; const NewSeriesID: Integer; const DatabaseID: Integer);
 
     //
-    // Свойства коллекции
+    // РЎРІРѕР№СЃС‚РІР° РєРѕР»Р»РµРєС†РёРё
     //
     procedure SetProperty(const PropID: TPropertyID; const Value: Variant);
     function GetProperty(const PropID: TPropertyID): Variant; override;
@@ -341,7 +341,7 @@ begin
     FDatabase := TSQLiteDatabase.Create(DBFileName);
     try
       //
-      // Получим из таблицы Settings значение версии и если оно совпадает, то считаем, что это нормальная коллекция
+      // РџРѕР»СѓС‡РёРј РёР· С‚Р°Р±Р»РёС†С‹ Settings Р·РЅР°С‡РµРЅРёРµ РІРµСЂСЃРёРё Рё РµСЃР»Рё РѕРЅРѕ СЃРѕРІРїР°РґР°РµС‚, С‚Рѕ СЃС‡РёС‚Р°РµРј, С‡С‚Рѕ СЌС‚Рѕ РЅРѕСЂРјР°Р»СЊРЅР°СЏ РєРѕР»Р»РµРєС†РёСЏ
       //
       Result := (DATABASE_VERSION = FDatabase.QuerySingleString(GET_SETTING_SQL, [PROP_SCHEMA_VERSION]));
       if Result then
@@ -538,7 +538,7 @@ begin
   SQLRows := '';
 
   try
-    // ------------------------ авторы ----------------------------------------
+    // ------------------------ Р°РІС‚РѕСЂС‹ ----------------------------------------
     FilterString := '';
     if SearchCriteria.FullName <> '' then
     begin
@@ -555,7 +555,7 @@ begin
       end;
     end;
 
-    // ------------------------ серия -----------------------------------------
+    // ------------------------ СЃРµСЂРёСЏ -----------------------------------------
     FilterString := '';
     if SearchCriteria.Series <> '' then
     begin
@@ -573,7 +573,7 @@ begin
       end;
     end;
 
-    // -------------------------- жанр ----------------------------------------
+    // -------------------------- Р¶Р°РЅСЂ ----------------------------------------
     FilterString := '';
     if (SearchCriteria.Genre <> '') then
     begin
@@ -587,7 +587,7 @@ begin
       SQLRows := SQLRows + FilterString;
     end;
 
-    // -------------------  все остальное   -----------------------------------
+    // -------------------  РІСЃРµ РѕСЃС‚Р°Р»СЊРЅРѕРµ   -----------------------------------
     FilterString := '';
     AddToFilter('b.SearchAnnotation', PrepareQuery(SearchCriteria.Annotation, True), False, FilterString);
     AddToFilter('b.SearchTitle', PrepareQuery(SearchCriteria.Title, True), False, FilterString);
@@ -618,7 +618,7 @@ begin
     if SearchCriteria.Deleted then
       AddToFilter('b.IsDeleted ', '= 0', False, FilterString);
 
-     // Книга прочитанна
+     // РљРЅРёРіР° РїСЂРѕС‡РёС‚Р°РЅРЅР°
     if SearchCriteria.Readed then
      AddToFilter('b.Progress ', '> 0', False, FilterString);
 
@@ -774,9 +774,9 @@ begin
         begin
           Assert(Length(FCollection.GetAuthorFilterType) = 1);
           Assert(TCharacter.IsUpper(FCollection.GetAuthorFilterType, 1));
-          // TODO -cSQL performance: не оптимизируется при использовании выражения
+          // TODO -cSQL performance: РЅРµ РѕРїС‚РёРјРёР·РёСЂСѓРµС‚СЃСЏ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РІС‹СЂР°Р¶РµРЅРёСЏ
           AddToWhere(Where,
-            'a.SearchName LIKE :FilterType'  // начинается на заданную букву
+            'a.SearchName LIKE :FilterType'  // РЅР°С‡РёРЅР°РµС‚СЃСЏ РЅР° Р·Р°РґР°РЅРЅСѓСЋ Р±СѓРєРІСѓ
           );
         end;
 
@@ -1000,9 +1000,9 @@ begin
         begin
           Assert(Length(FCollection.GetSeriesFilterType) = 1);
           Assert(TCharacter.IsUpper(FCollection.GetSeriesFilterType, 1));
-          // TODO -cSQL performance: не оптимизируется при использовании выражения
+          // TODO -cSQL performance: РЅРµ РѕРїС‚РёРјРёР·РёСЂСѓРµС‚СЃСЏ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё РІС‹СЂР°Р¶РµРЅРёСЏ
           AddToWhere(Where,
-            's.SearchSeriesTitle LIKE :FilterType'   // начинается на заданную букву
+            's.SearchSeriesTitle LIKE :FilterType'   // РЅР°С‡РёРЅР°РµС‚СЃСЏ РЅР° Р·Р°РґР°РЅРЅСѓСЋ Р±СѓРєРІСѓ
           );
         end;
       end;
@@ -1259,7 +1259,7 @@ begin
   Assert(Assigned(data));
 
   //
-  // Заполним рейтинги, review и признак прочитанности
+  // Р—Р°РїРѕР»РЅРёРј СЂРµР№С‚РёРЅРіРё, review Рё РїСЂРёР·РЅР°Рє РїСЂРѕС‡РёС‚Р°РЅРЅРѕСЃС‚Рё
   //
   for extra in data.Extras do
   begin
@@ -1301,24 +1301,24 @@ begin
     end;
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     FSystemData.SetExtra(BookKey, extra);
 
     //
-    // Дадим возможность главному окну обновить измененные ноды
+    // Р”Р°РґРёРј РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ РіР»Р°РІРЅРѕРјСѓ РѕРєРЅСѓ РѕР±РЅРѕРІРёС‚СЊ РёР·РјРµРЅРµРЅРЅС‹Рµ РЅРѕРґС‹
     //
     if Assigned(guiUpdateCallback) then
       guiUpdateCallback(BookKey, extra);
   end;
 
   //
-  // Создадим пользовательские группы
+  // РЎРѕР·РґР°РґРёРј РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РіСЂСѓРїРїС‹
   //
   FSystemData.ImportUserData(data);
 
   //
-  // Добавим книги в группы
+  // Р”РѕР±Р°РІРёРј РєРЅРёРіРё РІ РіСЂСѓРїРїС‹
   //
   for group in data.Groups do
   begin
@@ -1417,9 +1417,9 @@ var
   insertQuery: TSQLiteQuery;
 begin
   //
-  // Если такой жанр уже существует => пропустим его
+  // Р•СЃР»Рё С‚Р°РєРѕР№ Р¶Р°РЅСЂ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ => РїСЂРѕРїСѓСЃС‚РёРј РµРіРѕ
   //
-  { TODO -oNickR : может стоит проверить и остальные поля? }
+  { TODO -oNickR : РјРѕР¶РµС‚ СЃС‚РѕРёС‚ РїСЂРѕРІРµСЂРёС‚СЊ Рё РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїРѕР»СЏ? }
   if FGenreCache.HasGenre(GenreData.GenreCode) then
     Exit;
 
@@ -1663,14 +1663,14 @@ begin
       try
         Query.SetParam(0, OldSeriesID);
         //
-        // TODO : а где ExecSQL ?
+        // TODO : Р° РіРґРµ ExecSQL ?
         //
       finally
         FreeAndNil(Query);
       end;
     end;
 
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     FSystemData.ChangeBookSeriesID(OldSeriesID, NewSeriesID, DatabaseID);
   end;
 end;
@@ -1700,20 +1700,20 @@ begin
   BookRecord.Normalize;
 
   //
-  // Создадим отсутствующих авторов
+  // РЎРѕР·РґР°РґРёРј РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РёС… Р°РІС‚РѕСЂРѕРІ
   //
   Assert(BookRecord.AuthorCount > 0);
   for i := 0 to BookRecord.AuthorCount - 1 do
     BookRecord.Authors[i].AuthorID := InsertAuthorIfMissing(BookRecord.Authors[i]);
 
   //
-  // Определяем код жанра
+  // РћРїСЂРµРґРµР»СЏРµРј РєРѕРґ Р¶Р°РЅСЂР°
   //
   Assert(BookRecord.GenreCount > 0);
   for i := 0 to BookRecord.GenreCount - 1 do
   begin
     //
-    // Если fb2 код указан, переводим его в универсальный код
+    // Р•СЃР»Рё fb2 РєРѕРґ СѓРєР°Р·Р°РЅ, РїРµСЂРµРІРѕРґРёРј РµРіРѕ РІ СѓРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ РєРѕРґ
     //
     if BookRecord.Genres[i].FB2GenreCode <> '' then
       BookRecord.Genres[i] := FGenreCache.ByFB2Code[BookRecord.Genres[i].FB2GenreCode]
@@ -1722,12 +1722,12 @@ begin
   end;
 
   //
-  // создадим отсутствующую серию
+  // СЃРѕР·РґР°РґРёРј РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰СѓСЋ СЃРµСЂРёСЋ
   //
   BookRecord.SeriesID := FindOrCreateSeries(BookRecord.Series);
 
   //
-  // Собственно сохраним информацию о книге
+  // РЎРѕР±СЃС‚РІРµРЅРЅРѕ СЃРѕС…СЂР°РЅРёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРЅРёРіРµ
   //
   NameConflict := CheckFileName and IsFileNameConflict(BookRecord, FullCheck);
 
@@ -1921,20 +1921,20 @@ begin
     BookRecord.Normalize;
 
     //
-    // Создадим отсутствующих авторов
+    // РЎРѕР·РґР°РґРёРј РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РёС… Р°РІС‚РѕСЂРѕРІ
     //
     Assert(BookRecord.AuthorCount > 0);
     for i := 0 to BookRecord.AuthorCount - 1 do
       BookRecord.Authors[i].AuthorID := InsertAuthorIfMissing(BookRecord.Authors[i]);
 
     //
-    // Определяем код жанра
+    // РћРїСЂРµРґРµР»СЏРµРј РєРѕРґ Р¶Р°РЅСЂР°
     //
     Assert(BookRecord.GenreCount > 0);
     for i := 0 to BookRecord.GenreCount - 1 do
     begin
       //
-      // Если fb2 код указан, переводим его в универсальный код
+      // Р•СЃР»Рё fb2 РєРѕРґ СѓРєР°Р·Р°РЅ, РїРµСЂРµРІРѕРґРёРј РµРіРѕ РІ СѓРЅРёРІРµСЂСЃР°Р»СЊРЅС‹Р№ РєРѕРґ
       //
       if BookRecord.Genres[i].FB2GenreCode <> '' then
         BookRecord.Genres[i] := FGenreCache.ByFB2Code[BookRecord.Genres[i].FB2GenreCode]
@@ -1943,7 +1943,7 @@ begin
     end;
 
     //
-    // создадим отсутствующую серию
+    // СЃРѕР·РґР°РґРёРј РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰СѓСЋ СЃРµСЂРёСЋ
     //
     BookRecord.SeriesID := FindOrCreateSeries(BookRecord.Series);
 
@@ -2108,7 +2108,7 @@ begin
     end;
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     Result := NewCode or FSystemData.SetReview(BookKey, NewReview);
   end;
@@ -2125,7 +2125,7 @@ begin
     FDatabase.ExecSQL(SQL_UPDATE, [Progress, BookKey.BookID]);
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     FSystemData.SetProgress(BookKey, Progress);
   end;
@@ -2142,7 +2142,7 @@ begin
     FDatabase.ExecSQL(SQL_UPDATE, [Rate, BookKey.BookID]);
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     FSystemData.SetRate(BookKey, Rate);
   end;
@@ -2159,7 +2159,7 @@ begin
     FDatabase.ExecSQL(SQL_UPDATE, [AState, BookKey.BookID]);
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     FSystemData.SetLocal(BookKey, AState);
   end;
@@ -2191,7 +2191,7 @@ begin
     InternalUpdateField(BookKey.BookID, SQL_UPDATE, Folder);
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     FSystemData.SetFolder(BookKey, Folder);
   end;
@@ -2208,7 +2208,7 @@ begin
     InternalUpdateField(BookKey.BookID, SQL_UPDATE, FileName);
 
     //
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     //
     FSystemData.SetFileName(BookKey, FileName);
   end;
@@ -2257,7 +2257,7 @@ begin
       end;
     end;
 
-    // Обновим информацию в группах
+    // РћР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ РІ РіСЂСѓРїРїР°С…
     FSystemData.SetBookSeriesID(BookKey, SeriesID);
   end;
 end;
@@ -2307,7 +2307,7 @@ const
   SQL_DELETE_GENRE_LIST = 'DELETE FROM Genre_List WHERE GenreCode NOT IN (SELECT GenreCode FROM Genres) ';
 begin
   //
-  // почистить таблицу Genres
+  // РїРѕС‡РёСЃС‚РёС‚СЊ С‚Р°Р±Р»РёС†Сѓ Genres
   //
   FDatabase.ExecSQL(SQL_DELETE_GENRES);
   FGenreCache.Clear;

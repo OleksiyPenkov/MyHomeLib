@@ -1,4 +1,4 @@
-
+п»ї
 (* *****************************************************************************
   *
   * MyHomeLib
@@ -158,7 +158,7 @@ type
     procedure SetFolder(const BookKey: TBookKey; const Folder: string);
 
     //
-    // Работа с группами
+    // Р Р°Р±РѕС‚Р° СЃ РіСЂСѓРїРїР°РјРё
     //
     function AddGroup(const GroupName: string; const AllowDelete: Boolean = True): Boolean;
     function GetGroup(const GroupID: Integer): TGroupData;
@@ -171,7 +171,7 @@ type
     procedure DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
 
     //
-    // Пользовательские данные
+    // РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ
     //
     procedure ImportUserData(data: TUserData);
     // procedure ExportUserData(data: TUserData); // use base implementation
@@ -185,7 +185,7 @@ type
     function GetCollectionInfoIterator: ICollectionInfoIterator; override;
 
     //
-    // Служебные методы
+    // РЎР»СѓР¶РµР±РЅС‹Рµ РјРµС‚РѕРґС‹
     //
     // procedure ClearCollectionCache; // use base implementation
     procedure RemoveUnusedBooks;
@@ -213,8 +213,8 @@ uses
   unit_Errors;
 
 resourcestring
-  rstrInvalidCollection = 'Файл %s не является коллекцией.';
-  rstrFailedToMountDB = 'Ошибка загрузки файла коллекции %s';
+  rstrInvalidCollection = 'Р¤Р°Р№Р» %s РЅРµ СЏРІР»СЏРµС‚СЃСЏ РєРѕР»Р»РµРєС†РёРµР№.';
+  rstrFailedToMountDB = 'РћС€РёР±РєР° Р·Р°РіСЂСѓР·РєРё С„Р°Р№Р»Р° РєРѕР»Р»РµРєС†РёРё %s';
 
 // Generate table structure and minimal system data
 class procedure TSystemData_SQLite.CreateSystemTables(const DBUserFile: string);
@@ -248,7 +248,7 @@ begin
   end;
 
   //
-  // Зададим дефлотные группы
+  // Р—Р°РґР°РґРёРј РґРµС„Р»РѕС‚РЅС‹Рµ РіСЂСѓРїРїС‹
   //
   SystemData := TSystemData_SQLite.Create(DBUserFile);
   SystemData.AddGroup(rstrFavoritesGroupName, False);
@@ -477,7 +477,7 @@ begin
       Result.DisplayName := query.FieldAsString(0);
 
       //
-      // восстановить абсолютные пути
+      // РІРѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ Р°Р±СЃРѕР»СЋС‚РЅС‹Рµ РїСѓС‚Рё
       //
       Result.RootFolder := Settings.ExpandCollectionRoot(query.FieldAsString(1));
       Result.DBFileName := Settings.ExpandCollectionFileName(query.FieldAsString(2));
@@ -652,7 +652,7 @@ var
   DBFileName: string;
 begin
   //
-  // Почистить кэши
+  // РџРѕС‡РёСЃС‚РёС‚СЊ РєСЌС€Рё
   //
   info := GetCollectionInfo(CollectionID);
   DBFileName := info.DBFileName;
@@ -692,7 +692,7 @@ begin
     PrepareCollectionPath(storedRoot, storedFileName);
 
     //
-    // регистрируем коллекцию
+    // СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј РєРѕР»Р»РµРєС†РёСЋ
     //
     query := FDatabase.NewQuery(SQL_INSERT);
     try
@@ -710,7 +710,7 @@ begin
     end;
   except
     //
-    // в случае неудачной регистрации удалим файл коллекции
+    // РІ СЃР»СѓС‡Р°Рµ РЅРµСѓРґР°С‡РЅРѕР№ СЂРµРіРёСЃС‚СЂР°С†РёРё СѓРґР°Р»РёРј С„Р°Р№Р» РєРѕР»Р»РµРєС†РёРё
     //
     DeleteFile(absDBFileName);
     raise;
@@ -742,7 +742,7 @@ begin
     PrepareCollectionPath(storedRoot, storedFileName);
 
     //
-    // регистрируем коллекцию
+    // СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј РєРѕР»Р»РµРєС†РёСЋ
     //
     query := FDatabase.NewQuery(SQL_INSERT);
     try
@@ -757,7 +757,7 @@ begin
       Result := FDatabase.LastInsertRowID;
 
       //
-      // TODO : принудительно обновить свойства коллекции
+      // TODO : РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РѕР±РЅРѕРІРёС‚СЊ СЃРІРѕР№СЃС‚РІР° РєРѕР»Р»РµРєС†РёРё
       //
       // Collection.UpdateProperies;
     finally
@@ -881,7 +881,7 @@ begin
         while not reader.EndOfList do
         begin
           //
-          // не полагаемся на порядок вычисления аргументов, т к важен порядок чтения строк
+          // РЅРµ РїРѕР»Р°РіР°РµРјСЃСЏ РЅР° РїРѕСЂСЏРґРѕРє РІС‹С‡РёСЃР»РµРЅРёСЏ Р°СЂРіСѓРјРµРЅС‚РѕРІ, С‚ Рє РІР°Р¶РµРЅ РїРѕСЂСЏРґРѕРє С‡С‚РµРЅРёСЏ СЃС‚СЂРѕРє
           //
           Author.LastName := reader.ReadString;
           Author.FirstName := reader.ReadString;
@@ -1271,7 +1271,7 @@ begin
 end;
 
 //
-// Удалить группу
+// РЈРґР°Р»РёС‚СЊ РіСЂСѓРїРїСѓ
 //
 procedure TSystemData_SQLite.DeleteGroup(GroupID: Integer);
 begin
@@ -1279,7 +1279,7 @@ begin
 end;
 
 //
-// Очистить
+// РћС‡РёСЃС‚РёС‚СЊ
 //
 procedure TSystemData_SQLite.ClearGroup(GroupID: Integer);
 begin
@@ -1414,14 +1414,14 @@ begin
   end;
 
   //
-  // Поместить книгу в нужную группу
+  // РџРѕРјРµСЃС‚РёС‚СЊ РєРЅРёРіСѓ РІ РЅСѓР¶РЅСѓСЋ РіСЂСѓРїРїСѓ
   //
   CopyBookToGroup(BookKey, 0, GroupID, False);
 end;
 
 //
-// Удалить указанную книгу из указанной группы.
-// NOTE: этот метод не удаляет неиспользуемые книги !!! После его вызова обязательно нужно вызвать RemoveUnusedBooks
+// РЈРґР°Р»РёС‚СЊ СѓРєР°Р·Р°РЅРЅСѓСЋ РєРЅРёРіСѓ РёР· СѓРєР°Р·Р°РЅРЅРѕР№ РіСЂСѓРїРїС‹.
+// NOTE: СЌС‚РѕС‚ РјРµС‚РѕРґ РЅРµ СѓРґР°Р»СЏРµС‚ РЅРµРёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РєРЅРёРіРё !!! РџРѕСЃР»Рµ РµРіРѕ РІС‹Р·РѕРІР° РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РЅСѓР¶РЅРѕ РІС‹Р·РІР°С‚СЊ RemoveUnusedBooks
 //
 procedure TSystemData_SQLite.DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
 const
@@ -1430,7 +1430,7 @@ var
   query: TSQLiteQuery;
 begin
   //
-  // Удалить книги из группы
+  // РЈРґР°Р»РёС‚СЊ РєРЅРёРіРё РёР· РіСЂСѓРїРїС‹
   //
   query := FDatabase.NewQuery(SQL_DELETE_BOOKGROUPS);
   try
@@ -1443,7 +1443,7 @@ begin
 end;
 
 //
-// Удалить книги, не входящие в группы
+// РЈРґР°Р»РёС‚СЊ РєРЅРёРіРё, РЅРµ РІС…РѕРґСЏС‰РёРµ РІ РіСЂСѓРїРїС‹
 //
 procedure TSystemData_SQLite.RemoveUnusedBooks;
 const
@@ -1631,7 +1631,7 @@ var
   query: TSQLiteQuery;
 begin
   //
-  // Удалить книги из группы
+  // РЈРґР°Р»РёС‚СЊ РєРЅРёРіРё РёР· РіСЂСѓРїРїС‹
   //
   query := FDatabase.NewQuery(SQL_DELETE_BOOKGROUPS);
   try
@@ -1642,12 +1642,12 @@ begin
   end;
 
   //
-  // Удалить неиспользуемые книги
+  // РЈРґР°Р»РёС‚СЊ РЅРµРёСЃРїРѕР»СЊР·СѓРµРјС‹Рµ РєРЅРёРіРё
   //
   RemoveUnusedBooks;
 
   //
-  // Удалить группу
+  // РЈРґР°Р»РёС‚СЊ РіСЂСѓРїРїСѓ
   //
   if RemoveGroup then
   begin
@@ -1697,23 +1697,23 @@ end;
 procedure TSystemData_SQLite.PrepareCollectionPath(var CollectionRoot, CollectionFile: string);
 begin
   //
-  // Получим полные пути. Если были указаны относительные пути, то в качестве базового используем DataPath.
+  // РџРѕР»СѓС‡РёРј РїРѕР»РЅС‹Рµ РїСѓС‚Рё. Р•СЃР»Рё Р±С‹Р»Рё СѓРєР°Р·Р°РЅС‹ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РїСѓС‚Рё, С‚Рѕ РІ РєР°С‡РµСЃС‚РІРµ Р±Р°Р·РѕРІРѕРіРѕ РёСЃРїРѕР»СЊР·СѓРµРј DataPath.
   //
   CollectionRoot := Settings.ExpandCollectionRoot(CollectionRoot);
   CollectionFile := Settings.ExpandCollectionFileName(CollectionFile);
 
   //
-  // Создадим необходимые каталоги
+  // РЎРѕР·РґР°РґРёРј РЅРµРѕР±С…РѕРґРёРјС‹Рµ РєР°С‚Р°Р»РѕРіРё
   //
 //  TDirectory.CreateDirectory(CollectionRoot);
 //  TDirectory.CreateDirectory(TPath.GetDirectoryName(CollectionFile));
 
-// создание каталогов в данном случае просто не имеет смысла и приводит к
-// ошибкам при попытке подключить сетевую папку!
+// СЃРѕР·РґР°РЅРёРµ РєР°С‚Р°Р»РѕРіРѕРІ РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РїСЂРѕСЃС‚Рѕ РЅРµ РёРјРµРµС‚ СЃРјС‹СЃР»Р° Рё РїСЂРёРІРѕРґРёС‚ Рє
+// РѕС€РёР±РєР°Рј РїСЂРё РїРѕРїС‹С‚РєРµ РїРѕРґРєР»СЋС‡РёС‚СЊ СЃРµС‚РµРІСѓСЋ РїР°РїРєСѓ!
 
 
   //
-  // Получим относительные пути. В качестве базового используем DataPath.
+  // РџРѕР»СѓС‡РёРј РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РїСѓС‚Рё. Р’ РєР°С‡РµСЃС‚РІРµ Р±Р°Р·РѕРІРѕРіРѕ РёСЃРїРѕР»СЊР·СѓРµРј DataPath.
   //
   CollectionRoot := ExtractRelativePath(Settings.WorkPath, CollectionRoot);
   CollectionFile := ExtractRelativePath(Settings.DataPath, CollectionFile);

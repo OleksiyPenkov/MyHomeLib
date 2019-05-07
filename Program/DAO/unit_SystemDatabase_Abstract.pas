@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -49,7 +49,7 @@ type
     function GetCollection(const CollectionID: Integer; const RefreshCache: Boolean): IBookCollection;
 
     //
-    // Пользовательские данные
+    // РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ
     //
     procedure ExportUserData(data: TUserData; const DatabaseID: Integer);
 
@@ -59,7 +59,7 @@ type
     function GetCollectionInfoIterator: ICollectionInfoIterator; virtual; abstract;
 
     //
-    // Служебные методы
+    // РЎР»СѓР¶РµР±РЅС‹Рµ РјРµС‚РѕРґС‹
     //
     procedure ClearCollectionCache;
 
@@ -69,10 +69,10 @@ type
   end;
 
 resourcestring
-  rstrNamelessColection = 'безымянная коллекция';
-  rstrUnknownCollection = 'неизвестная коллекция';
-  rstrFavoritesGroupName = 'Избранное';
-  rstrToReadGroupName = 'К прочтению';
+  rstrNamelessColection = 'Р±РµР·С‹РјСЏРЅРЅР°СЏ РєРѕР»Р»РµРєС†РёСЏ';
+  rstrUnknownCollection = 'РЅРµРёР·РІРµСЃС‚РЅР°СЏ РєРѕР»Р»РµРєС†РёСЏ';
+  rstrFavoritesGroupName = 'РР·Р±СЂР°РЅРЅРѕРµ';
+  rstrToReadGroupName = 'Рљ РїСЂРѕС‡С‚РµРЅРёСЋ';
 
 implementation
 
@@ -114,7 +114,7 @@ begin
       if Info.ID = PreferredID then
       begin
         //
-        // Пользователь предпочитает эту коллекцию, она доступна -> выходим
+        // РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїСЂРµРґРїРѕС‡РёС‚Р°РµС‚ СЌС‚Сѓ РєРѕР»Р»РµРєС†РёСЋ, РѕРЅР° РґРѕСЃС‚СѓРїРЅР° -> РІС‹С…РѕРґРёРј
         //
         Result := Info.ID;
         Break;
@@ -123,7 +123,7 @@ begin
       if Result = INVALID_COLLECTION_ID then
       begin
         //
-        // Запомним первую доступную коллекцию
+        // Р—Р°РїРѕРјРЅРёРј РїРµСЂРІСѓСЋ РґРѕСЃС‚СѓРїРЅСѓСЋ РєРѕР»Р»РµРєС†РёСЋ
         //
         Result := Info.ID;
       end;

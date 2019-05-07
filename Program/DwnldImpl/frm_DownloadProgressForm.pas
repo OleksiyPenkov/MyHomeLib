@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -79,7 +79,7 @@ end;
 
 procedure TDownloadProgressForm.SetProgressHint(Style: TProgressBarStyle; State: TProgressBarState);
 begin
-  // ничего не делаем
+  // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 end;
 
 procedure TDownloadProgressForm.SetComment2(const Current, Total: string);
@@ -94,17 +94,17 @@ end;
 
 procedure TDownloadProgressForm.ShowProgress(Percent: Integer);
 begin
-  // ничего не делаем
+  // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 end;
 
 procedure TDownloadProgressForm.SetComment(const Comment: string);
 begin
-  // ничего не делаем
+  // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 end;
 
 procedure TDownloadProgressForm.ShowTeletype(const Msg: string; Severity: TTeletypeSeverity);
 begin
-  // ничего не делаем
+  // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 end;
 
 procedure TDownloadProgressForm.ShowProgress2(Current, Total: Integer);

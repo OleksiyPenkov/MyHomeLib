@@ -2,10 +2,10 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2013 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov
   *
-  * Authors             Aleksey Penkov   alex.penkov@gmail.com
-  *                     Nick Rymanov     nrymanov@gmail.com
+  * Authors             Oleksiy Penkov (oleksiy.penkov@gmail.com)
+  *                     Nick Rymanov   (nrymanov@gmail.com)
   * Created             20.08.2008
   * Description
   *
