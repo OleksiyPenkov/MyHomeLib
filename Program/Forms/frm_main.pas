@@ -6012,12 +6012,12 @@ end;
 
 procedure TfrmMain.GoForumExecute(Sender: TObject);
 begin
-  SimpleShellExecute(Handle, 'http://forum.myhomelib.org/');
+  SimpleShellExecute(Handle, 'https://github.com/OleksiyPenkov/myhomelib/');
 end;
 
 procedure TfrmMain.GoSiteExecute(Sender: TObject);
 begin
-  SimpleShellExecute(Handle, 'http://myhomelib.org/');
+  SimpleShellExecute(Handle, 'https://github.com/OleksiyPenkov/myhomelib/');
 end;
 
 procedure TfrmMain.miGoToAuthorClick(Sender: TObject);

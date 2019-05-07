@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -13,12 +13,12 @@
   * $Id: unit_Settings.pas 1172 2014-06-25 01:02:04Z koreec $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
 {
-TODO -oNickR -cBug: если поменять путь на устроство и указан относительный путь к читалке, то она перестает запускаться. после перезапуска проги все нормально
+TODO -oNickR -cBug: РµСЃР»Рё РїРѕРјРµРЅСЏС‚СЊ РїСѓС‚СЊ РЅР° СѓСЃС‚СЂРѕСЃС‚РІРѕ Рё СѓРєР°Р·Р°РЅ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Р№ РїСѓС‚СЊ Рє С‡РёС‚Р°Р»РєРµ, С‚Рѕ РѕРЅР° РїРµСЂРµСЃС‚Р°РµС‚ Р·Р°РїСѓСЃРєР°С‚СЊСЃСЏ. РїРѕСЃР»Рµ РїРµСЂРµР·Р°РїСѓСЃРєР° РїСЂРѕРіРё РІСЃРµ РЅРѕСЂРјР°Р»СЊРЅРѕ
 }
 
 unit unit_Settings;
@@ -124,7 +124,7 @@ type
     FIEProxyServer: string;
     FIEProxyPort: Integer;
 
-    // Дополнительный прокси сервер для обновлений
+    // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РїСЂРѕРєСЃРё СЃРµСЂРІРµСЂ РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёР№
     FUseProxyForUpdate: Boolean;
     FProxyServerUpdate: string;
     FProxyUsernameUpdate: string;
@@ -272,12 +272,12 @@ type
     property UpdateDir: string read FUpdateDir write SetUpdateDir;
     property UpdatePath: string read GetUpdatePath;
     //
-    // Полные пути к некоторым файлам
+    // РџРѕР»РЅС‹Рµ РїСѓС‚Рё Рє РЅРµРєРѕС‚РѕСЂС‹Рј С„Р°Р№Р»Р°Рј
     //
     property SystemFileName[fileType: TMHLSystemFile]: string read GetSystemFileName;
 
     //
-    // Собственно настройки программы
+    // РЎРѕР±СЃС‚РІРµРЅРЅРѕ РЅР°СЃС‚СЂРѕР№РєРё РїСЂРѕРіСЂР°РјРјС‹
     //
     property DeviceDir: string read FDeviceDir write SetDeviceDir;
     property DevicePath: string read GetDevicePath;
@@ -471,8 +471,8 @@ begin
   FAppPath := ExtractFilePath(Application.ExeName);
   GlobalAppDataDir := GetSpecialPath(CSIDL_APPDATA) + APPDATA_DIR_NAME;
 
-  // определяем рабочую и временную папку в зависимости от параметров
-  // командной строки или ключевых файлов
+  // РѕРїСЂРµРґРµР»СЏРµРј СЂР°Р±РѕС‡СѓСЋ Рё РІСЂРµРјРµРЅРЅСѓСЋ РїР°РїРєСѓ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїР°СЂР°РјРµС‚СЂРѕРІ
+  // РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё РёР»Рё РєР»СЋС‡РµРІС‹С… С„Р°Р№Р»РѕРІ
   FDbsFileName := SYSTEM_DATABASE_FILENAME;
   FIniFileName := SETTINGS_FILE_NAME;
 
@@ -499,25 +499,25 @@ begin
   UseLocalTemp := UseLocalTemp or FileExists(FAppPath + STR_USELOCALTEMP);
 
   //
-  // Устанавливаем рабочую папку и папку с данными
+  // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СЂР°Р±РѕС‡СѓСЋ РїР°РїРєСѓ Рё РїР°РїРєСѓ СЃ РґР°РЅРЅС‹РјРё
   //
   FWorkDir := IfThen(UseLocalData, ExcludeTrailingPathDelimiter(FAppPath), GlobalAppDataDir);
   FDataDir := WorkPath + DATA_DIR_NAME;
 
-  if UserDatabase then // пользовательский файл БД и настроек
+  if UserDatabase then // РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№ С„Р°Р№Р» Р‘Р” Рё РЅР°СЃС‚СЂРѕРµРє
   begin
     FDbsFileName := DBFileName + '.dbs';
     FIniFileName := DBFileName + '.ini';
     if FileExists(WorkPath + SETTINGS_FILE_NAME) and not FileExists(WorkPath + FIniFileName) then
     begin
-      // если такого файла еще нет, копируем стандартный
+      // РµСЃР»Рё С‚Р°РєРѕРіРѕ С„Р°Р№Р»Р° РµС‰Рµ РЅРµС‚, РєРѕРїРёСЂСѓРµРј СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№
       unit_globals.CopyFile(WorkPath + SETTINGS_FILE_NAME, WorkPath + FIniFileName);
-      // может лучше использовать Windows.CopyFile(PChar(WorkPath + SETTINGS_FILE_NAME), PChar(WorkPath + FIniFileName), False);
+      // РјРѕР¶РµС‚ Р»СѓС‡С€Рµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ Windows.CopyFile(PChar(WorkPath + SETTINGS_FILE_NAME), PChar(WorkPath + FIniFileName), False);
     end;
   end;
 
   //
-  // устанавливаем временную папку
+  // СѓСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІСЂРµРјРµРЅРЅСѓСЋ РїР°РїРєСѓ
   //
   if UseLocalTemp then
     FTempDir := FAppPath + TEMP_DIR_NAME
@@ -584,7 +584,7 @@ begin
         begin
           //
           // ftp=proxy.domain.com:8082 gopher=proxy.domain.com:8083 http=proxy.domain.com:8080 https=proxy.domain.com:8081"
-          // разные прокси для разных протоколов. Выделим нужный
+          // СЂР°Р·РЅС‹Рµ РїСЂРѕРєСЃРё РґР»СЏ СЂР°Р·РЅС‹С… РїСЂРѕС‚РѕРєРѕР»РѕРІ. Р’С‹РґРµР»РёРј РЅСѓР¶РЅС‹Р№
           //
           slHelper := TStringList.Create;
           try
@@ -597,18 +597,18 @@ begin
         end;
 
         //
-        // здесь имеем настройки прокси в виде "proxy.domain.com[:8082]" или пустой строки
+        // Р·РґРµСЃСЊ РёРјРµРµРј РЅР°СЃС‚СЂРѕР№РєРё РїСЂРѕРєСЃРё РІ РІРёРґРµ "proxy.domain.com[:8082]" РёР»Рё РїСѓСЃС‚РѕР№ СЃС‚СЂРѕРєРё
         //
         if strProxy <> '' then
         begin
           //
-          // теперь надо поделить строчку на сервер и порт
+          // С‚РµРїРµСЂСЊ РЅР°РґРѕ РїРѕРґРµР»РёС‚СЊ СЃС‚СЂРѕС‡РєСѓ РЅР° СЃРµСЂРІРµСЂ Рё РїРѕСЂС‚
           //
           i := Pos(':', strProxy);
           if i = 0 then
           begin
             //
-            // Порт не указан - используем порт по умолчанию
+            // РџРѕСЂС‚ РЅРµ СѓРєР°Р·Р°РЅ - РёСЃРїРѕР»СЊР·СѓРµРј РїРѕСЂС‚ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
             //
             ProxyServer := strProxy;
             ProxyPort := INTERNET_DEFAULT_HTTP_PORT;
@@ -620,7 +620,7 @@ begin
           end;
 
           //
-          // Только в этом случае нужно использовать прокси-сервер
+          // РўРѕР»СЊРєРѕ РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РЅСѓР¶РЅРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РїСЂРѕРєСЃРё-СЃРµСЂРІРµСЂ
           //
           Result := True;
         end;
@@ -723,8 +723,8 @@ begin
     FProxyUsername := iniFile.ReadString(NETWORK_SECTION, 'proxy-user', '');
     FProxyPassword := DecodePassString(iniFile.ReadString(NETWORK_SECTION, 'proxy-pass', ''));
     FProxyPort := iniFile.ReadInteger(NETWORK_SECTION, 'proxy-port', 0);
-    FUpdateURL := iniFile.ReadString(NETWORK_SECTION, 'update_server', 'http://myhomelib.org/update/');
-    FInpxURL := iniFile.ReadString(NETWORK_SECTION, 'inpx-url', 'http://myhomelib.org/download/inpx/');
+    FUpdateURL := iniFile.ReadString(NETWORK_SECTION, 'update_server', 'http://koreec.net/myhomelib/update/');
+    FInpxURL := iniFile.ReadString(NETWORK_SECTION, 'inpx-url', 'http://koreec.net/myhomelib/download/inpx/');
     FErrorLog := iniFile.ReadBool(NETWORK_SECTION, 'use_error_log', False);
     FTimeOut := iniFile.ReadInteger(NETWORK_SECTION, 'time-out', 9000);
     FReadTimeOut := iniFile.ReadInteger(NETWORK_SECTION, 'read_time-out', 90000);
@@ -1011,7 +1011,7 @@ begin
   slHelper := TIniStringList.Create;
   try
     //
-    // Сначала сплиттеры
+    // РЎРЅР°С‡Р°Р»Р° СЃРїР»РёС‚С‚РµСЂС‹
     //
     slHelper.DelimitedText := iniFile.ReadString(INTERFACE_SECTION, 'Splitters', '250;250;250;250;250');
     SetLength(FSplitters, 5);
@@ -1019,7 +1019,7 @@ begin
       FSplitters[i] := StrToIntDef(slHelper[i], 250);
 
     //
-    // режимы таблиц
+    // СЂРµР¶РёРјС‹ С‚Р°Р±Р»РёС†
     //
     slHelper.DelimitedText := iniFile.ReadString(INTERFACE_SECTION, 'TreeModes', '0;1;0;1;0;1');
     SetLength(FTreeModes, 6);
@@ -1048,7 +1048,7 @@ begin
   INIFile := TMemIniFile.Create(SystemFileName[sfCollectionsStore]);
   try
     INIFile.Encoding := TEncoding.UTF8;
-    // обрабатываем файл
+    // РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј С„Р°Р№Р»
     sl := TStringList.Create;
     try
       iniFile.ReadSection(UPDATES_SECTION, sl);
@@ -1071,7 +1071,7 @@ begin
       end // if
       else
       begin
-        // Добавим апдейты по умолчанию
+        // Р”РѕР±Р°РІРёРј Р°РїРґРµР№С‚С‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
         FUpdateList.Add('Lib.rus.ec [FB2]',        '', 'last_librusec.info',       'librusec_update.zip',       True,  CT_EXTERNAL_LOCAL_FB);
         FUpdateList.Add('Lib.rus.ec [FB2]',        '', '',                         'daily_update.zip',          False, CT_EXTERNAL_LOCAL_FB);
         FUpdateList.Add('Lib.rus.ec OnLine [FB2]', '', 'last_librusec.info',       'librusec_update.zip',       True,  CT_EXTERNAL_ONLINE_FB);
@@ -1097,7 +1097,7 @@ begin
   sl := TIniStringList.Create;
   try
     //
-    // сначала сплиттеры
+    // СЃРЅР°С‡Р°Р»Р° СЃРїР»РёС‚С‚РµСЂС‹
     //
     for Splitter in FSplitters do
       sl.Add(IntToStr(Splitter));
@@ -1106,7 +1106,7 @@ begin
     sl.Clear;
 
     //
-    // потом - режимы списков
+    // РїРѕС‚РѕРј - СЂРµР¶РёРјС‹ СЃРїРёСЃРєРѕРІ
     //
     for Mode in FTreeModes do
       sl.Add(IntToStr(Ord(Mode)));
@@ -1147,7 +1147,7 @@ begin
     else
     begin
       //
-      // Добавим некоторые ридеры по умолчанию
+      // Р”РѕР±Р°РІРёРј РЅРµРєРѕС‚РѕСЂС‹Рµ СЂРёРґРµСЂС‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
       //
       FReaders.Add('fb2', 'AlReader\AlReader2.exe');
       FReaders.Add('doc', 'AlReader\AlReader2.exe');
@@ -1271,7 +1271,7 @@ end;
 function TMHLSettings.GetUpdatePath: string;
 begin
   //
-  // провериться на пустоту и существование. Вернуть папку по умолчанию в случае надобности
+  // РїСЂРѕРІРµСЂРёС‚СЊСЃСЏ РЅР° РїСѓСЃС‚РѕС‚Сѓ Рё СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ. Р’РµСЂРЅСѓС‚СЊ РїР°РїРєСѓ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РІ СЃР»СѓС‡Р°Рµ РЅР°РґРѕР±РЅРѕСЃС‚Рё
   //
   if (FUpdateDir = '') or not TDirectory.Exists(FUpdateDir) then
     Result := WorkPath

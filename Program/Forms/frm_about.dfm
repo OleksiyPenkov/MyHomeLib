@@ -4,7 +4,7 @@ object frmAbout: TfrmAbout
   BorderStyle = bsDialog
   Caption = #1054' '#1087#1088#1086#1075#1088#1072#1084#1084#1077
   ClientHeight = 295
-  ClientWidth = 214
+  ClientWidth = 255
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -20,15 +20,16 @@ object frmAbout: TfrmAbout
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 208
+    Width = 249
     Height = 289
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 208
     object versionInfoLabel: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 38
-      Width = 202
+      Width = 243
       Height = 13
       Align = alTop
       Alignment = taCenter
@@ -39,7 +40,7 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 3
-      Width = 202
+      Width = 243
       Height = 29
       Align = alTop
       Alignment = taCenter
@@ -56,18 +57,18 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 57
-      Width = 202
+      Width = 243
       Height = 13
       Align = alTop
       Alignment = taCenter
-      Caption = '(c) 2008-2018 '#1040#1083#1077#1082#1089#1077#1081' '#1055#1077#1085#1100#1082#1086#1074
+      Caption = '(c) 2008-2019 '#1040#1083#1077#1082#1089#1077#1081' '#1055#1077#1085#1100#1082#1086#1074
       ExplicitWidth = 159
     end
     object RzLabel3: TLabel
       AlignWithMargins = True
       Left = 3
       Top = 76
-      Width = 202
+      Width = 243
       Height = 13
       Align = alTop
       Alignment = taCenter
@@ -84,7 +85,7 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 178
-      Width = 202
+      Width = 243
       Height = 13
       Align = alTop
       Alignment = taCenter
@@ -101,7 +102,7 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 197
-      Width = 202
+      Width = 243
       Height = 26
       Align = alTop
       Alignment = taCenter
@@ -112,7 +113,7 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 140
-      Width = 202
+      Width = 243
       Height = 13
       Align = alTop
       Alignment = taCenter
@@ -129,7 +130,7 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 159
-      Width = 202
+      Width = 243
       Height = 13
       Align = alTop
       Alignment = taCenter
@@ -140,7 +141,7 @@ object frmAbout: TfrmAbout
       AlignWithMargins = True
       Left = 3
       Top = 95
-      Width = 202
+      Width = 243
       Height = 39
       Align = alTop
       Alignment = taCenter
@@ -148,17 +149,19 @@ object frmAbout: TfrmAbout
       ExplicitWidth = 90
     end
     object RzURLLabel1: TMHLLinkLabel
-      Left = 56
+      Left = 13
       Top = 227
-      Width = 111
+      Width = 225
       Height = 17
       Alignment = taCenter
-      Caption = '<a href="https://myhomelib.org">https://myhomelib.org</a>'
+      Caption = 
+        '<a href="https://myhomelib.org">https://github.com/OleksiyPenkov' +
+        '/myhomelib/</a>'
       TabOrder = 1
       OnLinkClick = RzURLLabel1LinkClick
     end
     object RzBitBtn1: TButton
-      Left = 67
+      Left = 91
       Top = 258
       Width = 75
       Height = 25
