@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Authors Aleksey Penkov   alex.penkov@gmail.com
   *         Nick Rymanov     nrymanov@gmail.com
@@ -39,8 +39,8 @@ uses
   frm_DownloadProgressForm;
 
 resourcestring
-  rstrSendToDevice = 'Отправка на устройство';
-  rstrDownloadingBooks = 'Скачивание книг';
+  rstrSendToDevice = 'РћС‚РїСЂР°РІРєР° РЅР° СѓСЃС‚СЂРѕР№СЃС‚РІРѕ';
+  rstrDownloadingBooks = 'РЎРєР°С‡РёРІР°РЅРёРµ РєРЅРёРі';
 
 procedure ExportToDevice(
   const DeviceDir: string;

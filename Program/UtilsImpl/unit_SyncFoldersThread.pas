@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Aleksey Penkov (alex.penkov@gmail.com)
   *                     Nick Rymanov (nrymanov@gmail.com)
@@ -49,7 +49,7 @@ uses
   unit_Interfaces;
 
 resourcestring
-  rstrBuildingFileList = 'Построение списка файлов ...';
+  rstrBuildingFileList = 'РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃРїРёСЃРєР° С„Р°Р№Р»РѕРІ ...';
 
 { TImportXMLThread }
 
@@ -122,7 +122,7 @@ begin
         if not FileExists(FileName)  then
         begin
           //
-          // Попробуем найти файл с таким же именем и размером. Если нашли, то заменим старый путь к файлу новым.
+          // РџРѕРїСЂРѕР±СѓРµРј РЅР°Р№С‚Рё С„Р°Р№Р» СЃ С‚Р°РєРёРј Р¶Рµ РёРјРµРЅРµРј Рё СЂР°Р·РјРµСЂРѕРј. Р•СЃР»Рё РЅР°С€Р»Рё, С‚Рѕ Р·Р°РјРµРЅРёРј СЃС‚Р°СЂС‹Р№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ РЅРѕРІС‹Рј.
           //
           NewFolder := FindNewFolder(ExtractFileName(FileName) + ' ' + IntToStr(BookRecord.Size));
           if NewFolder <> '*' then

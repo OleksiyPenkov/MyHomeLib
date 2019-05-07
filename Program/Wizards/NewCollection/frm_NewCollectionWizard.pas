@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   *                     Aleksey Penkov alex.penkov@gmail.com
@@ -12,7 +12,7 @@
   * $Id: frm_NewCollectionWizard.pas 1104 2012-01-27 04:43:24Z koreec $
   *
   * History
-  * NickR 03.09.2010    Импорт из XML больше не поддерживается. Удалил соответствующую страницу визарда.
+  * NickR 03.09.2010    РРјРїРѕСЂС‚ РёР· XML Р±РѕР»СЊС€Рµ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ. РЈРґР°Р»РёР» СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ РІРёР·Р°СЂРґР°.
   *
   ****************************************************************************** *)
 
@@ -116,12 +116,12 @@ uses
 {$R *.dfm}
 
 resourcestring
-  rstrCreationCollection = 'Создание коллекции';
-  rstrDataImport = 'Импорт данныx';
-  rstrDataImporting = 'Импортируем данные';
-  rstrRegistration = 'Регистрируем коллекцию';
-  rstrDownloadFailed = 'Закачка не удалась. Сервер сообщает об ошибке.';
-  rstrImportDoneWithErrors = 'Импорт закончен с ошибками. Продолжить регистрацию коллекции ?';
+  rstrCreationCollection = 'РЎРѕР·РґР°РЅРёРµ РєРѕР»Р»РµРєС†РёРё';
+  rstrDataImport = 'РРјРїРѕСЂС‚ РґР°РЅРЅС‹x';
+  rstrDataImporting = 'РРјРїРѕСЂС‚РёСЂСѓРµРј РґР°РЅРЅС‹Рµ';
+  rstrRegistration = 'Р РµРіРёСЃС‚СЂРёСЂСѓРµРј РєРѕР»Р»РµРєС†РёСЋ';
+  rstrDownloadFailed = 'Р—Р°РєР°С‡РєР° РЅРµ СѓРґР°Р»Р°СЃСЊ. РЎРµСЂРІРµСЂ СЃРѕРѕР±С‰Р°РµС‚ РѕР± РѕС€РёР±РєРµ.';
+  rstrImportDoneWithErrors = 'РРјРїРѕСЂС‚ Р·Р°РєРѕРЅС‡РµРЅ СЃ РѕС€РёР±РєР°РјРё. РџСЂРѕРґРѕР»Р¶РёС‚СЊ СЂРµРіРёСЃС‚СЂР°С†РёСЋ РєРѕР»Р»РµРєС†РёРё ?';
 
 destructor TNewCollectionWizard.Destroy;
 begin
@@ -139,7 +139,7 @@ var
   frame: TWizardPageBase;
 begin
   //
-  // Проинициализируем параметры по умолчанию
+  // РџСЂРѕРёРЅРёС†РёР°Р»РёР·РёСЂСѓРµРј РїР°СЂР°РјРµС‚СЂС‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
   //
   FParams.Operation := otNew;
   FParams.CollectionType := ltUser;
@@ -159,7 +159,7 @@ begin
   for frame in FPages do
     frame.Initialize(@FParams);
 
-  { TODO -oAlex -cRefactoring : Костыль! может быть его пристроить в другое место? }
+  { TODO -oAlex -cRefactoring : РљРѕСЃС‚С‹Р»СЊ! РјРѕР¶РµС‚ Р±С‹С‚СЊ РµРіРѕ РїСЂРёСЃС‚СЂРѕРёС‚СЊ РІ РґСЂСѓРіРѕРµ РјРµСЃС‚Рѕ? }
   FFinishPage.lblPageHint.Caption := '';
 end;
 
@@ -223,8 +223,8 @@ begin
     if not CreateCollection then
     begin
       //
-      // мы не смогли создать/зарегистрировать коллекцию,
-      // CancelToClose и никакого продолжения
+      // РјС‹ РЅРµ СЃРјРѕРіР»Рё СЃРѕР·РґР°С‚СЊ/Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°С‚СЊ РєРѕР»Р»РµРєС†РёСЋ,
+      // CancelToClose Рё РЅРёРєР°РєРѕРіРѕ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ
       //
       FProgressPage.ShowSaveLogPanel(True);
       AdjustButtons([wbFinish], [wbFinish]);
@@ -236,8 +236,8 @@ begin
     if not StartImportData then
     begin
       //
-      // ничего ждать не нужно, нечего импортировать
-      // можно переходить на следующую страницу
+      // РЅРёС‡РµРіРѕ Р¶РґР°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ, РЅРµС‡РµРіРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°С‚СЊ
+      // РјРѕР¶РЅРѕ РїРµСЂРµС…РѕРґРёС‚СЊ РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
       //
       DoChangePage(btnForward);
     end;
@@ -247,12 +247,12 @@ end;
 function TNewCollectionWizard.CanCloseWizard: Boolean;
 begin
   //
-  // необходимо останавливать закачку INPX если она активна
+  // РЅРµРѕР±С…РѕРґРёРјРѕ РѕСЃС‚Р°РЅР°РІР»РёРІР°С‚СЊ Р·Р°РєР°С‡РєСѓ INPX РµСЃР»Рё РѕРЅР° Р°РєС‚РёРІРЅР°
   //
   if Assigned(FWorker) and not FWorker.Finished then
   begin
     //
-    // Запущен рабочий поток -> остановим его.
+    // Р—Р°РїСѓС‰РµРЅ СЂР°Р±РѕС‡РёР№ РїРѕС‚РѕРє -> РѕСЃС‚Р°РЅРѕРІРёРј РµРіРѕ.
     //
     CancelWorker;
     Result := False;
@@ -272,7 +272,7 @@ begin
   if Assigned(FWorker) then
   begin
     //
-    // Запущен рабочий поток -> остановим его.
+    // Р—Р°РїСѓС‰РµРЅ СЂР°Р±РѕС‡РёР№ РїРѕС‚РѕРє -> РѕСЃС‚Р°РЅРѕРІРёРј РµРіРѕ.
     //
     CancelWorker;
     Exit;
@@ -284,7 +284,7 @@ end;
 procedure TNewCollectionWizard.CorrectParams;
 begin
   //
-  // определим реальный код коллекции
+  // РѕРїСЂРµРґРµР»РёРј СЂРµР°Р»СЊРЅС‹Р№ РєРѕРґ РєРѕР»Р»РµРєС†РёРё
   //
   if FParams.CollectionCode = 0 then
   begin
@@ -300,10 +300,10 @@ begin
   end;
 
   //
-  // для специальных коллекций установим некоторые параметры по умолчанию
+  // РґР»СЏ СЃРїРµС†РёР°Р»СЊРЅС‹С… РєРѕР»Р»РµРєС†РёР№ СѓСЃС‚Р°РЅРѕРІРёРј РЅРµРєРѕС‚РѕСЂС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
   //
   case FParams.CollectionType of
-    ltUser: ; // ничего не трогаем, все должен задать пользователь
+    ltUser: ; // РЅРёС‡РµРіРѕ РЅРµ С‚СЂРѕРіР°РµРј, РІСЃРµ РґРѕР»Р¶РµРЅ Р·Р°РґР°С‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
 
     ltUserFB, ltExternalLocalFB, ltExternalOnlineFB:
     begin
@@ -326,11 +326,11 @@ begin
   end;
 
   //
-  // заполним файл жанров
+  // Р·Р°РїРѕР»РЅРёРј С„Р°Р№Р» Р¶Р°РЅСЂРѕРІ
   //
   if not FParams.DefaultGenres then
     //
-    // относительно текущего каталога
+    // РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ С‚РµРєСѓС‰РµРіРѕ РєР°С‚Р°Р»РѕРіР°
     //
     FParams.GenreFile := ExpandFileName(FParams.GenreFile)
   else if FParams.GenreFile = '' then
@@ -357,7 +357,7 @@ begin
     if FParams.Operation = otExisting then
     begin
       //
-      // Подключаем коллекцию
+      // РџРѕРґРєР»СЋС‡Р°РµРј РєРѕР»Р»РµРєС†РёСЋ
       //
       FParams.CollectionID := SystemDB.RegisterCollection(
         FParams.CollectionFile,
@@ -368,10 +368,10 @@ begin
     else // if FParams.Operation <> otExisting then
     begin
       //
-      // Создаем коллекцию
+      // РЎРѕР·РґР°РµРј РєРѕР»Р»РµРєС†РёСЋ
       //
       FProgressPage.ShowTeletype(rstrCreationCollection, tsInfo);
-      { TODO -oNickR -cUsability : проверять существование на соответствующей странице с выдачей предупреждения }
+      { TODO -oNickR -cUsability : РїСЂРѕРІРµСЂСЏС‚СЊ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРµ РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµР№ СЃС‚СЂР°РЅРёС†Рµ СЃ РІС‹РґР°С‡РµР№ РїСЂРµРґСѓРїСЂРµР¶РґРµРЅРёСЏ }
       //Assert(not FileExists(FParams.CollectionFile));
       Assert(FileExists(FParams.GenreFile));
       FParams.CollectionID := SystemDB.CreateCollection(
@@ -428,7 +428,7 @@ begin
   FProgressPage.ShowTeletype(rstrDataImporting, tsInfo);
 
   //
-  // подключить и запустить импортер
+  // РїРѕРґРєР»СЋС‡РёС‚СЊ Рё Р·Р°РїСѓСЃС‚РёС‚СЊ РёРјРїРѕСЂС‚РµСЂ
   //
   FWorker.OnOpenProgress := FProgressPage.OpenProgress;
   FWorker.OnProgress := FProgressPage.ShowProgress;
@@ -473,7 +473,7 @@ begin
 end;
 
 //
-// Рабочий поток завершил свою работу
+// Р Р°Р±РѕС‡РёР№ РїРѕС‚РѕРє Р·Р°РІРµСЂС€РёР» СЃРІРѕСЋ СЂР°Р±РѕС‚Сѓ
 //
 procedure TNewCollectionWizard.PMWorkerDone(var Message: TMessage);
 var
@@ -481,7 +481,7 @@ var
   IgnoreErrors : Boolean;
 begin
   //
-  // Если во время работы небыло ошибок и поток не был остановлен пользователем
+  // Р•СЃР»Рё РІРѕ РІСЂРµРјСЏ СЂР°Р±РѕС‚С‹ РЅРµР±С‹Р»Рѕ РѕС€РёР±РѕРє Рё РїРѕС‚РѕРє РЅРµ Р±С‹Р» РѕСЃС‚Р°РЅРѕРІР»РµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј
   //
   IgnoreErrors := True;
   if FProgressPage.HasErrors then
@@ -490,14 +490,14 @@ begin
   stayOnCurrentPage := (not IgnoreErrors) or FWorker.Canceled;
 
   //
-  // Закрыть и уничтожить рабочий поток
+  // Р—Р°РєСЂС‹С‚СЊ Рё СѓРЅРёС‡С‚РѕР¶РёС‚СЊ СЂР°Р±РѕС‡РёР№ РїРѕС‚РѕРє
   //
   CloseWorker;
 
   if stayOnCurrentPage then
   begin
     //
-    // TODO: пользователь отказался от продолжения, надо уничтожить _созданную_ коллекцию
+    // TODO: РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕС‚РєР°Р·Р°Р»СЃСЏ РѕС‚ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ, РЅР°РґРѕ СѓРЅРёС‡С‚РѕР¶РёС‚СЊ _СЃРѕР·РґР°РЅРЅСѓСЋ_ РєРѕР»Р»РµРєС†РёСЋ
     //
     SystemDB.DeleteCollection(FParams.CollectionID);
 
@@ -509,7 +509,7 @@ begin
     else
     begin
       //
-      // Рабочий поток был остановлен пользователем, ошибок нет -> закрываем форму
+      // Р Р°Р±РѕС‡РёР№ РїРѕС‚РѕРє Р±С‹Р» РѕСЃС‚Р°РЅРѕРІР»РµРЅ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј, РѕС€РёР±РѕРє РЅРµС‚ -> Р·Р°РєСЂС‹РІР°РµРј С„РѕСЂРјСѓ
       //
       ModalResult := FModalResult;
     end;
@@ -517,7 +517,7 @@ begin
   else
   begin
     //
-    // все в порядке -> переходим на следующую страницу
+    // РІСЃРµ РІ РїРѕСЂСЏРґРєРµ -> РїРµСЂРµС…РѕРґРёРј РЅР° СЃР»РµРґСѓСЋС‰СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ
     //
     ///RegisterCollection;
     DoChangePage(btnForward);

@@ -1,4 +1,4 @@
-{******************************************************************************}
+п»ї{******************************************************************************}
 {                                                                              }
 { MyHomeLib                                                                    }
 {                                                                              }
@@ -74,9 +74,9 @@ uses
   unit_Globals;
 
 resourcestring
-  rstrConnecting = 'Подключение ...';
-  rstrSpeed = 'Загружено %d из %d кб (%n кб/с)';
-  rstrDownloadComplete = 'Загрузка завершена';
+  rstrConnecting = 'РџРѕРґРєР»СЋС‡РµРЅРёРµ ...';
+  rstrSpeed = 'Р—Р°РіСЂСѓР¶РµРЅРѕ %d РёР· %d РєР± (%n РєР±/СЃ)';
+  rstrDownloadComplete = 'Р—Р°РіСЂСѓР·РєР° Р·Р°РІРµСЂС€РµРЅР°';
 
 {$R *.dfm}
 
@@ -138,7 +138,7 @@ begin
   ElapsedTime := SecondsBetween(Now, FStartDate);
   if ElapsedTime > 0 then
   begin
-    { TODO -oNickR -cRefactoring : создать и использовать во всех подобных местах FormatSize функцию }
+    { TODO -oNickR -cRefactoring : СЃРѕР·РґР°С‚СЊ Рё РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РІРѕ РІСЃРµС… РїРѕРґРѕР±РЅС‹С… РјРµСЃС‚Р°С… FormatSize С„СѓРЅРєС†РёСЋ }
     lblStatus.Caption := Format(
       rstrSpeed,
       [KB, FDownloadSize div 1024, KB / ElapsedTime]

@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Aleksey Penkov
   *                     Nick Rymanov (nrymanov@gmail.com)
@@ -177,16 +177,16 @@ type
   end;
 
 resourcestring
-  rstrLastName = 'Фамилия';
-  rstrFirstName = 'Имя';
-  rstrMiddleName = 'Отчество';
+  rstrLastName = 'Р¤Р°РјРёР»РёСЏ';
+  rstrFirstName = 'РРјСЏ';
+  rstrMiddleName = 'РћС‚С‡РµСЃС‚РІРѕ';
   rstrNickName = 'Nick';
   rstrEmail = 'Email';
   rstrHomepage = 'Homepage';
-  rstrAdd = 'Добавить';
-  rstrChange = 'Изменить';
-  rstrDelete = 'Удалить';
-  rstrAddFromList = 'Из списка';
+  rstrAdd = 'Р”РѕР±Р°РІРёС‚СЊ';
+  rstrChange = 'РР·РјРµРЅРёС‚СЊ';
+  rstrDelete = 'РЈРґР°Р»РёС‚СЊ';
+  rstrAddFromList = 'РР· СЃРїРёСЃРєР°';
 
 implementation
 

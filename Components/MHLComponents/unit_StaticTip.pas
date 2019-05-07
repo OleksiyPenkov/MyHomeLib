@@ -1,8 +1,8 @@
-  (* *****************************************************************************
+п»ї  (* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             20.08.2008
@@ -14,7 +14,7 @@
   *
   ****************************************************************************** *)
 
-{ TODO -oNickR : добавить поддержку тени }
+{ TODO -oNickR : РґРѕР±Р°РІРёС‚СЊ РїРѕРґРґРµСЂР¶РєСѓ С‚РµРЅРё }
 
 unit unit_StaticTip;
 
@@ -113,7 +113,7 @@ begin
   PaintBuffer := BeginBufferedPaint(Canvas.Handle, Rect, BPBF_TOPDOWNDIB, nil, MemDC);
   try
     //
-    // TODO -oNickR -cподдержка Vista : заменить на RoundRect
+    // TODO -oNickR -cРїРѕРґРґРµСЂР¶РєР° Vista : Р·Р°РјРµРЅРёС‚СЊ РЅР° RoundRect
     //
     FillRect(MemDC, Rect, Canvas.Brush.Handle);
     BufferedPaintMakeOpaque(PaintBuffer, @Rect);

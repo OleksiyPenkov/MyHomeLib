@@ -1,4 +1,4 @@
-unit unit_ColorTabs;
+﻿unit unit_ColorTabs;
 interface
 
 uses ComCtrls, StdCtrls, Classes, Graphics, Messages, Windows;

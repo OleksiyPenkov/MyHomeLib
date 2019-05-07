@@ -1,4 +1,4 @@
-{******************************************************************************}
+п»ї{******************************************************************************}
 {                                                                              }
 { MyHomeLib                                                                    }
 {                                                                              }
@@ -98,7 +98,7 @@ uses
 const
 
     //
-    // Наборы опций для изменяемых и неизменяемых колонок
+    // РќР°Р±РѕСЂС‹ РѕРїС†РёР№ РґР»СЏ РёР·РјРµРЅСЏРµРјС‹С… Рё РЅРµРёР·РјРµРЅСЏРµРјС‹С… РєРѕР»РѕРЅРѕРє
     //
     ResibleColumnOptions = [coDraggable,coEnabled,coParentColor,coResizable,coShowDropMark,coVisible,coAutoSpring];
     ResClickColumnOptions = [coAllowClick,coDraggable,coEnabled,coParentColor,coResizable,coShowDropMark,coVisible];
@@ -130,63 +130,63 @@ begin
 
   case Tag of
         COL_AUTHOR:begin
-                   Caption   := 'Автор';
+                   Caption   := 'РђРІС‚РѕСЂ';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
                    Options   := Rez;
                  end;
         COL_TITLE:begin
-                   Caption   := 'Название';
+                   Caption   := 'РќР°Р·РІР°РЅРёРµ';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
                    Options    := Rez;
                  end;
         COL_SERIES:begin
-                   Caption   := 'Серия';
+                   Caption   := 'РЎРµСЂРёСЏ';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
                    Options    := Rez;
                  end;
         COL_NO:begin
-                   Caption   := '№';
+                   Caption   := 'в„–';
                    MaxWidth  := 900;
                    MinWidth  := 20;
                    Alignment := taRightJustify;
                    Options    := Rez;
                  end;
         COL_SIZE:begin
-                   Caption   := 'Размер';
+                   Caption   := 'Р Р°Р·РјРµСЂ';
                    MaxWidth  := 900;
                    MinWidth  := 20;
                    Alignment := taRightJustify;
                    Options    := Rez;
                  end;
         COL_RATE:begin
-                   Caption   := 'Рейтинг';
+                   Caption   := 'Р РµР№С‚РёРЅРі';
                    MaxWidth  := 65;
                    MinWidth  := 65;
                    Alignment := taCenter;
                    Options    := Rez;
                  end;
         COL_DATE:begin
-                   Caption   := 'Добавлено';
+                   Caption   := 'Р”РѕР±Р°РІР»РµРЅРѕ';
                    MaxWidth  := 900;
                    MinWidth  := 40;
                    Alignment := taLeftJustify;
                    Options    := Rez;
                  end;
         COL_GENRE:begin
-                   Caption   := 'Жанр';
+                   Caption   := 'Р–Р°РЅСЂ';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
                    Options    := Rez;
                  end;
         COL_COLLECTION:begin
-                   Caption   := 'Коллекция';
+                   Caption   := 'РљРѕР»Р»РµРєС†РёСЏ';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
@@ -223,7 +223,7 @@ begin
       Column.Tag := Tag;
       Column.Width := Width;
       Column.Position := Position;
-      // не изменяемые пользователем значения
+      // РЅРµ РёР·РјРµРЅСЏРµРјС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј Р·РЅР°С‡РµРЅРёСЏ
       GetDefaultColumnProperties(FMode,Tag,
                            Column.FCaption,
                            Column.FMinWidth,

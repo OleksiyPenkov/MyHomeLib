@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             20.08.2008
@@ -50,7 +50,7 @@ uses
   unit_Settings;
 
 resourcestring
-  rstrUpdateCollections = 'Обновление коллекций';
+  rstrUpdateCollections = 'РћР±РЅРѕРІР»РµРЅРёРµ РєРѕР»Р»РµРєС†РёР№';
 
 procedure SyncOnLineFiles(const CollectionID: Integer);
 var

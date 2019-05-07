@@ -1,12 +1,12 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov     nrymanov@gmail.com
   * Created
-  * Description         Строка редактирования с поддержкой автокомплита
+  * Description         РЎС‚СЂРѕРєР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ СЃ РїРѕРґРґРµСЂР¶РєРѕР№ Р°РІС‚РѕРєРѕРјРїР»РёС‚Р°
   *
   * $Id: unit_AutoCompleteEdit.pas 785 2010-09-17 09:06:06Z nrymanov@gmail.com $
   *

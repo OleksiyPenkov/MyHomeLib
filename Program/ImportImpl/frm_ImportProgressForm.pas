@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)             Nick Rymanov     nrymanov@gmail.com
   * Created               20.08.2008
@@ -75,7 +75,7 @@ end;
 
 procedure TImportProgressForm.ShowTeletype(const Msg: string; Severity: TTeletypeSeverity);
 begin
-  // ничего не делаем
+  // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
 end;
 
 end.

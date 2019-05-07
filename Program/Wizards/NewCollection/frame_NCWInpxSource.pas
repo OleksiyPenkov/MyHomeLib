@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Authors Nick Rymanov     nrymanov@gmail.com
   *         Aleksey Penkov   alex.penkov@gmail.com
@@ -83,20 +83,20 @@ uses
   IniFiles;
 
 resourcestring
-  rstrServerDownload = 'Выбранный файл INPX будет скачан с сервера.';
-  rstrLocal = 'Коллекция на основе файла *.inpx. Укажите путь к файлу.';
-  //rstrGroupLibrusec = 'Библиотека Lib.rus.ec';
-  //rstrGroupFlibusta = 'Библиотека Flibusta';
-  //rstrGroupTraum = 'Библиотека Траума';
-  //rstrLibrusecFB2 = 'Архивы FB2 (fb2-xxxxxx-xxxxxx.zip)';
-  //rstrLibrusecUSR = 'Архивы USR (usr-xxxxxx-xxxxxx.zip)';
-  //rstrLibrusecAll = 'Все архивы (fb2-xxxxxx-xxxxxx.zip и usr-xxxxxx-xxxxxx.zip)';
-  //rstrLibrusecOnline = 'Книги скачиваются по запросу с серввера lib.rus.ec (необходима регистрация)';
-  //rstrFlibustaOnline = 'Книги скачиваются по запросу с сервера flibusta.net';
-  //rstrTraum_2_11_FB2 = 'Библиотека Траума 2.11';
-  //rstrTraum_2_12_FB2 = 'Библиотека Траума 2.12';
-  //rstrTraum_2_13_FB2 = 'Библиотека Траума 2.13 (только FB2)';
-  //rstrTraum_2_13_All = 'Библиотека Траума 2.13 (Полная)';
+  rstrServerDownload = 'Р’С‹Р±СЂР°РЅРЅС‹Р№ С„Р°Р№Р» INPX Р±СѓРґРµС‚ СЃРєР°С‡Р°РЅ СЃ СЃРµСЂРІРµСЂР°.';
+  rstrLocal = 'РљРѕР»Р»РµРєС†РёСЏ РЅР° РѕСЃРЅРѕРІРµ С„Р°Р№Р»Р° *.inpx. РЈРєР°Р¶РёС‚Рµ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ.';
+  //rstrGroupLibrusec = 'Р‘РёР±Р»РёРѕС‚РµРєР° Lib.rus.ec';
+  //rstrGroupFlibusta = 'Р‘РёР±Р»РёРѕС‚РµРєР° Flibusta';
+  //rstrGroupTraum = 'Р‘РёР±Р»РёРѕС‚РµРєР° РўСЂР°СѓРјР°';
+  //rstrLibrusecFB2 = 'РђСЂС…РёРІС‹ FB2 (fb2-xxxxxx-xxxxxx.zip)';
+  //rstrLibrusecUSR = 'РђСЂС…РёРІС‹ USR (usr-xxxxxx-xxxxxx.zip)';
+  //rstrLibrusecAll = 'Р’СЃРµ Р°СЂС…РёРІС‹ (fb2-xxxxxx-xxxxxx.zip Рё usr-xxxxxx-xxxxxx.zip)';
+  //rstrLibrusecOnline = 'РљРЅРёРіРё СЃРєР°С‡РёРІР°СЋС‚СЃСЏ РїРѕ Р·Р°РїСЂРѕСЃСѓ СЃ СЃРµСЂРІРІРµСЂР° lib.rus.ec (РЅРµРѕР±С…РѕРґРёРјР° СЂРµРіРёСЃС‚СЂР°С†РёСЏ)';
+  //rstrFlibustaOnline = 'РљРЅРёРіРё СЃРєР°С‡РёРІР°СЋС‚СЃСЏ РїРѕ Р·Р°РїСЂРѕСЃСѓ СЃ СЃРµСЂРІРµСЂР° flibusta.net';
+  //rstrTraum_2_11_FB2 = 'Р‘РёР±Р»РёРѕС‚РµРєР° РўСЂР°СѓРјР° 2.11';
+  //rstrTraum_2_12_FB2 = 'Р‘РёР±Р»РёРѕС‚РµРєР° РўСЂР°СѓРјР° 2.12';
+  //rstrTraum_2_13_FB2 = 'Р‘РёР±Р»РёРѕС‚РµРєР° РўСЂР°СѓРјР° 2.13 (С‚РѕР»СЊРєРѕ FB2)';
+  //rstrTraum_2_13_All = 'Р‘РёР±Р»РёРѕС‚РµРєР° РўСЂР°СѓРјР° 2.13 (РџРѕР»РЅР°СЏ)';
 
 {$R *.dfm}
 
@@ -137,7 +137,7 @@ begin
     sl := TStringList.Create;
     try
       INIFile.ReadSection(INPX_GROUP_SECTION, sl);
-      // обрабатываем файл
+      // РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј С„Р°Р№Р»
       if sl.Count > 0 then
       begin
         SetLength(FGroups, sl.Count);
@@ -147,11 +147,11 @@ begin
       end // if
       else
       begin
-        // Добавим группы по умолчанию
+        // Р”РѕР±Р°РІРёРј РіСЂСѓРїРїС‹ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
       end;
 
       INIFile.ReadSection(INPX_SECTION, sl);
-      // обрабатываем файл
+      // РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј С„Р°Р№Р»
       if sl.Count > 0 then
       begin
         SetLength(FCollections, sl.Count);
@@ -177,7 +177,7 @@ begin
       end // if
       else
       begin
-        // Добавим inpx по умолчанию
+        // Р”РѕР±Р°РІРёРј inpx РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
         // SetLength(FCollections, 9);
         // FCollections := DefaultCollections;
       end;
@@ -253,7 +253,7 @@ begin
     FPParams^.Operation := otInpxDownload;
     FPParams^.INPXFile := TPath.Combine(Settings.WorkPath, FCollection.INPX);
     //
-    // TODO: необходимо хранить URL для получения INPX. Иначе все INPX должны лежать на одном сервере.
+    // TODO: РЅРµРѕР±С…РѕРґРёРјРѕ С…СЂР°РЅРёС‚СЊ URL РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ INPX. РРЅР°С‡Рµ РІСЃРµ INPX РґРѕР»Р¶РЅС‹ Р»РµР¶Р°С‚СЊ РЅР° РѕРґРЅРѕРј СЃРµСЂРІРµСЂРµ.
     //
     FPParams^.INPXUrl := Settings.InpxURL + FCollection.INPX;
   end;

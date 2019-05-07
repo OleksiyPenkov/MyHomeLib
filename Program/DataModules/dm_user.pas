@@ -2,7 +2,7 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Authors             Aleksey Penkov   alex.penkov@gmail.com
   *                     Nick Rymanov     nrymanov@gmail.com
@@ -25,7 +25,7 @@ uses
   Classes,
   Controls,
   unit_Settings,
-  unit_Interfaces;
+  unit_Interfaces, System.ImageList;
 
 type
   TDMUser = class(TDataModule)

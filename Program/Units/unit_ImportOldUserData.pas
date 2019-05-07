@@ -1,4 +1,4 @@
-unit unit_ImportOldUserData;
+п»їunit unit_ImportOldUserData;
 
 interface
 
@@ -39,7 +39,7 @@ var
   p, Rate: Integer;
   ID: string;
 begin
-  // Рейтинги
+  // Р РµР№С‚РёРЅРіРё
   inc(i);
   while pos('#', SL[i]) = 0 do
   begin
@@ -57,7 +57,7 @@ var
   p, Progress: Integer;
   ID: string;
 begin
-  // Прочитаное
+  // РџСЂРѕС‡РёС‚Р°РЅРѕРµ
   inc(i);
   while (i < SL.Count) and (pos('#', SL[i]) = 0) do
   begin
@@ -76,7 +76,7 @@ var
   S: string;
   ID: string;
 begin
-  // Рецензии
+  // Р РµС†РµРЅР·РёРё
   inc(i);
   while (i < SL.Count) and (pos('#', SL[i]) = 0) do
   begin
@@ -96,7 +96,7 @@ var
   p, GroupID: Integer;
   ID, Name: string;
 begin
-  // Избранное
+  // РР·Р±СЂР°РЅРЅРѕРµ
   inc(i);
   while (i < SL.Count) and (pos('#', SL[i]) = 0) do
   begin
@@ -140,15 +140,15 @@ begin
     begin
       if pos('#', SL[i]) <> 0 then
       begin
-        if SL[i] = '# Группы' then
+        if SL[i] = '# Р“СЂСѓРїРїС‹' then
           LoadGroups(SL, i, UserDataSource)
-        else if SL[i] = '# Рейтинги' then
+        else if SL[i] = '# Р РµР№С‚РёРЅРіРё' then
           LoadRates(SL, i, UserDataSource)
-        else if SL[i] = '# Прочитанное' then
+        else if SL[i] = '# РџСЂРѕС‡РёС‚Р°РЅРЅРѕРµ' then
           LoadFinished(SL, i, UserDataSource)
-        else if SL[i] = '# Рецензии' then
+        else if SL[i] = '# Р РµС†РµРЅР·РёРё' then
           LoadReviews(SL, i, UserDataSource)
-        else if SL[i] = '# Избранное' then
+        else if SL[i] = '# РР·Р±СЂР°РЅРЅРѕРµ' then
           LoadGroupedBooks(SL, i, UserDataSource)
         else
           inc(i);

@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   *                     Aleksey Penkov  alex.penkov@gmail.com
@@ -12,8 +12,8 @@
   * $Id: unit_ImportInpxThread.pas 1144 2014-03-26 05:22:37Z ENikS $
   *
   * History
-  * NickR 02.03.2010    Код переформатирован
-  * NickR 02.09.2010    INPX больше не распаковывается на диск для обработки. Вся работа происходит в памяти.
+  * NickR 02.03.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
+  * NickR 02.09.2010    INPX Р±РѕР»СЊС€Рµ РЅРµ СЂР°СЃРїР°РєРѕРІС‹РІР°РµС‚СЃСЏ РЅР° РґРёСЃРє РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё. Р’СЃСЏ СЂР°Р±РѕС‚Р° РїСЂРѕРёСЃС…РѕРґРёС‚ РІ РїР°РјСЏС‚Рё.
   *
   ****************************************************************************** *)
 
@@ -94,12 +94,12 @@ uses
   dm_user;
 
 resourcestring
-  rstrProcessingFile = 'Обрабатываем файл %s';
-  rstrAddedBooks = 'Добавлено %u книг';
-  rstrErrorInpStructure = 'Ошибка структуры inp. Файл %s, Строка %u ';
-  rstrDBErrorInp = 'Ошибка базы данных при импорте книги. Файл %s, Строка %u ';
-  rstrUpdatingDB = 'Обновление базы данных. Пожалуйста, подождите ... ';
-  rstrInvalidFormat = 'Неверный формат файла INPX!';
+  rstrProcessingFile = 'РћР±СЂР°Р±Р°С‚С‹РІР°РµРј С„Р°Р№Р» %s';
+  rstrAddedBooks = 'Р”РѕР±Р°РІР»РµРЅРѕ %u РєРЅРёРі';
+  rstrErrorInpStructure = 'РћС€РёР±РєР° СЃС‚СЂСѓРєС‚СѓСЂС‹ inp. Р¤Р°Р№Р» %s, РЎС‚СЂРѕРєР° %u ';
+  rstrDBErrorInp = 'РћС€РёР±РєР° Р±Р°Р·С‹ РґР°РЅРЅС‹С… РїСЂРё РёРјРїРѕСЂС‚Рµ РєРЅРёРіРё. Р¤Р°Р№Р» %s, РЎС‚СЂРѕРєР° %u ';
+  rstrUpdatingDB = 'РћР±РЅРѕРІР»РµРЅРёРµ Р±Р°Р·С‹ РґР°РЅРЅС‹С…. РџРѕР¶Р°Р»СѓР№СЃС‚Р°, РїРѕРґРѕР¶РґРёС‚Рµ ... ';
+  rstrInvalidFormat = 'РќРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ С„Р°Р№Р»Р° INPX!';
 
 const
   FieldsDescr: array [1 .. 20] of TFieldDescr = (
@@ -183,7 +183,7 @@ begin
   try
     ExtractStrings(PChar(input), INPX_FIELD_DELIMITER, slParams);
 
-    // -- костыль
+    // -- РєРѕСЃС‚С‹Р»СЊ
     if slParams.Count <= High(FFields) then
       Max := slParams.Count - 1
     else
@@ -194,7 +194,7 @@ begin
     begin
       case FFields[i] of
         flAuthor:
-          begin // Список авторов
+          begin // РЎРїРёСЃРѕРє Р°РІС‚РѕСЂРѕРІ
             AuthorList := slParams[i];
             p := PosChr(INPX_ITEM_DELIMITER, AuthorList);
             while p <> 0 do
@@ -219,7 +219,7 @@ begin
           end;
 
         flGenre:
-          begin // Список жанров
+          begin // РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ
             GenreList := slParams[i];
             p := PosChr(INPX_ITEM_DELIMITER, GenreList);
             while p <> 0 do
@@ -235,35 +235,35 @@ begin
           end;
 
         flTitle:
-          R.Title := slParams[i]; // Название
+          R.Title := slParams[i]; // РќР°Р·РІР°РЅРёРµ
 
         flSeries:
-          R.Series := slParams[i]; // Серия
+          R.Series := slParams[i]; // РЎРµСЂРёСЏ
 
         flSerNo:
-          R.SeqNumber := StrToIntDef(slParams[i], 0); // Номер внутри серии
+          R.SeqNumber := StrToIntDef(slParams[i], 0); // РќРѕРјРµСЂ РІРЅСѓС‚СЂРё СЃРµСЂРёРё
 
         flFile:
-          R.FileName := CheckSymbols(Trim(slParams[i])); // Имя файла
+          R.FileName := CheckSymbols(Trim(slParams[i])); // РРјСЏ С„Р°Р№Р»Р°
 
         flExt:
-          R.FileExt := '.' + slParams[i]; // Тип
+          R.FileExt := '.' + slParams[i]; // РўРёРї
 
         flSize:
-          R.Size := StrToIntDef(slParams[i], 0); // Размер
+          R.Size := StrToIntDef(slParams[i], 0); // Р Р°Р·РјРµСЂ
 
-        flLibID: R.LibID := slParams[i]; // внутр. номер   ИСПОЛЬЗУЕТСЯ ВО ВСЕХ КОЛЛЕКЦИЯХ!
+        flLibID: R.LibID := slParams[i]; // РІРЅСѓС‚СЂ. РЅРѕРјРµСЂ   РРЎРџРћР›Р¬Р—РЈР•РўРЎРЇ Р’Рћ Р’РЎР•РҐ РљРћР›Р›Р•РљР¦РРЇРҐ!
 
         flDeleted:
           begin
-            if (slParams[i] = '1') then // удалена
+            if (slParams[i] = '1') then // СѓРґР°Р»РµРЅР°
               Include(R.BookProps, bpIsDeleted)
             else
               Exclude(R.BookProps, bpIsDeleted);
           end;
 
         flDate:
-          begin // дата
+          begin // РґР°С‚Р°
             if slParams[i] <> '' then
             begin
               yy := StrToInt(Copy(slParams[i], 1, 4));
@@ -276,23 +276,23 @@ begin
           end;
 
         flInsideNo:
-          R.InsideNo := StrToInt(slParams[i]); // номер в архиве
+          R.InsideNo := StrToInt(slParams[i]); // РЅРѕРјРµСЂ РІ Р°СЂС…РёРІРµ
 
         flFolder:
-          R.Folder := slParams[i]; // папка
+          R.Folder := slParams[i]; // РїР°РїРєР°
 
         flLibRate:
-          R.LibRate := StrToIntDef(slParams[i], 0); // внешний рейтинг
+          R.LibRate := StrToIntDef(slParams[i], 0); // РІРЅРµС€РЅРёР№ СЂРµР№С‚РёРЅРі
 
         flLang:
-          R.Lang := slParams[i]; // язык
+          R.Lang := slParams[i]; // СЏР·С‹Рє
 
         flKeyWords:
-          R.KeyWords := slParams[i]; // ключевые слова
+          R.KeyWords := slParams[i]; // РєР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°
 
         flURI:
           Assert(False, 'Not supported anymore');
-          ///R.URI := slParams[i]; // ключевые слова
+          ///R.URI := slParams[i]; // РєР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°
       end; // case, for
     end;
 
@@ -325,7 +325,7 @@ var
 begin
   s := StructureInfo;
 
-  // код
+  // РєРѕРґ
   SetLength(FFields, 0);
   i := 0;
   p := Pos(del, s);
@@ -337,7 +337,7 @@ begin
     p := Pos(del, s);
 
     //
-    // если среди полей есть Folder, то необходимо использовать это поле при создании BookRecord
+    // РµСЃР»Рё СЃСЂРµРґРё РїРѕР»РµР№ РµСЃС‚СЊ Folder, С‚Рѕ РЅРµРѕР±С…РѕРґРёРјРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СЌС‚Рѕ РїРѕР»Рµ РїСЂРё СЃРѕР·РґР°РЅРёРё BookRecord
     //
     FUseStoredFolder := FUseStoredFolder or (FFields[i] = flFolder);
 
@@ -413,8 +413,8 @@ begin
               begin
 
                 if 0 = (CONTENT_NONFB and collectionCode) then
-                  R.Folder := R.GenerateLocation + FB2ZIP_EXTENSION;  // И\Иванов Иван\1234 Просто книга.fb2.zip
-                // Сохраним отметку о существовании файла
+                  R.Folder := R.GenerateLocation + FB2ZIP_EXTENSION;  // Р\РРІР°РЅРѕРІ РРІР°РЅ\1234 РџСЂРѕСЃС‚Рѕ РєРЅРёРіР°.fb2.zip
+                // РЎРѕС…СЂР°РЅРёРј РѕС‚РјРµС‚РєСѓ Рѕ СЃСѓС‰РµСЃС‚РІРѕРІР°РЅРёРё С„Р°Р№Р»Р°
                 if FileExists(TPath.Combine(CollectionRoot, R.Folder)) then
                   Include(R.BookProps, bpIsLocal)
                 else
@@ -472,7 +472,7 @@ begin
     FProgressEngine.BeginOperation(-1, rstrUpdatingDB, '');
 
     //
-    // Прочитать и установить свойства коллекции
+    // РџСЂРѕС‡РёС‚Р°С‚СЊ Рё СѓСЃС‚Р°РЅРѕРІРёС‚СЊ СЃРІРѕР№СЃС‚РІР° РєРѕР»Р»РµРєС†РёРё
     //
     if Zip.Find(COLLECTIONINFO_FILENAME) then
     begin

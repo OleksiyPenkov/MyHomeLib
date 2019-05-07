@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   *                     Aleksey Penkov  alex.penkov@gmail.com
@@ -47,12 +47,12 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrFoundNewArchives = 'Обнаружено новых архивов: %u';
-  rstrErrorFB2Structure = 'Ошибка структуры fb2: %s -> %s.fbd';
-  rstrErrorFBD = 'Ошибка FBD: ';
-  rstrErrorUnpacking = 'Ошибка распаковки архива: ';
-  rstrProcessedArchives = 'Обработано архивов: %u из %u';
-  rstrBooksAdded = 'Добавленo книг: %u, пропущено книг: %u';
+  rstrFoundNewArchives = 'РћР±РЅР°СЂСѓР¶РµРЅРѕ РЅРѕРІС‹С… Р°СЂС…РёРІРѕРІ: %u';
+  rstrErrorFB2Structure = 'РћС€РёР±РєР° СЃС‚СЂСѓРєС‚СѓСЂС‹ fb2: %s -> %s.fbd';
+  rstrErrorFBD = 'РћС€РёР±РєР° FBD: ';
+  rstrErrorUnpacking = 'РћС€РёР±РєР° СЂР°СЃРїР°РєРѕРІРєРё Р°СЂС…РёРІР°: ';
+  rstrProcessedArchives = 'РћР±СЂР°Р±РѕС‚Р°РЅРѕ Р°СЂС…РёРІРѕРІ: %u РёР· %u';
+  rstrBooksAdded = 'Р”РѕР±Р°РІР»РµРЅo РєРЅРёРі: %u, РїСЂРѕРїСѓС‰РµРЅРѕ РєРЅРёРі: %u';
 
 { TImportFB2Thread }
 
@@ -87,7 +87,7 @@ begin
       archiver := TMHLZip.Create(FCollectionRoot + NewFolder + NewFileName + ZIP_EXTENSION, False);
       archiver.RenameFile(FCollectionRoot + NewFolder + R.FileName, NewFileName);
     except
-      // ничего не делаем
+      // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
     end;
     FreeAndNil(archiver);
   end;

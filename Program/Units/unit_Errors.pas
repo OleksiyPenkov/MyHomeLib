@@ -1,17 +1,17 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             12.02.2010
-  * Description         Сообщения об ошибках
+  * Description         РЎРѕРѕР±С‰РµРЅРёСЏ РѕР± РѕС€РёР±РєР°С…
   *
   * $Id: unit_Errors.pas 631 2010-08-26 04:00:58Z eg_ $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -34,19 +34,19 @@ resourcestring
   rstrErrorInvalidArgument = 'Invalid argument';
   rstrErrorNotSupported = 'Operation is not supported';
 
-  rstrAllFieldsShouldBeFilled = 'Все поля должны быть заполнены!';
+  rstrAllFieldsShouldBeFilled = 'Р’СЃРµ РїРѕР»СЏ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р·Р°РїРѕР»РЅРµРЅС‹!';
 
-  rstrCollectionAlreadyExists = 'Коллекция "%s" уже существует!';
-  rstrFileDoesntExists = 'Файл "%s" не существует!';
-  rstrFileAlreadyExistsInDB = 'Файл "%s" используется другой коллекцией!';
+  rstrCollectionAlreadyExists = 'РљРѕР»Р»РµРєС†РёСЏ "%s" СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚!';
+  rstrFileDoesntExists = 'Р¤Р°Р№Р» "%s" РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚!';
+  rstrFileAlreadyExistsInDB = 'Р¤Р°Р№Р» "%s" РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ РґСЂСѓРіРѕР№ РєРѕР»Р»РµРєС†РёРµР№!';
 
-  rstrArchiveNotFound = 'Архив "%s" не найден!';
-  rstrFileNotFound = 'Файл "%s" не найден!';
+  rstrArchiveNotFound = 'РђСЂС…РёРІ "%s" РЅРµ РЅР°Р№РґРµРЅ!';
+  rstrFileNotFound = 'Р¤Р°Р№Р» "%s" РЅРµ РЅР°Р№РґРµРЅ!';
 
-  rstrErrorOnlyForCurrentCollection = 'Операция недоступна. Текущая коллекция: "%s", а книга принадлежит коллекции "%s".';
+  rstrErrorOnlyForCurrentCollection = 'РћРїРµСЂР°С†РёСЏ РЅРµРґРѕСЃС‚СѓРїРЅР°. РўРµРєСѓС‰Р°СЏ РєРѕР»Р»РµРєС†РёСЏ: "%s", Р° РєРЅРёРіР° РїСЂРёРЅР°РґР»РµР¶РёС‚ РєРѕР»Р»РµРєС†РёРё "%s".';
 
-  rstrCheckFilterParams = 'Проверьте параметры фильтра';
-  rstrFilterParamError = 'Синтаксическая ошибка.' + CRLF + 'Проверьте параметры фильтра';
+  rstrCheckFilterParams = 'РџСЂРѕРІРµСЂСЊС‚Рµ РїР°СЂР°РјРµС‚СЂС‹ С„РёР»СЊС‚СЂР°';
+  rstrFilterParamError = 'РЎРёРЅС‚Р°РєСЃРёС‡РµСЃРєР°СЏ РѕС€РёР±РєР°.' + CRLF + 'РџСЂРѕРІРµСЂСЊС‚Рµ РїР°СЂР°РјРµС‚СЂС‹ С„РёР»СЊС‚СЂР°';
 
 function MHLShowInfo(
   const InfoMessage: string;

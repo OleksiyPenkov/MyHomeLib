@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Aleksey Penkov  alex.penkov@gmail.com
   *                     Nick Rymanov (nrymanov@gmail.com)
@@ -12,7 +12,7 @@
   * $Id: unit_Columns.pas 1115 2012-04-23 07:37:40Z koreec $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -26,7 +26,7 @@ uses
   SysUtils,
   VirtualTrees,
   IniFiles,
-  unit_Globals;          // для TTreeMode
+  unit_Globals;          // РґР»СЏ TTreeMode
 
 type
   TColumnDesc = class(TCollectionItem)
@@ -96,23 +96,23 @@ uses
   unit_Helpers;
 
 resourcestring
-  rstrAuthor = 'Автор';
-  rstrTitle = 'Название';
-  rstrSeries = 'Серия';
-  rstrNO = '№';
-  rstrSize = 'Размер';
-  rstrRate = 'Моя оценка';
-  rstrDate = 'Добавлено';
-  rstrGenre = 'Жанр';
-  rstrCollection = 'Коллекция';
-  rstrType = 'Тип';
-  rstrLang = 'Язык';
-  rstrLibrate = 'Рейтинг';
+  rstrAuthor = 'РђРІС‚РѕСЂ';
+  rstrTitle = 'РќР°Р·РІР°РЅРёРµ';
+  rstrSeries = 'РЎРµСЂРёСЏ';
+  rstrNO = 'в„–';
+  rstrSize = 'Р Р°Р·РјРµСЂ';
+  rstrRate = 'РњРѕСЏ РѕС†РµРЅРєР°';
+  rstrDate = 'Р”РѕР±Р°РІР»РµРЅРѕ';
+  rstrGenre = 'Р–Р°РЅСЂ';
+  rstrCollection = 'РљРѕР»Р»РµРєС†РёСЏ';
+  rstrType = 'РўРёРї';
+  rstrLang = 'РЇР·С‹Рє';
+  rstrLibrate = 'Р РµР№С‚РёРЅРі';
   rstrLibID = 'BookID';
 
 const
   //
-  // Наборы опций для изменяемых и неизменяемых колонок
+  // РќР°Р±РѕСЂС‹ РѕРїС†РёР№ РґР»СЏ РёР·РјРµРЅСЏРµРјС‹С… Рё РЅРµРёР·РјРµРЅСЏРµРјС‹С… РєРѕР»РѕРЅРѕРє
   //
   BASE_COLUMN_OPTIONS              = [coDraggable, coEnabled, coParentColor, coVisible, coShowDropMark];
 
@@ -301,7 +301,7 @@ begin
       Column.Width := Width;
       Column.Position := Position;
       //
-      // не изменяемые пользователем значения
+      // РЅРµ РёР·РјРµРЅСЏРµРјС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј Р·РЅР°С‡РµРЅРёСЏ
       //
       GetDefaultColumnProperties(FMode, Tag, Column.FCaption, Column.FMinWidth, Column.FMaxWidth, Column.FAlignment, Column.FOptions);
     except

@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           eg_
   *                     Nick Rymanov (nrymanov@gmail.com)
@@ -59,11 +59,11 @@ type
     ['{3896E4C6-8E2F-42F3-9FB2-91753258E9B7}']
 
     //
-    // Создание, регистрация и удаление коллекций
+    // РЎРѕР·РґР°РЅРёРµ, СЂРµРіРёСЃС‚СЂР°С†РёСЏ Рё СѓРґР°Р»РµРЅРёРµ РєРѕР»Р»РµРєС†РёР№
     //
 
     //
-    // Создание новой коллекции
+    // РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ РєРѕР»Р»РµРєС†РёРё
     //
     function CreateCollection(
       const DisplayName: string;
@@ -74,7 +74,7 @@ type
     ): Integer;
 
     //
-    // Регистрация существующей коллекции
+    // Р РµРіРёСЃС‚СЂР°С†РёСЏ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РµР№ РєРѕР»Р»РµРєС†РёРё
     //
     function RegisterCollection(
       const DBFileName: string;
@@ -83,7 +83,7 @@ type
     ): Integer;
 
     //
-    // Удаление коллекции
+    // РЈРґР°Р»РµРЅРёРµ РєРѕР»Р»РµРєС†РёРё
     //
     procedure DeleteCollection(const CollectionID: Integer; const RemoveFromDisk: Boolean = True);
 
@@ -92,7 +92,7 @@ type
     function FindFirstExistingCollectionID(const PreferredID: Integer): Integer;
 
     //
-    // Свойства коллекции
+    // РЎРІРѕР№СЃС‚РІР° РєРѕР»Р»РµРєС†РёРё
     //
     procedure SetProperty(const CollectionID: Integer; const PropID: TPropertyID; const Value: Variant);
     function GetProperty(const CollectionID: Integer; const PropID: TPropertyID): Variant;
@@ -104,7 +104,7 @@ type
     function ActivateGroup(const ID: Integer): Boolean; //deprecated;
 
     //
-    // Работа с книгами
+    // Р Р°Р±РѕС‚Р° СЃ РєРЅРёРіР°РјРё
     //
     procedure GetBookRecord(const BookKey: TBookKey; var BookRecord: TBookRecord);
     procedure DeleteBook(const BookKey: TBookKey);
@@ -126,7 +126,7 @@ type
     procedure SetFolder(const BookKey: TBookKey; const Folder: string);
 
     //
-    // Работа с группами
+    // Р Р°Р±РѕС‚Р° СЃ РіСЂСѓРїРїР°РјРё
     //
     function AddGroup(const GroupName: string; const AllowDelete: Boolean = True): Boolean;
     function GetGroup(const GroupID: Integer): TGroupData;
@@ -139,7 +139,7 @@ type
     procedure DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
 
     //
-    // Пользовательские данные
+    // РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ
     //
     procedure ImportUserData(data: TUserData);
     procedure ExportUserData(data: TUserData; const DatabaseID: Integer);
@@ -157,7 +157,7 @@ type
     function GetCollectionInfoIterator: ICollectionInfoIterator;
 
     //
-    // Служебные методы
+    // РЎР»СѓР¶РµР±РЅС‹Рµ РјРµС‚РѕРґС‹
     //
     procedure ClearCollectionCache;
     procedure RemoveUnusedBooks;
@@ -176,13 +176,13 @@ type
     function Search(const SearchCriteria: TBookSearchCriteria; const LoadMemos: Boolean): IBookIterator;
 
 
-    // работа с авторами
+    // СЂР°Р±РѕС‚Р° СЃ Р°РІС‚РѕСЂР°РјРё
 
     procedure UpdateAuthor(Author : PAuthorData);
     //
     //
     //
-    function InsertBook(BookRecord: TBookRecord; const CheckFileName: Boolean; const FullCheck: Boolean): Integer; // превратить в процедуру
+    function InsertBook(BookRecord: TBookRecord; const CheckFileName: Boolean; const FullCheck: Boolean): Integer; // РїСЂРµРІСЂР°С‚РёС‚СЊ РІ РїСЂРѕС†РµРґСѓСЂСѓ
     procedure GetBookRecord(const BookKey: TBookKey; out BookRecord: TBookRecord; const LoadMemos: Boolean);
     procedure UpdateBook(BookRecord: TBookRecord);
     procedure DeleteBook(const BookKey: TBookKey);
@@ -191,7 +191,7 @@ type
 
     function GetReview(const BookKey: TBookKey): string;
 
-    function SetReview(const BookKey: TBookKey; const Review: string): Integer; // превратить в процедуру
+    function SetReview(const BookKey: TBookKey; const Review: string): Integer; // РїСЂРµРІСЂР°С‚РёС‚СЊ РІ РїСЂРѕС†РµРґСѓСЂСѓ
     procedure SetAnnotation(const BookKey: TBookKey; const Annotation: string);
     procedure SetProgress(const BookKey: TBookKey; const Progress: Integer);
     procedure SetRate(const BookKey: TBookKey; const Rate: Integer);
@@ -201,10 +201,10 @@ type
     procedure SetSeriesID(const BookKey: TBookKey; const SeriesID: Integer);
 
     //
-    // манипуляции с авторами и жанрами книги
+    // РјР°РЅРёРїСѓР»СЏС†РёРё СЃ Р°РІС‚РѕСЂР°РјРё Рё Р¶Р°РЅСЂР°РјРё РєРЅРёРіРё
     //
-    procedure SetBookAuthors(const BookID: Integer; const Authors: TBookAuthors; Replace: Boolean); // заменить Integer на TBookKey
-    procedure SetBookGenres(const BookID: Integer; const Genres: TBookGenres; Replace: Boolean); // заменить Integer на TBookKey
+    procedure SetBookAuthors(const BookID: Integer; const Authors: TBookAuthors; Replace: Boolean); // Р·Р°РјРµРЅРёС‚СЊ Integer РЅР° TBookKey
+    procedure SetBookGenres(const BookID: Integer; const Genres: TBookGenres; Replace: Boolean); // Р·Р°РјРµРЅРёС‚СЊ Integer РЅР° TBookKey
 
     //
     //
@@ -214,7 +214,7 @@ type
     procedure ChangeBookSeriesID(const OldSeriesID: Integer; const NewSeriesID: Integer; const DatabaseID: Integer);
 
     //
-    // Свойства коллекции
+    // РЎРІРѕР№СЃС‚РІР° РєРѕР»Р»РµРєС†РёРё
     //
     function CollectionID: Integer;
     function CollectionCode: COLLECTION_TYPE;

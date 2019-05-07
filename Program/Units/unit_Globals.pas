@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Aleksey Penkov  alex.penkov@gmail.com
   *                     Nick Rymanov (nrymanov@gmail.com)
@@ -12,7 +12,7 @@
   * $Id: unit_Globals.pas 1166 2014-05-22 03:09:17Z koreec $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -284,7 +284,7 @@ type
     KeyWord: string;
     Deleted: Boolean;
     LibRate: string;
-    Readed: Boolean;  //Признак, что книга прочитана
+    Readed: Boolean;  //РџСЂРёР·РЅР°Рє, С‡С‚Рѕ РєРЅРёРіР° РїСЂРѕС‡РёС‚Р°РЅР°
 
     DownloadedIdx: Integer;
     DateIdx: Integer;
@@ -299,15 +299,15 @@ type
   end;
 
   //
-  // Вспомогательная структура для обработки заголовков INPX
+  // Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅР°СЏ СЃС‚СЂСѓРєС‚СѓСЂР° РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё Р·Р°РіРѕР»РѕРІРєРѕРІ INPX
   //
-  // Структура заголовка
-  // 1. Название коллекции
-  // 2. Название файла коллекции
-  // 3. Тип коллекции
+  // РЎС‚СЂСѓРєС‚СѓСЂР° Р·Р°РіРѕР»РѕРІРєР°
+  // 1. РќР°Р·РІР°РЅРёРµ РєРѕР»Р»РµРєС†РёРё
+  // 2. РќР°Р·РІР°РЅРёРµ С„Р°Р№Р»Р° РєРѕР»Р»РµРєС†РёРё
+  // 3. РўРёРї РєРѕР»Р»РµРєС†РёРё
   // 4. Notes
   // 5. URL
-  // 6. Все оставшиеся строки содержат скрипт подключения
+  // 6. Р’СЃРµ РѕСЃС‚Р°РІС€РёРµСЃСЏ СЃС‚СЂРѕРєРё СЃРѕРґРµСЂР¶Р°С‚ СЃРєСЂРёРїС‚ РїРѕРґРєР»СЋС‡РµРЅРёСЏ
   //
   TINPXHeader = record
     Name: string;
@@ -388,8 +388,8 @@ type
   procedure DebugOut(const DebugMessage: string; const Args: array of const ); overload;
 
   procedure SetProxySettings(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL; UpdProxy: integer = 0);
-  // UpdProxy=0 (по умолчанию) указывает, что настройки нужно брать из ProxyServer
-  // UpdProxy=1 указывает что настройки из ProxyServerUpdate
+  // UpdProxy=0 (РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ) СѓРєР°Р·С‹РІР°РµС‚, С‡С‚Рѕ РЅР°СЃС‚СЂРѕР№РєРё РЅСѓР¶РЅРѕ Р±СЂР°С‚СЊ РёР· ProxyServer
+  // UpdProxy=1 СѓРєР°Р·С‹РІР°РµС‚ С‡С‚Рѕ РЅР°СЃС‚СЂРѕР№РєРё РёР· ProxyServerUpdate
 
   function GetSpecialPath(CSIDL: word): string;
   function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean;
@@ -398,7 +398,7 @@ type
   function c_GetTempPath: String;
 
 var
-  CurrentSelectedAuthor: string; //Текущий выбранный автор для передачи в парсер экспорта
+  CurrentSelectedAuthor: string; //РўРµРєСѓС‰РёР№ РІС‹Р±СЂР°РЅРЅС‹Р№ Р°РІС‚РѕСЂ РґР»СЏ РїРµСЂРµРґР°С‡Рё РІ РїР°СЂСЃРµСЂ СЌРєСЃРїРѕСЂС‚Р°
 
 implementation
 
@@ -418,15 +418,15 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrUnableToLaunch = ' Не удалось запустить %s ! ';
-  rstrBookNotFoundInArchive = 'В архиве "%s" не найдено описание книги!';
+  rstrUnableToLaunch = ' РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ %s ! ';
+  rstrBookNotFoundInArchive = 'Р’ Р°СЂС…РёРІРµ "%s" РЅРµ РЅР°Р№РґРµРЅРѕ РѕРїРёСЃР°РЅРёРµ РєРЅРёРіРё!';
 
 const
   lat: set of AnsiChar = ['A' .. 'Z', 'a' .. 'z', '\', '-', ':', '`', ',', '.', '0' .. '9', '_', ' ', '(', ')', '[', ']', '{', '}'];
 
 const
   denied: set of AnsiChar = ['<', '>', ':', '"', '/', '|', '*', '?'];
-  denied_full: set of AnsiChar = ['<', '>', ':', '"', '/', '|', '*', '?', '\', '«', '»'];
+  denied_full: set of AnsiChar = ['<', '>', ':', '"', '/', '|', '*', '?', '\', 'В«', 'В»'];
 
 const
   TransL: array [0 .. 31] of string = ('a', 'b', 'v', 'g', 'd', 'e', 'zh', 'z', 'i', 'y', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'h', 'c', 'ch', 'sh', 'sch', '''', 'i', '''', 'e', 'yu', 'ya');
@@ -435,7 +435,7 @@ const
   TransU: array [0 .. 31] of string = ('A', 'B', 'V', 'G', 'D', 'E', 'Zh', 'Z', 'I', 'Y', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U', 'F', 'H', 'C', 'Ch', 'Sh', 'Sch', '''', 'I', '''', 'E', 'Yu', 'Ya');
 
   // -----------------------------------------------------------------------------
-  // различная информация о коллекции
+  // СЂР°Р·Р»РёС‡РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєРѕР»Р»РµРєС†РёРё
   // -----------------------------------------------------------------------------
 function isPrivateCollection(t: COLLECTION_TYPE): Boolean;
 begin
@@ -693,7 +693,7 @@ begin
     conv := conv + S;
   end;
 
-  // фильтруем точки в конце имени
+  // С„РёР»СЊС‚СЂСѓРµРј С‚РѕС‡РєРё РІ РєРѕРЅС†Рµ РёРјРµРЅРё
   if Length(conv) > 0 then
     while conv[Length(conv)] = '.' do
       Delete(conv, Length(conv), 1);
@@ -706,9 +706,9 @@ var
   AuthorName: string;
 begin
   //
-  // Не обрезаем пробелы здесь!!! От их наличия зависит расположение файла - на букве или в каталоге '_'
+  // РќРµ РѕР±СЂРµР·Р°РµРј РїСЂРѕР±РµР»С‹ Р·РґРµСЃСЊ!!! РћС‚ РёС… РЅР°Р»РёС‡РёСЏ Р·Р°РІРёСЃРёС‚ СЂР°СЃРїРѕР»РѕР¶РµРЅРёРµ С„Р°Р№Р»Р° - РЅР° Р±СѓРєРІРµ РёР»Рё РІ РєР°С‚Р°Р»РѕРіРµ '_'
   //
-  AuthorName := CheckSymbols(FullName); // Ф.И.О. - полностью!
+  AuthorName := CheckSymbols(FullName); // Р¤.Р.Рћ. - РїРѕР»РЅРѕСЃС‚СЊСЋ!
 
   Letter := AuthorName[1];
   if not IsLetterOrDigit(Letter) then
@@ -918,7 +918,7 @@ begin
 end;
 
 //
-// Добавляет отсутствующую информацию о книге, заполняя поля значения по умолчанию
+// Р”РѕР±Р°РІР»СЏРµС‚ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰СѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРЅРёРіРµ, Р·Р°РїРѕР»РЅСЏСЏ РїРѕР»СЏ Р·РЅР°С‡РµРЅРёСЏ РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 //
 procedure TBookRecord.Normalize;
 var
@@ -946,7 +946,7 @@ begin
 end;
 
 //
-// Формирует И\Иванов Иван Иванович\Просто книга
+// Р¤РѕСЂРјРёСЂСѓРµС‚ Р\РРІР°РЅРѕРІ РРІР°РЅ РРІР°РЅРѕРІРёС‡\РџСЂРѕСЃС‚Рѕ РєРЅРёРіР°
 //
 function TBookRecord.GenerateLocation: string;
 begin
@@ -1070,7 +1070,7 @@ begin
       on e: EFOpenError do
       begin
         //
-        // TODO: на самом деле, файл может существовать, но буть заблокирован другим приложением
+        // TODO: РЅР° СЃР°РјРѕРј РґРµР»Рµ, С„Р°Р№Р» РјРѕР¶РµС‚ СЃСѓС‰РµСЃС‚РІРѕРІР°С‚СЊ, РЅРѕ Р±СѓС‚СЊ Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ РґСЂСѓРіРёРј РїСЂРёР»РѕР¶РµРЅРёРµРј
         //
         raise EBookNotFound.CreateFmt(rstrFileNotFound, [BookFileName]);
       end;
@@ -1221,14 +1221,14 @@ begin
     else
     begin
         case Settings.ProxyType of
-          0: begin  // HTTP прокси
+          0: begin  // HTTP РїСЂРѕРєСЃРё
             IdHTTP.IOHandler := nil;
       ProxyServer := Settings.ProxyServer;
       ProxyPort := Settings.ProxyPort;
       ProxyUsername := Settings.ProxyUsername;
       ProxyPassword := Settings.ProxyPassword;
     end;
-          1: begin  // SOCKS4 прокси
+          1: begin  // SOCKS4 РїСЂРѕРєСЃРё
             ProxyServer := '';
             ProxyPort := 0;
             with IdSocksInfo do
@@ -1250,7 +1250,7 @@ begin
               IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
             end;
           end;
-          2: begin  // SOCKS5 прокси
+          2: begin  // SOCKS5 РїСЂРѕРєСЃРё
             ProxyServer := '';
             ProxyPort := 0;
             with IdSocksInfo do
@@ -1279,7 +1279,7 @@ begin
   end;
   end  // if TypeProxy = 0 
   else
-  begin //if TypeProxy = 1 указывает, что прокси для обновлений, а не скачивания книг
+  begin //if TypeProxy = 1 СѓРєР°Р·С‹РІР°РµС‚, С‡С‚Рѕ РїСЂРѕРєСЃРё РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёР№, Р° РЅРµ СЃРєР°С‡РёРІР°РЅРёСЏ РєРЅРёРі
     if Settings.UseProxyForUpdate then
     begin
       with IdHTTP.ProxyParams do
@@ -1352,7 +1352,7 @@ begin
   end
   else
   begin
-    // { TODO -oNickR -cRefactoring : не самая лучшая идея показывать диалоги прямо из этой функции. Она может быть вызвана из рабочего потока. }
+    // { TODO -oNickR -cRefactoring : РЅРµ СЃР°РјР°СЏ Р»СѓС‡С€Р°СЏ РёРґРµСЏ РїРѕРєР°Р·С‹РІР°С‚СЊ РґРёР°Р»РѕРіРё РїСЂСЏРјРѕ РёР· СЌС‚РѕР№ С„СѓРЅРєС†РёРё. РћРЅР° РјРѕР¶РµС‚ Р±С‹С‚СЊ РІС‹Р·РІР°РЅР° РёР· СЂР°Р±РѕС‡РµРіРѕ РїРѕС‚РѕРєР°. }
     Application.MessageBox(PChar(Format(rstrUnableToLaunch, [FileName])), '', mb_IconExclamation)
   end;
 end;

@@ -1,4 +1,4 @@
-{******************************************************************************}
+п»ї{******************************************************************************}
 {                                                                              }
 { MyHomeLib                                                                    }
 {                                                                              }
@@ -51,18 +51,18 @@ uses
   unit_Templater;
 
 resourcestring
-  rstrStructureError = 'Ошибка структуры fb2: %s.zip -> %s';
-  rstrProcessedFiles = 'Обработано файлов: %u из %u';
-  rstrAddedFiles = 'Добавлено файлов: %u из %u';
-  rstrErrorUnpackingWithCode = 'Ошибка распаковки архива %s, Код: %d';
-  rstrFoundNewArchives = 'Обнаружено новых архивов: %u';
-  rstrErrorFB2Structure = 'Ошибка структуры fb2: %s -> %s';
-  rstrErrorUnpacking = 'Ошибка распаковки архива: ';
-  rstrProcessedArchives = 'Обработано архивов: %u из %u';
-  rstrAddedBooks = 'Добавленo книг: %u,; пропущено книг: %u';
-  rstrAddedBooksTotal = 'Добавленo всего книг: %u; пропущено всего книг: %u';
-  rstrImportFB2 = 'Импорт файлов fb2:';
-  rstrImportFB2Zip = 'Импорт файлов fb2.zip:';
+  rstrStructureError = 'РћС€РёР±РєР° СЃС‚СЂСѓРєС‚СѓСЂС‹ fb2: %s.zip -> %s';
+  rstrProcessedFiles = 'РћР±СЂР°Р±РѕС‚Р°РЅРѕ С„Р°Р№Р»РѕРІ: %u РёР· %u';
+  rstrAddedFiles = 'Р”РѕР±Р°РІР»РµРЅРѕ С„Р°Р№Р»РѕРІ: %u РёР· %u';
+  rstrErrorUnpackingWithCode = 'РћС€РёР±РєР° СЂР°СЃРїР°РєРѕРІРєРё Р°СЂС…РёРІР° %s, РљРѕРґ: %d';
+  rstrFoundNewArchives = 'РћР±РЅР°СЂСѓР¶РµРЅРѕ РЅРѕРІС‹С… Р°СЂС…РёРІРѕРІ: %u';
+  rstrErrorFB2Structure = 'РћС€РёР±РєР° СЃС‚СЂСѓРєС‚СѓСЂС‹ fb2: %s -> %s';
+  rstrErrorUnpacking = 'РћС€РёР±РєР° СЂР°СЃРїР°РєРѕРІРєРё Р°СЂС…РёРІР°: ';
+  rstrProcessedArchives = 'РћР±СЂР°Р±РѕС‚Р°РЅРѕ Р°СЂС…РёРІРѕРІ: %u РёР· %u';
+  rstrAddedBooks = 'Р”РѕР±Р°РІР»РµРЅo РєРЅРёРі: %u,; РїСЂРѕРїСѓС‰РµРЅРѕ РєРЅРёРі: %u';
+  rstrAddedBooksTotal = 'Р”РѕР±Р°РІР»РµРЅo РІСЃРµРіРѕ РєРЅРёРі: %u; РїСЂРѕРїСѓС‰РµРЅРѕ РІСЃРµРіРѕ РєРЅРёРі: %u';
+  rstrImportFB2 = 'РРјРїРѕСЂС‚ С„Р°Р№Р»РѕРІ fb2:';
+  rstrImportFB2Zip = 'РРјРїРѕСЂС‚ С„Р°Р№Р»РѕРІ fb2.zip:';
 
 { TImportFB2Thread }
 
@@ -109,7 +109,7 @@ begin
             R.Folder := ExtractFilePath(FFiles[i]);
             book := LoadFictionBook(FFiles[i]);
             GetBookInfo(book, R);
-            SortFiles(R); // изменит R.Folder и R.FileName
+            SortFiles(R); // РёР·РјРµРЅРёС‚ R.Folder Рё R.FileName
           end
           else
           begin
@@ -267,7 +267,7 @@ begin
           archiver.RenameFile(R.FileName +  R.FileExt, NewFileName + R.FileExt); // assuming there are only fb2 files there
           R.FileName := NewFileName;
         except
-          // ничего не делаем
+          // РЅРёС‡РµРіРѕ РЅРµ РґРµР»Р°РµРј
         end;
       finally
         FreeAndNil(archiver);

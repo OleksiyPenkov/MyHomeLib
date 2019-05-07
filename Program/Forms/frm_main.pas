@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -12,8 +12,8 @@
   * $Id: frm_main.pas 1183 2015-04-01 04:32:39Z koreec $
   *
   * History
-  * NickR 06.05.2010    Для уменьшения размера dfm и единообразия интерфейса некоторые компоненты
-  *                     заменены своими версиями с заранее настроенными свойствами.
+  * NickR 06.05.2010    Р”Р»СЏ СѓРјРµРЅСЊС€РµРЅРёСЏ СЂР°Р·РјРµСЂР° dfm Рё РµРґРёРЅРѕРѕР±СЂР°Р·РёСЏ РёРЅС‚РµСЂС„РµР№СЃР° РЅРµРєРѕС‚РѕСЂС‹Рµ РєРѕРјРїРѕРЅРµРЅС‚С‹
+  *                     Р·Р°РјРµРЅРµРЅС‹ СЃРІРѕРёРјРё РІРµСЂСЃРёСЏРјРё СЃ Р·Р°СЂР°РЅРµРµ РЅР°СЃС‚СЂРѕРµРЅРЅС‹РјРё СЃРІРѕР№СЃС‚РІР°РјРё.
   *
   ****************************************************************************** *)
 
@@ -494,7 +494,7 @@ type
     acViewSetInfoPriority: TAction;
     tmrSearchA: TTimer;
     tmrSearchS: TTimer;
-    cbLangSelectA: TComboBox;  // Выбор языка отображения книг
+    cbLangSelectA: TComboBox;  // Р’С‹Р±РѕСЂ СЏР·С‹РєР° РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РєРЅРёРі
     cbReaded: TCheckBox;
     cbLangSelectS: TComboBox;
     cbLangSelectG: TComboBox;
@@ -503,35 +503,35 @@ type
     lbl1: TLabel;
     lbl2: TLabel;
     lbl3: TLabel;
-    pmMarkSelected: TMenuItem;      // Выбор в поиске прочитанных книг
+    pmMarkSelected: TMenuItem;      // Р’С‹Р±РѕСЂ РІ РїРѕРёСЃРєРµ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РєРЅРёРі
 
     //
-    // События формы
+    // РЎРѕР±С‹С‚РёСЏ С„РѕСЂРјС‹
     //
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
 
     //
-    // Список авторов
+    // РЎРїРёСЃРѕРє Р°РІС‚РѕСЂРѕРІ
     //
     procedure tvAuthorsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvAuthorsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     //
-    // Список серий
+    // РЎРїРёСЃРѕРє СЃРµСЂРёР№
     //
     procedure tvSeriesChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvSeriesKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     //
-    // Список жанров
+    // РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ
     //
     procedure tvGenresChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvGenresKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     //
-    // Список групп
+    // РЎРїРёСЃРѕРє РіСЂСѓРїРї
     //
     procedure tvGroupsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvGroupsDragDrop(Sender: TBaseVirtualTree; Source: TObject; DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState; Pt: TPoint; var Effect: Integer; Mode: TDropMode);
@@ -539,7 +539,7 @@ type
     procedure tvGroupsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     //
-    // Список книг
+    // РЎРїРёСЃРѕРє РєРЅРёРі
     //
     procedure tvBooksTreeHeaderClick(Sender: TVTHeader; HitInfo: TVTHeaderHitInfo);
     procedure tvBooksTreeMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -547,7 +547,7 @@ type
     procedure tvBooksTreeChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
 
     //
-    // Меню "Книга"
+    // РњРµРЅСЋ "РљРЅРёРіР°"
     //
     procedure ReadBookExecute(Sender: TObject);
     procedure SendToDeviceExecute(Sender: TObject);
@@ -558,7 +558,7 @@ type
     procedure QuitAppExecute(Sender: TObject);
 
     //
-    // Меню "Коллекция"
+    // РњРµРЅСЋ "РљРѕР»Р»РµРєС†РёСЏ"
     //
     procedure ShowNewCollectionWizard(Sender: TObject);
     procedure ShowCollectionSettingsExecute(Sender: TObject);
@@ -586,7 +586,7 @@ type
     procedure DeleteGroupExecute(Sender: TObject);
 
     //
-    // Меню "Редактирование"
+    // РњРµРЅСЋ "Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ"
     //
     procedure EditBookExecute(Sender: TObject);
     procedure Conver2FBDExecute(Sender: TObject);
@@ -598,7 +598,7 @@ type
     procedure EditGenreUpdate(Sender: TObject);
 
     //
-    // Меню "Вид"
+    // РњРµРЅСЋ "Р’РёРґ"
     //
     procedure ShowMainToolbarExecute(Sender: TObject);
     procedure ShowMainToolbarUpdate(Sender: TObject);
@@ -622,7 +622,7 @@ type
     procedure ShowLocalOnlyUpdate(Sender: TObject);
 
     //
-    // Меню "Инструменты"
+    // РњРµРЅСЋ "РРЅСЃС‚СЂСѓРјРµРЅС‚С‹"
     //
     procedure QuickSearchExecute(Sender: TObject);
     procedure UpdateOnlineCollectionExecute(Sender: TObject);
@@ -630,7 +630,7 @@ type
     procedure ChangeSettingsExecute(Sender: TObject);
 
     //
-    // Меню "Помощь"
+    // РњРµРЅСЋ "РџРѕРјРѕС‰СЊ"
     //
     procedure ShowHelpExecute(Sender: TObject);
     procedure CheckUpdatesExecute(Sender: TObject);
@@ -647,13 +647,13 @@ type
     procedure miCopyClBrdClick(Sender: TObject);
 
     //
-    // Работа с группами
+    // Р Р°Р±РѕС‚Р° СЃ РіСЂСѓРїРїР°РјРё
     //
     procedure AddBookToGroup(Sender: TObject);
     procedure DeleteBookFromGroup(Sender: TObject);
 
     //
-    // Работа с Search Preset-ами
+    // Р Р°Р±РѕС‚Р° СЃ Search Preset-Р°РјРё
     //
     procedure cbPresetNameSelect(Sender: TObject);
     procedure DoClearFilter(KeepPreset: boolean);
@@ -724,7 +724,7 @@ type
     procedure edLocateSeriesChange(Sender: TObject);
     procedure cbLangSelectAChange(Sender: TObject);
     procedure btnClearFilterEditsClick(Sender: TObject);
-    procedure pmMarkSelectedClick(Sender: TObject);  // Выбор языка в списке
+    procedure pmMarkSelectedClick(Sender: TObject);  // Р’С‹Р±РѕСЂ СЏР·С‹РєР° РІ СЃРїРёСЃРєРµ
 
   protected
     procedure WMGetSysCommand(var Message: TMessage); message WM_SYSCOMMAND;
@@ -749,7 +749,7 @@ type
     function IsSelectedBookNode(Node: PVirtualNode; Data: PBookRecord): Boolean;
 
     //
-    // Построение деревьев
+    // РџРѕСЃС‚СЂРѕРµРЅРёРµ РґРµСЂРµРІСЊРµРІ
     //
     procedure FillBooksTree(
       const Tree: TBookTree;
@@ -761,7 +761,7 @@ type
     ); overload;
 
     //
-    // TODO -oNickR -cRefactoring : вынести эти методы в соответствующие датамодули
+    // TODO -oNickR -cRefactoring : РІС‹РЅРµСЃС‚Рё СЌС‚Рё РјРµС‚РѕРґС‹ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёРµ РґР°С‚Р°РјРѕРґСѓР»Рё
     //
     procedure ReadINIData;
 
@@ -794,58 +794,58 @@ type
 
   strict private
     //
-    // Проверяет возможность редактирования информации (о книге, если задано).
-    // В случае если книга из онлайн коллекции предлагает перейти на сайт для изменения информации там
+    // РџСЂРѕРІРµСЂСЏРµС‚ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё (Рѕ РєРЅРёРіРµ, РµСЃР»Рё Р·Р°РґР°РЅРѕ).
+    // Р’ СЃР»СѓС‡Р°Рµ РµСЃР»Рё РєРЅРёРіР° РёР· РѕРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёРё РїСЂРµРґР»Р°РіР°РµС‚ РїРµСЂРµР№С‚Рё РЅР° СЃР°Р№С‚ РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё С‚Р°Рј
     //
     function IsLibRusecEdit(const BookKey: TBookKey): Boolean;
 
     //
-    // Применяет операцию ProcessProc ко всем помеченным нодам или (ели ничего не отмечено) к текущей ноде.
-    // Note: После применения ноды автоматически не обновляются!!!
+    // РџСЂРёРјРµРЅСЏРµС‚ РѕРїРµСЂР°С†РёСЋ ProcessProc РєРѕ РІСЃРµРј РїРѕРјРµС‡РµРЅРЅС‹Рј РЅРѕРґР°Рј РёР»Рё (РµР»Рё РЅРёС‡РµРіРѕ РЅРµ РѕС‚РјРµС‡РµРЅРѕ) Рє С‚РµРєСѓС‰РµР№ РЅРѕРґРµ.
+    // Note: РџРѕСЃР»Рµ РїСЂРёРјРµРЅРµРЅРёСЏ РЅРѕРґС‹ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РЅРµ РѕР±РЅРѕРІР»СЏСЋС‚СЃСЏ!!!
     //
     procedure ProcessNodes(ProcessProc: TNodeProcessProc);
 
     //
-    // Обновить во всех деревьях ноду BookID:DatabaseID (если есть).
-    // Обновления не должны менять положение ноды в дереве.
+    // РћР±РЅРѕРІРёС‚СЊ РІРѕ РІСЃРµС… РґРµСЂРµРІСЊСЏС… РЅРѕРґСѓ BookID:DatabaseID (РµСЃР»Рё РµСЃС‚СЊ).
+    // РћР±РЅРѕРІР»РµРЅРёСЏ РЅРµ РґРѕР»Р¶РЅС‹ РјРµРЅСЏС‚СЊ РїРѕР»РѕР¶РµРЅРёРµ РЅРѕРґС‹ РІ РґРµСЂРµРІРµ.
     //
     procedure UpdateNodes(const BookKey: TBookKey; UpdateProc: TNodeUpdateProc);
 
     //
-    // Обновить статус книги (присутствует локально)
+    // РћР±РЅРѕРІРёС‚СЊ СЃС‚Р°С‚СѓСЃ РєРЅРёРіРё (РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ Р»РѕРєР°Р»СЊРЅРѕ)
     //
     procedure SetBookLocalStatus(const BookKey: TBookKey; IsLocal: Boolean);
 
     //
-    // Восстанавить тулбар в правильной позиции
+    // Р’РѕСЃСЃС‚Р°РЅР°РІРёС‚СЊ С‚СѓР»Р±Р°СЂ РІ РїСЂР°РІРёР»СЊРЅРѕР№ РїРѕР·РёС†РёРё
     //
     procedure ChangeToolbarVisability(ToolBars: array of TToolBar; ToolBar: TToolBar; ShowToolbar: Boolean);
 
     //
-    // Проверяет, не является ли текущая коллекция онлайн-коллекцией.
-    // Для онлайн-коллекции запрещает и прячет Action.
-    // Результат: True - Action был обновлен
+    // РџСЂРѕРІРµСЂСЏРµС‚, РЅРµ СЏРІР»СЏРµС‚СЃСЏ Р»Рё С‚РµРєСѓС‰Р°СЏ РєРѕР»Р»РµРєС†РёСЏ РѕРЅР»Р°Р№РЅ-РєРѕР»Р»РµРєС†РёРµР№.
+    // Р”Р»СЏ РѕРЅР»Р°Р№РЅ-РєРѕР»Р»РµРєС†РёРё Р·Р°РїСЂРµС‰Р°РµС‚ Рё РїСЂСЏС‡РµС‚ Action.
+    // Р РµР·СѓР»СЊС‚Р°С‚: True - Action Р±С‹Р» РѕР±РЅРѕРІР»РµРЅ
     //
     function UpdateEditAction(Action: TAction): Boolean;
 
     //
-    // Проверяет, что текущий режим просмотра "по группа" и соответственно разрешает или запрещает
+    // РџСЂРѕРІРµСЂСЏРµС‚, С‡С‚Рѕ С‚РµРєСѓС‰РёР№ СЂРµР¶РёРј РїСЂРѕСЃРјРѕС‚СЂР° "РїРѕ РіСЂСѓРїРїР°" Рё СЃРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ СЂР°Р·СЂРµС€Р°РµС‚ РёР»Рё Р·Р°РїСЂРµС‰Р°РµС‚
     //
     function InternalUpdateGroupAction(Action: TAction): Boolean;
 
     //
-    // Возвращает кнопку, соответствующую заданному фильтру.
+    // Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРЅРѕРїРєСѓ, СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ Р·Р°РґР°РЅРЅРѕРјСѓ С„РёР»СЊС‚СЂСѓ.
     //
     function GetFilterButton(ToolBars: array of TToolBar; const Filter: string): TToolButton;
 
     //
-    // Обработчик события для кнопок алфавитного тулбара на странице "Авторы"
+    // РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёСЏ РґР»СЏ РєРЅРѕРїРѕРє Р°Р»С„Р°РІРёС‚РЅРѕРіРѕ С‚СѓР»Р±Р°СЂР° РЅР° СЃС‚СЂР°РЅРёС†Рµ "РђРІС‚РѕСЂС‹"
     //
     function InternalSetAuthorFilter(Button: TToolButton): string;
     procedure OnSetAuthorFilter(Sender: TObject);
 
     //
-    // Обработчик события для кнопок алфавитного тулбара на странице "Серии"
+    // РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёСЏ РґР»СЏ РєРЅРѕРїРѕРє Р°Р»С„Р°РІРёС‚РЅРѕРіРѕ С‚СѓР»Р±Р°СЂР° РЅР° СЃС‚СЂР°РЅРёС†Рµ "РЎРµСЂРёРё"
     //
     function InternalSetSeriesFilter(Button: TToolButton): string;
     procedure OnSetSerieFilter(Sender: TObject);
@@ -883,8 +883,8 @@ type
     FLastDeviceDir: string;
 
     //
-    // автор и серия, которым _реально_ принадлежат книги, показываемые сейчас в списке
-    // т. к. обновление списка происходит с задержкой, значения могут не совпадать в ID выбранных элементов
+    // Р°РІС‚РѕСЂ Рё СЃРµСЂРёСЏ, РєРѕС‚РѕСЂС‹Рј _СЂРµР°Р»СЊРЅРѕ_ РїСЂРёРЅР°РґР»РµР¶Р°С‚ РєРЅРёРіРё, РїРѕРєР°Р·С‹РІР°РµРјС‹Рµ СЃРµР№С‡Р°СЃ РІ СЃРїРёСЃРєРµ
+    // С‚. Рє. РѕР±РЅРѕРІР»РµРЅРёРµ СЃРїРёСЃРєР° РїСЂРѕРёСЃС…РѕРґРёС‚ СЃ Р·Р°РґРµСЂР¶РєРѕР№, Р·РЅР°С‡РµРЅРёСЏ РјРѕРіСѓС‚ РЅРµ СЃРѕРІРїР°РґР°С‚СЊ РІ ID РІС‹Р±СЂР°РЅРЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ
     //
     FLastAuthorID: Integer;
     FLastAuthorStr: String;
@@ -1012,65 +1012,65 @@ uses
   frm_DeleteCollection, unit_ImportOldUserData;
 
 resourcestring
-  rstrFileNotFoundMsg = 'Файл %s не найден!' + CRLF + 'Проверьте настройки коллекции!';
-  rstrCreatingFilter = 'Подготовка фильтра ...';
-  rstrApplyingFilter = 'Применяем фильтр ...';
-  rstrNoUpdatesAvailable = 'Нет доступных обновлений';
-  rstrNotFromDownloadsError = 'Операция недоступна из списка закачек.';
-  rstrNotForExtension = 'Операция недоступна для файлов с расширением %s';
-  rstrUnableDeleteBuiltinGroupError = 'Нельзя удалить встроенную группу!';
-  rstrCheckingUpdates = 'Проверка обновлений ...';
-  rstrGroupAlreadyExists = 'Группа с таким именем уже существует!';
-  rstrAdding2GroupMessage = 'Добавляем книги в группу...';
-  rstrRemovingFromGroupMessage = 'Удаляем книги из группы...';
-  rstrBuildingListMessage = 'Построение списка ...';
+  rstrFileNotFoundMsg = 'Р¤Р°Р№Р» %s РЅРµ РЅР°Р№РґРµРЅ!' + CRLF + 'РџСЂРѕРІРµСЂСЊС‚Рµ РЅР°СЃС‚СЂРѕР№РєРё РєРѕР»Р»РµРєС†РёРё!';
+  rstrCreatingFilter = 'РџРѕРґРіРѕС‚РѕРІРєР° С„РёР»СЊС‚СЂР° ...';
+  rstrApplyingFilter = 'РџСЂРёРјРµРЅСЏРµРј С„РёР»СЊС‚СЂ ...';
+  rstrNoUpdatesAvailable = 'РќРµС‚ РґРѕСЃС‚СѓРїРЅС‹С… РѕР±РЅРѕРІР»РµРЅРёР№';
+  rstrNotFromDownloadsError = 'РћРїРµСЂР°С†РёСЏ РЅРµРґРѕСЃС‚СѓРїРЅР° РёР· СЃРїРёСЃРєР° Р·Р°РєР°С‡РµРє.';
+  rstrNotForExtension = 'РћРїРµСЂР°С†РёСЏ РЅРµРґРѕСЃС‚СѓРїРЅР° РґР»СЏ С„Р°Р№Р»РѕРІ СЃ СЂР°СЃС€РёСЂРµРЅРёРµРј %s';
+  rstrUnableDeleteBuiltinGroupError = 'РќРµР»СЊР·СЏ СѓРґР°Р»РёС‚СЊ РІСЃС‚СЂРѕРµРЅРЅСѓСЋ РіСЂСѓРїРїСѓ!';
+  rstrCheckingUpdates = 'РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёР№ ...';
+  rstrGroupAlreadyExists = 'Р“СЂСѓРїРїР° СЃ С‚Р°РєРёРј РёРјРµРЅРµРј СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚!';
+  rstrAdding2GroupMessage = 'Р”РѕР±Р°РІР»СЏРµРј РєРЅРёРіРё РІ РіСЂСѓРїРїСѓ...';
+  rstrRemovingFromGroupMessage = 'РЈРґР°Р»СЏРµРј РєРЅРёРіРё РёР· РіСЂСѓРїРїС‹...';
+  rstrBuildingListMessage = 'РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃРїРёСЃРєР° ...';
 
-  rstrHintTable = 'Переключится в режим "Таблица"';
-  rstrHintTree = 'Переключится в режим "Дерево"';
-  rstrShuttingDown = 'отключаемся';
-  rstrNeedDBUpgrade = 'Вы успешно обновили программу. Для нормальной работы необходимо обновить струткуру таблиц БД. Сделать это прямо сейчас?';
-  rstrFirstRun = 'MyHomeLib - первый запуск';
-//  rstrToConvertChangeTab = 'Для конвертирования книги перейдите на другую страницу.';
-  rstrCollectionFileNotFound = 'Файл коллекции не найден.' + CRLF + 'Невозможно запустить программу.';
-  // rstrStartCollectionUpdate = 'Доступно обновление коллекций.' + CRLF + ' Начать обновление ?';
-  rstrStarting = 'Старт ...';
-  rstrUnfinishedDownloads = 'В списке есть незавершенные закачки!' + CRLF + 'Вы все еще хотите выйти из программы?';
-  rstrSingleSeries = 'Серия: ';
-  rstrDownloadStateWaiting = 'Ожидание';
-  rstrDownloadStateDownloading = 'Закачка';
-  rstrDownloadStateDone = 'Готово';
-  rstrDownloadStateError = 'Ошибка';
-  rstrNoBookSelected = 'Ни одной книги не выбрано!';
-  rstrProvideThePath = 'Укажите путь';
-  rstrCheckUsage = 'Проверить использование, возможна ошибка';
-  rstrBuildingTheList = 'Построение списка ...';
-  rstrChangeCollectionToRemoveABook = 'Для удаления книги перейдите в соответствующую коллекцию';
-  rstrRemoveSelectedBooks = 'Удалить выбранные книги из базы?';
-  rstrRemoveSelectedBooksFiles = 'Удалить выбранные книги из базы вместе с файлами?';
-  rstrRemoveSelectedBooksOnLine = 'Удалить скачанные файлы?';
-  rstrRemoveCollection = 'Удалить коллекцию ';
-  rstrGoToLibrarySite = 'Изменения информации о книгах в онлайн-коллекциях возможно только на сайте.' + CRLF + 'Перейти на сайт электронной библиотеки "%s"?';
-  rstrUnableToEditBooksFromFavourites = 'Редактирование книг из избранного невозможно.';
-  rstrCreateMoveSeries = 'Создание серии / Перенос в серию';
-  rstrTitle = 'Название:';
-  rstrEditSeries = 'Редактирование серии';
-  rstrAddingBookToGroup = 'Добавляем книги в группу...';
-  rstrRemovingBookFromGroup = 'Удаляем книги из группы...';
-  rstrNeedSpecialDataTypeForSeries = 'Необходимо использовать отдельный тип данных для серии';
-  rstrBookNotFoundInArchive = 'В архиве "%s" не найдено описание книги!';
-  rstrCollectionNotRegistered = 'Коллекция не зарегистрирована !';
-  rstrUpdateFailedServerNotFound = 'Проверка обновления не удалось! Сервер не найден.' + CRLF + 'Код ошибки: %d';
-  rstrUpdateFailedConnectionError = 'Проверка обновления не удалось! Ошибка подключения.' + CRLF + 'Код ошибки: %d';
-  rstrUpdateFailedServerError = 'Проверка обновления не удалось! Сервер сообщает об ошибке ' + CRLF + 'Код ошибки: %d';
-  rstrFoundNewAppVersion = 'Доступна новая версия - "%s" Посетите сайт программы для загрузки обновлений.';
-  rstrLatestVersion = 'У вас самая свежая версия.';
-  rstrRemoveFromGroup = 'Удалить из группы';
-  rstrRemoveFromDownloadList = 'Удалить из списка закачек';
-  rstrAddToFavorites = 'Добавить в избранное';
-  rstrAddToDownloads = 'Добавить в список закачек';
-  rstrCollectionUpdateAvailable = 'Доступно обновление для коллекций.' + CRLF + ' Начать обновление ?';
-  rsrtNewCollectin = 'Новая коллекция ...';
-  rstrSelectFolder = 'Выбор папки ...';
+  rstrHintTable = 'РџРµСЂРµРєР»СЋС‡РёС‚СЃСЏ РІ СЂРµР¶РёРј "РўР°Р±Р»РёС†Р°"';
+  rstrHintTree = 'РџРµСЂРµРєР»СЋС‡РёС‚СЃСЏ РІ СЂРµР¶РёРј "Р”РµСЂРµРІРѕ"';
+  rstrShuttingDown = 'РѕС‚РєР»СЋС‡Р°РµРјСЃСЏ';
+  rstrNeedDBUpgrade = 'Р’С‹ СѓСЃРїРµС€РЅРѕ РѕР±РЅРѕРІРёР»Рё РїСЂРѕРіСЂР°РјРјСѓ. Р”Р»СЏ РЅРѕСЂРјР°Р»СЊРЅРѕР№ СЂР°Р±РѕС‚С‹ РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІРёС‚СЊ СЃС‚СЂСѓС‚РєСѓСЂСѓ С‚Р°Р±Р»РёС† Р‘Р”. РЎРґРµР»Р°С‚СЊ СЌС‚Рѕ РїСЂСЏРјРѕ СЃРµР№С‡Р°СЃ?';
+  rstrFirstRun = 'MyHomeLib - РїРµСЂРІС‹Р№ Р·Р°РїСѓСЃРє';
+//  rstrToConvertChangeTab = 'Р”Р»СЏ РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРёСЏ РєРЅРёРіРё РїРµСЂРµР№РґРёС‚Рµ РЅР° РґСЂСѓРіСѓСЋ СЃС‚СЂР°РЅРёС†Сѓ.';
+  rstrCollectionFileNotFound = 'Р¤Р°Р№Р» РєРѕР»Р»РµРєС†РёРё РЅРµ РЅР°Р№РґРµРЅ.' + CRLF + 'РќРµРІРѕР·РјРѕР¶РЅРѕ Р·Р°РїСѓСЃС‚РёС‚СЊ РїСЂРѕРіСЂР°РјРјСѓ.';
+  // rstrStartCollectionUpdate = 'Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ РєРѕР»Р»РµРєС†РёР№.' + CRLF + ' РќР°С‡Р°С‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ ?';
+  rstrStarting = 'РЎС‚Р°СЂС‚ ...';
+  rstrUnfinishedDownloads = 'Р’ СЃРїРёСЃРєРµ РµСЃС‚СЊ РЅРµР·Р°РІРµСЂС€РµРЅРЅС‹Рµ Р·Р°РєР°С‡РєРё!' + CRLF + 'Р’С‹ РІСЃРµ РµС‰Рµ С…РѕС‚РёС‚Рµ РІС‹Р№С‚Рё РёР· РїСЂРѕРіСЂР°РјРјС‹?';
+  rstrSingleSeries = 'РЎРµСЂРёСЏ: ';
+  rstrDownloadStateWaiting = 'РћР¶РёРґР°РЅРёРµ';
+  rstrDownloadStateDownloading = 'Р—Р°РєР°С‡РєР°';
+  rstrDownloadStateDone = 'Р“РѕС‚РѕРІРѕ';
+  rstrDownloadStateError = 'РћС€РёР±РєР°';
+  rstrNoBookSelected = 'РќРё РѕРґРЅРѕР№ РєРЅРёРіРё РЅРµ РІС‹Р±СЂР°РЅРѕ!';
+  rstrProvideThePath = 'РЈРєР°Р¶РёС‚Рµ РїСѓС‚СЊ';
+  rstrCheckUsage = 'РџСЂРѕРІРµСЂРёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ, РІРѕР·РјРѕР¶РЅР° РѕС€РёР±РєР°';
+  rstrBuildingTheList = 'РџРѕСЃС‚СЂРѕРµРЅРёРµ СЃРїРёСЃРєР° ...';
+  rstrChangeCollectionToRemoveABook = 'Р”Р»СЏ СѓРґР°Р»РµРЅРёСЏ РєРЅРёРіРё РїРµСЂРµР№РґРёС‚Рµ РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ РєРѕР»Р»РµРєС†РёСЋ';
+  rstrRemoveSelectedBooks = 'РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ РєРЅРёРіРё РёР· Р±Р°Р·С‹?';
+  rstrRemoveSelectedBooksFiles = 'РЈРґР°Р»РёС‚СЊ РІС‹Р±СЂР°РЅРЅС‹Рµ РєРЅРёРіРё РёР· Р±Р°Р·С‹ РІРјРµСЃС‚Рµ СЃ С„Р°Р№Р»Р°РјРё?';
+  rstrRemoveSelectedBooksOnLine = 'РЈРґР°Р»РёС‚СЊ СЃРєР°С‡Р°РЅРЅС‹Рµ С„Р°Р№Р»С‹?';
+  rstrRemoveCollection = 'РЈРґР°Р»РёС‚СЊ РєРѕР»Р»РµРєС†РёСЋ ';
+  rstrGoToLibrarySite = 'РР·РјРµРЅРµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё Рѕ РєРЅРёРіР°С… РІ РѕРЅР»Р°Р№РЅ-РєРѕР»Р»РµРєС†РёСЏС… РІРѕР·РјРѕР¶РЅРѕ С‚РѕР»СЊРєРѕ РЅР° СЃР°Р№С‚Рµ.' + CRLF + 'РџРµСЂРµР№С‚Рё РЅР° СЃР°Р№С‚ СЌР»РµРєС‚СЂРѕРЅРЅРѕР№ Р±РёР±Р»РёРѕС‚РµРєРё "%s"?';
+  rstrUnableToEditBooksFromFavourites = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РєРЅРёРі РёР· РёР·Р±СЂР°РЅРЅРѕРіРѕ РЅРµРІРѕР·РјРѕР¶РЅРѕ.';
+  rstrCreateMoveSeries = 'РЎРѕР·РґР°РЅРёРµ СЃРµСЂРёРё / РџРµСЂРµРЅРѕСЃ РІ СЃРµСЂРёСЋ';
+  rstrTitle = 'РќР°Р·РІР°РЅРёРµ:';
+  rstrEditSeries = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ СЃРµСЂРёРё';
+  rstrAddingBookToGroup = 'Р”РѕР±Р°РІР»СЏРµРј РєРЅРёРіРё РІ РіСЂСѓРїРїСѓ...';
+  rstrRemovingBookFromGroup = 'РЈРґР°Р»СЏРµРј РєРЅРёРіРё РёР· РіСЂСѓРїРїС‹...';
+  rstrNeedSpecialDataTypeForSeries = 'РќРµРѕР±С…РѕРґРёРјРѕ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ РѕС‚РґРµР»СЊРЅС‹Р№ С‚РёРї РґР°РЅРЅС‹С… РґР»СЏ СЃРµСЂРёРё';
+  rstrBookNotFoundInArchive = 'Р’ Р°СЂС…РёРІРµ "%s" РЅРµ РЅР°Р№РґРµРЅРѕ РѕРїРёСЃР°РЅРёРµ РєРЅРёРіРё!';
+  rstrCollectionNotRegistered = 'РљРѕР»Р»РµРєС†РёСЏ РЅРµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅР° !';
+  rstrUpdateFailedServerNotFound = 'РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёСЏ РЅРµ СѓРґР°Р»РѕСЃСЊ! РЎРµСЂРІРµСЂ РЅРµ РЅР°Р№РґРµРЅ.' + CRLF + 'РљРѕРґ РѕС€РёР±РєРё: %d';
+  rstrUpdateFailedConnectionError = 'РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёСЏ РЅРµ СѓРґР°Р»РѕСЃСЊ! РћС€РёР±РєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ.' + CRLF + 'РљРѕРґ РѕС€РёР±РєРё: %d';
+  rstrUpdateFailedServerError = 'РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёСЏ РЅРµ СѓРґР°Р»РѕСЃСЊ! РЎРµСЂРІРµСЂ СЃРѕРѕР±С‰Р°РµС‚ РѕР± РѕС€РёР±РєРµ ' + CRLF + 'РљРѕРґ РѕС€РёР±РєРё: %d';
+  rstrFoundNewAppVersion = 'Р”РѕСЃС‚СѓРїРЅР° РЅРѕРІР°СЏ РІРµСЂСЃРёСЏ - "%s" РџРѕСЃРµС‚РёС‚Рµ СЃР°Р№С‚ РїСЂРѕРіСЂР°РјРјС‹ РґР»СЏ Р·Р°РіСЂСѓР·РєРё РѕР±РЅРѕРІР»РµРЅРёР№.';
+  rstrLatestVersion = 'РЈ РІР°СЃ СЃР°РјР°СЏ СЃРІРµР¶Р°СЏ РІРµСЂСЃРёСЏ.';
+  rstrRemoveFromGroup = 'РЈРґР°Р»РёС‚СЊ РёР· РіСЂСѓРїРїС‹';
+  rstrRemoveFromDownloadList = 'РЈРґР°Р»РёС‚СЊ РёР· СЃРїРёСЃРєР° Р·Р°РєР°С‡РµРє';
+  rstrAddToFavorites = 'Р”РѕР±Р°РІРёС‚СЊ РІ РёР·Р±СЂР°РЅРЅРѕРµ';
+  rstrAddToDownloads = 'Р”РѕР±Р°РІРёС‚СЊ РІ СЃРїРёСЃРѕРє Р·Р°РєР°С‡РµРє';
+  rstrCollectionUpdateAvailable = 'Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ РґР»СЏ РєРѕР»Р»РµРєС†РёР№.' + CRLF + ' РќР°С‡Р°С‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ ?';
+  rsrtNewCollectin = 'РќРѕРІР°СЏ РєРѕР»Р»РµРєС†РёСЏ ...';
+  rstrSelectFolder = 'Р’С‹Р±РѕСЂ РїР°РїРєРё ...';
 {$R *.dfm}
 
 //
@@ -1310,7 +1310,7 @@ begin
   SetColors;
 
   //
-  // Синхронизация с настройками
+  // РЎРёРЅС…СЂРѕРЅРёР·Р°С†РёСЏ СЃ РЅР°СЃС‚СЂРѕР№РєР°РјРё
   //
   tlbrMain.Visible := Settings.ShowToolbar;
   tlbrEdit.Visible := Settings.EditToolBarVisible;
@@ -1395,7 +1395,7 @@ begin
         Assert(Assigned(FCollection));
         BookIterator := FCollection.Search(FSearchCriteria, False);
 
-        // Ставим фильтр
+        // РЎС‚Р°РІРёРј С„РёР»СЊС‚СЂ
         StatusMessage := rstrApplyingFilter;
         FillBooksTree(tvBooksSR, nil, BookIterator, True, True, nil);
       except
@@ -1443,7 +1443,7 @@ end;
 function TfrmMain.GetActiveView: TView;
 const
   //
-  // ВНИМАНИЕ!!! Порядок и количество элементов массива views должно совпадать с порядком и количеством закладок
+  // Р’РќРРњРђРќРР•!!! РџРѕСЂСЏРґРѕРє Рё РєРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РјР°СЃСЃРёРІР° views РґРѕР»Р¶РЅРѕ СЃРѕРІРїР°РґР°С‚СЊ СЃ РїРѕСЂСЏРґРєРѕРј Рё РєРѕР»РёС‡РµСЃС‚РІРѕРј Р·Р°РєР»Р°РґРѕРє
   //
   views: array [0 .. 5] of TView = (AuthorsView, SeriesView, GenresView, SearchView, FavoritesView, DownloadView);
 
@@ -1545,7 +1545,7 @@ var
     CloseCollection;
 
     //
-    // Если коллекций нет - запустим мастера создания коллекции.
+    // Р•СЃР»Рё РєРѕР»Р»РµРєС†РёР№ РЅРµС‚ - Р·Р°РїСѓСЃС‚РёРј РјР°СЃС‚РµСЂР° СЃРѕР·РґР°РЅРёСЏ РєРѕР»Р»РµРєС†РёРё.
     //
     if (not LoadLastCollection)or (not FSystemData.HasCollections) then
     begin
@@ -1564,7 +1564,7 @@ var
     Assert(Assigned(FCollection));
     frmMain.Caption := 'MyHomeLib - ' + FCollection.CollectionDisplayName;
 
-    // определяем типы коллекции
+    // РѕРїСЂРµРґРµР»СЏРµРј С‚РёРїС‹ РєРѕР»Р»РµРєС†РёРё
     CollectionType := FCollection.CollectionCode;
     IsPrivate := isPrivateCollection(CollectionType);
     IsOnline := isOnlineCollection(CollectionType);
@@ -1576,11 +1576,11 @@ var
 
 
     //
-    // Поиск
+    // РџРѕРёСЃРє
     //
     edFAnnotation.Enabled := IsPrivate;
 
-    // --------- Вкладки, прочее  -------------------------------------------------
+    // --------- Р’РєР»Р°РґРєРё, РїСЂРѕС‡РµРµ  -------------------------------------------------
 
     tsDownload.TabVisible := IsOnline;
     acBookAdd2DownloadList.Visible := IsOnline;
@@ -1591,7 +1591,7 @@ var
     CreateCollectionMenu;
     CreateScriptMenu;
     //
-    // Действия, видимость которых зависит от типа коллекции и которые доступны через тулбар, необходимо обновить вручную
+    // Р”РµР№СЃС‚РІРёСЏ, РІРёРґРёРјРѕСЃС‚СЊ РєРѕС‚РѕСЂС‹С… Р·Р°РІРёСЃРёС‚ РѕС‚ С‚РёРїР° РєРѕР»Р»РµРєС†РёРё Рё РєРѕС‚РѕСЂС‹Рµ РґРѕСЃС‚СѓРїРЅС‹ С‡РµСЂРµР· С‚СѓР»Р±Р°СЂ, РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІРёС‚СЊ РІСЂСѓС‡РЅСѓСЋ
     //
     HideDeletedBooksUpdate(nil);
     ShowLocalOnlyUpdate(nil);
@@ -1604,11 +1604,11 @@ var
 
     FSA := FCollection.GetProperty(PROP_LAST_AUTHOR);
     if FSA = '' then
-      if Acount > 500 then FSA := 'А' else FSA := '*';
+      if Acount > 500 then FSA := 'Рђ' else FSA := '*';
 
     FSS := FCollection.GetProperty(PROP_LAST_SERIES);
     if FSS = '' then
-      if Scount > 500 then FSS := 'А' else FSS := '*';
+      if Scount > 500 then FSS := 'Рђ' else FSS := '*';
 
     Button := GetFilterButton(FAuthorBars, Copy(FSA, 1, 1));
     InternalSetAuthorFilter(Button);
@@ -1620,8 +1620,8 @@ var
     InternalSetSeriesFilter(Button);
     LocateSeries(FSS);
 
-    // поскольку убрали обязательный FillBooksTree, нужно принудительно чистить список книг в случе пустого списка авторов
-    // в противном случае FillBooksTree вызывалъся повторно
+    // РїРѕСЃРєРѕР»СЊРєСѓ СѓР±СЂР°Р»Рё РѕР±СЏР·Р°С‚РµР»СЊРЅС‹Р№ FillBooksTree, РЅСѓР¶РЅРѕ РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ С‡РёСЃС‚РёС‚СЊ СЃРїРёСЃРѕРє РєРЅРёРі РІ СЃР»СѓС‡Рµ РїСѓСЃС‚РѕРіРѕ СЃРїРёСЃРєР° Р°РІС‚РѕСЂРѕРІ
+    // РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ FillBooksTree РІС‹Р·С‹РІР°Р»СЉСЃСЏ РїРѕРІС‚РѕСЂРЅРѕ
 
     if tvAuthors.GetFirst = nil then tvAuthorsChange(tvAuthors, nil);
      if tvSeries.GetFirst = nil then tvAuthorsChange(tvSeries, nil);
@@ -1698,7 +1698,7 @@ begin
     // Fill book tree and locate the book:
     filterValue := SeriesBookFilter; // uses FLastSeriesID initialized earlier
     FLastSeriesBookID := bookKey;
-    FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
+    FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // СЃРµСЂРёРё
 
     // Change page to Series:
     pgControl.ActivePageIndex := PAGE_SERIES;
@@ -1862,7 +1862,7 @@ begin
     s0.cx := ilAlphabetNormal.Width;
     s0.cy := ilAlphabetNormal.Height;
     s1 := ImageCanvas.TextExtent('AZ');
-    s2 := ImageCanvas.TextExtent('АЯ');
+    s2 := ImageCanvas.TextExtent('РђРЇ');
     ilAlphabetNormal.Width := Max(s0.cx, Max(s1.cx, s2.cx));
     ilAlphabetNormal.Height := Max(s0.cy, Max(s1.cy, s2.cy));
     ( **)
@@ -1915,7 +1915,7 @@ var
       CT_EXTERNAL_ONLINE_NONFB: Result := 8;
     else
       // Assert(False);
-      Result := 8; { TODO -oNickR -cUsability : нарисовать иконку }
+      Result := 8; { TODO -oNickR -cUsability : РЅР°СЂРёСЃРѕРІР°С‚СЊ РёРєРѕРЅРєСѓ }
     end;
   end;
 
@@ -1966,7 +1966,7 @@ begin
     end;
   end;
 
-  // Добавляем пункт вызова визарда (сначала - разделитель)
+  // Р”РѕР±Р°РІР»СЏРµРј РїСѓРЅРєС‚ РІС‹Р·РѕРІР° РІРёР·Р°СЂРґР° (СЃРЅР°С‡Р°Р»Р° - СЂР°Р·РґРµР»РёС‚РµР»СЊ)
   if pmCollection.Items.Count > 0 then
   begin
     SubItem := TMenuItem.Create(pmCollection);
@@ -1998,25 +1998,25 @@ begin
   while GroupIterator.Next(Group) do
   begin
     //
-    // пропускаем "Избранное"
+    // РїСЂРѕРїСѓСЃРєР°РµРј "РР·Р±СЂР°РЅРЅРѕРµ"
     //
     if Group.GroupID <> FAVORITES_GROUP_ID then
     begin
-      // меню для кнопки
+      // РјРµРЅСЋ РґР»СЏ РєРЅРѕРїРєРё
       Item := TMenuItem.Create(pmGroups);
       Item.Caption := Group.Text;
       Item.Tag := Group.GroupID;
       Item.OnClick := GroupMenuItemClick;
       pmGroups.Items.Add(Item);
 
-      // подменю для контекстного
+      // РїРѕРґРјРµРЅСЋ РґР»СЏ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ
       ItemP := TMenuItem.Create(pmMain);
       ItemP.Caption := Group.Text;
       ItemP.Tag := Group.GroupID;
       ItemP.OnClick := GroupMenuItemClick;
       pmiGroups.Add(ItemP);
 
-      // подменю для контекстного в главном меню
+      // РїРѕРґРјРµРЅСЋ РґР»СЏ РєРѕРЅС‚РµРєСЃС‚РЅРѕРіРѕ РІ РіР»Р°РІРЅРѕРј РјРµРЅСЋ
       ItemP := TMenuItem.Create(pmMain);
       ItemP.Caption := Group.Text;
       ItemP.Tag := Group.GroupID;
@@ -2050,7 +2050,7 @@ begin
     for i := 0 to ExpCount do
     begin
       Item := TMenuItem.Create(pmScripts);
-      Item.OnClick := SendToDeviceExecute;  // если присваивать свойство action,  то не передается tag, и ничего не работает
+      Item.OnClick := SendToDeviceExecute;  // РµСЃР»Рё РїСЂРёСЃРІР°РёРІР°С‚СЊ СЃРІРѕР№СЃС‚РІРѕ action,  С‚Рѕ РЅРµ РїРµСЂРµРґР°РµС‚СЃСЏ tag, Рё РЅРёС‡РµРіРѕ РЅРµ СЂР°Р±РѕС‚Р°РµС‚
       Item.Caption := ExpTypes[i];
       Item.Tag := 850 + i;
       Item.ImageIndex := IconsSmall[i];
@@ -2075,7 +2075,7 @@ begin
     tbSendToDevice.ImageIndex := 1;
   end;
 
-  { TODO 1 -oNickR -cRefactoring :заменить этот код на создание TFileRun }
+  { TODO 1 -oNickR -cRefactoring :Р·Р°РјРµРЅРёС‚СЊ СЌС‚РѕС‚ РєРѕРґ РЅР° СЃРѕР·РґР°РЅРёРµ TFileRun }
   for i := 0 to Settings.Scripts.Count - 1 do
   begin
     // ----  dropdown ----------------
@@ -2101,7 +2101,7 @@ begin
     mmiScripts.Insert(i, ItemM);
   end;
 
-  // Добавляем Выбор папки
+  // Р”РѕР±Р°РІР»СЏРµРј Р’С‹Р±РѕСЂ РїР°РїРєРё
 
   if pmScripts.Items.Count > 0 then
   begin
@@ -2173,11 +2173,11 @@ begin
     Height := Settings.FormHeight;
   end;
 
-  // костыль
+  // РєРѕСЃС‚С‹Р»СЊ
   Visible := True;
   if WindowState = wsMinimized then
     WindowState := wsNormal;
-  // конец костыля
+  // РєРѕРЅРµС† РєРѕСЃС‚С‹Р»СЏ
 end;
 
 procedure TfrmMain.btnSwitchTreeModeClick(Sender: TObject);
@@ -2208,24 +2208,24 @@ begin
       0:
       begin
         FilterValue := AuthorBookFilter;
-        FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // авторы
+        FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // Р°РІС‚РѕСЂС‹
       end;
 
       1:
       begin
         FilterValue := SeriesBookFilter;
-        FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
+        FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // СЃРµСЂРёРё
       end;
 
       2:
       begin
         FilterValue := GenreBookFilter;
-        FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),  True,  True, @FLastGenreBookID);      // жанры
+        FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),  True,  True, @FLastGenreBookID);      // Р¶Р°РЅСЂС‹
       end;
 
-      3: FillBooksTree(tvBooksSR, nil, FCollection.Search(FSearchCriteria, False), True,  True, nil);  // поиск
+      3: FillBooksTree(tvBooksSR, nil, FCollection.Search(FSearchCriteria, False), True,  True, nil);  // РїРѕРёСЃРє
 
-      4: FillBooksTree(tvBooksF,cbLangSelectF,  FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // избранное
+      4: FillBooksTree(tvBooksF,cbLangSelectF,  FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // РёР·Р±СЂР°РЅРЅРѕРµ
     end;
 
     SetHeaderPopUp;
@@ -2305,15 +2305,15 @@ begin
   Screen.Cursor := crHourGlass;
   try
     FilterValue := AuthorBookFilter;
-    FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // авторы
+    FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // Р°РІС‚РѕСЂС‹
 
     FilterValue := SeriesBookFilter;
-    FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
+    FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // СЃРµСЂРёРё
 
     FilterValue := GenreBookFilter;
-    FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),   True,  True, @FLastGenreBookID);  // жанры
+    FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),   True,  True, @FLastGenreBookID);  // Р¶Р°РЅСЂС‹
 
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // избранное
+    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // РёР·Р±СЂР°РЅРЅРѕРµ
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -2356,7 +2356,7 @@ begin
 end;
 
 // ------------------------------------------------------------------------------
-// Проверка обновлений
+// РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёР№
 // ------------------------------------------------------------------------------
 procedure TfrmMain.tmrCheckUpdatesTimer(Sender: TObject);
 begin
@@ -2428,7 +2428,7 @@ begin
   if FTimerDone then
   begin
     //
-    // Проверим текущий фильтр и изменим его если нужно
+    // РџСЂРѕРІРµСЂРёРј С‚РµРєСѓС‰РёР№ С„РёР»СЊС‚СЂ Рё РёР·РјРµРЅРёРј РµРіРѕ РµСЃР»Рё РЅСѓР¶РЅРѕ
     //
     Assert(Assigned(FLastLetterS));
     Button := GetFilterButton(FSerieBars, edLocateSeries.Text);
@@ -2449,7 +2449,7 @@ procedure TfrmMain.tbtnAutoFBDClick(Sender: TObject);
 //  Data: PBookRecord;
 begin
   //
-  // Очень стремный метод. Режим редактирования\создания FBD для формы не ставиться, форма ничего не проверяет...
+  // РћС‡РµРЅСЊ СЃС‚СЂРµРјРЅС‹Р№ РјРµС‚РѕРґ. Р РµР¶РёРј СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ\СЃРѕР·РґР°РЅРёСЏ FBD РґР»СЏ С„РѕСЂРјС‹ РЅРµ СЃС‚Р°РІРёС‚СЊСЃСЏ, С„РѕСЂРјР° РЅРёС‡РµРіРѕ РЅРµ РїСЂРѕРІРµСЂСЏРµС‚...
   //
   if (ActiveView = DownloadView) then
   begin
@@ -2484,7 +2484,7 @@ begin
 end;
 
 //
-// События формы
+// РЎРѕР±С‹С‚РёСЏ С„РѕСЂРјС‹
 //
 
 procedure TfrmMain.StartLibUpdate;
@@ -2562,7 +2562,7 @@ begin
       Exit;
     end;
     //
-    // небольшой хак. Будет правильнее передавать ID коллекции в InitCollection
+    // РЅРµР±РѕР»СЊС€РѕР№ С…Р°Рє. Р‘СѓРґРµС‚ РїСЂР°РІРёР»СЊРЅРµРµ РїРµСЂРµРґР°РІР°С‚СЊ ID РєРѕР»Р»РµРєС†РёРё РІ InitCollection
     //
     Settings.ActiveCollection := CollectionID;
     Result := True;
@@ -2571,7 +2571,7 @@ end;
 
 // ----------------------------------------------------------------------------
 //
-// События формы
+// РЎРѕР±С‹С‚РёСЏ С„РѕСЂРјС‹
 //
 // ----------------------------------------------------------------------------
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -2588,7 +2588,7 @@ begin
   FController := TTreeController.Create(FSystemData);
 
   //
-  // Делегируем самые простые события контроллеру
+  // Р”РµР»РµРіРёСЂСѓРµРј СЃР°РјС‹Рµ РїСЂРѕСЃС‚С‹Рµ СЃРѕР±С‹С‚РёСЏ РєРѕРЅС‚СЂРѕР»Р»РµСЂСѓ
   //
   FController.ConnectAuthorsTree(tvAuthors);
   FController.ConnectSeriesTree(tvSeries);
@@ -2652,7 +2652,7 @@ begin
   ReadINIData;
 
   //
-  // загрузка списка пресетов для поиска
+  // Р·Р°РіСЂСѓР·РєР° СЃРїРёСЃРєР° РїСЂРµСЃРµС‚РѕРІ РґР»СЏ РїРѕРёСЃРєР°
   //
   FPresets := TSearchPresets.Create;
   PresetFile := Settings.SystemFileName[sfPresets];
@@ -2672,7 +2672,7 @@ begin
   SetColumns;
   SetHeaderPopUp;
 
-  // ------------------------ чистка папки дата если нужно ----------------------
+  // ------------------------ С‡РёСЃС‚РєР° РїР°РїРєРё РґР°С‚Р° РµСЃР»Рё РЅСѓР¶РЅРѕ ----------------------
   if (ParamCount > 0) and (ParamStr(1) = '/clear') then
     ClearDir(Settings.DataDir);
 
@@ -2684,7 +2684,7 @@ begin
   // ------------------------------------------------------------------------------
 
 
-  // загрузка списка закачек
+  // Р·Р°РіСЂСѓР·РєР° СЃРїРёСЃРєР° Р·Р°РєР°С‡РµРє
   if FileExists(Settings.SystemFileName[sfDownloadsStore]) then
   begin
     tvDownloadList.LoadFromFile(Settings.SystemFileName[sfDownloadsStore]);
@@ -2832,12 +2832,12 @@ begin
       Exit;
 
     //
-    // Меняем индекс сортирующей колонки на индекс колонки, которая была нажата.
+    // РњРµРЅСЏРµРј РёРЅРґРµРєСЃ СЃРѕСЂС‚РёСЂСѓСЋС‰РµР№ РєРѕР»РѕРЅРєРё РЅР° РёРЅРґРµРєСЃ РєРѕР»РѕРЅРєРё, РєРѕС‚РѕСЂР°СЏ Р±С‹Р»Р° РЅР°Р¶Р°С‚Р°.
     //
     Tree.Header.SortColumn := HitInfo.Column;
 
     //
-    // Сортируем всё дерево относительно этой колонки и изменяем порядок сортировки на противополжный
+    // РЎРѕСЂС‚РёСЂСѓРµРј РІСЃС‘ РґРµСЂРµРІРѕ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ СЌС‚РѕР№ РєРѕР»РѕРЅРєРё Рё РёР·РјРµРЅСЏРµРј РїРѕСЂСЏРґРѕРє СЃРѕСЂС‚РёСЂРѕРІРєРё РЅР° РїСЂРѕС‚РёРІРѕРїРѕР»Р¶РЅС‹Р№
     //
     if Tree.Header.SortDirection = sdAscending then
       Tree.Header.SortDirection := sdDescending
@@ -2845,7 +2845,7 @@ begin
       Tree.Header.SortDirection := sdAscending;
     Tree.SortTree(HitInfo.Column, Tree.Header.SortDirection);
 
-    // запоминаем параметры для активного дерева
+    // Р·Р°РїРѕРјРёРЅР°РµРј РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ Р°РєС‚РёРІРЅРѕРіРѕ РґРµСЂРµРІР°
     FSortSettings[Tree.Tag].Column := HitInfo.Column;
     FSortSettings[Tree.Tag].Direction := Tree.Header.SortDirection;
   end;
@@ -2853,7 +2853,7 @@ end;
 
 // ----------------------------------------------------------------------------
 //
-// Список авторов
+// РЎРїРёСЃРѕРє Р°РІС‚РѕСЂРѕРІ
 //
 // ----------------------------------------------------------------------------
 procedure TfrmMain.tvAuthorsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -2899,7 +2899,7 @@ begin
 
     FilterValue := AuthorBookFilter;
     if Assigned(FCollection) then
-      FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID); // авторы
+      FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID); // Р°РІС‚РѕСЂС‹
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -2915,7 +2915,7 @@ end;
 
 // ----------------------------------------------------------------------------
 //
-// Список серий
+// РЎРїРёСЃРѕРє СЃРµСЂРёР№
 //
 // ----------------------------------------------------------------------------
 procedure TfrmMain.tvSeriesChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -2954,7 +2954,7 @@ begin
 
     FilterValue := SeriesBookFilter;
     if Assigned(FCollection) then
-      FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // авторы
+      FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // Р°РІС‚РѕСЂС‹
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -2970,7 +2970,7 @@ end;
 
 // ----------------------------------------------------------------------------
 //
-// Список жанров
+// РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ
 //
 // ----------------------------------------------------------------------------
 procedure TfrmMain.tvGenresChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
@@ -3025,7 +3025,7 @@ end;
 
 // ----------------------------------------------------------------------------
 //
-// Список групп
+// РЎРїРёСЃРѕРє РіСЂСѓРїРї
 //
 // ----------------------------------------------------------------------------
 
@@ -3110,15 +3110,15 @@ begin
 
   Nodes := tvBooksF.GetSortedSelection(False);
 
-  // сканируем выделенные ноды.
-  // если есть потомки, выделяем их тоже
+  // СЃРєР°РЅРёСЂСѓРµРј РІС‹РґРµР»РµРЅРЅС‹Рµ РЅРѕРґС‹.
+  // РµСЃР»Рё РµСЃС‚СЊ РїРѕС‚РѕРјРєРё, РІС‹РґРµР»СЏРµРј РёС… С‚РѕР¶Рµ
   for i := 0 to High(Nodes) do
     SelectChildNodes(Nodes[i]);
 
-  // составляем новый список выделенных
+  // СЃРѕСЃС‚Р°РІР»СЏРµРј РЅРѕРІС‹Р№ СЃРїРёСЃРѕРє РІС‹РґРµР»РµРЅРЅС‹С…
   Nodes := tvBooksF.GetSortedSelection(False);
 
-  // переносим данные
+  // РїРµСЂРµРЅРѕСЃРёРј РґР°РЅРЅС‹Рµ
   for i := 0 to High(Nodes) do
   begin
     BookData := tvBooksF.GetNodeData(Nodes[i]);
@@ -3204,7 +3204,7 @@ begin
   if not Assigned(Data) or (Data^.nodeType <> ntBookInfo) then
   begin
     //
-    // TODO : Может стоит показывать какую-нибудь информацию и в этом случае?
+    // TODO : РњРѕР¶РµС‚ СЃС‚РѕРёС‚ РїРѕРєР°Р·С‹РІР°С‚СЊ РєР°РєСѓСЋ-РЅРёР±СѓРґСЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рё РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ?
     //
     if Assigned(StoredBookKey) then
       StoredBookKey^.Clear;
@@ -3234,7 +3234,7 @@ begin
               book := LoadFictionBook(bookStream);
 
               //
-              // Загрузим обложку
+              // Р—Р°РіСЂСѓР·РёРј РѕР±Р»РѕР¶РєСѓ
               //
               try
                 imgBookCover := GetBookCover(book);
@@ -3244,7 +3244,7 @@ begin
               end;
 
               //
-              // Загрузим аннотацию и информацию
+              // Р—Р°РіСЂСѓР·РёРј Р°РЅРЅРѕС‚Р°С†РёСЋ Рё РёРЅС„РѕСЂРјР°С†РёСЋ
               //
               InfoPanel.SetBookAnnotation(book);
               InfoPanel.SetFb2Info(book, Data.Folder, Data.FileName + Data.FileExt);
@@ -3553,9 +3553,9 @@ begin
   else
     ExportMode := emFB2;
 
-  if ScriptID = 799 then // выбор папки; не зависит от формата
+  if ScriptID = 799 then // РІС‹Р±РѕСЂ РїР°РїРєРё; РЅРµ Р·Р°РІРёСЃРёС‚ РѕС‚ С„РѕСЂРјР°С‚Р°
   begin
-    if not GetFolderName(Handle, 'Укажите путь', FLastDeviceDir) then
+    if not GetFolderName(Handle, 'РЈРєР°Р¶РёС‚Рµ РїСѓС‚СЊ', FLastDeviceDir) then
       Exit;
     AFolder := FLastDeviceDir;
     Dec(ScriptID, 901);
@@ -3691,7 +3691,7 @@ begin
           DownloadBooks(FCurrentBookOnly);
           /// TODO : RESTORE ??? Tree.RepaintNode(Tree.GetFirstSelected);
           if not FileExists(BookFileName) then
-            Exit; // если файла нет, значит закачка не удалась, и юзер об  этом уже знает
+            Exit; // РµСЃР»Рё С„Р°Р№Р»Р° РЅРµС‚, Р·РЅР°С‡РёС‚ Р·Р°РєР°С‡РєР° РЅРµ СѓРґР°Р»Р°СЃСЊ, Рё СЋР·РµСЂ РѕР±  СЌС‚РѕРј СѓР¶Рµ Р·РЅР°РµС‚
         end;
       end;
 
@@ -4095,7 +4095,7 @@ begin
   Selection(FSelectionState);
 end;
 
-// - - - - - - Дерево книг для поиска, серий и избранного - - - - - - - - - - - -
+// - - - - - - Р”РµСЂРµРІРѕ РєРЅРёРі РґР»СЏ РїРѕРёСЃРєР°, СЃРµСЂРёР№ Рё РёР·Р±СЂР°РЅРЅРѕРіРѕ - - - - - - - - - - - -
 
 procedure TfrmMain.FillBooksTree(
   const Tree: TBookTree;
@@ -4129,7 +4129,7 @@ begin
   Assert(Assigned(BookIterator));
 
   //
-  // Если включен "плоский" режим отображения, принудительно сбрасываем ключи блокировки
+  // Р•СЃР»Рё РІРєР»СЋС‡РµРЅ "РїР»РѕСЃРєРёР№" СЂРµР¶РёРј РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ, РїСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ СЃР±СЂР°СЃС‹РІР°РµРј РєР»СЋС‡Рё Р±Р»РѕРєРёСЂРѕРІРєРё
   //
   if Settings.TreeModes[Tree.Tag] = tmFlat then
   begin
@@ -4176,15 +4176,15 @@ begin
           begin
             if LangSelector <> nil then
             begin
-              // Добавление в ComboBox отсутствующего в нем языка.
-              // Можно добавить сразу в список несколько языков как в cbLang
-              // но скорость работы с диском невелирует этот if Pos(
+              // Р”РѕР±Р°РІР»РµРЅРёРµ РІ ComboBox РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‰РµРіРѕ РІ РЅРµРј СЏР·С‹РєР°.
+              // РњРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ СЃСЂР°Р·Сѓ РІ СЃРїРёСЃРѕРє РЅРµСЃРєРѕР»СЊРєРѕ СЏР·С‹РєРѕРІ РєР°Рє РІ cbLang
+              // РЅРѕ СЃРєРѕСЂРѕСЃС‚СЊ СЂР°Р±РѕС‚С‹ СЃ РґРёСЃРєРѕРј РЅРµРІРµР»РёСЂСѓРµС‚ СЌС‚РѕС‚ if Pos(
               if Pos(BookRecord.Lang, LangSelector.Items.Text) = 0 then
                 LangSelector.Items.Add(BookRecord.Lang);
 
               //    and ((BookRecord.Lang = 'ru') or (BookRecord.Lang = 'bg'))
-              // Соответственно добавление в дерево узла с выбранным языком (или любым
-              // при выборе '-') и пропуск всех остальных
+              // РЎРѕРѕС‚РІРµС‚СЃС‚РІРµРЅРЅРѕ РґРѕР±Р°РІР»РµРЅРёРµ РІ РґРµСЂРµРІРѕ СѓР·Р»Р° СЃ РІС‹Р±СЂР°РЅРЅС‹Рј СЏР·С‹РєРѕРј (РёР»Рё Р»СЋР±С‹Рј
+              // РїСЂРё РІС‹Р±РѕСЂРµ '-') Рё РїСЂРѕРїСѓСЃРє РІСЃРµС… РѕСЃС‚Р°Р»СЊРЅС‹С…
               if (BookRecord.Lang <> SelectedLang) AND (SelectedLang <> '-')then Continue;
               SeriesID := BookRecord.SeriesID;
             end;
@@ -4215,7 +4215,7 @@ begin
               if SeriesID = NO_SERIES_ID then
               begin
                 //
-                // книга без серии
+                // РєРЅРёРіР° Р±РµР· СЃРµСЂРёРё
                 //
                 SerieNode := AuthorNode;
               end
@@ -4225,7 +4225,7 @@ begin
                 if not Assigned(SerieNode) then
                 begin
                   //
-                  // Серия не найдена
+                  // РЎРµСЂРёСЏ РЅРµ РЅР°Р№РґРµРЅР°
                   //
                   //
                   Assert(not Assigned(SerieNode));
@@ -4233,7 +4233,7 @@ begin
                   SerieNode := Tree.AddChild(AuthorNode);
 
                   //
-                  // заполним данные о серии
+                  // Р·Р°РїРѕР»РЅРёРј РґР°РЅРЅС‹Рµ Рѕ СЃРµСЂРёРё
                   //
                   Data := Tree.GetNodeData(SerieNode);
 
@@ -4247,7 +4247,7 @@ begin
               SerieNode := AuthorNode;
 
             //
-            // заполним данные о книге
+            // Р·Р°РїРѕР»РЅРёРј РґР°РЅРЅС‹Рµ Рѕ РєРЅРёРіРµ
             //
             BookNode := Tree.AddChild(SerieNode);
             Data := Tree.GetNodeData(BookNode);
@@ -4260,7 +4260,7 @@ begin
             StatusProgress := i * 100 div Max;
           end; // while
           //
-          // Отсортировать дерево
+          // РћС‚СЃРѕСЂС‚РёСЂРѕРІР°С‚СЊ РґРµСЂРµРІРѕ
           //
           if (Settings.TreeModes[Tree.Tag] = tmFlat) then
             Tree.SortTree(FSortSettings[Tree.Tag].Column, FSortSettings[Tree.Tag].Direction)
@@ -4275,7 +4275,7 @@ begin
       end;
 
       //
-      // Выбрать книгу
+      // Р’С‹Р±СЂР°С‚СЊ РєРЅРёРіСѓ
       //
       if not Assigned(SelectedNode) then
       begin
@@ -4467,7 +4467,7 @@ begin
           begin
             if not IsFB2 then
               DeleteFile(BookFileName)
-              //MoveToRecycle(BookFileName) - работает странно. пока отключим
+              //MoveToRecycle(BookFileName) - СЂР°Р±РѕС‚Р°РµС‚ СЃС‚СЂР°РЅРЅРѕ. РїРѕРєР° РѕС‚РєР»СЋС‡РёРј
             else if IsFB2 and IsPrivate then
               DeleteFile(BookFileName);
               //MoveToRecycle(BookFileName);
@@ -4499,14 +4499,14 @@ var
 begin
   Assert(Assigned(FCollection));
 
-  { TODO -oNickR -cUsability : Думаю, стоит сделать специальный диалог для этого случая. Тогда мы сможем спросить, удалять файл коллекции или нет. }
+  { TODO -oNickR -cUsability : Р”СѓРјР°СЋ, СЃС‚РѕРёС‚ СЃРґРµР»Р°С‚СЊ СЃРїРµС†РёР°Р»СЊРЅС‹Р№ РґРёР°Р»РѕРі РґР»СЏ СЌС‚РѕРіРѕ СЃР»СѓС‡Р°СЏ. РўРѕРіРґР° РјС‹ СЃРјРѕР¶РµРј СЃРїСЂРѕСЃРёС‚СЊ, СѓРґР°Р»СЏС‚СЊ С„Р°Р№Р» РєРѕР»Р»РµРєС†РёРё РёР»Рё РЅРµС‚. }
   deleteAction := AskDeleteCollectionAction;
   if deleteAction in [dcaDelete, dcaUnregister] then
   begin
     CollectionID := FCollection.CollectionID;
 
     //
-    // TODO: необходимо закрыть коллекцию перед удалением и закрыть ее в менеджере закачек
+    // TODO: РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РєСЂС‹С‚СЊ РєРѕР»Р»РµРєС†РёСЋ РїРµСЂРµРґ СѓРґР°Р»РµРЅРёРµРј Рё Р·Р°РєСЂС‹С‚СЊ РµРµ РІ РјРµРЅРµРґР¶РµСЂРµ Р·Р°РєР°С‡РµРє
     //
     CloseCollection;
     FSystemData.DeleteCollection(CollectionID, dcaDelete = deleteAction);
@@ -4545,7 +4545,7 @@ begin
           if TFile.Exists(FilePath) then
             TFile.Delete(FilePath);
         except
-          // игнорируем все ошибки
+          // РёРіРЅРѕСЂРёСЂСѓРµРј РІСЃРµ РѕС€РёР±РєРё
         end;
 
         if (bpIsLocal in Data^.BookProps) then
@@ -4710,12 +4710,12 @@ begin
   if isExternalCollection(BookCollection.CollectionCode) then
   begin
     //
-    // DONE -oNickR : Думаю, стоит приделать к этому диалогу возможность запоминать выбор пользователя и переходить на сайт без вопроса
+    // DONE -oNickR : Р”СѓРјР°СЋ, СЃС‚РѕРёС‚ РїСЂРёРґРµР»Р°С‚СЊ Рє СЌС‚РѕРјСѓ РґРёР°Р»РѕРіСѓ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ Р·Р°РїРѕРјРёРЅР°С‚СЊ РІС‹Р±РѕСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РїРµСЂРµС…РѕРґРёС‚СЊ РЅР° СЃР°Р№С‚ Р±РµР· РІРѕРїСЂРѕСЃР°
     //
     if MHLShowWarning(Format(rstrGoToLibrarySite, [BookCollection.CollectionURL]), mbYesNo) = mrYes then
     begin
       BookCollection.GetBookRecord(BookKey, BookRecord, False);
-      { TODO -oNickR -cLibDesc : этот URL должен формироваться обвязкой библиотеки, т к его формат может меняться }
+      { TODO -oNickR -cLibDesc : СЌС‚РѕС‚ URL РґРѕР»Р¶РµРЅ С„РѕСЂРјРёСЂРѕРІР°С‚СЊСЃСЏ РѕР±РІСЏР·РєРѕР№ Р±РёР±Р»РёРѕС‚РµРєРё, С‚ Рє РµРіРѕ С„РѕСЂРјР°С‚ РјРѕР¶РµС‚ РјРµРЅСЏС‚СЊСЃСЏ }
       URL := Format('%sb/%s/edit', [BookCollection.CollectionURL, BookRecord.LibID]);
       SimpleShellExecute(Handle, URL);
     end;
@@ -4950,7 +4950,7 @@ begin
 end;
 
 //
-// Очистить выделенную группу
+// РћС‡РёСЃС‚РёС‚СЊ РІС‹РґРµР»РµРЅРЅСѓСЋ РіСЂСѓРїРїСѓ
 //
 procedure TfrmMain.ClearGroupExecute(Sender: TObject);
 var
@@ -4966,7 +4966,7 @@ begin
   try
     FSystemData.ClearGroup(GroupData^.GroupID);
 
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID); // избранное
+    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID); // РёР·Р±СЂР°РЅРЅРѕРµ
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -4982,9 +4982,9 @@ begin
     if ShowToolbar then
     begin
       //
-      // раздвигаем тулбары для правильного алигна
-      // Располагаем текущий тулбар под первым видимым старшим
-      // а все видимые младшие сдвигаем на 1 ниже
+      // СЂР°Р·РґРІРёРіР°РµРј С‚СѓР»Р±Р°СЂС‹ РґР»СЏ РїСЂР°РІРёР»СЊРЅРѕРіРѕ Р°Р»РёРіРЅР°
+      // Р Р°СЃРїРѕР»Р°РіР°РµРј С‚РµРєСѓС‰РёР№ С‚СѓР»Р±Р°СЂ РїРѕРґ РїРµСЂРІС‹Рј РІРёРґРёРјС‹Рј СЃС‚Р°СЂС€РёРј
+      // Р° РІСЃРµ РІРёРґРёРјС‹Рµ РјР»Р°РґС€РёРµ СЃРґРІРёРіР°РµРј РЅР° 1 РЅРёР¶Рµ
       //
       BarTop := 0;
       for i := 0 to High(ToolBars) do
@@ -5078,7 +5078,7 @@ begin
   Settings.ShowInfoPanel := not Settings.ShowInfoPanel;
 
   //
-  // TODO: Принудительно обновим информацию о книге, т к если она не показывалась, то и не обновлялась
+  // TODO: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РѕР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРЅРёРіРµ, С‚ Рє РµСЃР»Рё РѕРЅР° РЅРµ РїРѕРєР°Р·С‹РІР°Р»Р°СЃСЊ, С‚Рѕ Рё РЅРµ РѕР±РЅРѕРІР»СЏР»Р°СЃСЊ
   //
   //if Settings.ShowInfoPanel then
   //  tvBooksTreeChange(nil, nil);
@@ -5091,7 +5091,7 @@ begin
   Settings.ShowBookCover := not Settings.ShowBookCover;
 
   //
-  // TODO: Принудительно обновим информацию о книге, т к если она не показывалась, то и не обновлялась
+  // TODO: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РѕР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРЅРёРіРµ, С‚ Рє РµСЃР»Рё РѕРЅР° РЅРµ РїРѕРєР°Р·С‹РІР°Р»Р°СЃСЊ, С‚Рѕ Рё РЅРµ РѕР±РЅРѕРІР»СЏР»Р°СЃСЊ
   //
   //if Settings.ShowInfoPanel and Settings.ShowBookCover then
   //  tvBooksTreeChange(nil, nil);
@@ -5110,7 +5110,7 @@ begin
   Settings.ShowBookAnnotation := not Settings.ShowBookAnnotation;
 
   //
-  // TODO: Принудительно обновим информацию о книге, т к если она не показывалась, то и не обновлялась
+  // TODO: РџСЂРёРЅСѓРґРёС‚РµР»СЊРЅРѕ РѕР±РЅРѕРІРёРј РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРЅРёРіРµ, С‚ Рє РµСЃР»Рё РѕРЅР° РЅРµ РїРѕРєР°Р·С‹РІР°Р»Р°СЃСЊ, С‚Рѕ Рё РЅРµ РѕР±РЅРѕРІР»СЏР»Р°СЃСЊ
   //
   //if Settings.ShowInfoPanel and Settings.ShowBookAnnotation then
   //  tvBooksTreeChange(nil, nil);
@@ -5224,13 +5224,13 @@ var
   Data: PAuthorData;
 begin
   //
-  // нельзя редактировать данные из онлайн коллекции
+  // РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РґР°РЅРЅС‹Рµ РёР· РѕРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёРё
   //
   if UpdateEditAction(acEditAuthor) then
     Exit;
 
   //
-  // только на старанице "по авторам"
+  // С‚РѕР»СЊРєРѕ РЅР° СЃС‚Р°СЂР°РЅРёС†Рµ "РїРѕ Р°РІС‚РѕСЂР°Рј"
   //
   if ActiveView <> AuthorsView then
   begin
@@ -5247,13 +5247,13 @@ var
   Data: PSeriesData;
 begin
   //
-  // нельзя редактировать данные из онлайн коллекции
+  // РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РґР°РЅРЅС‹Рµ РёР· РѕРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёРё
   //
   if UpdateEditAction(acEditSerie) then
     Exit;
 
   //
-  // только на старанице "по сериям"
+  // С‚РѕР»СЊРєРѕ РЅР° СЃС‚Р°СЂР°РЅРёС†Рµ "РїРѕ СЃРµСЂРёСЏРј"
   //
   if ActiveView <> SeriesView then
   begin
@@ -5270,13 +5270,13 @@ var
   Data: PGenreData;
 begin
   //
-  // нельзя редактировать данные из онлайн коллекции
+  // РЅРµР»СЊР·СЏ СЂРµРґР°РєС‚РёСЂРѕРІР°С‚СЊ РґР°РЅРЅС‹Рµ РёР· РѕРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёРё
   //
   if UpdateEditAction(acEditGenre) then
     Exit;
 
   //
-  // только на старанице "по жанрам"
+  // С‚РѕР»СЊРєРѕ РЅР° СЃС‚Р°СЂР°РЅРёС†Рµ "РїРѕ Р¶Р°РЅСЂР°Рј"
   //
   if ActiveView <> GenresView then
   begin
@@ -5298,7 +5298,7 @@ end;
 procedure TfrmMain.AddGroupUpdate(Sender: TObject);
 begin
   //
-  // только на старанице "по группам"
+  // С‚РѕР»СЊРєРѕ РЅР° СЃС‚Р°СЂР°РЅРёС†Рµ "РїРѕ РіСЂСѓРїРїР°Рј"
   //
   if InternalUpdateGroupAction(acGroupCreate) then
     Exit;
@@ -5311,7 +5311,7 @@ var
   Data: PGroupData;
 begin
   //
-  // только на старанице "по группам"
+  // С‚РѕР»СЊРєРѕ РЅР° СЃС‚Р°СЂР°РЅРёС†Рµ "РїРѕ РіСЂСѓРїРїР°Рј"
   //
   if InternalUpdateGroupAction(Sender as TAction) then
     Exit;
@@ -5325,7 +5325,7 @@ var
   Data: PGroupData;
 begin
   //
-  // только на старанице "по группам"
+  // С‚РѕР»СЊРєРѕ РЅР° СЃС‚Р°СЂР°РЅРёС†Рµ "РїРѕ РіСЂСѓРїРїР°Рј"
   //
   if InternalUpdateGroupAction(acGroupClear) then
     Exit;
@@ -5389,12 +5389,12 @@ begin
   end;
 
   //
-  // если выделенная группа совпадает с той, куда добавляем книги, нужно перерисовать список
+  // РµСЃР»Рё РІС‹РґРµР»РµРЅРЅР°СЏ РіСЂСѓРїРїР° СЃРѕРІРїР°РґР°РµС‚ СЃ С‚РѕР№, РєСѓРґР° РґРѕР±Р°РІР»СЏРµРј РєРЅРёРіРё, РЅСѓР¶РЅРѕ РїРµСЂРµСЂРёСЃРѕРІР°С‚СЊ СЃРїРёСЃРѕРє
   //
   GroupData := tvGroups.GetNodeData(tvGroups.GetFirstSelected);
   if Assigned(GroupData) and (GroupData^.GroupID = GroupID) then
   begin
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID); // Группы
+    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID); // Р“СЂСѓРїРїС‹
   end;
 end;
 
@@ -5442,7 +5442,7 @@ begin
       );
 
       //
-      // удалить информацию о книгах, не входящих ни в одну группу
+      // СѓРґР°Р»РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РєРЅРёРіР°С…, РЅРµ РІС…РѕРґСЏС‰РёС… РЅРё РІ РѕРґРЅСѓ РіСЂСѓРїРїСѓ
       //
       FSystemData.RemoveUnusedBooks;
 
@@ -5461,7 +5461,7 @@ var
   treeView: TVirtualStringTree;
   Node: PVirtualNode;
   Data: PAuthorData;
-  // TODO : отдельный тип данных для серии
+  // TODO : РѕС‚РґРµР»СЊРЅС‹Р№ С‚РёРї РґР°РЅРЅС‹С… РґР»СЏ СЃРµСЂРёРё
 begin
   case ActiveView of
     AuthorsView:
@@ -5873,15 +5873,15 @@ begin
   FFormBusy := True;
   try
     //
-    // ревью можно изменять только для книг из текущей коллекции
+    // СЂРµРІСЊСЋ РјРѕР¶РЅРѕ РёР·РјРµРЅСЏС‚СЊ С‚РѕР»СЊРєРѕ РґР»СЏ РєРЅРёРі РёР· С‚РµРєСѓС‰РµР№ РєРѕР»Р»РµРєС†РёРё
     //
     ReviewEditable := (Data^.BookKey.DatabaseID = FCollection.CollectionID);
 
     frmBookDetails := TfrmBookDetails.Create(Application);
     try
       //
-      // загрузим книгу в стрим и отдадим его форме для чтения из него информации
-      // сейчас мы грузим только fb2 или fbd, т к больше ничего разбирать не умеем
+      // Р·Р°РіСЂСѓР·РёРј РєРЅРёРіСѓ РІ СЃС‚СЂРёРј Рё РѕС‚РґР°РґРёРј РµРіРѕ С„РѕСЂРјРµ РґР»СЏ С‡С‚РµРЅРёСЏ РёР· РЅРµРіРѕ РёРЅС„РѕСЂРјР°С†РёРё
+      // СЃРµР№С‡Р°СЃ РјС‹ РіСЂСѓР·РёРј С‚РѕР»СЊРєРѕ fb2 РёР»Рё fbd, С‚ Рє Р±РѕР»СЊС€Рµ РЅРёС‡РµРіРѕ СЂР°Р·Р±РёСЂР°С‚СЊ РЅРµ СѓРјРµРµРј
       //
       if (bpIsLocal in Data^.BookProps) then
       begin
@@ -5895,9 +5895,9 @@ begin
           end;
         except
           //
-          // Скорее всего произошла ошибка при чтении файла (не найден, а должен был быть)
-          // или при парсинге книги (загрузили какую-то ерунду).
-          // Покажем сообщение об ощибке и загрузим только библиотечную информацию
+          // РЎРєРѕСЂРµРµ РІСЃРµРіРѕ РїСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РїСЂРё С‡С‚РµРЅРёРё С„Р°Р№Р»Р° (РЅРµ РЅР°Р№РґРµРЅ, Р° РґРѕР»Р¶РµРЅ Р±С‹Р» Р±С‹С‚СЊ)
+          // РёР»Рё РїСЂРё РїР°СЂСЃРёРЅРіРµ РєРЅРёРіРё (Р·Р°РіСЂСѓР·РёР»Рё РєР°РєСѓСЋ-С‚Рѕ РµСЂСѓРЅРґСѓ).
+          // РџРѕРєР°Р¶РµРј СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС‰РёР±РєРµ Рё Р·Р°РіСЂСѓР·РёРј С‚РѕР»СЊРєРѕ Р±РёР±Р»РёРѕС‚РµС‡РЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ
           //
           on e: Exception do
           begin
@@ -5912,10 +5912,10 @@ begin
 
       frmBookDetails.mmReview.ReadOnly := not ReviewEditable;
 
-      //if IsOnline and ReviewEditable then         - логика нарушена
+      //if IsOnline and ReviewEditable then         - Р»РѕРіРёРєР° РЅР°СЂСѓС€РµРЅР°
       if not IsPrivate then
       begin
-        { TODO -oNickR -cLibDesc : этот URL должен формироваться обвязкой библиотеки, т к его формат может меняться }
+        { TODO -oNickR -cLibDesc : СЌС‚РѕС‚ URL РґРѕР»Р¶РµРЅ С„РѕСЂРјРёСЂРѕРІР°С‚СЊСЃСЏ РѕР±РІСЏР·РєРѕР№ Р±РёР±Р»РёРѕС‚РµРєРё, С‚ Рє РµРіРѕ С„РѕСЂРјР°С‚ РјРѕР¶РµС‚ РјРµРЅСЏС‚СЊСЃСЏ }
         if FCollection.CollectionURL = '' then
           URL := Format('%sb/%s/', [Settings.InpxURL, Data^.LibID])
         else
@@ -5926,7 +5926,7 @@ begin
 
       if bpHasReview in Data^.BookProps then
         //
-        // ревью уже есть - покажем его
+        // СЂРµРІСЊСЋ СѓР¶Рµ РµСЃС‚СЊ - РїРѕРєР°Р¶РµРј РµРіРѕ
         //
         frmBookDetails.Review := FCollection.GetReview(Data^.BookKey)
 
@@ -6087,7 +6087,7 @@ begin
         on E: Exception do
           MHLShowError(rstrUpdateFailedServerError, [HTTP.ResponseCode]);
       end;
-      { TODO -oNickR -cRefactoring : проверить использование файла last_version.info. Возможно он больше нигде не нужен и можно не сохранять его на диск }
+      { TODO -oNickR -cRefactoring : РїСЂРѕРІРµСЂРёС‚СЊ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµ С„Р°Р№Р»Р° last_version.info. Р’РѕР·РјРѕР¶РЅРѕ РѕРЅ Р±РѕР»СЊС€Рµ РЅРёРіРґРµ РЅРµ РЅСѓР¶РµРЅ Рё РјРѕР¶РЅРѕ РЅРµ СЃРѕС…СЂР°РЅСЏС‚СЊ РµРіРѕ РЅР° РґРёСЃРє }
       LF.SaveToFile(Settings.SystemFileName[sfAppVerInfo]);
       SL.LoadFromFile(Settings.SystemFileName[sfAppVerInfo]);
       if SL.Count > 0 then
@@ -6138,7 +6138,7 @@ begin
   begin
     unit_Utils.SyncFolders(FCollection.CollectionID);
     //
-    // Пока это нужно, т к рабочий поток не сообщает основному об изменении свойств книги
+    // РџРѕРєР° СЌС‚Рѕ РЅСѓР¶РЅРѕ, С‚ Рє СЂР°Р±РѕС‡РёР№ РїРѕС‚РѕРє РЅРµ СЃРѕРѕР±С‰Р°РµС‚ РѕСЃРЅРѕРІРЅРѕРјСѓ РѕР± РёР·РјРµРЅРµРЅРёРё СЃРІРѕР№СЃС‚РІ РєРЅРёРіРё
     //
     InitCollection;
   end;
@@ -6319,7 +6319,7 @@ begin
   Tag := (Sender as TMenuItem).Tag;
 
   if (Sender as TMenuItem).Checked then
-  begin // удаляем
+  begin // СѓРґР°Р»СЏРµРј
     for i := 0 to Tree.Header.Columns.Count - 1 do
       if Tree.Header.Columns[i].Tag = Tag then
       begin
@@ -6329,7 +6329,7 @@ begin
       end;
   end
   else
-  begin // добавляем
+  begin // РґРѕР±Р°РІР»СЏРµРј
     Column := TVirtualTreeColumn.Create(Tree.Header.Columns);
 
     GetDefaultColumnProperties(Settings.TreeModes[Tree.Tag], Tag, S, MinWidth, MaxWidth, Alignment, Options);
@@ -6390,7 +6390,7 @@ begin
       Data := Tree.GetNodeData(Node);
       if Assigned(Data) and (Data^.nodeType = ntBookInfo) then
       begin
-        // заглушка
+        // Р·Р°РіР»СѓС€РєР°
         NewProgress := IfThen(Data^.Progress = 0, 100, 0);
 
         FCollection.SetProgress(Data^.BookKey, NewProgress);
@@ -6442,7 +6442,7 @@ begin
     frmSettings.Free;
   end;
   ReadINIData;
-  CreateScriptMenu; // вынесено из readinidata во избежание дублирования
+  CreateScriptMenu; // РІС‹РЅРµСЃРµРЅРѕ РёР· readinidata РІРѕ РёР·Р±РµР¶Р°РЅРёРµ РґСѓР±Р»РёСЂРѕРІР°РЅРёСЏ
 end;
 
 procedure TfrmMain.SetHeaderPopUp;
@@ -6501,7 +6501,7 @@ var
 begin
   UpdateActions;
 
-  // сбрасываем закладки быстрого поиска
+  // СЃР±СЂР°СЃС‹РІР°РµРј Р·Р°РєР»Р°РґРєРё Р±С‹СЃС‚СЂРѕРіРѕ РїРѕРёСЃРєР°
   FLastFoundBook := nil;
   FFirstFoundBook := nil;
 
@@ -6704,8 +6704,8 @@ begin
       procedure(const BookKey: TBookKey; extra: TBookExtra)
       begin
         //
-        // На всех страницах (кроме "Группы") необходимо обновить список книг,
-        // т к могли поменяться пользовательские данные
+        // РќР° РІСЃРµС… СЃС‚СЂР°РЅРёС†Р°С… (РєСЂРѕРјРµ "Р“СЂСѓРїРїС‹") РЅРµРѕР±С…РѕРґРёРјРѕ РѕР±РЅРѕРІРёС‚СЊ СЃРїРёСЃРѕРє РєРЅРёРі,
+        // С‚ Рє РјРѕРіР»Рё РїРѕРјРµРЅСЏС‚СЊСЃСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ
         //
         UpdateNodes(
           BookKey,
@@ -6726,7 +6726,7 @@ begin
     CreateGroupsMenu;
 
     //
-    // Обновим список групп. Побочным эффектом будет перечитывание списка книг на странице "Группы"
+    // РћР±РЅРѕРІРёРј СЃРїРёСЃРѕРє РіСЂСѓРїРї. РџРѕР±РѕС‡РЅС‹Рј СЌС„С„РµРєС‚РѕРј Р±СѓРґРµС‚ РїРµСЂРµС‡РёС‚С‹РІР°РЅРёРµ СЃРїРёСЃРєР° РєРЅРёРі РЅР° СЃС‚СЂР°РЅРёС†Рµ "Р“СЂСѓРїРїС‹"
     //
     FillGroupsList(tvGroups, FSystemData.GetGroupIterator, FLastGroupID);
   finally
@@ -6753,19 +6753,19 @@ begin
   case (Sender as TComboBox).Tag of
     0:begin
         FilterValue := AuthorBookFilter;
-        FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // авторы
+        FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // Р°РІС‚РѕСЂС‹
        end;
 
 
     1: begin
          FilterValue := SeriesBookFilter;
-         FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
+         FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // СЃРµСЂРёРё
        end;
     2: begin
          FilterValue := GenreBookFilter;
-         FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),   True,  True, @FLastGenreBookID);  // жанры
+         FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),   True,  True, @FLastGenreBookID);  // Р¶Р°РЅСЂС‹
        end;
-    4: FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // избранное
+    4: FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // РёР·Р±СЂР°РЅРЅРѕРµ
   end;
 end;
 

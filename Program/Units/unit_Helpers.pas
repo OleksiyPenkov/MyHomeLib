@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             12.02.2010
@@ -11,7 +11,7 @@
   * $Id: unit_Helpers.pas 1136 2014-02-22 05:34:11Z koreec $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -194,7 +194,7 @@ function GetOpenFileName(
   ): Boolean;
 begin
   //
-  // TODO -oNickR -cUsability : использовать TFileOpenDialog под Vista-ой
+  // TODO -oNickR -cUsability : РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ TFileOpenDialog РїРѕРґ Vista-РѕР№
   //
   Include(ExtraOptions, ofFileMustExist);
   Include(ExtraOptions, ofNoChangeDir);
@@ -211,7 +211,7 @@ function GetSaveFileName(
   ): Boolean;
 begin
   //
-  // TODO -oNickR -cUsability : использовать TFileSaveDialog под Vista-ой
+  // TODO -oNickR -cUsability : РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ TFileSaveDialog РїРѕРґ Vista-РѕР№
   //
   Include(ExtraOptions, ofOverwritePrompt);
   Include(ExtraOptions, ofNoChangeDir);
@@ -229,58 +229,58 @@ type
 
 resourcestring
   //fnGenreList
-  rstrGenreListDlgTitle = 'Выбор списка жанров';
-  rstrGenreListDlgFilter = 'Список жанров MyHomeLib (*.glst)|*.glst|Все типы|*.*';
+  rstrGenreListDlgTitle = 'Р’С‹Р±РѕСЂ СЃРїРёСЃРєР° Р¶Р°РЅСЂРѕРІ';
+  rstrGenreListDlgFilter = 'РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ MyHomeLib (*.glst)|*.glst|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrGenreListDlgDefaultExt = GENRELIST_EXTENSION_SHORT;
 
   // fnOpenCollection
-  rstrOpenCollectionDlgTitle = 'Открыть файл коллекции';
+  rstrOpenCollectionDlgTitle = 'РћС‚РєСЂС‹С‚СЊ С„Р°Р№Р» РєРѕР»Р»РµРєС†РёРё';
   // fnSaveCollection
-  rstrSaveCollectionDlgTitle = 'Сохранить файл коллекции';
-  rstrCollectionDlgFilter = 'Коллекция MyHomeLib (*.hlc2)|*.hlc2|Все типы|*.*';
+  rstrSaveCollectionDlgTitle = 'РЎРѕС…СЂР°РЅРёС‚СЊ С„Р°Р№Р» РєРѕР»Р»РµРєС†РёРё';
+  rstrCollectionDlgFilter = 'РљРѕР»Р»РµРєС†РёСЏ MyHomeLib (*.hlc2)|*.hlc2|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrCollectionDlgDefaultExt = COLLECTION_EXTENSION_SHORT;
 
   // fnSelectReader
-  rstrSelectReaderDlgTitle = 'Выбор программы для просмотра';
+  rstrSelectReaderDlgTitle = 'Р’С‹Р±РѕСЂ РїСЂРѕРіСЂР°РјРјС‹ РґР»СЏ РїСЂРѕСЃРјРѕС‚СЂР°';
   // fnSelectScript
-  rstrSelectScriptDlgTitle = 'Выбор скрипта';
-  rstrSelectProgrammDlgFilter = 'Скрипты, программы (*.exe;*.bat;*.cmd;*.vbs;*.js)|*.exe;*.bat;*.cmd;*.vbs;*.js|Все типы|*.*';
+  rstrSelectScriptDlgTitle = 'Р’С‹Р±РѕСЂ СЃРєСЂРёРїС‚Р°';
+  rstrSelectProgrammDlgFilter = 'РЎРєСЂРёРїС‚С‹, РїСЂРѕРіСЂР°РјРјС‹ (*.exe;*.bat;*.cmd;*.vbs;*.js)|*.exe;*.bat;*.cmd;*.vbs;*.js|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrSelectProgrammDlgDefaultExt = 'exe';
 
   // fnOpenImportFile
-  rstrOpenImportFileDlgTitle = 'Открыть xml';
+  rstrOpenImportFileDlgTitle = 'РћС‚РєСЂС‹С‚СЊ xml';
   // fnSaveImportFile
-  rstrSaveImportFileDlgTitle = 'Сохранить xml';
-  rstrImportFileDlgFilter = 'xml (*.xml)|*.xml|Все типы|*.*';
+  rstrSaveImportFileDlgTitle = 'РЎРѕС…СЂР°РЅРёС‚СЊ xml';
+  rstrImportFileDlgFilter = 'xml (*.xml)|*.xml|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrImportFileDlgDefaultExt = 'xml';
 
   // fnSaveLog
-  rstrSaveLogDlgTitle = 'Сохранить лог работы';
-  rstrSaveLogDlgFilter = 'Файл протокола (*.log)|*.log|Все типы|*.*';
+  rstrSaveLogDlgTitle = 'РЎРѕС…СЂР°РЅРёС‚СЊ Р»РѕРі СЂР°Р±РѕС‚С‹';
+  rstrSaveLogDlgFilter = 'Р¤Р°Р№Р» РїСЂРѕС‚РѕРєРѕР»Р° (*.log)|*.log|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrSaveLogDlgDefaultExt = 'log';
   //fnOpenINPX
-  rstrOpenINPXDlgTitle = 'Выбор файла списков';
-  rstrOpenINPXDlgFilter = 'Список книг MyHomeLib (*.inpx)|*.inpx|Все типы|*.*';
+  rstrOpenINPXDlgTitle = 'Р’С‹Р±РѕСЂ С„Р°Р№Р»Р° СЃРїРёСЃРєРѕРІ';
+  rstrOpenINPXDlgFilter = 'РЎРїРёСЃРѕРє РєРЅРёРі MyHomeLib (*.inpx)|*.inpx|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrOpenINPXDlgDefaultExt = 'inpx';
 
   //fnSaveINPX
-  rstrSaveINPXDlgTitle = 'Выбор файла списков';
-  rstrSaveINPXDlgFilter = 'Список книг MyHomeLib (*.inpx)|*.inpx|Все типы|*.*';
+  rstrSaveINPXDlgTitle = 'Р’С‹Р±РѕСЂ С„Р°Р№Р»Р° СЃРїРёСЃРєРѕРІ';
+  rstrSaveINPXDlgFilter = 'РЎРїРёСЃРѕРє РєРЅРёРі MyHomeLib (*.inpx)|*.inpx|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrSaveINPXDlgDefaultExt = 'inpx';
 
   //fnOpenUserData
-  rstrOpenUDDlgTitle = 'Импорт пользовательских данных';
-  rstrOpenUDDlgFilter = 'Пользовательские данные MyHomeLib (mhlud, mhlud2)|*.mhlud2;*.mhlud|Все типы|*.*';
+  rstrOpenUDDlgTitle = 'РРјРїРѕСЂС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… РґР°РЅРЅС‹С…';
+  rstrOpenUDDlgFilter = 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ MyHomeLib (mhlud, mhlud2)|*.mhlud2;*.mhlud|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrOpenUDDlgDefaultExt = 'mhlud2';
 
   //fnSaveUserData
-  rstrSaveUDDlgTitle = 'Экспорт пользовательских данных';
-  rstrSaveUDDlgFilter = 'Пользовательские данные MyHomeLib (mhlud2)|*.mhlud2|Все типы|*.*';
+  rstrSaveUDDlgTitle = 'Р­РєСЃРїРѕСЂС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… РґР°РЅРЅС‹С…';
+  rstrSaveUDDlgFilter = 'РџРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёРµ РґР°РЅРЅС‹Рµ MyHomeLib (mhlud2)|*.mhlud2|Р’СЃРµ С‚РёРїС‹|*.*';
   rstrSaveUDDlgDefaultExt = 'mhlud2';
 
   //fnOpenCoverImage
-  rstrOpenCIDlgTitle = 'Загрузка файла обложки';
-  rstrOpenCIDlgFilter = 'Изображения (*.png;*.jpg;*.jpeg)|*.jpeg;*.jpg;*.png';
+  rstrOpenCIDlgTitle = 'Р—Р°РіСЂСѓР·РєР° С„Р°Р№Р»Р° РѕР±Р»РѕР¶РєРё';
+  rstrOpenCIDlgFilter = 'РР·РѕР±СЂР°Р¶РµРЅРёСЏ (*.png;*.jpg;*.jpeg)|*.jpeg;*.jpg;*.png';
   rstrOpenCIDlgDefaultExt = 'jpeg';
 
 

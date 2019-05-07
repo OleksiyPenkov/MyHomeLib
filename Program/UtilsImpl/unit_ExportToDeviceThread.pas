@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Authors Aleksey Penkov   alex.penkov@gmail.com
   *         Nick Rymanov     nrymanov@gmail.com
@@ -32,7 +32,7 @@ type
 
   protected
     //
-    // эти поля будут инициализированы только в рабочем потоке
+    // СЌС‚Рё РїРѕР»СЏ Р±СѓРґСѓС‚ РёРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°РЅС‹ С‚РѕР»СЊРєРѕ РІ СЂР°Р±РѕС‡РµРј РїРѕС‚РѕРєРµ
     //
     FSystemData: ISystemData;
 
@@ -92,12 +92,12 @@ uses
   unit_WriteFb2Info;
 
 resourcestring
-  rstrCheckTemplateValidity = 'Проверьте правильность шаблона';
-  rstrArchiveNotFound = 'Архив ' + CR + ' не найден!';
+  rstrCheckTemplateValidity = 'РџСЂРѕРІРµСЂСЊС‚Рµ РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ С€Р°Р±Р»РѕРЅР°';
+  rstrArchiveNotFound = 'РђСЂС…РёРІ ' + CR + ' РЅРµ РЅР°Р№РґРµРЅ!';
   rstrFileNotFound = 'File "%s" not found';
-  rstrProcessRemainingFiles = 'Обрабатывать оставшиеся файлы ?';
-  rstrFilesProcessed = 'Записано файлов: %u из %u';
-  rstrCompleted = 'Завершение операции ...';
+  rstrProcessRemainingFiles = 'РћР±СЂР°Р±Р°С‚С‹РІР°С‚СЊ РѕСЃС‚Р°РІС€РёРµСЃСЏ С„Р°Р№Р»С‹ ?';
+  rstrFilesProcessed = 'Р—Р°РїРёСЃР°РЅРѕ С„Р°Р№Р»РѕРІ: %u РёР· %u';
+  rstrCompleted = 'Р—Р°РІРµСЂС€РµРЅРёРµ РѕРїРµСЂР°С†РёРё ...';
 
 { TExportToDeviceThread }
 
@@ -116,8 +116,8 @@ begin
 end;
 
 //
-// Определяем имя файла, если нужно - предварительно распаковываем
-// формируем названия папок и файла
+// РћРїСЂРµРґРµР»СЏРµРј РёРјСЏ С„Р°Р№Р»Р°, РµСЃР»Рё РЅСѓР¶РЅРѕ - РїСЂРµРґРІР°СЂРёС‚РµР»СЊРЅРѕ СЂР°СЃРїР°РєРѕРІС‹РІР°РµРј
+// С„РѕСЂРјРёСЂСѓРµРј РЅР°Р·РІР°РЅРёСЏ РїР°РїРѕРє Рё С„Р°Р№Р»Р°
 //
 function TExportToDeviceThread.PrepareFile(const BookKey: TBookKey): Boolean;
 var
@@ -133,14 +133,14 @@ begin
     Collection := FSystemData.GetCollection(BookKey.DatabaseID);
     Collection.GetBookRecord(BookKey, R, False);
 
-    // если не задействован скрипт, создаем папки
-    // если будет вызываться скрипт, то папки не нужны, все равно они не обрабатываются
-    // промежуточный файл остается во временной папке
+    // РµСЃР»Рё РЅРµ Р·Р°РґРµР№СЃС‚РІРѕРІР°РЅ СЃРєСЂРёРїС‚, СЃРѕР·РґР°РµРј РїР°РїРєРё
+    // РµСЃР»Рё Р±СѓРґРµС‚ РІС‹Р·С‹РІР°С‚СЊСЃСЏ СЃРєСЂРёРїС‚, С‚Рѕ РїР°РїРєРё РЅРµ РЅСѓР¶РЅС‹, РІСЃРµ СЂР°РІРЅРѕ РѕРЅРё РЅРµ РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‚СЃСЏ
+    // РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Р№ С„Р°Р№Р» РѕСЃС‚Р°РµС‚СЃСЏ РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РїР°РїРєРµ
     if not FExtractOnly Then
     begin
 
       //
-      // Сформируем имя каталога в соответствии с заданным темплейтом
+      // РЎС„РѕСЂРјРёСЂСѓРµРј РёРјСЏ РєР°С‚Р°Р»РѕРіР° РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј С‚РµРјРїР»РµР№С‚РѕРј
       //
       if FTemplater.SetTemplate(FFolderTemplate, TpPath) = ErFine then
         FTargetFolder := FTemplater.ParseString(R, TpPath)
@@ -157,7 +157,7 @@ begin
     end;
 
     //
-    // Сформируем имя файла в соответствии с заданным темплейтом
+    // РЎС„РѕСЂРјРёСЂСѓРµРј РёРјСЏ С„Р°Р№Р»Р° РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ Р·Р°РґР°РЅРЅС‹Рј С‚РµРјРїР»РµР№С‚РѕРј
     //
     if FTemplater.SetTemplate(FFileNameTemplate, TpFile) = ErFine then
       FTargetFileName := FTemplater.ParseString(R, TpFile)
@@ -172,7 +172,7 @@ begin
     FFileOprecord.SourceFile := R.GetBookFileName;
 
     //
-    // Если файл в архиве - распаковываем в $tmp
+    // Р•СЃР»Рё С„Р°Р№Р» РІ Р°СЂС…РёРІРµ - СЂР°СЃРїР°РєРѕРІС‹РІР°РµРј РІ $tmp
     //
     FBookFormat := R.GetBookFormat;
     if FBookFormat in [bfFb2, bfFb2Archive, bfRawArchive, bfFbd] then
@@ -192,7 +192,7 @@ begin
 
     Result := True;
   except
-    // подавляем исключения дабы не прерывать процесс
+    // РїРѕРґР°РІР»СЏРµРј РёСЃРєР»СЋС‡РµРЅРёСЏ РґР°Р±С‹ РЅРµ РїСЂРµСЂС‹РІР°С‚СЊ РїСЂРѕС†РµСЃСЃ
   end;
 end;
 
@@ -211,7 +211,7 @@ begin
   DestFileName := TPath.Combine(FDeviceDir, FFileOprecord.TargetFile);
 
   //
-  // TODO -cBug: тут некоторая фигня. Мы вызываем конверторы, даже если исходная книга не FB2. Я помню, что режим для не-FB2 книг выставляется более-менее правильно, но...
+  // TODO -cBug: С‚СѓС‚ РЅРµРєРѕС‚РѕСЂР°СЏ С„РёРіРЅСЏ. РњС‹ РІС‹Р·С‹РІР°РµРј РєРѕРЅРІРµСЂС‚РѕСЂС‹, РґР°Р¶Рµ РµСЃР»Рё РёСЃС…РѕРґРЅР°СЏ РєРЅРёРіР° РЅРµ FB2. РЇ РїРѕРјРЅСЋ, С‡С‚Рѕ СЂРµР¶РёРј РґР»СЏ РЅРµ-FB2 РєРЅРёРі РІС‹СЃС‚Р°РІР»СЏРµС‚СЃСЏ Р±РѕР»РµРµ-РјРµРЅРµРµ РїСЂР°РІРёР»СЊРЅРѕ, РЅРѕ...
   //
   Result := True;
   try
@@ -246,7 +246,7 @@ begin
         Result := fb2Mobi(FFileOprecord.SourceFile, DestFileName);
     end;
   except
-    // подавляем исключения дабы не прерывать процесс
+    // РїРѕРґР°РІР»СЏРµРј РёСЃРєР»СЋС‡РµРЅРёСЏ РґР°Р±С‹ РЅРµ РїСЂРµСЂС‹РІР°С‚СЊ РїСЂРѕС†РµСЃСЃ
   end;
 end;
 
@@ -324,7 +324,7 @@ begin
       if not Res and (i < totalBooks - 1) then
       begin
         //
-        // TODO -oNickR -cUsability : предусмотреть возможность сказать "да для всех"
+        // TODO -oNickR -cUsability : РїСЂРµРґСѓСЃРјРѕС‚СЂРµС‚СЊ РІРѕР·РјРѕР¶РЅРѕСЃС‚СЊ СЃРєР°Р·Р°С‚СЊ "РґР° РґР»СЏ РІСЃРµС…"
         //
         Canceled := (ShowMessage(rstrProcessRemainingFiles, MB_ICONQUESTION or MB_YESNO) = IDNO);
       end;

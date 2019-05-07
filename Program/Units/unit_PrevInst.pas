@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Aleksey Penkov  alex.penkov@gmail.com
   * Created             12.02.2010
@@ -11,7 +11,7 @@
   * $Id: unit_PrevInst.pas 543 2010-07-29 06:34:09Z nrymanov@gmail.com $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -49,7 +49,7 @@ begin
     Exit;
   end;
 
-  // если FileMapping есть - то происходит OpenFileMapping
+  // РµСЃР»Рё FileMapping РµСЃС‚СЊ - С‚Рѕ РїСЂРѕРёСЃС…РѕРґРёС‚ OpenFileMapping
   MemHnd := CreateFileMapping(HWND($FFFFFFFF), nil, PAGE_READWRITE, 0, MemFileSize, PChar(MemFileName));
   if GetLastError <> ERROR_ALREADY_EXISTS then
   begin

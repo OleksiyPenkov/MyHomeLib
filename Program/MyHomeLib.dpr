@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2013 Aleksey Penkov (alex.penkov@gmail.com)
+  * Copyright (C) 2008-2019 Oleksiy Penkov aka Koreec (oleksiy.penkov@gmail.com)
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -14,12 +14,11 @@
   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   * GNU General Public License for more details.
   *
-  * Author(s)           Aleksey Penkov (alex.penkov@gmail.com)
+  * Author(s)           Oleksiy Penkov (oleksiy.penkov@gmail.com)
   *                     Nick Rymanov (nrymanov@gmail.com)
   *                     eg_
   *
-  * Home: http://home-lib.net
-  *   or: http://www.assembla.com/spaces/myhomelib
+  * Home: https://github.com/OleksiyPenkov/myhomelib
   *
   * $Id: MyhomeLib.dpr 1128 2013-06-27 08:07:15Z koreec $
   *
@@ -159,9 +158,9 @@ begin
     frmSplash.Show;
     frmSplash.Update; // Update the splash screen to ensure it gets drawn
 
-    // Важно! сначала создаем датамодули и главную форму, а потом - остальные формы!
+    // Р’Р°Р¶РЅРѕ! СЃРЅР°С‡Р°Р»Р° СЃРѕР·РґР°РµРј РґР°С‚Р°РјРѕРґСѓР»Рё Рё РіР»Р°РІРЅСѓСЋ С„РѕСЂРјСѓ, Р° РїРѕС‚РѕРј - РѕСЃС‚Р°Р»СЊРЅС‹Рµ С„РѕСЂРјС‹!
     Application.CreateForm(TDMUser, DMUser);
-  DMUser.Init;
+    DMUser.Init;
 
     Application.CreateForm(TfrmMain, frmMain);
     Application.CreateForm(TfrmGenreTree, frmGenreTree);

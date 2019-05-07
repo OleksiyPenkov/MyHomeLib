@@ -1,12 +1,12 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             05.07.2010
-  * Description         TButtonedEdit, без правой кнопки и загружающий картинку для левой кнопки из ресурсов.
+  * Description         TButtonedEdit, Р±РµР· РїСЂР°РІРѕР№ РєРЅРѕРїРєРё Рё Р·Р°РіСЂСѓР¶Р°СЋС‰РёР№ РєР°СЂС‚РёРЅРєСѓ РґР»СЏ Р»РµРІРѕР№ РєРЅРѕРїРєРё РёР· СЂРµСЃСѓСЂСЃРѕРІ.
   *
   * $Id: MHLButtonedEdit.pas 785 2010-09-17 09:06:06Z nrymanov@gmail.com $
   *

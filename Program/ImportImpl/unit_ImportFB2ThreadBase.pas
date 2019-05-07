@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov    nrymanov@gmail.com
   *                     Aleksey Penkov  alex.penkov@gmail.com
@@ -12,7 +12,7 @@
   * $Id: unit_ImportFB2ThreadBase.pas 1144 2014-03-26 05:22:37Z ENikS $
   *
   * History
-  * NickR 02.03.2010    Код переформатирован
+  * NickR 02.03.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -42,7 +42,7 @@ type
     FFilesList: TFilesList;
 
     //
-    // Эти поля должны быть установлены конструктором производного класса
+    // Р­С‚Рё РїРѕР»СЏ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅС‹ РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂРѕРј РїСЂРѕРёР·РІРѕРґРЅРѕРіРѕ РєР»Р°СЃСЃР°
     //
     FTargetExt: string;
     FZipFolder: Boolean;
@@ -86,11 +86,11 @@ uses
   dm_user;
 
 resourcestring
-  rstrCheckTemplateValidity = 'Проверьте правильность шаблона';
-  rstrScanningOne = 'Сканируем %s';
-  rstrScanningAll = 'Сканируем...';
-  rstrFoundFiles = 'Обнаружено файлов: %u';
-  rstrScanningFolders = 'Сканирование папок...';
+  rstrCheckTemplateValidity = 'РџСЂРѕРІРµСЂСЊС‚Рµ РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ С€Р°Р±Р»РѕРЅР°';
+  rstrScanningOne = 'РЎРєР°РЅРёСЂСѓРµРј %s';
+  rstrScanningAll = 'РЎРєР°РЅРёСЂСѓРµРј...';
+  rstrFoundFiles = 'РћР±РЅР°СЂСѓР¶РµРЅРѕ С„Р°Р№Р»РѕРІ: %u';
+  rstrScanningFolders = 'РЎРєР°РЅРёСЂРѕРІР°РЅРёРµ РїР°РїРѕРє...';
 
 { TImportFB2Thread }
 
@@ -111,7 +111,7 @@ var
   i: Integer;
 begin
   //
-  // TODO : создать в unit_FB2Utils ф-ию для получения инф-ии о книге из файла и заменить ее этот метод
+  // TODO : СЃРѕР·РґР°С‚СЊ РІ unit_FB2Utils С„-РёСЋ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„-РёРё Рѕ РєРЅРёРіРµ РёР· С„Р°Р№Р»Р° Рё Р·Р°РјРµРЅРёС‚СЊ РµРµ СЌС‚РѕС‚ РјРµС‚РѕРґ
   //
   with book.Description.Titleinfo do
   begin
@@ -173,8 +173,8 @@ end;
 
 function TImportFB2ThreadBase.GetNewFileName(FileName: string; R: TBookRecord): string;
 begin
-  { DONE -oNickR -cPerformance : необходимо создавать шаблонизатор только один раз при инициализации потока }
-  { DONE -oNickR -cBug : нет реакции на невалидный шаблон }
+  { DONE -oNickR -cPerformance : РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕР·РґР°РІР°С‚СЊ С€Р°Р±Р»РѕРЅРёР·Р°С‚РѕСЂ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р· РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РїРѕС‚РѕРєР° }
+  { DONE -oNickR -cBug : РЅРµС‚ СЂРµР°РєС†РёРё РЅР° РЅРµРІР°Р»РёРґРЅС‹Р№ С€Р°Р±Р»РѕРЅ }
   if FTemplater.SetTemplate(FileName, TpFile) = ErFine then
     FileName := FTemplater.ParseString(R, TpFile)
   else
@@ -192,8 +192,8 @@ end;
 
 function TImportFB2ThreadBase.GetNewFolder(Folder: string; R: TBookRecord): string;
 begin
-  { DONE -oNickR -cPerformance : необходимо создавать шаблонизатор только один раз при инициализации потока }
-  { DONE -oNickR -cBug : нет реакции на невалидный шаблон }
+  { DONE -oNickR -cPerformance : РЅРµРѕР±С…РѕРґРёРјРѕ СЃРѕР·РґР°РІР°С‚СЊ С€Р°Р±Р»РѕРЅРёР·Р°С‚РѕСЂ С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЂР°Р· РїСЂРё РёРЅРёС†РёР°Р»РёР·Р°С†РёРё РїРѕС‚РѕРєР° }
+  { DONE -oNickR -cBug : РЅРµС‚ СЂРµР°РєС†РёРё РЅР° РЅРµРІР°Р»РёРґРЅС‹Р№ С€Р°Р±Р»РѕРЅ }
   if FTemplater.SetTemplate(Folder, TpPath) = ErFine then
     Folder := FTemplater.ParseString(R, TpPath)
   else

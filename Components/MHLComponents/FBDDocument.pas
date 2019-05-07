@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Aleksey Penkov
   *                     Nick Rymanov (nrymanov@gmail.com)
@@ -18,9 +18,9 @@
 unit FBDDocument;
 
 //
-// TODO -oNickR: разобраться с использованием FImage. Не везде есть проверки на nil, картинка не перерисовывается...
-// TODO -oNickR: более аккуратная работа с архивами (расставить флаги у метода OpenArchive)
-// TODO -oNickR: расставить const у параметров
+// TODO -oNickR: СЂР°Р·РѕР±СЂР°С‚СЊСЃСЏ СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј FImage. РќРµ РІРµР·РґРµ РµСЃС‚СЊ РїСЂРѕРІРµСЂРєРё РЅР° nil, РєР°СЂС‚РёРЅРєР° РЅРµ РїРµСЂРµСЂРёСЃРѕРІС‹РІР°РµС‚СЃСЏ...
+// TODO -oNickR: Р±РѕР»РµРµ Р°РєРєСѓСЂР°С‚РЅР°СЏ СЂР°Р±РѕС‚Р° СЃ Р°СЂС…РёРІР°РјРё (СЂР°СЃСЃС‚Р°РІРёС‚СЊ С„Р»Р°РіРё Сѓ РјРµС‚РѕРґР° OpenArchive)
+// TODO -oNickR: СЂР°СЃСЃС‚Р°РІРёС‚СЊ const Сѓ РїР°СЂР°РјРµС‚СЂРѕРІ
 //
 
 interface
@@ -129,8 +129,8 @@ type
   end;
 
 resourcestring
-  rstrErrorCreatingFBD = 'Ошибка создания FBD!';
-  rstrErrorLaunching = 'Не удалось запустить %s !';
+  rstrErrorCreatingFBD = 'РћС€РёР±РєР° СЃРѕР·РґР°РЅРёСЏ FBD!';
+  rstrErrorLaunching = 'РќРµ СѓРґР°Р»РѕСЃСЊ Р·Р°РїСѓСЃС‚РёС‚СЊ %s !';
 
 implementation
 
@@ -565,7 +565,7 @@ begin
     MessageDlg(rstrErrorCreatingFBD, mtError, [mbOK], 0);
 end;
 
-{--------------------  Списки авторов ----------------------------------------}
+{--------------------  РЎРїРёСЃРєРё Р°РІС‚РѕСЂРѕРІ ----------------------------------------}
 function TFBDDocument.GetAuthors(ListType: TAuthorListType): TAuthorDataList;
 var
   i: integer;
@@ -636,7 +636,7 @@ begin
       end;
     end;
   end
-  else if FCoverData.Str = '' then // ERROR - эта проверка уже выполнена выше
+  else if FCoverData.Str = '' then // ERROR - СЌС‚Р° РїСЂРѕРІРµСЂРєР° СѓР¶Рµ РІС‹РїРѕР»РЅРµРЅР° РІС‹С€Рµ
     FImage.Picture := nil;
 end;
 
@@ -859,7 +859,7 @@ begin
   end
   else
   begin
-    // { TODO -oNickR -cRefactoring : не самая лучшая идея показывать диалоги прямо из этой функции. Она может быть вызвана из рабочего потока. }
+    // { TODO -oNickR -cRefactoring : РЅРµ СЃР°РјР°СЏ Р»СѓС‡С€Р°СЏ РёРґРµСЏ РїРѕРєР°Р·С‹РІР°С‚СЊ РґРёР°Р»РѕРіРё РїСЂСЏРјРѕ РёР· СЌС‚РѕР№ С„СѓРЅРєС†РёРё. РћРЅР° РјРѕР¶РµС‚ Р±С‹С‚СЊ РІС‹Р·РІР°РЅР° РёР· СЂР°Р±РѕС‡РµРіРѕ РїРѕС‚РѕРєР°. }
     Application.MessageBox(PChar(Format(rstrErrorLaunching, [FileName])), '', mb_IconExclamation);
   end;
 end;

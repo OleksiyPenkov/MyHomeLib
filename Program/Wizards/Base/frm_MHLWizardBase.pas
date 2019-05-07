@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   *                     Aleksey Penkov alex.penkov@gmail.com
@@ -12,7 +12,7 @@
   * $Id: frm_MHLWizardBase.pas 1064 2011-09-02 11:33:04Z eg_ $
   *
   * History
-  * NickR 03.09.2010    Импорт из XML больше не поддерживается. Удалил соответствующую страницу визарда.
+  * NickR 03.09.2010    РРјРїРѕСЂС‚ РёР· XML Р±РѕР»СЊС€Рµ РЅРµ РїРѕРґРґРµСЂР¶РёРІР°РµС‚СЃСЏ. РЈРґР°Р»РёР» СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰СѓСЋ СЃС‚СЂР°РЅРёС†Сѓ РІРёР·Р°СЂРґР°.
   *
   ****************************************************************************** *)
 
@@ -74,8 +74,8 @@ var
 implementation
 
 resourcestring
-  rstrCaptionCancel = 'Отмена';
-  rstrCaptionClose = 'Закрыть';
+  rstrCaptionCancel = 'РћС‚РјРµРЅР°';
+  rstrCaptionClose = 'Р—Р°РєСЂС‹С‚СЊ';
 
 {$R *.dfm}
 
@@ -214,7 +214,7 @@ begin
   begin
     frame.Align := alClient;
     //
-    // Constraints необходимо проверять _ДО_ скрытия страницы
+    // Constraints РЅРµРѕР±С…РѕРґРёРјРѕ РїСЂРѕРІРµСЂСЏС‚СЊ _Р”Рћ_ СЃРєСЂС‹С‚РёСЏ СЃС‚СЂР°РЅРёС†С‹
     //
     if Constraints.MinHeight < frame.Constraints.MinHeight then
       Constraints.MinHeight := frame.Constraints.MinHeight;

@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             12.02.2010
@@ -11,7 +11,7 @@
   * $Id: unit_Readers.pas 1158 2014-04-17 01:26:26Z koreec $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -158,11 +158,11 @@ begin
 
   if AHInst <= 32 then
   begin
-    // Если читалка не установлена для расширения, AReader.Path - Access Violation
+    // Р•СЃР»Рё С‡РёС‚Р°Р»РєР° РЅРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅР° РґР»СЏ СЂР°СЃС€РёСЂРµРЅРёСЏ, AReader.Path - Access Violation
     if Assigned(AReader) then
-      raise Exception.Create(SysErrorMessage(AHInst) + ': ' + AReader.Path) // читалка не найдена
+      raise Exception.Create(SysErrorMessage(AHInst) + ': ' + AReader.Path) // С‡РёС‚Р°Р»РєР° РЅРµ РЅР°Р№РґРµРЅР°
     else
-      raise Exception.Create(SysErrorMessage(AHInst) + ': ' + FileName); // книга не найдена
+      raise Exception.Create(SysErrorMessage(AHInst) + ': ' + FileName); // РєРЅРёРіР° РЅРµ РЅР°Р№РґРµРЅР°
   end;
 end;
 

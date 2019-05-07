@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             12.02.2010
@@ -11,7 +11,7 @@
   * $Id: unit_MHL_strings.pas 748 2010-09-14 07:02:22Z nrymanov@gmail.com $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -20,21 +20,21 @@ unit unit_MHL_strings;
 interface
 
 resourcestring
-  rstrMainUnableToCopy = 'Копирование книг из избранного невозможно.';
-  rstrMainConnectToDb = 'Подключение БД...';
-  rstrMainLoadingCollection = 'Загрузка коллекции...';
-  rstrMainCheckUpdates = 'Проверка обновлений...';
+  rstrMainUnableToCopy = 'РљРѕРїРёСЂРѕРІР°РЅРёРµ РєРЅРёРі РёР· РёР·Р±СЂР°РЅРЅРѕРіРѕ РЅРµРІРѕР·РјРѕР¶РЅРѕ.';
+  rstrMainConnectToDb = 'РџРѕРґРєР»СЋС‡РµРЅРёРµ Р‘Р”...';
+  rstrMainLoadingCollection = 'Р—Р°РіСЂСѓР·РєР° РєРѕР»Р»РµРєС†РёРё...';
+  rstrMainCheckUpdates = 'РџСЂРѕРІРµСЂРєР° РѕР±РЅРѕРІР»РµРЅРёР№...';
 
-  rstrCancelOperationWarningMsg = 'Вы действительно хотите прервать операцию?';
+  rstrCancelOperationWarningMsg = 'Р’С‹ РґРµР№СЃС‚РІРёС‚РµР»СЊРЅРѕ С…РѕС‚РёС‚Рµ РїСЂРµСЂРІР°С‚СЊ РѕРїРµСЂР°С†РёСЋ?';
 
-  rstrReadyMessage = 'Готово';
+  rstrReadyMessage = 'Р“РѕС‚РѕРІРѕ';
 
   //
-  // Названия коллекций по-умолчанию
+  // РќР°Р·РІР°РЅРёСЏ РєРѕР»Р»РµРєС†РёР№ РїРѕ-СѓРјРѕР»С‡Р°РЅРёСЋ
   //
-  rstrLocalLibRusEcDefName = 'Локальная коллекция Либрусек';
-  rstrOnlineLibRusEcDefName = 'Онлайн коллекция Либрусек';
-  rstrOnlineGenesisDefName = 'Онлайн коллекция Genesis';
+  rstrLocalLibRusEcDefName = 'Р›РѕРєР°Р»СЊРЅР°СЏ РєРѕР»Р»РµРєС†РёСЏ Р›РёР±СЂСѓСЃРµРє';
+  rstrOnlineLibRusEcDefName = 'РћРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёСЏ Р›РёР±СЂСѓСЃРµРє';
+  rstrOnlineGenesisDefName = 'РћРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёСЏ Genesis';
 
   rstrLocalLibRusEcDefLocation = 'librusec_local';
   rstrOnlineLibRusEcDefLocation = 'librusec_online';
@@ -43,14 +43,14 @@ resourcestring
   //
   //
   //
-  rstrBookProcessedMsg1 = 'Обработано книг: %u';
-  rstrBookProcessedMsg2 = 'Обработано книг: %u из %u';
+  rstrBookProcessedMsg1 = 'РћР±СЂР°Р±РѕС‚Р°РЅРѕ РєРЅРёРі: %u';
+  rstrBookProcessedMsg2 = 'РћР±СЂР°Р±РѕС‚Р°РЅРѕ РєРЅРёРі: %u РёР· %u';
 
   //
-  // Форма редактирования/создания FBD и пунк меню в главной форме
+  // Р¤РѕСЂРјР° СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёСЏ/СЃРѕР·РґР°РЅРёСЏ FBD Рё РїСѓРЅРє РјРµРЅСЋ РІ РіР»Р°РІРЅРѕР№ С„РѕСЂРјРµ
   //
-  rstrEditFBD = 'Редактировать FBD';
-  rstrConvert2FBD = 'Преобразовать FBD';
+  rstrEditFBD = 'Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ FBD';
+  rstrConvert2FBD = 'РџСЂРµРѕР±СЂР°Р·РѕРІР°С‚СЊ FBD';
 
 implementation
 

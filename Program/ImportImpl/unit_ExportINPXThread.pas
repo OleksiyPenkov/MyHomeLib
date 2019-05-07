@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov    nrymanov@gmail.com
   *                     Aleksey Penkov  alex.penkov@gmail.com
@@ -12,7 +12,7 @@
   * $Id: unit_ExportINPXThread.pas 1143 2014-03-26 04:50:02Z ENikS $
   *
   * History
-  * NickR 08.04.2010    Информация из глобальных переменных зачитывается в контексте основного потока.
+  * NickR 08.04.2010    РРЅС„РѕСЂРјР°С†РёСЏ РёР· РіР»РѕР±Р°Р»СЊРЅС‹С… РїРµСЂРµРјРµРЅРЅС‹С… Р·Р°С‡РёС‚С‹РІР°РµС‚СЃСЏ РІ РєРѕРЅС‚РµРєСЃС‚Рµ РѕСЃРЅРѕРІРЅРѕРіРѕ РїРѕС‚РѕРєР°.
   *
   ****************************************************************************** *)
 
@@ -61,12 +61,12 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrVersionFrom = 'Версия от ddddd';
-  rstrExportingCollection = 'Экспортируем коллекцию.';
-  rstrSaving = 'Сохраняем документ. Подождите, пожалуйста.';
+  rstrVersionFrom = 'Р’РµСЂСЃРёСЏ РѕС‚ ddddd';
+  rstrExportingCollection = 'Р­РєСЃРїРѕСЂС‚РёСЂСѓРµРј РєРѕР»Р»РµРєС†РёСЋ.';
+  rstrSaving = 'РЎРѕС…СЂР°РЅСЏРµРј РґРѕРєСѓРјРµРЅС‚. РџРѕРґРѕР¶РґРёС‚Рµ, РїРѕР¶Р°Р»СѓР№СЃС‚Р°.';
 
 const
-  BOOKS_INFO_FILE = 'books.inp'; { TODO -oNickR -cRefactoring : добавить в систебные файлы? }
+  BOOKS_INFO_FILE = 'books.inp'; { TODO -oNickR -cRefactoring : РґРѕР±Р°РІРёС‚СЊ РІ СЃРёСЃС‚РµР±РЅС‹Рµ С„Р°Р№Р»С‹? }
 
   { TImportXMLThread }
 
@@ -156,7 +156,7 @@ begin
         sources[2].Stream := TStringStream.Create('AUTHOR;GENRE;TITLE;SERIES;SERNO;FILE;SIZE;LIBID;DEL;EXT;DATE;INSNO;FOLDER;LANG;KEYWORDS;');
 
         //
-        // Устанавливаем комментарий для INPX-файла
+        // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РєРѕРјРјРµРЅС‚Р°СЂРёР№ РґР»СЏ INPX-С„Р°Р№Р»Р°
         //
         header.Name := FCollection.GetProperty(PROP_DISPLAYNAME);
         header.FileName := ExtractFileName(FCollection.GetProperty(PROP_DATAFILE));
@@ -194,7 +194,7 @@ var
   title: string;
 begin
   //
-  // Список авторов
+  // РЎРїРёСЃРѕРє Р°РІС‚РѕСЂРѕРІ
   //
   strAuthors :=
     TArrayUtils.Join<TAuthorData>(
@@ -207,7 +207,7 @@ begin
     ) + INPX_ITEM_DELIMITER;
 
   //
-  // Список жанров
+  // РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ
   //
   strGenres :=
     TArrayUtils.Join<TGenreData>(

@@ -237,7 +237,7 @@ object frmMain: TfrmMain
     Width = 786
     Height = 685
     HelpContext = 1
-    ActivePage = tsByAuthor
+    ActivePage = tsBySerie
     Align = alClient
     OwnerDraw = True
     TabOrder = 2
@@ -485,44 +485,44 @@ object frmMain: TfrmMain
           Columns = <
             item
               BiDiMode = bdLeftToRight
+              Hint = 
+                'Text is initially centered and has a left-to-right directionalit' +
+                'y.'
               MaxWidth = 1000
               MinWidth = 40
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 0
               Spacing = 10
+              Text = #1053#1072#1079#1074#1072#1085#1080#1077
               Width = 267
-              WideText = #1053#1072#1079#1074#1072#1085#1080#1077
-              WideHint = 
-                'Text is initially centered and has a left-to-right directionalit' +
-                'y.'
             end
             item
               Alignment = taCenter
               BiDiMode = bdLeftToRight
+              Hint = 
+                'Text is initially left aligned and has a left-to-right direction' +
+                'ality.'
               MaxWidth = 80
               MinWidth = 35
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 1
               Spacing = 10
+              Text = #8470
               Width = 40
-              WideText = #8470
-              WideHint = 
-                'Text is initially left aligned and has a left-to-right direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
               BiDiMode = bdRightToLeft
+              Hint = 
+                'Text is initially left aligned and has a right-to-left direction' +
+                'ality.'
               MaxWidth = 200
               MinWidth = 65
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 2
               Spacing = 10
+              Text = #1056#1072#1079#1084#1077#1088
               Width = 65
-              WideText = #1056#1072#1079#1084#1077#1088
-              WideHint = 
-                'Text is initially left aligned and has a right-to-left direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
@@ -531,16 +531,16 @@ object frmMain: TfrmMain
               MinWidth = 60
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 3
+              Text = #1056#1077#1081#1090#1080#1085#1075
               Width = 60
-              WideText = #1056#1077#1081#1090#1080#1085#1075
             end
             item
               BiDiMode = bdLeftToRight
               MinWidth = 40
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 4
+              Text = #1046#1072#1085#1088
               Width = 205
-              WideText = #1046#1072#1085#1088
             end>
         end
       end
@@ -815,45 +815,45 @@ object frmMain: TfrmMain
               MinWidth = 30
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 0
+              Text = #1040#1074#1090#1086#1088
               Width = 131
-              WideText = #1040#1074#1090#1086#1088
             end
             item
+              Hint = 
+                'Text is initially centered and has a left-to-right directionalit' +
+                'y.'
               MinWidth = 30
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 1
               Spacing = 10
+              Text = #1053#1072#1079#1074#1072#1085#1080#1077
               Width = 181
-              WideText = #1053#1072#1079#1074#1072#1085#1080#1077
-              WideHint = 
-                'Text is initially centered and has a left-to-right directionalit' +
-                'y.'
             end
             item
               Alignment = taCenter
+              Hint = 
+                'Text is initially left aligned and has a left-to-right direction' +
+                'ality.'
               MaxWidth = 90
               MinWidth = 30
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 2
               Spacing = 10
+              Text = #8470
               Width = 30
-              WideText = #8470
-              WideHint = 
-                'Text is initially left aligned and has a left-to-right direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
+              Hint = 
+                'Text is initially left aligned and has a right-to-left direction' +
+                'ality.'
               MaxWidth = 100
               MinWidth = 65
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 3
               Spacing = 10
+              Text = #1056#1072#1079#1084#1077#1088
               Width = 65
-              WideText = #1056#1072#1079#1084#1077#1088
-              WideHint = 
-                'Text is initially left aligned and has a right-to-left direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
@@ -861,19 +861,19 @@ object frmMain: TfrmMain
               MinWidth = 65
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 4
+              Text = #1056#1077#1081#1090#1080#1085#1075
               Width = 65
-              WideText = #1056#1077#1081#1090#1080#1085#1075
             end
             item
               Position = 5
+              Text = #1046#1072#1085#1088
               Width = 120
-              WideText = #1046#1072#1085#1088
             end
             item
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring, coAllowFocus]
               Position = 6
+              Text = #1044#1086#1073#1072#1074#1083#1077#1085#1086
               Width = 56
-              WideText = #1044#1086#1073#1072#1074#1083#1077#1085#1086
             end>
         end
       end
@@ -1066,43 +1066,43 @@ object frmMain: TfrmMain
           Columns = <
             item
               BiDiMode = bdLeftToRight
+              Hint = 
+                'Text is initially centered and has a left-to-right directionalit' +
+                'y.'
               MinWidth = 30
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 0
               Spacing = 10
+              Text = #1040#1074#1090#1086#1088'/'#1057#1077#1088#1080#1103'/'#1053#1072#1079#1074#1072#1085#1080#1077
               Width = 244
-              WideText = #1040#1074#1090#1086#1088'/'#1057#1077#1088#1080#1103'/'#1053#1072#1079#1074#1072#1085#1080#1077
-              WideHint = 
-                'Text is initially centered and has a left-to-right directionalit' +
-                'y.'
             end
             item
               Alignment = taCenter
               BiDiMode = bdLeftToRight
+              Hint = 
+                'Text is initially left aligned and has a left-to-right direction' +
+                'ality.'
               MaxWidth = 90
               MinWidth = 30
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coShowDropMark, coVisible, coAutoSpring]
               Position = 1
               Spacing = 10
+              Text = #8470
               Width = 30
-              WideText = #8470
-              WideHint = 
-                'Text is initially left aligned and has a left-to-right direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
               BiDiMode = bdRightToLeft
+              Hint = 
+                'Text is initially left aligned and has a right-to-left direction' +
+                'ality.'
               MaxWidth = 100
               MinWidth = 65
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 2
               Spacing = 10
+              Text = #1056#1072#1079#1084#1077#1088
               Width = 65
-              WideText = #1056#1072#1079#1084#1077#1088
-              WideHint = 
-                'Text is initially left aligned and has a right-to-left direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
@@ -1111,8 +1111,8 @@ object frmMain: TfrmMain
               MinWidth = 65
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 3
+              Text = #1056#1077#1081#1090#1080#1085#1075
               Width = 65
-              WideText = #1056#1077#1081#1090#1080#1085#1075
             end
             item
               BiDiMode = bdLeftToRight
@@ -1255,69 +1255,69 @@ object frmMain: TfrmMain
               MaxWidth = 1000
               MinWidth = 30
               Position = 0
+              Text = #1040#1074#1090#1086#1088
               Width = 200
-              WideText = #1040#1074#1090#1086#1088
             end
             item
+              Hint = 
+                'Text is initially centered and has a left-to-right directionalit' +
+                'y.'
               MaxWidth = 1000
               MinWidth = 30
               Position = 1
               Spacing = 10
+              Text = #1053#1072#1079#1074#1072#1085#1080#1077
               Width = 200
-              WideText = #1053#1072#1079#1074#1072#1085#1080#1077
-              WideHint = 
-                'Text is initially centered and has a left-to-right directionalit' +
-                'y.'
             end
             item
               MaxWidth = 1000
               MinWidth = 30
               Position = 2
+              Text = #1057#1077#1088#1080#1103
               Width = 200
-              WideText = #1057#1077#1088#1080#1103
             end
             item
               Alignment = taCenter
+              Hint = 
+                'Text is initially left aligned and has a left-to-right direction' +
+                'ality.'
               MaxWidth = 60
               MinWidth = 30
               Position = 3
               Spacing = 10
+              Text = #8470
               Width = 45
-              WideText = #8470
-              WideHint = 
-                'Text is initially left aligned and has a left-to-right direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
+              Hint = 
+                'Text is initially left aligned and has a right-to-left direction' +
+                'ality.'
               MaxWidth = 100
               MinWidth = 65
               Position = 4
               Spacing = 10
+              Text = #1056#1072#1079#1084#1077#1088
               Width = 65
-              WideText = #1056#1072#1079#1084#1077#1088
-              WideHint = 
-                'Text is initially left aligned and has a right-to-left direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
               MaxWidth = 60
               MinWidth = 60
               Position = 5
+              Text = #1056#1077#1081#1090#1080#1085#1075
               Width = 60
-              WideText = #1056#1077#1081#1090#1080#1085#1075
             end
             item
               MinWidth = 30
               Position = 6
+              Text = #1046#1072#1085#1088
               Width = 205
-              WideText = #1046#1072#1085#1088
             end
             item
               Position = 7
+              Text = #1044#1086#1073#1072#1074#1083#1077#1085#1086
               Width = 80
-              WideText = #1044#1086#1073#1072#1074#1083#1077#1085#1086
             end>
         end
       end
@@ -1949,41 +1949,41 @@ object frmMain: TfrmMain
           Columns = <
             item
               BiDiMode = bdLeftToRight
+              Hint = 
+                'Text is initially centered and has a left-to-right directionalit' +
+                'y.'
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 0
               Spacing = 10
+              Text = #1053#1072#1079#1074#1072#1085#1080#1077
               Width = 305
-              WideText = #1053#1072#1079#1074#1072#1085#1080#1077
-              WideHint = 
-                'Text is initially centered and has a left-to-right directionalit' +
-                'y.'
             end
             item
               Alignment = taCenter
               BiDiMode = bdLeftToRight
+              Hint = 
+                'Text is initially left aligned and has a left-to-right direction' +
+                'ality.'
               MaxWidth = 90
               MinWidth = 35
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 1
               Spacing = 10
+              Text = #8470
               Width = 38
-              WideText = #8470
-              WideHint = 
-                'Text is initially left aligned and has a left-to-right direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
               BiDiMode = bdRightToLeft
+              Hint = 
+                'Text is initially left aligned and has a right-to-left direction' +
+                'ality.'
               MinWidth = 65
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 2
               Spacing = 10
+              Text = #1056#1072#1079#1084#1077#1088
               Width = 65
-              WideText = #1056#1072#1079#1084#1077#1088
-              WideHint = 
-                'Text is initially left aligned and has a right-to-left direction' +
-                'ality.'
             end
             item
               Alignment = taCenter
@@ -1992,15 +1992,15 @@ object frmMain: TfrmMain
               MinWidth = 60
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 3
+              Text = #1056#1077#1081#1090#1080#1085#1075
               Width = 60
-              WideText = #1056#1077#1081#1090#1080#1085#1075
             end
             item
               BiDiMode = bdLeftToRight
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 4
+              Text = #1050#1086#1083#1083#1077#1082#1094#1080#1103
               Width = 200
-              WideText = #1050#1086#1083#1083#1077#1082#1094#1080#1103
             end>
         end
       end
@@ -2190,25 +2190,25 @@ object frmMain: TfrmMain
           Columns = <
             item
               Position = 0
+              Text = #1040#1074#1090#1086#1088
               Width = 200
-              WideText = #1040#1074#1090#1086#1088
             end
             item
               Position = 1
+              Text = #1053#1072#1079#1074#1072#1085#1080#1077
               Width = 200
-              WideText = #1053#1072#1079#1074#1072#1085#1080#1077
             end
             item
               Alignment = taRightJustify
               Position = 2
+              Text = #1056#1072#1079#1084#1077#1088
               Width = 100
-              WideText = #1056#1072#1079#1084#1077#1088
             end
             item
               Alignment = taCenter
               Position = 3
+              Text = #1057#1090#1072#1090#1091#1089
               Width = 100
-              WideText = #1057#1090#1072#1090#1091#1089
             end>
         end
       end
@@ -2806,7 +2806,7 @@ object frmMain: TfrmMain
     Left = 280
     Top = 280
     Bitmap = {
-      494C01011B001D00180020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C01011B001D00040020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000080000000E0000000010020000000000000C0
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -6514,7 +6514,7 @@ object frmMain: TfrmMain
     Left = 280
     Top = 232
     Bitmap = {
-      494C010125002900180010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
+      494C010125002900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000040000000A0000000010020000000000000A0
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7868,7 +7868,7 @@ object frmMain: TfrmMain
     Left = 280
     Top = 360
     Bitmap = {
-      494C01010C001100180010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010C001100040010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8535,7 +8535,7 @@ object frmMain: TfrmMain
     Left = 280
     Top = 320
     Bitmap = {
-      494C010118001D00180020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      494C010118001D00040020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000080000000E0000000010020000000000000C0
       0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -12705,7 +12705,7 @@ object frmMain: TfrmMain
     Left = 576
     Top = 264
     Bitmap = {
-      494C01010A000D00180010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
+      494C01010A000D00040010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000101010F010101170101011A0101
       011A0101011A0101011A0101011A0101011A0101011A0101011A0101011A0101

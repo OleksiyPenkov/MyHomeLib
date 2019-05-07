@@ -1,18 +1,18 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Author(s)           Nick Rymanov     nrymanov@gmail.com
   * Created             19.02.2010
-  * Description         набор функций для получения информации из файлов в формате fb2
+  * Description         РЅР°Р±РѕСЂ С„СѓРЅРєС†РёР№ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РёРЅС„РѕСЂРјР°С†РёРё РёР· С„Р°Р№Р»РѕРІ РІ С„РѕСЂРјР°С‚Рµ fb2
   *
   * $Id: unit_FB2Utils.pas 1064 2011-09-02 11:33:04Z eg_ $
   *
   * History
-  * NickR 19.02.2010    создан
-  *       07.05.2010    Формат обложки определяется более точно (не на основании расширения).
+  * NickR 19.02.2010    СЃРѕР·РґР°РЅ
+  *       07.05.2010    Р¤РѕСЂРјР°С‚ РѕР±Р»РѕР¶РєРё РѕРїСЂРµРґРµР»СЏРµС‚СЃСЏ Р±РѕР»РµРµ С‚РѕС‡РЅРѕ (РЅРµ РЅР° РѕСЃРЅРѕРІР°РЅРёРё СЂР°СЃС€РёСЂРµРЅРёСЏ).
   *
   ****************************************************************************** *)
 
@@ -31,41 +31,41 @@ function GetBookAnnotation(book: IXMLFictionBook): string;
 function GetBookInfo(book: IXMLFictionBook): string;
 function FormatName(const LastName: string; const FirstName: string; const MiddleName: string; const nickName: string = ''; onlyInitials: Boolean = False): string;
 
-{ TODO -oNickR -cRefactoring : доделать эту функцию. Для этого необходимо вынести определение TBookRecord в доступное место }
+{ TODO -oNickR -cRefactoring : РґРѕРґРµР»Р°С‚СЊ СЌС‚Сѓ С„СѓРЅРєС†РёСЋ. Р”Р»СЏ СЌС‚РѕРіРѕ РЅРµРѕР±С…РѕРґРёРјРѕ РІС‹РЅРµСЃС‚Рё РѕРїСЂРµРґРµР»РµРЅРёРµ TBookRecord РІ РґРѕСЃС‚СѓРїРЅРѕРµ РјРµСЃС‚Рѕ }
 // procedure GetBookInfo(book: IXMLFictionBook; var R: TBookRecord);
 
 const
   dlmtr = ': ';
 
 resourcestring
-  rstrFileInfo = 'Информация о файле';
-  rstrFolder = 'Папка';
-  rstrFile = 'Файл';
-  rstrSize = 'Размер';
-  rstrAdded = 'Добавлен';
-  rstrGeneralInfo = 'Общая информация';
-  rstrSrclInfo = 'Информация об источнике';
-  rstrTitle = 'Название';
-  rstrAuthors = 'Автор(ы)';
-  rstrSingleSeries = 'Серия';
-  rstrGenre = 'Жанр';
-  rstrKeywords = 'Ключевые слова';
-  rstrDate = 'Дата';
-  rstrBookLanguage = 'Язык книги';
-  rstrSourceLanguage = 'Язык оригинала';
-  rstrTranslators = 'Переводчик(и)';
-  rstrPublisherInfo = 'Издательская информация';
-  rstrPublisher = 'Издательство';
-  rstrCity = 'Город';
-  rstrYear = 'Год';
+  rstrFileInfo = 'РРЅС„РѕСЂРјР°С†РёСЏ Рѕ С„Р°Р№Р»Рµ';
+  rstrFolder = 'РџР°РїРєР°';
+  rstrFile = 'Р¤Р°Р№Р»';
+  rstrSize = 'Р Р°Р·РјРµСЂ';
+  rstrAdded = 'Р”РѕР±Р°РІР»РµРЅ';
+  rstrGeneralInfo = 'РћР±С‰Р°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ';
+  rstrSrclInfo = 'РРЅС„РѕСЂРјР°С†РёСЏ РѕР± РёСЃС‚РѕС‡РЅРёРєРµ';
+  rstrTitle = 'РќР°Р·РІР°РЅРёРµ';
+  rstrAuthors = 'РђРІС‚РѕСЂ(С‹)';
+  rstrSingleSeries = 'РЎРµСЂРёСЏ';
+  rstrGenre = 'Р–Р°РЅСЂ';
+  rstrKeywords = 'РљР»СЋС‡РµРІС‹Рµ СЃР»РѕРІР°';
+  rstrDate = 'Р”Р°С‚Р°';
+  rstrBookLanguage = 'РЇР·С‹Рє РєРЅРёРіРё';
+  rstrSourceLanguage = 'РЇР·С‹Рє РѕСЂРёРіРёРЅР°Р»Р°';
+  rstrTranslators = 'РџРµСЂРµРІРѕРґС‡РёРє(Рё)';
+  rstrPublisherInfo = 'РР·РґР°С‚РµР»СЊСЃРєР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ';
+  rstrPublisher = 'РР·РґР°С‚РµР»СЊСЃС‚РІРѕ';
+  rstrCity = 'Р“РѕСЂРѕРґ';
+  rstrYear = 'Р“РѕРґ';
   rstrISBN = 'ISBN';
-  rstrOCRInfo ='Информация о документе (OCR)';
-  rstrProgram = 'Программа';
+  rstrOCRInfo ='РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РґРѕРєСѓРјРµРЅС‚Рµ (OCR)';
+  rstrProgram = 'РџСЂРѕРіСЂР°РјРјР°';
   rstrID = 'ID';
-  rstrVersion = 'Версия';
-  rstrSource = 'Источник';
-  rstrSourceAuthor = 'Автор источника';
-  rstrHistory = 'История';
+  rstrVersion = 'Р’РµСЂСЃРёСЏ';
+  rstrSource = 'РСЃС‚РѕС‡РЅРёРє';
+  rstrSourceAuthor = 'РђРІС‚РѕСЂ РёСЃС‚РѕС‡РЅРёРєР°';
+  rstrHistory = 'РСЃС‚РѕСЂРёСЏ';
 
 implementation
 
@@ -92,7 +92,7 @@ begin
     coverID := book.Description.Titleinfo.Coverpage[0].xlinkHref;
     if Pos('#', coverID) = 1 then
     begin
-      // это локальная ссылка (начинается с #)
+      // СЌС‚Рѕ Р»РѕРєР°Р»СЊРЅР°СЏ СЃСЃС‹Р»РєР° (РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃ #)
       coverID := Copy(coverID, 2, MaxInt);
 
       for i := 0 to book.Binary.Count - 1 do

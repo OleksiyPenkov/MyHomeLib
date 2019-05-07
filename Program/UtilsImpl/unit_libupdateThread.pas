@@ -1,8 +1,8 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2010 Aleksey Penkov
+  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
   *
   * Authors Aleksey Penkov   alex.penkov@gmail.com
   *         Nick Rymanov     nrymanov@gmail.com
@@ -71,31 +71,31 @@ uses
   unit_Logger;
 
 resourcestring
-  rstrDownloadProgress = 'Загружено: %u%% из %u байт';
-  rstrCheckingUpdate = 'Проверяем наличие обновлений основной базы ...';
-  rstrCheckingExtraUpdate = 'Проверяем наличие обновлений для on-line ...';
-  rstrErrorCheckingUpdate = 'ОШИБКА. Не удалось проверить обновление.';
-  rstrErrorDownloadUpdate = 'ОШИБКА. Не удалось скачать обновление.';
-  rstrReady = 'Готово';
-  rstrDownloadingUpdates = 'Загрузка обновлений ...';
-  rstrYouHaveLatestListsVersion = 'У вас самая свежая версия списков.';
-  rstrUpdatingFromLocalArchive = 'Обновление из локального архива';
-  rstrListsUpdateIsAvailable = 'Доступно обновление списков до версии %d';
-  rstrListsExtraUpdateIsAvailable = 'Доступно обновление on-line списков до версии %d';
-  rstrNothingToUpdate = 'Нечего обновлять!';
-  rstrUpdateComplete = 'Обновление завершено.';
-  rstrUpdateFailed = 'Обновление не удалось.';
-  rstrBackupUserData = 'Сохранение резервной копии пользовательских данных ...';
-  rstrRestoreUserData = 'Восстановление пользовательских данных ...';
-  rstrRemovingOldCollection = 'Удаление всех записей старой коллекции "%s" ...';
-  rstrCreatingCollection = 'Создание новой коллекции  "%s"...';
-  rstrSpeed = 'Загрузка: %s Kb/s';
-  rstrConnectingToServer = 'Подключение к серверу ...';
-  rstrOnlineCollectionUpdate = 'Обновление коллекции "%s" до версии %d:';
-  rstrLocalCollectionUpdate = 'Обновление коллекции "%s":';
-  rstrUpdateFailedDownload = 'Загрузка обновлений не удалась.';
-  rstrCancelledByUser = 'Операция отменена пользователем.';
-  rstrImportIntoCollection = 'Импорт данных в коллекцию:';
+  rstrDownloadProgress = 'Р—Р°РіСЂСѓР¶РµРЅРѕ: %u%% РёР· %u Р±Р°Р№С‚';
+  rstrCheckingUpdate = 'РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ РѕР±РЅРѕРІР»РµРЅРёР№ РѕСЃРЅРѕРІРЅРѕР№ Р±Р°Р·С‹ ...';
+  rstrCheckingExtraUpdate = 'РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ РѕР±РЅРѕРІР»РµРЅРёР№ РґР»СЏ on-line ...';
+  rstrErrorCheckingUpdate = 'РћРЁРР‘РљРђ. РќРµ СѓРґР°Р»РѕСЃСЊ РїСЂРѕРІРµСЂРёС‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ.';
+  rstrErrorDownloadUpdate = 'РћРЁРР‘РљРђ. РќРµ СѓРґР°Р»РѕСЃСЊ СЃРєР°С‡Р°С‚СЊ РѕР±РЅРѕРІР»РµРЅРёРµ.';
+  rstrReady = 'Р“РѕС‚РѕРІРѕ';
+  rstrDownloadingUpdates = 'Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёР№ ...';
+  rstrYouHaveLatestListsVersion = 'РЈ РІР°СЃ СЃР°РјР°СЏ СЃРІРµР¶Р°СЏ РІРµСЂСЃРёСЏ СЃРїРёСЃРєРѕРІ.';
+  rstrUpdatingFromLocalArchive = 'РћР±РЅРѕРІР»РµРЅРёРµ РёР· Р»РѕРєР°Р»СЊРЅРѕРіРѕ Р°СЂС…РёРІР°';
+  rstrListsUpdateIsAvailable = 'Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ СЃРїРёСЃРєРѕРІ РґРѕ РІРµСЂСЃРёРё %d';
+  rstrListsExtraUpdateIsAvailable = 'Р”РѕСЃС‚СѓРїРЅРѕ РѕР±РЅРѕРІР»РµРЅРёРµ on-line СЃРїРёСЃРєРѕРІ РґРѕ РІРµСЂСЃРёРё %d';
+  rstrNothingToUpdate = 'РќРµС‡РµРіРѕ РѕР±РЅРѕРІР»СЏС‚СЊ!';
+  rstrUpdateComplete = 'РћР±РЅРѕРІР»РµРЅРёРµ Р·Р°РІРµСЂС€РµРЅРѕ.';
+  rstrUpdateFailed = 'РћР±РЅРѕРІР»РµРЅРёРµ РЅРµ СѓРґР°Р»РѕСЃСЊ.';
+  rstrBackupUserData = 'РЎРѕС…СЂР°РЅРµРЅРёРµ СЂРµР·РµСЂРІРЅРѕР№ РєРѕРїРёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… РґР°РЅРЅС‹С… ...';
+  rstrRestoreUserData = 'Р’РѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёС… РґР°РЅРЅС‹С… ...';
+  rstrRemovingOldCollection = 'РЈРґР°Р»РµРЅРёРµ РІСЃРµС… Р·Р°РїРёСЃРµР№ СЃС‚Р°СЂРѕР№ РєРѕР»Р»РµРєС†РёРё "%s" ...';
+  rstrCreatingCollection = 'РЎРѕР·РґР°РЅРёРµ РЅРѕРІРѕР№ РєРѕР»Р»РµРєС†РёРё  "%s"...';
+  rstrSpeed = 'Р—Р°РіСЂСѓР·РєР°: %s Kb/s';
+  rstrConnectingToServer = 'РџРѕРґРєР»СЋС‡РµРЅРёРµ Рє СЃРµСЂРІРµСЂСѓ ...';
+  rstrOnlineCollectionUpdate = 'РћР±РЅРѕРІР»РµРЅРёРµ РєРѕР»Р»РµРєС†РёРё "%s" РґРѕ РІРµСЂСЃРёРё %d:';
+  rstrLocalCollectionUpdate = 'РћР±РЅРѕРІР»РµРЅРёРµ РєРѕР»Р»РµРєС†РёРё "%s":';
+  rstrUpdateFailedDownload = 'Р—Р°РіСЂСѓР·РєР° РѕР±РЅРѕРІР»РµРЅРёР№ РЅРµ СѓРґР°Р»Р°СЃСЊ.';
+  rstrCancelledByUser = 'РћРїРµСЂР°С†РёСЏ РѕС‚РјРµРЅРµРЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј.';
+  rstrImportIntoCollection = 'РРјРїРѕСЂС‚ РґР°РЅРЅС‹С… РІ РєРѕР»Р»РµРєС†РёСЋ:';
 
 { TLibUpdateThread }
 
@@ -103,7 +103,7 @@ constructor TLibUpdateThread.Create;
 begin
   inherited Create(MHL_INVALID_ID);
   //
-  // Сейчас считается, что обновления могут быть только для коллекций, содержащих fb2 жанры
+  // РЎРµР№С‡Р°СЃ СЃС‡РёС‚Р°РµС‚СЃСЏ, С‡С‚Рѕ РѕР±РЅРѕРІР»РµРЅРёСЏ РјРѕРіСѓС‚ Р±С‹С‚СЊ С‚РѕР»СЊРєРѕ РґР»СЏ РєРѕР»Р»РµРєС†РёР№, СЃРѕРґРµСЂР¶Р°С‰РёС… fb2 Р¶Р°РЅСЂС‹
   //
   FGenresType := gtFb2;
 end;
@@ -232,7 +232,7 @@ begin
             Collection.TruncateTablesBeforeImport;
           end; //if FULL
 
-          //  импортирум данные
+          //  РёРјРїРѕСЂС‚РёСЂСѓРј РґР°РЅРЅС‹Рµ
           Teletype(rstrImportIntoCollection, tsInfo);
           Import(InpxFileName, not updateInfo.Full, Collection);
 
@@ -273,7 +273,7 @@ begin
       GetLogger.Log('TLibUpdateThread.WorkFunction ERROR', E.Message);
 {$ENDIF}
       //
-      // TODO -cBug: вообще говоря, значение i здесь неопределено
+      // TODO -cBug: РІРѕРѕР±С‰Рµ РіРѕРІРѕСЂСЏ, Р·РЅР°С‡РµРЅРёРµ i Р·РґРµСЃСЊ РЅРµРѕРїСЂРµРґРµР»РµРЅРѕ
       //
       DeleteFile(Settings.WorkPath + Settings.Updates.Items[i].UpdateFile);
     end;
