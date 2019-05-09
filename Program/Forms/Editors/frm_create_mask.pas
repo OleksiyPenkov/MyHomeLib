@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -116,14 +116,14 @@ uses
 {$R *.dfm}
 
 resourcestring
-  rstrFileTemplateCaption = 'Редактирование шаблона: Имя файла';
-  rstrPathTemplateCaption = 'Редактирование шаблона: Путь к файлу';
-  rstrTextTemplateCaption = 'Редактирование шаблона: Текст';
+  rstrFileTemplateCaption = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С€Р°Р±Р»РѕРЅР°: РРјСЏ С„Р°Р№Р»Р°';
+  rstrPathTemplateCaption = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С€Р°Р±Р»РѕРЅР°: РџСѓС‚СЊ Рє С„Р°Р№Р»Сѓ';
+  rstrTextTemplateCaption = 'Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С€Р°Р±Р»РѕРЅР°: РўРµРєСЃС‚';
   rstrSampleTemplate = '[%s [(%n) ]- ]%t';
-  rstrWrongTemplate = 'Шаблон неверен';
-  rstrCheckTemplateValidity = 'Проверьте правильность шаблона';
-  rstrCheckBrackets = 'Проверьте соответствие открывающих и закрывающих скобок блоков элемнтов';
-  rstrWrongTemplateElements = 'Неверные элементы шаблона';
+  rstrWrongTemplate = 'РЁР°Р±Р»РѕРЅ РЅРµРІРµСЂРµРЅ';
+  rstrCheckTemplateValidity = 'РџСЂРѕРІРµСЂСЊС‚Рµ РїСЂР°РІРёР»СЊРЅРѕСЃС‚СЊ С€Р°Р±Р»РѕРЅР°';
+  rstrCheckBrackets = 'РџСЂРѕРІРµСЂСЊС‚Рµ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ РѕС‚РєСЂС‹РІР°СЋС‰РёС… Рё Р·Р°РєСЂС‹РІР°СЋС‰РёС… СЃРєРѕР±РѕРє Р±Р»РѕРєРѕРІ СЌР»РµРјРЅС‚РѕРІ';
+  rstrWrongTemplateElements = 'РќРµРІРµСЂРЅС‹Рµ СЌР»РµРјРµРЅС‚С‹ С€Р°Р±Р»РѕРЅР°';
 
 const
   DlgCaptions: array [TTemplateType] of string = (rstrFileTemplateCaption, rstrPathTemplateCaption, rstrTextTemplateCaption);

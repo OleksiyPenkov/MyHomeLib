@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -12,7 +12,7 @@
   * $Id: frm_add_nonfb2.pas 1127 2013-06-13 05:45:32Z koreec $
   *
   * History
-  * NickR 02.03.2010    Код переформатирован
+  * NickR 02.03.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -184,10 +184,10 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrFileNotSelected = 'Файл не выбран!';
-  rstrProvideAtLeastOneAuthor = 'Укажите минимум одного автора!';
-  rstrProvideBookTitle = 'Укажите название книги!';
-  rstrFailedToRename = 'Переименование не удалось!' + CRLF + 'Возможно, файл заблокирован другой программой.';
+  rstrFileNotSelected = 'Р¤Р°Р№Р» РЅРµ РІС‹Р±СЂР°РЅ!';
+  rstrProvideAtLeastOneAuthor = 'РЈРєР°Р¶РёС‚Рµ РјРёРЅРёРјСѓРј РѕРґРЅРѕРіРѕ Р°РІС‚РѕСЂР°!';
+  rstrProvideBookTitle = 'РЈРєР°Р¶РёС‚Рµ РЅР°Р·РІР°РЅРёРµ РєРЅРёРіРё!';
+  rstrFailedToRename = 'РџРµСЂРµРёРјРµРЅРѕРІР°РЅРёРµ РЅРµ СѓРґР°Р»РѕСЃСЊ!' + CRLF + 'Р’РѕР·РјРѕР¶РЅРѕ, С„Р°Р№Р» Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ РґСЂСѓРіРѕР№ РїСЂРѕРіСЂР°РјРјРѕР№.';
 
 {$R *.dfm}
 
@@ -540,7 +540,7 @@ procedure TfrmAddnonfb2.btnNextClick(Sender: TObject);
 var
   archiver: TMHLZip;
 begin
-  // Конвертация в FBD и добавление в базу
+  // РљРѕРЅРІРµСЂС‚Р°С†РёСЏ РІ FBD Рё РґРѕР±Р°РІР»РµРЅРёРµ РІ Р±Р°Р·Сѓ
   Screen.Cursor := crHourGlass;
   Enabled := False;
   try
@@ -549,7 +549,7 @@ begin
     begin
       FillFBDData;
 
-      // после создания архива нужно узнать реальный номер внутри
+      // РїРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ Р°СЂС…РёРІР° РЅСѓР¶РЅРѕ СѓР·РЅР°С‚СЊ СЂРµР°Р»СЊРЅС‹Р№ РЅРѕРјРµСЂ РІРЅСѓС‚СЂРё
       FBookRecord.CollectionRoot := FRootPath;
       try
         archiver := TMHLZip.Create(FBookRecord.GetBookFileName, True);
@@ -557,7 +557,7 @@ begin
       finally
         FreeAndNil(archiver);
       end;
-      // заносим данные в БД
+      // Р·Р°РЅРѕСЃРёРј РґР°РЅРЅС‹Рµ РІ Р‘Р”
       CommitData;
     end
       else CommitData;
@@ -629,13 +629,13 @@ begin
     Exit;
 
   //
-  // Пропустим fb2-документы и зипы
+  // РџСЂРѕРїСѓСЃС‚РёРј fb2-РґРѕРєСѓРјРµРЅС‚С‹ Рё Р·РёРїС‹
   //
   if (CompareText(Ext, FB2_EXTENSION) = 0) or (CompareText(Ext, ZIP_EXTENSION) = 0) then
     Exit;
 
   //
-  // Проверим, есть ли у нас ридер для этого документа
+  // РџСЂРѕРІРµСЂРёРј, РµСЃС‚СЊ Р»Рё Сѓ РЅР°СЃ СЂРёРґРµСЂ РґР»СЏ СЌС‚РѕРіРѕ РґРѕРєСѓРјРµРЅС‚Р°
   //
 
   if Settings.Readers.Find(Ext) = nil then

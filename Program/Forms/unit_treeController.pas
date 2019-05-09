@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -55,27 +55,27 @@ type
     procedure FreeNodeData<T>(Sender: TBaseVirtualTree; Node: PVirtualNode);
 
     //
-    // Список авторов
+    // РЎРїРёСЃРѕРє Р°РІС‚РѕСЂРѕРІ
     //
     procedure AuthorsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
     //
-    // Список серий
+    // РЎРїРёСЃРѕРє СЃРµСЂРёР№
     //
     procedure SeriesGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
     //
-    // Список жанров
+    // РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ
     //
     procedure GenresGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
     //
-    // Список групп
+    // РЎРїРёСЃРѕРє РіСЂСѓРїРї
     //
     procedure GroupsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 
     //
-    // Список книг
+    // РЎРїРёСЃРѕРє РєРЅРёРі
     //
     procedure BooksInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
     procedure BooksGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -86,7 +86,7 @@ type
     procedure BooksCompareNodes(Sender: TBaseVirtualTree; Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
 
     //
-    // Список закачек
+    // РЎРїРёСЃРѕРє Р·Р°РєР°С‡РµРє
     //
     procedure DownloadsLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode; Stream: TStream);
     procedure DownloadsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
@@ -117,11 +117,11 @@ uses
   unit_MHLHelpers;
 
 resourcestring
-  rstrSingleSeries = 'Серия: %s';
-  rstrDownloadStateWaiting = 'Ожидание';
-  rstrDownloadStateDownloading = 'Закачка';
-  rstrDownloadStateDone = 'Готово';
-  rstrDownloadStateError = 'Ошибка';
+  rstrSingleSeries = 'РЎРµСЂРёСЏ: %s';
+  rstrDownloadStateWaiting = 'РћР¶РёРґР°РЅРёРµ';
+  rstrDownloadStateDownloading = 'Р—Р°РєР°С‡РєР°';
+  rstrDownloadStateDone = 'Р“РѕС‚РѕРІРѕ';
+  rstrDownloadStateError = 'РћС€РёР±РєР°';
 
 { TMainController }
 
@@ -186,7 +186,7 @@ begin
 end;
 
 //
-// Вспомогательные методы для подключения деревьев
+// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РјРµС‚РѕРґС‹ РґР»СЏ РїРѕРґРєР»СЋС‡РµРЅРёСЏ РґРµСЂРµРІСЊРµРІ
 //
 procedure TTreeController.ConnectAuthorsTree(tree: TVirtualStringTree);
 begin
@@ -247,7 +247,7 @@ begin
 end;
 
 //
-// Общие методы
+// РћР±С‰РёРµ РјРµС‚РѕРґС‹
 //
 procedure TTreeController.GetNodeDataSize<T>(Sender: TBaseVirtualTree; var NodeDataSize: Integer);
 begin
@@ -264,7 +264,7 @@ begin
 end;
 
 //
-// Список авторов
+// РЎРїРёСЃРѕРє Р°РІС‚РѕСЂРѕРІ
 //
 procedure TTreeController.AuthorsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
@@ -277,7 +277,7 @@ begin
 end;
 
 //
-// Список серий
+// РЎРїРёСЃРѕРє СЃРµСЂРёР№
 //
 procedure TTreeController.SeriesGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
@@ -290,7 +290,7 @@ begin
 end;
 
 //
-// Список жанров
+// РЎРїРёСЃРѕРє Р¶Р°РЅСЂРѕРІ
 //
 procedure TTreeController.GenresGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
@@ -303,7 +303,7 @@ begin
 end;
 
 //
-// Список групп
+// РЎРїРёСЃРѕРє РіСЂСѓРїРї
 //
 procedure TTreeController.GroupsGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: string);
 var
@@ -315,7 +315,7 @@ begin
 end;
 
 //
-// Список книг
+// РЎРїРёСЃРѕРє РєРЅРёРі
 //
 procedure TTreeController.BooksInitNode(Sender: TBaseVirtualTree; ParentNode, Node: PVirtualNode; var InitialStates: TVirtualNodeInitStates);
 begin
@@ -510,7 +510,7 @@ var
     if isLocalCollection(CollectionType) and (BookState = (STATE_LOCAL or STATE_UNREAD or STATE_NOREVIEW)) then
     begin
       //
-      // Для локальных коллекций показываем картинку только если есть хоть один признак из "Прочитана" или "Есть рецензия"
+      // Р”Р»СЏ Р»РѕРєР°Р»СЊРЅС‹С… РєРѕР»Р»РµРєС†РёР№ РїРѕРєР°Р·С‹РІР°РµРј РєР°СЂС‚РёРЅРєСѓ С‚РѕР»СЊРєРѕ РµСЃР»Рё РµСЃС‚СЊ С…РѕС‚СЊ РѕРґРёРЅ РїСЂРёР·РЅР°Рє РёР· "РџСЂРѕС‡РёС‚Р°РЅР°" РёР»Рё "Р•СЃС‚СЊ СЂРµС†РµРЅР·РёСЏ"
       //
       Exit;
     end;
@@ -595,7 +595,7 @@ begin
 end;
 
 //
-// Список закачек
+// РЎРїРёСЃРѕРє Р·Р°РєР°С‡РµРє
 //
 procedure TTreeController.DownloadsLoadNode(Sender: TBaseVirtualTree; Node: PVirtualNode; Stream: TStream);
 var

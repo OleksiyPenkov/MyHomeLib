@@ -1,27 +1,27 @@
-[Setup]
+ï»¿[Setup]
 AppName=MyHomeLib
 PrivilegesRequired=poweruser
-DefaultDirName={pf}\MyHomeLib\
+DefaultDirName={commonpf}\MyHomeLib\
 DefaultGroupName=MyHomeLib
 AppID={{B9B6C409-01CB-4AB6-8E4F-403B49A25B56}
 OutputDir=.
 SourceDir=.
 AppVerName=MyHomeLib v.2.3
-AppCopyright=© 2018 Aleksey Penkov
+AppCopyright=Â© 2019 Aleksey Penkov
 UninstallDisplayIcon={app}\MyHomeLib.exe
 WizardImageFile=.\Images\SetupModern20.bmp
 WizardSmallImageFile=.\Images\SetupModernSmall20.bmp
 SetupIconFile=.\Images\Setup.ico
 OutputBaseFilename=Setup_MyHomeLib_2_3
-AppPublisherURL=http://myhomelib.org/
-AppSupportURL=http://forum.myhomelib.org/
-AppUpdatesURL=http://myhomelib.org/
+AppPublisherURL=https://github.com/OleksiyPenkov/myhomelib/
+AppSupportURL=https://github.com/OleksiyPenkov/myhomelib/
+AppUpdatesURL=https://github.com/OleksiyPenkov/myhomelib/
 UsePreviousAppDir=yes
 AllowNoIcons=yes
 Compression=lzma/ultra
 SolidCompression=yes
 LicenseFile=License.txt
-VersionInfoVersion=2.3.0.825
+VersionInfoVersion=2.3.3.829
 
 [Dirs]
 Name: "{userappdata}\MyHomeLib"; Permissions: everyone-modify
@@ -42,7 +42,7 @@ Source: .\MyHomeLib_2_3\MyHomeLib.url; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\License.txt; DestDir: {app}; Flags: replacesameversion
 [Icons]
 Name: {group}\MyHomeLib; Filename: {app}\MyHomeLib.exe; WorkingDir: {app}; IconFilename: {app}\MyHomeLib.exe; IconIndex: 0; Comment: MyHomeLib
-Name: {group}\Ñïðàâêà ïî MyHomeLib; Filename: {app}\MyHomeLib.chm; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: MyHomeLib Help
+Name: {group}\Ð¡Ð¿Ñ€Ð°Ð²ÐºÐ° Ð¿Ð¾ MyHomeLib; Filename: {app}\MyHomeLib.chm; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: MyHomeLib Help
 Name: {commondesktop}\MyHomeLib; Filename: {app}\MyHomeLib.exe; WorkingDir: {app}; IconFilename: {app}\MyHomeLib.exe; IconIndex: 0; Comment: MyHomeLib; Tasks: desktopicon
 Name: {group}\MyHomeLib website; Filename: {app}\MyHomeLib.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
 Name: {group}\{cm:UninstallProgram, My Home Library}; Filename: {uninstallexe}
@@ -54,7 +54,7 @@ Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescri
 [Languages]
 Name: Russian; MessagesFile: compiler:Languages\Russian.isl
 Name: English; MessagesFile: compiler:Default.isl
-Name: Ukrainian; MessagesFile: .\Images\Ukrainian-6-5.1.11.isl
+Name: Ukrainian; MessagesFile: compiler:Languages\Ukrainian.isl
 [UninstallDelete]
 Name: {userappdata}\MyHomeLib\Data; Type: filesandordirs
 Name: {userappdata}\MyHomeLib\Presets; Type: filesandordirs

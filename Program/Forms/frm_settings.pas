@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -268,14 +268,14 @@ uses
   unit_Templater;
 
 resourcestring
-  rstrStandart = 'Стандартное';
-  rstrNeedTemplate = 'Необходимо задать шаблон для заголовка книги в разделе "Разное"';
-  rstrChangeFileType = 'Изменение типа файлов';
-  rstrAddFileType = 'Добавление типа файлов';
-  rstrTypeAlreadyInTheList = 'Тип "%s" уже есть в списке!';
-  rstrChangeScriptParams = 'Изменение параметров скрипта';
-  rstrAddScript = 'Добавление скрипта';
-  rstrProvideFolder = 'Укажите папку';
+  rstrStandart = 'РЎС‚Р°РЅРґР°СЂС‚РЅРѕРµ';
+  rstrNeedTemplate = 'РќРµРѕР±С…РѕРґРёРјРѕ Р·Р°РґР°С‚СЊ С€Р°Р±Р»РѕРЅ РґР»СЏ Р·Р°РіРѕР»РѕРІРєР° РєРЅРёРіРё РІ СЂР°Р·РґРµР»Рµ "Р Р°Р·РЅРѕРµ"';
+  rstrChangeFileType = 'РР·РјРµРЅРµРЅРёРµ С‚РёРїР° С„Р°Р№Р»РѕРІ';
+  rstrAddFileType = 'Р”РѕР±Р°РІР»РµРЅРёРµ С‚РёРїР° С„Р°Р№Р»РѕРІ';
+  rstrTypeAlreadyInTheList = 'РўРёРї "%s" СѓР¶Рµ РµСЃС‚СЊ РІ СЃРїРёСЃРєРµ!';
+  rstrChangeScriptParams = 'РР·РјРµРЅРµРЅРёРµ РїР°СЂР°РјРµС‚СЂРѕРІ СЃРєСЂРёРїС‚Р°';
+  rstrAddScript = 'Р”РѕР±Р°РІР»РµРЅРёРµ СЃРєСЂРёРїС‚Р°';
+  rstrProvideFolder = 'РЈРєР°Р¶РёС‚Рµ РїР°РїРєСѓ';
 
 {$R *.dfm}
 
@@ -310,7 +310,7 @@ begin
   end;
 
   //
-  // Интерфейс
+  // РРЅС‚РµСЂС„РµР№СЃ
   //
   udFontSize.Position := Settings.TreeFontSize;
   udShortFontSize.Position := Settings.ShortFontSize;
@@ -399,7 +399,7 @@ begin
   edFBDFileTemplate.Text := Settings.FBDFileTemplate;
 
   //
-  // настроим GUI - запретим или разрешим контролы
+  // РЅР°СЃС‚СЂРѕРёРј GUI - Р·Р°РїСЂРµС‚РёРј РёР»Рё СЂР°Р·СЂРµС€РёРј РєРѕРЅС‚СЂРѕР»С‹
   //
   cbPromptPathClick(nil);
   cbUseIESettingsClick(nil);
@@ -479,7 +479,7 @@ begin
   Settings.DwnldInterval := udDwnldInterval.Position;
   Settings.AutoRunUpdate := cbAutoRunUpdate.Checked;
   Settings.InpxURL := IncludeUrlSlash(edINPXUrl.Text);
-  // Дополнительный прокси
+  // Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РїСЂРѕРєСЃРё
   Settings.UseProxyForUpdate := rbUseProxyForUpdate.Checked;
   Settings.ProxyServerUpdate := edProxyServerUpdate.Text;
   Settings.ProxyPortUpdate := StrToIntDef(edProxyPortUpdate.Text, 0);
@@ -567,7 +567,7 @@ end;
 
 // ============================================================================
 //
-// Настройка читалок
+// РќР°СЃС‚СЂРѕР№РєР° С‡РёС‚Р°Р»РѕРє
 //
 
 procedure TfrmSettings.EditReader(AItem: TListItem);
@@ -588,14 +588,14 @@ begin
       if Assigned(AItem) and (AnsiCompareText(AItem.Caption,
           frmEditReader.Extension) = 0) then
       begin
-        // Расширение не поменялось -> обновим путь
+        // Р Р°СЃС€РёСЂРµРЅРёРµ РЅРµ РїРѕРјРµРЅСЏР»РѕСЃСЊ -> РѕР±РЅРѕРІРёРј РїСѓС‚СЊ
         AItem.SubItems[0] := frmEditReader.Path;
         Exit;
       end;
 
       if lvReaders.FindCaption(0, frmEditReader.Extension, False, True, False) <> nil then
       begin
-        // Это расширение уже зарегистрировано
+        // Р­С‚Рѕ СЂР°СЃС€РёСЂРµРЅРёРµ СѓР¶Рµ Р·Р°СЂРµРіРёСЃС‚СЂРёСЂРѕРІР°РЅРѕ
         MessageDlg(Format(rstrTypeAlreadyInTheList, [frmEditReader.Extension]), mtError, [mbOk], 0);
         Exit;
       end;
@@ -637,7 +637,7 @@ end;
 
 // ============================================================================
 //
-// Настройка скриптов
+// РќР°СЃС‚СЂРѕР№РєР° СЃРєСЂРёРїС‚РѕРІ
 //
 
 procedure TfrmSettings.EditScript(AItem: TListItem);
@@ -720,7 +720,7 @@ begin
 end;
 
 //
-// Настройки интерфейса
+// РќР°СЃС‚СЂРѕР№РєРё РёРЅС‚РµСЂС„РµР№СЃР°
 //
 procedure TfrmSettings.SetBackgroundColor(Sender: TObject);
 var

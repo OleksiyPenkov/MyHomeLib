@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -12,8 +12,8 @@
   * $Id: frm_book_info.pas 1164 2014-05-03 08:47:22Z koreec $
   *
   * History
-  * NickR 02.03.2010    Код переформатирован
-  *                     Отдельная закладка для свойств файла
+  * NickR 02.03.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
+  *                     РћС‚РґРµР»СЊРЅР°СЏ Р·Р°РєР»Р°РґРєР° РґР»СЏ СЃРІРѕР№СЃС‚РІ С„Р°Р№Р»Р°
   *
   ****************************************************************************** *)
 
@@ -214,7 +214,7 @@ end;
 
 procedure TfrmBookDetails.FormShow(Sender: TObject);
 begin
-  // TODO перенести под конец заполнения ?
+  // TODO РїРµСЂРµРЅРµСЃС‚Рё РїРѕРґ РєРѕРЅРµС† Р·Р°РїРѕР»РЅРµРЅРёСЏ ?
   lvFileInfo.AutosizeColumn(0);
   lvFileInfo.AutosizeColumn(1);
   lvInfo.AutosizeColumn(0);
@@ -279,7 +279,7 @@ var
 
 begin
   //
-  // Покажем информацию из TBookRecord
+  // РџРѕРєР°Р¶РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РёР· TBookRecord
   //
   lblTitle.Caption := bookInfo.Title;
   lblAuthors.Caption := bookInfo.Authors[0].GetFullName;
@@ -292,14 +292,14 @@ begin
     AddItem(lvFileInfo, rstrSize, GetFormattedSize(bookInfo.Size, True), GroupID);
     AddItem(lvFileInfo, rstrAdded, DateToStr(bookInfo.Date), GroupID);
   end;
-  { TODO -oNickR -cUsability : для онлайн коллекций необходимо показывать следующие поля }
+  { TODO -oNickR -cUsability : РґР»СЏ РѕРЅР»Р°Р№РЅ РєРѕР»Р»РµРєС†РёР№ РЅРµРѕР±С…РѕРґРёРјРѕ РїРѕРєР°Р·С‹РІР°С‚СЊ СЃР»РµРґСѓСЋС‰РёРµ РїРѕР»СЏ }
   // libID: string;    ???
   // LibRate: Integer;  ???
   // URI: string;       ???
 
   //
-  // Покажем информацию из книги
-  // TODO : здесь на самом деле нужно более общее решение. Может со временем мы научимся вытаскивать инфу из pdf и других форматов
+  // РџРѕРєР°Р¶РµРј РёРЅС„РѕСЂРјР°С†РёСЋ РёР· РєРЅРёРіРё
+  // TODO : Р·РґРµСЃСЊ РЅР° СЃР°РјРѕРј РґРµР»Рµ РЅСѓР¶РЅРѕ Р±РѕР»РµРµ РѕР±С‰РµРµ СЂРµС€РµРЅРёРµ. РњРѕР¶РµС‚ СЃРѕ РІСЂРµРјРµРЅРµРј РјС‹ РЅР°СѓС‡РёРјСЃСЏ РІС‹С‚Р°СЃРєРёРІР°С‚СЊ РёРЅС„Сѓ РёР· pdf Рё РґСЂСѓРіРёС… С„РѕСЂРјР°С‚РѕРІ
   //
   if not Assigned(bookStream) or (bookStream.Size = 0) then
   begin
@@ -312,7 +312,7 @@ begin
     book := LoadFictionbook(bookStream);
 
     //
-    // покажем обложку (если есть)
+    // РїРѕРєР°Р¶РµРј РѕР±Р»РѕР¶РєСѓ (РµСЃР»Рё РµСЃС‚СЊ)
     //
     imgBookCover := GetBookCover(book);
     if Assigned(imgBookCover) then
@@ -341,13 +341,13 @@ begin
         AddItem(lvInfo, IfThen(i = 0, rstrAuthors), tmpStr, GroupID);
       end;
 
-      { TODO -oNickR -cUsability : показывать номер в серии }
+      { TODO -oNickR -cUsability : РїРѕРєР°Р·С‹РІР°С‚СЊ РЅРѕРјРµСЂ РІ СЃРµСЂРёРё }
       for i := 0 to Sequence.Count - 1 do
       begin
         AddItem(lvInfo, IfThen(i = 0, rstrSingleSeries), Sequence[i].Name, GroupID);
       end;
 
-      { TODO -oNickR -cUsability : показывать алиасы вместо внутренних имен }
+      { TODO -oNickR -cUsability : РїРѕРєР°Р·С‹РІР°С‚СЊ Р°Р»РёР°СЃС‹ РІРјРµСЃС‚Рѕ РІРЅСѓС‚СЂРµРЅРЅРёС… РёРјРµРЅ }
       for i := 0 to Genre.Count - 1 do
       begin
         AddItem(lvInfo, IfThen(i = 0, rstrGenre), Genre[i], GroupID);
@@ -378,7 +378,7 @@ begin
       AddItem(lvInfo, rstrYear, Year, GroupID);
       AddItem(lvInfo, rstrISBN, Isbn.Text, GroupID);
 
-      { TODO -oNickR -cUsability : показывать номер в серии }
+      { TODO -oNickR -cUsability : РїРѕРєР°Р·С‹РІР°С‚СЊ РЅРѕРјРµСЂ РІ СЃРµСЂРёРё }
       for i := 0 to Sequence.Count - 1 do
       begin
         AddItem(lvInfo, IfThen(i = 0, rstrSingleSeries), Sequence[i].Name, GroupID);
@@ -412,7 +412,7 @@ begin
     end;
 
     // ---------------------------------------------
-    { TODO -oNickR -cUsability : может стоит добавлять параграфы как есть? }
+    { TODO -oNickR -cUsability : РјРѕР¶РµС‚ СЃС‚РѕРёС‚ РґРѕР±Р°РІР»СЏС‚СЊ РїР°СЂР°РіСЂР°С„С‹ РєР°Рє РµСЃС‚СЊ? }
     with book.Description.Titleinfo do
     begin
       for i := 0 to Annotation.p.Count - 1 do
@@ -456,8 +456,8 @@ end;
 procedure TReviewDownloadThread.Finish;
 begin
   if FForm.mmReview = nil then
-    Exit; // FForm почему-то не равно nil после уничтожения.
-  // зато компоненты обнуляются, поэтому проверям по ним
+    Exit; // FForm РїРѕС‡РµРјСѓ-С‚Рѕ РЅРµ СЂР°РІРЅРѕ nil РїРѕСЃР»Рµ СѓРЅРёС‡С‚РѕР¶РµРЅРёСЏ.
+  // Р·Р°С‚Рѕ РєРѕРјРїРѕРЅРµРЅС‚С‹ РѕР±РЅСѓР»СЏСЋС‚СЃСЏ, РїРѕСЌС‚РѕРјСѓ РїСЂРѕРІРµСЂСЏРј РїРѕ РЅРёРј
 
   FForm.mmReview.Lines := FReview;
 

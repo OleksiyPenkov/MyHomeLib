@@ -1,4 +1,4 @@
-(* *****************************************************************************
+п»ї(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -71,7 +71,7 @@ begin
     DataVersion := IntToStr(vVersion);
 
   //
-  // Заполним данные
+  // Р—Р°РїРѕР»РЅРёРј РґР°РЅРЅС‹Рµ
   //
   lvInfo.Items[0].SubItems[0] := Collection.GetProperty(PROP_DISPLAYNAME);
   lvInfo.Items[1].SubItems[0] := DateToStr(Collection.GetProperty(PROP_CREATIONDATE));
