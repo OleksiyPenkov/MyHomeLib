@@ -3698,16 +3698,15 @@ begin
       Assert(Length(BookRecord.Authors) > 0);
       WorkFile := TPath.Combine(
         Settings.ReadPath,
-        Format(
-          '%s - %s.%d%s',
-          [
-            CheckSymbols(BookRecord.Authors[0].GetFullName),
-            CheckSymbols(BookRecord.Title),
-            BookRecord.BookKey.BookID,
-            BookRecord.FileExt
-          ]
-        )
-      );
+        Format('%s - %s', [CheckSymbols(BookRecord.Authors[0].GetFullName),
+                           CheckSymbols(BookRecord.Title)]));
+
+      if Length(WorkFile) > 240 then
+        WorkFile := Copy(WorkFile, 1, 240);
+
+      WorkFile := Format('%s.%d%s',[WorkFile,
+                                    BookRecord.BookKey.BookID,
+                                    BookRecord.FileExt]);
 
       if not FileExists(WorkFile) then
         BookRecord.SaveBookToFile(WorkFile);

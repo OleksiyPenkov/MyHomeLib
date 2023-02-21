@@ -51,13 +51,11 @@ object frmMain: TfrmMain
     AC410000AC410000AC410000AC410000AC410000AC410000AC410000AC410000
     AC410000AC410000AC410000AC410000AC410000AC410000AC410000AC41}
   Menu = MainMenu
-  OldCreateOrder = False
   Position = poDesigned
   Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  PixelsPerInch = 96
   TextHeight = 13
   object tlbrMain: TToolBar
     Left = 0
@@ -74,6 +72,7 @@ object frmMain: TfrmMain
     ShowHint = True
     TabOrder = 0
     Wrapable = False
+    ExplicitWidth = 788
     object tbtnRead: TToolButton
       Left = 0
       Top = 0
@@ -243,13 +242,11 @@ object frmMain: TfrmMain
     TabOrder = 2
     OnChange = pgControlChange
     OnDrawTab = pgControlDrawTab
+    ExplicitWidth = 782
+    ExplicitHeight = 684
     object tsByAuthor: TTabSheet
       HelpContext = 135
       Caption = #1040#1074#1090#1086#1088#1099
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object AuthorsViewSplitter: TMHLSplitter
         Left = 230
         Top = 70
@@ -352,6 +349,23 @@ object frmMain: TfrmMain
           Height = 549
           Align = alClient
           ChangeDelay = 250
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.MainColumn = -1
           Header.Options = [hoColumnResize, hoDrag]
@@ -362,6 +376,8 @@ object frmMain: TfrmMain
           TreeOptions.SelectionOptions = [toFullRowSelect, toRightClickSelect, toCenterScrollIntoView]
           OnChange = tvAuthorsChange
           OnKeyDown = tvAuthorsKeyDown
+          Touch.InteractiveGestures = [igPan, igPressAndTap]
+          Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           Columns = <>
         end
       end
@@ -468,6 +484,23 @@ object frmMain: TfrmMain
           Width = 539
           Height = 388
           Align = alClient
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.Height = 20
           Header.MainColumn = 1
@@ -599,6 +632,7 @@ object frmMain: TfrmMain
         Height = 587
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 586
         object tvSeries: TVirtualStringTree
           AlignWithMargins = True
           Left = 3
@@ -607,6 +641,23 @@ object frmMain: TfrmMain
           Height = 549
           Align = alClient
           ChangeDelay = 250
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.MainColumn = -1
           Header.Options = [hoColumnResize, hoDrag]
@@ -617,6 +668,8 @@ object frmMain: TfrmMain
           TreeOptions.SelectionOptions = [toFullRowSelect, toRightClickSelect]
           OnChange = tvSeriesChange
           OnKeyDown = tvSeriesKeyDown
+          Touch.InteractiveGestures = [igPan, igPressAndTap]
+          Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           Columns = <>
         end
         object pnSerieSearch: TMHLSimplePanel
@@ -703,6 +756,8 @@ object frmMain: TfrmMain
         Height = 587
         Align = alClient
         TabOrder = 1
+        ExplicitWidth = 541
+        ExplicitHeight = 586
         object SerieBookInfoSplitter: TMHLSplitter
           Left = 0
           Top = 428
@@ -726,6 +781,8 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
+          ExplicitTop = 433
+          ExplicitWidth = 535
         end
         object pnSerieBooksTitle: TMHLSimplePanel
           AlignWithMargins = True
@@ -741,6 +798,7 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 535
           object lblBooksTotalS: TLabel
             Left = 432
             Top = 0
@@ -789,6 +847,7 @@ object frmMain: TfrmMain
             OnChange = cbLangSelectAChange
             Items.Strings = (
               '-')
+            ExplicitLeft = 368
           end
         end
         object tvBooksS: TBookTree
@@ -799,6 +858,23 @@ object frmMain: TfrmMain
           Width = 539
           Height = 390
           Align = alClient
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.Height = 20
           Header.Options = [hoColumnResize, hoDrag, hoHotTrack, hoOwnerDraw, hoRestrictDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
@@ -893,6 +969,7 @@ object frmMain: TfrmMain
         Images = ilAlphabetNormal
         TabOrder = 2
         Wrapable = False
+        ExplicitWidth = 768
       end
       object tbarSeriesRus: TToolBar
         AlignWithMargins = True
@@ -906,15 +983,12 @@ object frmMain: TfrmMain
         Images = ilAlphabetNormal
         TabOrder = 3
         Wrapable = False
+        ExplicitWidth = 768
       end
     end
     object tsByGenre: TTabSheet
       HelpContext = 135
       Caption = #1046#1072#1085#1088#1099
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object GenresViewSplitter: TMHLSplitter
         Left = 230
         Top = 0
@@ -940,6 +1014,23 @@ object frmMain: TfrmMain
           Height = 651
           Align = alClient
           ChangeDelay = 250
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.MainColumn = -1
           Header.Options = [hoColumnResize, hoDrag]
@@ -949,6 +1040,8 @@ object frmMain: TfrmMain
           TreeOptions.PaintOptions = [toPopupMode, toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages]
           OnChange = tvGenresChange
           OnKeyDown = tvGenresKeyDown
+          Touch.InteractiveGestures = [igPan, igPressAndTap]
+          Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           Columns = <>
         end
       end
@@ -1056,6 +1149,23 @@ object frmMain: TfrmMain
           Width = 539
           Height = 510
           Align = alClient
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.Height = 20
           Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoOwnerDraw, hoRestrictDrag, hoShowHint, hoShowSortGlyphs, hoVisible, hoFullRepaintOnResize]
@@ -1134,10 +1244,6 @@ object frmMain: TfrmMain
     object tsSearch: TTabSheet
       HelpContext = 126
       Caption = #1055#1086#1080#1089#1082
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SearchViewSplitter: TMHLSplitter
         Left = 230
         Top = 0
@@ -1200,7 +1306,7 @@ object frmMain: TfrmMain
             Left = 432
             Top = 0
             Width = 107
-            Height = 13
+            Height = 26
             Align = alRight
             Alignment = taRightJustify
             Caption = '('#1082#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1082#1085#1080#1075')'
@@ -1211,6 +1317,7 @@ object frmMain: TfrmMain
             Font.Style = [fsBold]
             ParentFont = False
             Layout = tlCenter
+            ExplicitHeight = 13
           end
           object cbPresetName: TComboBox
             Left = 42
@@ -1246,6 +1353,23 @@ object frmMain: TfrmMain
           Width = 539
           Height = 460
           Align = alClient
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.Height = 20
           Header.Options = [hoColumnResize, hoDblClickResize, hoDrag, hoHotTrack, hoOwnerDraw, hoRestrictDrag, hoShowHint, hoShowSortGlyphs, hoVisible, hoFullRepaintOnResize]
@@ -1357,7 +1481,6 @@ object frmMain: TfrmMain
             Top = 491
             Caption = #1056#1072#1079#1085#1086#1077
             TabOrder = 0
-            ExplicitWidth = 185
             object Label30: TLabel
               Left = 7
               Top = 97
@@ -1378,7 +1501,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 197
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1056#1072#1079#1084#1077#1097#1077#1085#1080#1077
@@ -1452,7 +1575,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 22
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               Style = csDropDownList
@@ -1468,7 +1591,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 5
               Top = 49
-              Width = 195
+              Width = 193
               Height = 17
               Margins.Left = 5
               Align = alTop
@@ -1493,7 +1616,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 5
               Top = 72
-              Width = 195
+              Width = 193
               Height = 17
               Margins.Left = 5
               Align = alTop
@@ -1506,39 +1629,41 @@ object frmMain: TfrmMain
             Height = 177
             Caption = #1060#1072#1081#1083
             TabOrder = 1
-            ExplicitWidth = 222
             object Label27: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 19
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1048#1084#1103
+              ExplicitWidth = 19
             end
             object Label29: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 95
-              Width = 18
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1058#1080#1087
+              ExplicitWidth = 18
             end
             object Label28: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 49
-              Width = 72
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1055#1072#1087#1082#1072' ('#1072#1088#1093#1080#1074')'
+              ExplicitWidth = 72
             end
             object edFFile: TMHLButtonedEdit
               AlignWithMargins = True
               Left = 3
               Top = 22
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 0
@@ -1549,7 +1674,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 68
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 1
@@ -1560,7 +1685,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 114
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 2
@@ -1573,67 +1698,72 @@ object frmMain: TfrmMain
             Height = 314
             Caption = #1050#1085#1080#1075#1072
             TabOrder = 2
-            ExplicitWidth = 222
             object Label5: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 31
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1040#1074#1090#1086#1088
+              ExplicitWidth = 31
             end
             object Label24: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 49
-              Width = 48
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+              ExplicitWidth = 48
             end
             object Label26: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 141
-              Width = 28
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1046#1072#1085#1088
+              ExplicitWidth = 28
             end
             object Label6: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 95
-              Width = 31
+              Width = 195
               Height = 13
               Align = alTop
               Caption = #1057#1077#1088#1080#1103
+              ExplicitWidth = 31
             end
             object Label7: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 238
-              Width = 55
+              Width = 195
               Height = 13
               Align = alBottom
               Caption = #1040#1085#1085#1086#1090#1072#1094#1080#1103
+              ExplicitWidth = 55
             end
             object Label3: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 191
-              Width = 86
+              Width = 195
               Height = 13
               Margins.Top = 0
               Align = alTop
               Caption = #1050#1083#1102#1095#1077#1074#1099#1077' '#1089#1083#1086#1074#1072
+              ExplicitWidth = 86
             end
             object edFFullName: TMHLButtonedEdit
               AlignWithMargins = True
               Left = 3
               Top = 22
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 0
@@ -1644,7 +1774,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 68
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 1
@@ -1655,7 +1785,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 114
-              Width = 197
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 2
@@ -1666,7 +1796,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 160
-              Width = 197
+              Width = 195
               Height = 21
               Margins.Bottom = 10
               Align = alTop
@@ -1679,7 +1809,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 257
-              Width = 197
+              Width = 195
               Height = 21
               Margins.Bottom = 10
               Align = alBottom
@@ -1691,7 +1821,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 210
-              Width = 197
+              Width = 195
               Height = 21
               Hint = #1050#1083#1102#1095#1077#1074#1099#1077' '#1089#1083#1086#1074#1072
               Align = alTop
@@ -1735,10 +1865,6 @@ object frmMain: TfrmMain
     object tsByGroup: TTabSheet
       HelpContext = 125
       Caption = #1043#1088#1091#1087#1087#1099
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object GroupsViewSplitter: TMHLSplitter
         Left = 230
         Top = 0
@@ -1764,6 +1890,23 @@ object frmMain: TfrmMain
           Height = 620
           Align = alClient
           ChangeDelay = 250
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.MainColumn = -1
           Header.Options = [hoColumnResize, hoDrag]
@@ -1775,6 +1918,8 @@ object frmMain: TfrmMain
           OnDragOver = tvGroupsDragOver
           OnDragDrop = tvGroupsDragDrop
           OnKeyDown = tvGroupsKeyDown
+          Touch.InteractiveGestures = [igPan, igPressAndTap]
+          Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           Columns = <>
         end
         object RzPanel8: TMHLSimplePanel
@@ -1939,6 +2084,23 @@ object frmMain: TfrmMain
           Width = 539
           Height = 460
           Align = alClient
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           DragMode = dmAutomatic
           Header.AutoSizeIndex = 0
           Header.Height = 20
@@ -2017,10 +2179,6 @@ object frmMain: TfrmMain
     object tsDownload: TTabSheet
       HelpContext = 108
       Caption = #1057#1087#1080#1089#1086#1082' '#1079#1072#1082#1072#1095#1077#1082
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object tlbrDownloadList: TToolBar
         AlignWithMargins = True
         Left = 3
@@ -2166,7 +2324,7 @@ object frmMain: TfrmMain
             Left = 662
             Top = 3
             Width = 107
-            Height = 13
+            Height = 36
             Align = alRight
             Alignment = taRightJustify
             Caption = '('#1082#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1082#1085#1080#1075')'
@@ -2177,6 +2335,7 @@ object frmMain: TfrmMain
             Font.Style = [fsBold]
             ParentFont = False
             Layout = tlCenter
+            ExplicitHeight = 13
           end
           object pbDownloadProgress: TProgressBar
             Left = 0
@@ -2194,6 +2353,23 @@ object frmMain: TfrmMain
           Width = 772
           Height = 575
           Align = alClient
+          Colors.BorderColor = 15987699
+          Colors.DisabledColor = clGray
+          Colors.DropMarkColor = 15385233
+          Colors.DropTargetColor = 15385233
+          Colors.DropTargetBorderColor = 15385233
+          Colors.FocusedSelectionColor = 15385233
+          Colors.FocusedSelectionBorderColor = 15385233
+          Colors.GridLineColor = 15987699
+          Colors.HeaderHotColor = clBlack
+          Colors.HotColor = clBlack
+          Colors.SelectionRectangleBlendColor = 15385233
+          Colors.SelectionRectangleBorderColor = 15385233
+          Colors.SelectionTextColor = clBlack
+          Colors.TreeLineColor = 9471874
+          Colors.UnfocusedColor = clGray
+          Colors.UnfocusedSelectionColor = clWhite
+          Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
           Header.Height = 20
           Header.Options = [hoColumnResize, hoDrag, hoVisible]
@@ -2239,6 +2415,7 @@ object frmMain: TfrmMain
     AllowTextButtons = True
     TabOrder = 1
     Wrapable = False
+    ExplicitWidth = 788
     object tbtnEditAuthor: TToolButton
       Left = 0
       Top = 0
@@ -2324,6 +2501,8 @@ object frmMain: TfrmMain
       end>
     OnDrawPanel = StatusBarDrawPanel
     OnResize = StatusBarResize
+    ExplicitTop = 752
+    ExplicitWidth = 788
   end
   object MainMenu: TMainMenu
     Images = ilMainMenu
