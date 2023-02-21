@@ -1,4 +1,4 @@
-﻿object frmAbout: TfrmAbout
+object frmAbout: TfrmAbout
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -11,10 +11,8 @@
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
-  PixelsPerInch = 96
   TextHeight = 13
   object RzPanel1: TMHLSimplePanel
     AlignWithMargins = True
@@ -24,7 +22,8 @@
     Height = 289
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 208
+    ExplicitWidth = 245
+    ExplicitHeight = 288
     object versionInfoLabel: TLabel
       AlignWithMargins = True
       Left = 3
@@ -61,8 +60,8 @@
       Height = 13
       Align = alTop
       Alignment = taCenter
-      Caption = '(c) 2008-2019 '#1040#1083#1077#1082#1089#1077#1081' '#1055#1077#1085#1100#1082#1086#1074
-      ExplicitWidth = 159
+      Caption = '(c) 2008-2023 Oleksiy Penkov'
+      ExplicitWidth = 143
     end
     object RzLabel3: TLabel
       AlignWithMargins = True
