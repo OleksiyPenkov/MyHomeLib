@@ -3,10 +3,10 @@
         <ProjectGuid>{03FBE2DA-0E6E-4A56-9500-1147B87C3C24}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
-        <Projects Include="MyhomeLib.dproj">
+        <Projects Include="..\Components\MHLComponents\MHLComponents.dproj">
             <Dependencies/>
         </Projects>
-        <Projects Include="..\Components\MHLComponents\MHLComponents.dproj">
+        <Projects Include="MyhomeLib.dproj">
             <Dependencies/>
         </Projects>
     </ItemGroup>
@@ -17,15 +17,6 @@
             <Default.Personality/>
         </BorlandProject>
     </ProjectExtensions>
-    <Target Name="MyhomeLib">
-        <MSBuild Projects="MyhomeLib.dproj"/>
-    </Target>
-    <Target Name="MyhomeLib:Clean">
-        <MSBuild Projects="MyhomeLib.dproj" Targets="Clean"/>
-    </Target>
-    <Target Name="MyhomeLib:Make">
-        <MSBuild Projects="MyhomeLib.dproj" Targets="Make"/>
-    </Target>
     <Target Name="MHLComponents">
         <MSBuild Projects="..\Components\MHLComponents\MHLComponents.dproj"/>
     </Target>
@@ -35,14 +26,23 @@
     <Target Name="MHLComponents:Make">
         <MSBuild Projects="..\Components\MHLComponents\MHLComponents.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MyhomeLib">
+        <MSBuild Projects="MyhomeLib.dproj"/>
+    </Target>
+    <Target Name="MyhomeLib:Clean">
+        <MSBuild Projects="MyhomeLib.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MyhomeLib:Make">
+        <MSBuild Projects="MyhomeLib.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MyhomeLib;MHLComponents"/>
+        <CallTarget Targets="MHLComponents;MyhomeLib"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MyhomeLib:Clean;MHLComponents:Clean"/>
+        <CallTarget Targets="MHLComponents:Clean;MyhomeLib:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MyhomeLib:Make;MHLComponents:Make"/>
+        <CallTarget Targets="MHLComponents:Make;MyhomeLib:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

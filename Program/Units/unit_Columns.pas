@@ -25,6 +25,7 @@ uses
   Classes,
   SysUtils,
   VirtualTrees,
+  VirtualTrees.Types,
   IniFiles,
   unit_Globals;          // для TTreeMode
 

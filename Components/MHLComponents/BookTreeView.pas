@@ -22,7 +22,12 @@ uses
   Classes,
   SysUtils,
   Controls,
-  VirtualTrees;
+  VirtualTrees,
+  VirtualTrees.Types,
+  VirtualTrees.Colors,
+  VirtualTrees.DragImage,
+  VirtualTrees.Header,
+  VirtualTrees.Classes;
 
 const
   DefaultSelectionOptions = [
@@ -56,7 +61,7 @@ const
 type
   TBookTreeOptions = class(TCustomStringTreeOptions)
   public
-    constructor Create(AOwner: TBaseVirtualTree); override;
+    constructor Create(AOwner: TCustomControl); override;
 
   published
     //property AnimationOptions;
@@ -71,13 +76,10 @@ type
   private
     function GetOptions: TBookTreeOptions;
     procedure SetOptions(const Value: TBookTreeOptions);
-
   protected
     function GetOptionsClass: TTreeOptionsClass; override;
-
   public
     property Canvas;
-
   published
     property AccessibleName;
     property Action;
@@ -159,7 +161,6 @@ type
     property TreeOptions: TBookTreeOptions read GetOptions write SetOptions;
     property Visible;
     property WantTabs;
-
     //property OnAdvancedHeaderDraw;
     //property OnAfterAutoFitColumn;
     //property OnAfterAutoFitColumns;
@@ -294,7 +295,7 @@ implementation
 
 { TBookTreeOptions }
 
-constructor TBookTreeOptions.Create(AOwner: TBaseVirtualTree);
+constructor TBookTreeOptions.Create(AOwner: TCustomControl);
 begin
   inherited;
   AutoOptions := AutoOptions + [toAutoSpanColumns];
@@ -310,17 +311,16 @@ function TBookTree.GetOptions: TBookTreeOptions;
 begin
   Result := TCustomVirtualStringTreeHack(Self).TreeOptions as TBookTreeOptions;
 end;
-
 procedure TBookTree.SetOptions(const Value: TBookTreeOptions);
 begin
   TCustomVirtualStringTreeHack(Self).TreeOptions := Value;
 end;
-
 function TBookTree.GetOptionsClass: TTreeOptionsClass;
 begin
   Result := TBookTreeOptions;
 end;
 
-end.
-
+end.
+
+
 
