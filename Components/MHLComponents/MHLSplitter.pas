@@ -2,7 +2,7 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
+  * Copyright (C) 2008-2023 Oleksiy Penkov (aka Koreec)
   *
   * Created             16.04.2010
   * Description         Сплиттер с улучшенной поддержкой тем и устранением некоторых проблем

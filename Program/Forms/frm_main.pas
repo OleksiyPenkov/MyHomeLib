@@ -2,7 +2,7 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2019 Oleksiy Penkov
+  * Copyright (C) 2008-2023 Oleksiy Penkov
   *
   * Authors             Oleksiy Penkov (oleksiy.penkov@gmail.com)
   *                     Nick Rymanov   (nrymanov@gmail.com)

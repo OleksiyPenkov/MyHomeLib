@@ -2,11 +2,11 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2019 Oleksiy Penkov (aka Koreec)
+  * Copyright (C) 2008-2023 Oleksiy Penkov (aka Koreec)
   *
   * Created             12.02.2010
   * Description
-  * Author(s)           Aleksey Penkov  alex.penkov@gmail.com
+  * Author(s)           Oleksiy Penkov  oleksiy.penkov@gmail.com
   *
   * $Id: unit_SearchUtils.pas 642 2010-08-26 13:04:37Z eg_ $
   *

@@ -4,7 +4,7 @@
   *
   * Copyright (C) 2008-2013 Aleksey Penkov
   *
-  * Author(s)           Aleksey Penkov  alex.penkov@gmail.com
+  * Author(s)           Oleksiy Penkov  oleksiy.penkov@gmail.com
   * Created             12.02.2010
   * Description
   *

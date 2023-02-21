@@ -4,7 +4,7 @@
   *
   * Copyright (C) 2008-2011 Aleksey Penkov
   *
-  * Author Aleksey Penkov   alex.penkov@gmail.com
+  * Author Oleksiy Penkov   oleksiy.penkov@gmail.com
   *
   ****************************************************************************** *)
 unit unit_fb2ToText;

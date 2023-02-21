@@ -4,7 +4,7 @@
 {                                                                              }
 { Version 2.0                                                                  }
 {                                                                              }
-{ Copyright (c) 2009 Aleksey Penkov  alex.penkov@gmail.com                     }
+{ Copyright (c) 2009 Oleksiy Penkov  oleksiy.penkov@gmail.com                     }
 {                                                                              }
 {                                                                              }
 {******************************************************************************}
