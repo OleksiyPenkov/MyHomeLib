@@ -31,6 +31,7 @@ program MyHomeLib;
 {$R *.dres}
 
 uses
+  FastMM4,
   Forms,
   IMouse,
   frm_main in 'Forms\frm_main.pas' {frmMain},

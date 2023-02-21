@@ -387,9 +387,10 @@ type
   procedure DebugOut(const DebugMessage: string); overload;
   procedure DebugOut(const DebugMessage: string; const Args: array of const ); overload;
 
-  procedure SetProxySettings(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL; UpdProxy: integer = 0);
-  // UpdProxy=0 (по умолчанию) указывает, что настройки нужно брать из ProxyServer
-  // UpdProxy=1 указывает что настройки из ProxyServerUpdate
+  // настройки нужно брать из ProxyServer
+  procedure SetProxySettingsGlobal(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
+  // настройки из ProxyServerUpdate
+  procedure SetProxySettingsUpdate(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
 
   function GetSpecialPath(CSIDL: word): string;
   function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean;
@@ -1207,103 +1208,8 @@ begin
   Result := IncludeTrailingPathDelimiter(PChar(S));
 end;
 
-procedure SetProxySettings(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL; UpdProxy: integer = 0);
+procedure InitHTTP(var IdHTTP: TidHTTP);
 begin
-  if UpdProxy = 0 then
-begin
-  with IdHTTP.ProxyParams do
-  begin
-    if Settings.UseIESettings then
-    begin
-      ProxyServer := Settings.IEProxyServer;
-      ProxyPort := Settings.IEProxyPort;
-    end
-    else
-    begin
-        case Settings.ProxyType of
-          0: begin  // HTTP прокси
-            IdHTTP.IOHandler := nil;
-      ProxyServer := Settings.ProxyServer;
-      ProxyPort := Settings.ProxyPort;
-      ProxyUsername := Settings.ProxyUsername;
-      ProxyPassword := Settings.ProxyPassword;
-    end;
-          1: begin  // SOCKS4 прокси
-            ProxyServer := '';
-            ProxyPort := 0;
-            with IdSocksInfo do
-            begin
-              Version := svSocks4;
-              Host := Settings.ProxyServer;
-              Port := Settings.ProxyPort;
-              if Settings.ProxyUsername <> '' then
-              begin
-                Authentication := saUsernamePassword;
-                Username := Settings.ProxyUsername;
-                Password := Settings.ProxyPassword;
-              end
-              else
-              begin
-                Authentication := saNoAuthentication;
-              end;
-              IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
-              IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
-            end;
-          end;
-          2: begin  // SOCKS5 прокси
-            ProxyServer := '';
-            ProxyPort := 0;
-            with IdSocksInfo do
-            begin
-              Version := svSocks5;
-              Host := Settings.ProxyServer;
-              Port := Settings.ProxyPort;
-              if Settings.ProxyUsername <> '' then
-              begin
-                Authentication := saUsernamePassword;
-                Username := Settings.ProxyUsername;
-                Password := Settings.ProxyPassword;
-              end
-              else
-              begin
-                Authentication := saNoAuthentication;
-              end;
-              IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
-              IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
-            end;
-          end;
-        end;
-
-      end;
-    BasicAuthentication := True;
-  end;
-  end  // if TypeProxy = 0 
-  else
-  begin //if TypeProxy = 1 указывает, что прокси для обновлений, а не скачивания книг
-    if Settings.UseProxyForUpdate then
-    begin
-      with IdHTTP.ProxyParams do
-      begin
-        ProxyServer := Settings.ProxyServerUpdate;
-        ProxyPort := Settings.ProxyPortUpdate;
-        ProxyUsername := Settings.ProxyUsernameUpdate;
-        ProxyPassword := Settings.ProxyPasswordUpdate;
-        BasicAuthentication := True;
-      end;  // with IdHTTP.ProxyParams
-    end  // if Settings.UseProxyForUpdate
-    else
-    begin
-      with IdHTTP.ProxyParams do
-      begin
-        ProxyServer := '';
-        ProxyPort := 0;
-        ProxyUsername := '';
-        ProxyPassword := '';
-        BasicAuthentication := True;
-      end;
-    end; // else Settings.UseProxyForUpdate
-  end; //else
-
   IdHTTP.Request.UserAgent := 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; MAAU)';
 
   IdHTTP.ConnectTimeout := Settings.TimeOut;
@@ -1314,6 +1220,152 @@ begin
 
   IdHTTP.HandleRedirects := True;
 end;
+
+procedure SetProxySettingsGlobal(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
+begin
+  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvSSLv2,sslvSSLv3,sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
+  IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
+
+  with IdHTTP.ProxyParams do
+  begin
+    if Settings.UseIESettings then
+    begin
+      ProxyServer := Settings.IEProxyServer;
+      ProxyPort := Settings.IEProxyPort;
+    end
+    else
+    begin
+        case Settings.ProxyType of
+        0: begin  // HTTP прокси
+             ProxyServer := Settings.ProxyServer;
+             ProxyPort := Settings.ProxyPort;
+             ProxyUsername := Settings.ProxyUsername;
+             ProxyPassword := Settings.ProxyPassword;
+           end;
+        1: begin  // SOCKS4 прокси
+             ProxyServer := '';
+             ProxyPort := 0;
+             with IdSocksInfo do
+             begin
+               Version := svSocks4;
+               Host := Settings.ProxyServer;
+               Port := Settings.ProxyPort;
+               if Settings.ProxyUsername <> '' then
+               begin
+                 Authentication := saUsernamePassword;
+                 Username := Settings.ProxyUsername;
+                 Password := Settings.ProxyPassword;
+               end
+               else
+               begin
+                 Authentication := saNoAuthentication;
+               end;
+               IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
+             end;
+           end;
+        2: begin  // SOCKS5 прокси
+             ProxyServer := '';
+             ProxyPort := 0;
+           with IdSocksInfo do
+             begin
+               Version := svSocks5;
+               Host := Settings.ProxyServer;
+               Port := Settings.ProxyPort;
+               if Settings.ProxyUsername <> '' then
+               begin
+                 Authentication := saUsernamePassword;
+                 Username := Settings.ProxyUsername;
+                 Password := Settings.ProxyPassword;
+               end
+              else
+              begin
+                Authentication := saNoAuthentication;
+              end;
+              IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
+            end;
+        end;
+      end;
+    end;
+  BasicAuthentication := True;
+  end;
+  InitHTTP(idHTTP);
+end;
+
+
+procedure SetProxySettingsUpdate(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
+begin
+// прокси для обновлений, а не скачивания книг
+  if Settings.UseProxyForUpdate then
+  begin
+    with IdHTTP.ProxyParams do
+    begin
+      case Settings.ProxyType of
+        0: begin  // HTTP прокси
+             ProxyServer := Settings.ProxyServerUpdate;
+             ProxyPort := Settings.ProxyPortUpdate;
+             ProxyUsername := Settings.ProxyUsernameUpdate;
+             ProxyPassword := Settings.ProxyPasswordUpdate;
+           end;
+        1: begin  // SOCKS4 прокси
+             ProxyServer := '';
+             ProxyPort := 0;
+             with IdSocksInfo do
+             begin
+               Version := svSocks4;
+               Host := Settings.ProxyServerUpdate;
+               Port := Settings.ProxyPortUpdate;
+               if Settings.ProxyUsername <> '' then
+               begin
+                 Authentication := saUsernamePassword;
+                 Username := Settings.ProxyUsernameUpdate;
+                 Password := Settings.ProxyPasswordUpdate;
+               end
+               else
+               begin
+                 Authentication := saNoAuthentication;
+               end;
+               IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
+             end;
+           end;
+        2: begin  // SOCKS5 прокси
+             ProxyServer := '';
+             ProxyPort := 0;
+           with IdSocksInfo do
+             begin
+               Version := svSocks5;
+               Host := Settings.ProxyServerUpdate;
+               Port := Settings.ProxyPortUpdate;
+               if Settings.ProxyUsername <> '' then
+               begin
+                 Authentication := saUsernamePassword;
+                 Username := Settings.ProxyUsernameUpdate;
+                 Password := Settings.ProxyPasswordUpdate;
+               end
+              else
+              begin
+                Authentication := saNoAuthentication;
+              end;
+              IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
+            end;
+        end;
+      end;
+
+    end;  // with IdHTTP.ProxyParams
+  end  // if Settings.UseProxyForUpdate
+  else
+  begin
+    with IdHTTP.ProxyParams do
+    begin
+      ProxyServer := '';
+      ProxyPort := 0;
+      ProxyUsername := '';
+      ProxyPassword := '';
+      BasicAuthentication := True;
+    end;
+  end; // else Settings.UseProxyForUpdate
+  InitHTTP(idHTTP);
+end;
+
 
 function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean;
 var

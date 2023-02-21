@@ -156,7 +156,7 @@ begin
   FidHTTP.OnRedirect := HTTPRedirect;
   FidHTTP.HandleRedirects := True;
 
-  SetProxySettings(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
+  SetProxySettingsGlobal(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
 
   FIgnoreErrors := False;
 end;

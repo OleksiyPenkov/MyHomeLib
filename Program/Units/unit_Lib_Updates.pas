@@ -154,7 +154,7 @@ begin
     IdSocksInfo := TIdSocksInfo.Create(nil);
     IdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
     try
-      SetProxySettings(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL, 1);
+      SetProxySettingsUpdate(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
 
       for i := 0 to Count - 1 do
       begin

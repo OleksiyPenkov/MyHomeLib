@@ -106,7 +106,7 @@ begin
 
   Response := TFileStream.Create(FPParams^.INPXFile, fmCreate);
   try
-    SetProxySettings(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL, 1);
+    SetProxySettingsUpdate(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
     HTTP.Get(FPParams^.INPXUrl, Response);
     if not FTerminated then
     begin

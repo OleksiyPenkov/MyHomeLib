@@ -175,7 +175,7 @@ var
   mm, dd, yy: word;
 
   Max: Integer;
-
+  CompRes: Integer;
 begin
   R.Clear;
 
@@ -256,7 +256,8 @@ begin
 
         flDeleted:
           begin
-            if (slParams[i] = '1') then // удалена
+            CompRes := CompareStr(slParams[i], '1');
+            if CompRes >= 0 then // удалена
               Include(R.BookProps, bpIsDeleted)
             else
               Exclude(R.BookProps, bpIsDeleted);

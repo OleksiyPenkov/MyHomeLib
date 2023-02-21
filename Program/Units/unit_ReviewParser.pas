@@ -57,7 +57,7 @@ begin
   FidSocksInfo := TIdSocksInfo.Create;
   FidSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create;
 
-  SetProxySettings(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
+  SetProxySettingsGlobal(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
 end;
 
 destructor TReviewParser.Destroy;

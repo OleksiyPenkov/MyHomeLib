@@ -6074,7 +6074,7 @@ begin
       IdSocksInfo := TIdSocksInfo.Create(nil);
       IdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
 
-      SetProxySettings(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
+      SetProxySettingsGlobal(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
       try
         HTTP.Get(IncludeUrlSlash(Settings.UpdateURL) + PROGRAM_VERINFO_FILENAME, LF);
       except
