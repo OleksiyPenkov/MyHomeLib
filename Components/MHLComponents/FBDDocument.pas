@@ -550,7 +550,7 @@ begin
       archiver.AddFiles(fbdFileName);
       archiver.AddFiles(bookFileName);
       Result := archiver.Test;
-
+//
       if Result then
       begin
         SysUtils.DeleteFile(fbdFileName);
@@ -836,7 +836,6 @@ begin
     dwFlags := STARTF_USESHOWWINDOW;
     wShowWindow := WinState;
   end;
-
   Result := CreateProcess(
     nil,
     PChar(CmdLine),
@@ -849,7 +848,6 @@ begin
     StartInfo,
     ProcInfo
   );
-
   if Result then
   begin
     WaitForSingleObject(ProcInfo.hProcess, INFINITE);

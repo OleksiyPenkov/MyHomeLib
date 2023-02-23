@@ -128,12 +128,14 @@
         <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
         <VerInfo_MinorVer>3</VerInfo_MinorVer>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Build>831</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileVersion=2.3.4.831;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.3.829;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName);SpecialBuild=</VerInfo_Keys>
+        <VerInfo_Build>832</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=2.3.4.832;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.3.829;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Private>false</VerInfo_Private>
+        <VerInfo_PreRelease>false</VerInfo_PreRelease>
+        <VerInfo_Special>false</VerInfo_Special>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>

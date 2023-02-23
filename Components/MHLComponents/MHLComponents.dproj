@@ -107,7 +107,6 @@
         <DCCReference Include="IndyProtocols.dcp"/>
         <DCCReference Include="soaprtl.dcp"/>
         <DCCReference Include="VirtualTreesDD.dcp"/>
-        <DCCReference Include="vclZipForged28.dcp"/>
         <DCCReference Include="unit_StaticTip.pas"/>
         <DCCReference Include="files_list.pas"/>
         <DCCReference Include="MHLComponents_Register.pas"/>

@@ -16,7 +16,7 @@ inherited InteriorPageBase: TInteriorPageBase
       AlignWithMargins = True
       Left = 14
       Top = 7
-      Width = 292
+      Width = 141
       Height = 13
       Margins.Left = 14
       Margins.Top = 7
@@ -30,21 +30,19 @@ inherited InteriorPageBase: TInteriorPageBase
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitWidth = 141
     end
     object lblSubTitle: TLabel
       AlignWithMargins = True
       Left = 28
       Top = 27
-      Width = 285
-      Height = 13
+      Width = 151
+      Height = 15
       Margins.Left = 28
       Margins.Top = 7
       Margins.Right = 7
       Margins.Bottom = 14
       Align = alTop
       Caption = '<'#1055#1086#1076#1079#1072#1075#1086#1083#1086#1074#1086#1082' '#1089#1090#1088#1072#1085#1080#1094#1099'>'
-      ExplicitWidth = 140
     end
   end
 end

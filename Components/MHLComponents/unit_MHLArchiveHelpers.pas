@@ -19,7 +19,7 @@ interface
 
 uses
   Classes,
-  ZipForge;
+  System.Zip;
 type
 
   TStreamSource = record
@@ -27,37 +27,45 @@ type
     Stream: TStream;
   end;
 
-  TMHLZip = class(TZipForge)
+  TSearchMode = (smFull, smExt);
+
+  TMHLZip = class(TObject)
     private
-      FLast: TZFArchiveItem;
+      FZip: TZipFile;
       FResult: Boolean;
-
-      procedure OnError(Sender:    TObject;
-                        FileName:    String;
-                        Operation:    TZFProcessOperation;
-                        NativeError:   Integer;
-                        ErrorCode:    Integer;
-                        ErrorMessage:   String;
-                        var Action:   TZFAction
-                        );
-
+      FLastID: Integer;
+      FHeader: TZipHeader;
+      procedure SetBaseDir(const Value: string);
+      function GetLastSize: Integer;
       function GetLastName: string;
-      function GetLastSize: integer;
+    function GetFileCount: Integer;
 
 
     public
       constructor Create(AFileName: string; RO: boolean);
-      function GetFileNameById(No: integer): string;
+      destructor Destroy; override;
+
       function ExtractToStream(No: integer): TMemoryStream; overload;
-      function GetIdxByExt(Ext: string): integer;
-      function Find(FN: string):boolean;  overload;
-      function Find(No: integer): boolean; overload;
-      function FindNext: boolean; overload;
-      function ExtractToString(FileName: string):string;
+      procedure ExtractToStream(AFileName: string; out Stream: TMemoryStream) overload;
+      procedure ExtractToStream(AFileName: string; out Stream: TStream) overload;
+
+      function GetIdxByExt(const Ext: string):Integer;
+      function ExtractToString(AFileName: string):string;
+
+      function Find(AFileName: string): Boolean;
+      function FindNext: Boolean;
       function Test: Boolean;
 
+
+      procedure AddFiles(const FileNames: string);
+      procedure AddFromStream(const AFileName: string; Stream: TStream);
+      procedure RenameFile(const OldFileName, NewFileName: string);
+      procedure CloseArchive;
+
       property LastName: string read GetLastName;
-      property LastSize: integer read GetLastSize;
+      property FileCount: Integer read GetFileCount;
+      property BaseDir: string write SetBaseDir;
+      property LastSize: Integer read GetLastSize;
   end;
 
   // Supported archive formats (only ones that work for both input and output)
@@ -89,24 +97,46 @@ end;
 { TMHLZip }
 
 function TMHLZip.ExtractToStream(No: integer): TMemoryStream;
+var
+  S: TStream;
 begin
-  GetFileNameByID(No);
-  Result := TMemoryStream.Create;
-  ExtractToStream(FLast.FileName, Result);
+  try
+    Result := TMemoryStream.Create;
+    FZip.Read(No, S, FHeader);
+    Result.CopyFrom(S);
+  finally
+    FreeAndNil(S);
+  end;
 end;
 
-function TMHLZip.ExtractToString(FileName: string): string;
+procedure TMHLZip.ExtractToStream(AFileName: string; out Stream: TMemoryStream);
 var
-  binStream: TMemoryStream;
+  S: TStream;
+begin
+  try
+    FZip.Read(AFileName, S, FHeader);
+    Stream.CopyFrom(S);
+  finally
+    FreeAndNil(S);
+  end;
+end;
+
+procedure TMHLZip.ExtractToStream(AFileName: string; out Stream: TStream);
+begin
+  FZip.Read(AFileName, Stream, FHeader);
+end;
+
+function TMHLZip.ExtractToString(AFileName: string): string;
+var
+  binStream: TStream;
   strStream: TStringStream;
   S: String;
 begin
   try
-    binStream := TMemoryStream.Create;
-    ExtractToStream(FileName, binStream);
+    FZip.Read(AFileName, binStream, FHeader);
     strStream := TStringStream.Create;
     try
-      binStream.SaveToStream(strStream);
+      strStream.CopyFrom(binStream);
       S := strStream.DataString;
       if HasUTF8BOM(strStream.DataString) then
       begin
@@ -122,88 +152,124 @@ begin
   end;
 end;
 
-function TMHLZip.Find(FN: string):boolean;
-begin
-  Result := FindFirst(FN, FLast, faAnyFile - faDirectory)
-end;
-
-function TMHLZip.Find(No: integer): boolean;
+function TMHLZip.Find(AFileName: string): Boolean;
 var
-  i: integer;
+  i: Integer;
+  FN, ext: string;
+  Mode: TSearchMode;
 begin
-  i := 0;
-  if (FindFirst('*.*', FLast, faAnyFile - faDirectory)) then
-  while i <> No do
+  Result := False;
+  if Pos('*.', AFileName) > 0 then
   begin
-    FindNext(FLast);
-    Inc(i);
-  end;
-  Result := True;
-end;
+    Mode := smExt;
+    ext := AFileName;
+    Delete(ext, 1, 1);
+  end
+  else
+    Mode := smFull;
 
-function TMHLZip.FindNext: boolean;
-begin
-  Result := FindNext(FLast);
-end;
 
-function TMHLZip.GetFileNameById(No: integer): string;
-var
-  i: integer;
-  max : integer;
-begin
-  i := 0;
-  max := FileCount;
-  if (FindFirst('*.*', FLast, faAnyFile - faDirectory)) then
-  while (i <> No) and (i <= max) do
+  for i := 0 to High(FZip.FileInfos) do
   begin
-    FindNext(FLast);
-    Inc(i);
+    FN := TEncoding.UTF8.GetString(FZip.FileInfos[i].FileName);
+    case Mode of
+      smFull: begin
+                if FN = AFileName then
+                begin
+                  Result := True;
+                  FLastID := FZip.GetFileIndex(FN);
+
+                  Break;
+                end;
+              end;
+      smExt: begin
+                if ext = ExtractFileExt(FN) then
+                begin
+                  Result := True;
+                  FLastID := FZip.GetFileIndex(FN);
+                  Break;
+                end;
+              end;
+    end;
+
   end;
-  Result := FLast.FileName;
 end;
 
-function TMHLZip.GetIdxByExt(Ext: string): integer;
+function TMHLZip.FindNext: Boolean;
+begin
+  Result := False;
+  if FLastID < High(FZip.FileInfos) then
+  begin
+    Inc(FLastID);
+    Result := True;
+  end;
+end;
+
+function TMHLZip.GetFileCount: Integer;
+begin
+  Result := FZip.FileCount;
+end;
+
+function TMHLZip.GetIdxByExt(const Ext: string): Integer;
 var
-  i: integer;
+  i: Integer;
+  FN: string;
 begin
   Result := -1;
-  i := 0;
-  if (FindFirst('*.*', FLast, faAnyFile - faDirectory)) then
-  repeat
-    if AnsiEndsStr(Ext, Flast.FileName) then
+  for i := 0 to High(FZip.FileInfos) do
+  begin
+    FN := TEncoding.UTF8.GetString(FZip.FileInfos[i].FileName);
+    if ExtractFileExt(FN) = Ext then
     begin
-      Result := i;
+      Result := FZip.GetFileIndex(FN);
       Break;
     end;
-    inc(i);
-  until not FindNext(FLast);
+  end;
 end;
 
 function TMHLZip.GetLastName: string;
 begin
-  Result := Flast.FileName;
+  Result := TEncoding.UTF8.GetString(FZip.FileInfos[FLastID].FileName);
 end;
 
-function TMHLZip.GetLastSize: integer;
+function TMHLZip.GetLastSize: Integer;
 begin
-  Result := Flast.UncompressedSize;
+  Result := FZip.FileInfos[FLastID].UncompressedSize;
 end;
 
-procedure TMHLZip.OnError;
+procedure TMHLZip.RenameFile(const OldFileName, NewFileName: string);
 begin
-  FResult := False;
+
+end;
+
+procedure TMHLZip.SetBaseDir(const Value: string);
+begin
+  //
 end;
 
 function TMHLZip.Test: Boolean;
 begin
-  FResult := True;
-  TestFiles('*.*');
-  Result := FResult;
+ //
+end;
+
+procedure TMHLZip.AddFiles(const FileNames: string);
+begin
+  FZip.Add(FileNames);
+end;
+
+procedure TMHLZip.AddFromStream(const AFileName: string; Stream: TStream);
+begin
+  FZip.Add(Stream, AFileName);
+end;
+
+procedure TMHLZip.CloseArchive;
+begin
+  // empty function for compatibility
 end;
 
 constructor TMHLZip.Create(AFileName: string; RO: boolean);
 begin
-  Inherited Create(Nil);
+  Inherited Create;
 
   if RO and not(FileExists(AFileName)) then
   begin
@@ -211,19 +277,19 @@ begin
     raise Exception.Create(Format('јрхив %s не найден!',[AFileName]));
   end;
 
-  ExtractCorruptedFiles := False;
-  CompressionLevel := clMax;
-  CompressionMode := 9;
-  SpanningMode := smNone;
-  InMemory := False;
-  Zip64Mode := zmAuto;
-  UnicodeFilenames := True;
-  EncryptionMethod := caPkzipClassic;
+  FZip := TZipFile.Create;
+  if RO then
+    FZip.Open(AFileName, zmRead)
+  else
+    FZip.Open(AFileName, zmWrite);
 
-  FileName := AFileName;
-  OpenArchive;
-  OnProcessFileFailure := OnError;
-  FindFirst('*.*', FLast, faAnyFile - faDirectory);
+end;
+
+destructor TMHLZip.Destroy;
+begin
+  FZip.Close;
+  FreeAndNil(FZip);
+  inherited;
 end;
 
 end.

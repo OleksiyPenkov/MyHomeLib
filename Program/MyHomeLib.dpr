@@ -31,7 +31,7 @@ program MyHomeLib;
 {$R *.dres}
 
 uses
-  FastMM5,
+  FastMM4,
   Forms,
   IMouse,
   frm_main in 'Forms\frm_main.pas' {frmMain},
@@ -141,9 +141,7 @@ uses
 {$R *.res}
 
 begin
-{$IFOPT D+}
-  ReportMemoryLeaksOnShutdown := True;
-{$ENDIF}
+{$INCLUDE FastMM4Options.inc}
 
   Application.Initialize;
 
