@@ -274,7 +274,7 @@ begin
   if RO and not(FileExists(AFileName)) then
   begin
     FResult := False;
-    raise Exception.Create(Format('јрхив %s не найден!',[AFileName]));
+    raise Exception.Create(Format('Архив %s не найден!',[AFileName]));
   end;
 
   FZip := TZipFile.Create;

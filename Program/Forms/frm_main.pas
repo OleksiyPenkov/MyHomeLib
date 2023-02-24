@@ -72,7 +72,6 @@ uses
   unit_UserData,
   unit_treeController,
   unit_ColorTabs,
-  ZipForge,
   System.Actions, System.ImageList;
 
 type
@@ -950,6 +949,12 @@ type
     procedure SavePositions;
     procedure SetBookInfoPriority(State: Boolean);
     procedure ShowBookDelete(Sender: TObject);
+    procedure LoadPresets;
+    procedure ConnectTreeControllers;
+    procedure InitFormFileds;
+    procedure UpdateSplashScreen(const AStatus: string);
+    procedure LoadDownloadsList;
+    procedure ClearDataFolder;
     property ActiveView: TView read GetActiveView;
 
     property ShowStatusProgress: Boolean read GetShowStatusProgress write SetShowStatusProgress;
@@ -1534,7 +1539,7 @@ var
   end;
 
 
-  begin
+begin
   FIgnoreAuthorChange := True;
   SavedCursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
@@ -2178,6 +2183,7 @@ begin
   if WindowState = wsMinimized then
     WindowState := wsNormal;
   // конец костыля
+  tmrCheckUpdates.Enabled := True;
 end;
 
 procedure TfrmMain.btnSwitchTreeModeClick(Sender: TObject);
@@ -2574,17 +2580,32 @@ end;
 // События формы
 //
 // ----------------------------------------------------------------------------
-procedure TfrmMain.FormCreate(Sender: TObject);
+procedure TfrmMain.LoadPresets;
 var
   PresetFile: string;
   preset: TSearchPreset;
 begin
-  Application.OnHelp := OnHelpHandler;
-  UseLatestCommonDialogs := True;
+  //
+  // загрузка списка пресетов для поиска
+  //
+  FPresets := TSearchPresets.Create;
+  PresetFile := Settings.SystemFileName[sfPresets];
+  if TFile.Exists(PresetFile) then
+  begin
+    try
+      FPresets.Load(PresetFile);
 
-  FSystemData := SystemDB;
+      for preset in FPresets do
+        cbPresetName.Items.Add(preset.DisplayName);
+    except
+      on e: Exception do
+        Application.ShowException(e);
+    end;
+  end;
+end;
 
-  Assert(Assigned(FSystemData));
+procedure TfrmMain.ConnectTreeControllers;
+begin
   FController := TTreeController.Create(FSystemData);
 
   //
@@ -2604,6 +2625,12 @@ begin
   FController.ConnectDownloadTree(tvDownloadList);
 
   // -----------------------------
+end;
+
+procedure TfrmMain.InitFormFileds;
+begin
+  Application.OnHelp := OnHelpHandler;
+  UseLatestCommonDialogs := True;
 
   FSelectionState := False;
   FAutoCheck := False;
@@ -2648,42 +2675,16 @@ begin
 
   StatusBar.Panels[2].Text := unit_MHLHelpers.GetFileVersion(Application.ExeName);
   // SB
+end;
 
-  ReadINIData;
-
-  //
-  // загрузка списка пресетов для поиска
-  //
-  FPresets := TSearchPresets.Create;
-  PresetFile := Settings.SystemFileName[sfPresets];
-  if TFile.Exists(PresetFile) then
-  begin
-    try
-      FPresets.Load(PresetFile);
-
-      for preset in FPresets do
-        cbPresetName.Items.Add(preset.DisplayName);
-    except
-      on e: Exception do
-        Application.ShowException(e);
-    end;
-  end;
-
-  SetColumns;
-  SetHeaderPopUp;
-
-  // ------------------------ чистка папки дата если нужно ----------------------
-  if (ParamCount > 0) and (ParamStr(1) = '/clear') then
-    ClearDir(Settings.DataDir);
-
-  frmSplash.lblState.Caption := rstrMainLoadingCollection;
+procedure TfrmMain.UpdateSplashScreen(const AStatus: string);
+begin
+  frmSplash.lblState.Caption := AStatus;
   frmSplash.lblState.Update;
+end;
 
-  InitCollection;
-
-  // ------------------------------------------------------------------------------
-
-
+procedure TfrmMain.LoadDownloadsList;
+begin
   // загрузка списка закачек
   if FileExists(Settings.SystemFileName[sfDownloadsStore]) then
   begin
@@ -2692,12 +2693,43 @@ begin
   end;
 
   if Settings.AutoStartDwnld then
-    btnStartDownloadClick(Sender);
+    btnStartDownloadClick(frmMain);
+end;
+
+procedure TfrmMain.ClearDataFolder;
+begin
+  // ------------------------ чистка папки дата если нужно ----------------------
+  if (ParamCount > 0) and (ParamStr(1) = '/clear') then
+    ClearDir(Settings.DataDir);
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  FSystemData := SystemDB;
+
+  ConnectTreeControllers;
+
+  InitFormFileds;
+
+  ReadINIData;
+
+  ClearDataFolder;
+
+  LoadPresets;
+
+  SetColumns;
+
+  SetHeaderPopUp;
+
+  UpdateSplashScreen(rstrMainLoadingCollection);
+
+  InitCollection;
+
+  LoadDownloadsList;
 
   SetFormState;
-  tmrCheckUpdates.Enabled := True;
-  frmSplash.lblState.Caption := rstrStarting;
-  frmSplash.lblState.Update;
+
+  UpdateSplashScreen(rstrStarting);
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
