@@ -1530,6 +1530,7 @@ var
       Data := Tree.GetNodeData(Node);
       if Data.BookKey.BookID = ID then
       begin
+        Tree.ClearSelection;
         Tree.Selected[Node] := True;
         Tree.FocusedNode := Node;
         Break;
