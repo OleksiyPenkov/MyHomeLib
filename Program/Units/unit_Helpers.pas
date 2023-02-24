@@ -27,7 +27,10 @@ uses
   ComCtrls,
   Graphics,
   Generics.Collections,
-  unit_Consts;
+  unit_Consts,
+  IdHTTP,
+  IdSocks,
+  IdSSLOpenSSL;
 
 type
   TIniStringList = class(TStringList)

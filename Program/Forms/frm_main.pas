@@ -72,7 +72,8 @@ uses
   unit_UserData,
   unit_treeController,
   unit_ColorTabs,
-  System.Actions, System.ImageList;
+  System.Actions,
+  System.ImageList;
 
 type
   TfrmMain = class(TForm)
@@ -1064,11 +1065,6 @@ resourcestring
   rstrNeedSpecialDataTypeForSeries = 'Необходимо использовать отдельный тип данных для серии';
   rstrBookNotFoundInArchive = 'В архиве "%s" не найдено описание книги!';
   rstrCollectionNotRegistered = 'Коллекция не зарегистрирована !';
-  rstrUpdateFailedServerNotFound = 'Проверка обновления не удалось! Сервер не найден.' + CRLF + 'Код ошибки: %d';
-  rstrUpdateFailedConnectionError = 'Проверка обновления не удалось! Ошибка подключения.' + CRLF + 'Код ошибки: %d';
-  rstrUpdateFailedServerError = 'Проверка обновления не удалось! Сервер сообщает об ошибке ' + CRLF + 'Код ошибки: %d';
-  rstrFoundNewAppVersion = 'Доступна новая версия - "%s" Посетите сайт программы для загрузки обновлений.';
-  rstrLatestVersion = 'У вас самая свежая версия.';
   rstrRemoveFromGroup = 'Удалить из группы';
   rstrRemoveFromDownloadList = 'Удалить из списка закачек';
   rstrAddToFavorites = 'Добавить в избранное';
@@ -2360,6 +2356,11 @@ begin
     if not Result then
       MHLShowInfo(rstrNoUpdatesAvailable);
   end;
+end;
+
+procedure TfrmMain.CheckUpdatesExecute(Sender: TObject);
+begin
+  CheckUpdates(GetFileVersion(Application.ExeName), FAutoCheck);
 end;
 
 // ------------------------------------------------------------------------------
@@ -6086,63 +6087,6 @@ begin
   BookKey := Data^.BookKey;
 
   LocateAuthorAndBook(FullAuthorName, BookKey);
-end;
-
-procedure TfrmMain.CheckUpdatesExecute(Sender: TObject);
-var
-  SL: TStringList;
-  LF: TMemoryStream;
-  i: Integer;
-  S: string;
-  HTTP: TidHTTP;
-  IdSocksInfo: TIdSocksInfo;
-  IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
-
-begin
-  LF := TMemoryStream.Create;
-  try
-    SL := TStringList.Create;
-    try
-      HTTP := TidHTTP.Create;
-      IdSocksInfo := TIdSocksInfo.Create(nil);
-      IdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
-
-      SetProxySettingsGlobal(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
-      try
-        HTTP.Get(IncludeUrlSlash(Settings.UpdateURL) + PROGRAM_VERINFO_FILENAME, LF);
-      except
-        on E: EIdSocketError do
-          if E.LastError = 11001 then
-            MHLShowError(rstrUpdateFailedServerNotFound, [E.LastError])
-          else
-            MHLShowError(rstrUpdateFailedConnectionError, [E.LastError]);
-        on E: Exception do
-          MHLShowError(rstrUpdateFailedServerError, [HTTP.ResponseCode]);
-      end;
-      { TODO -oNickR -cRefactoring : проверить использование файла last_version.info. Возможно он больше нигде не нужен и можно не сохранять его на диск }
-      LF.SaveToFile(Settings.SystemFileName[sfAppVerInfo]);
-      SL.LoadFromFile(Settings.SystemFileName[sfAppVerInfo]);
-      if SL.Count > 0 then
-        if CompareStr(GetFileVersion(Application.ExeName), SL[0]) < 0 then
-        begin
-          S := CRLF;
-          for i := 1 to SL.Count - 1 do
-            S := S + '  ' + SL[i] + CRLF;
-
-          MHLShowInfo(Format(rstrFoundNewAppVersion, [SL[0] + CRLF + S + CRLF]));
-        end
-        else if not FAutoCheck then
-          MHLShowInfo(rstrLatestVersion);
-      FAutoCheck := False;
-    finally
-      IdSSLIOHandlerSocketOpenSSL.Free;
-      IdSocksInfo.Free;
-      HTTP.Free;
-      SL.Free;
-    end;
-  finally
-    LF.Free;
-  end;
 end;
 
 procedure TfrmMain.ShowCollectionStatisticsExecute(Sender: TObject);

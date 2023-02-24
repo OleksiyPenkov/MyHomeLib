@@ -398,6 +398,8 @@ type
   function CleanExtension(const Ext: string): string;
   function c_GetTempPath: String;
 
+  procedure CheckUpdates(const Version: string; var AutoCheck: Boolean);
+
 var
   CurrentSelectedAuthor: string; //Текущий выбранный автор для передачи в парсер экспорта
 
@@ -410,17 +412,28 @@ uses
   Math,
   IOUtils,
   Character,
-  unit_Errors,
   dm_user,
   ShlObj,
+  idStack,
+  idComponent,
+  IdBaseComponent,
+  IdAntiFreezeBase,
+  IdAntiFreeze,
   unit_fb2ToText,
   unit_Fb2Utils,
   unit_MHLGenerics,
-  unit_MHLArchiveHelpers;
+  unit_MHLArchiveHelpers,
+  unit_Errors,
+  unit_Settings;
 
 resourcestring
   rstrUnableToLaunch = ' Не удалось запустить %s ! ';
   rstrBookNotFoundInArchive = 'В архиве "%s" не найдено описание книги!';
+  rstrUpdateFailedServerNotFound = 'Проверка обновления не удалось! Сервер не найден.' + CRLF + 'Код ошибки: %d';
+  rstrUpdateFailedConnectionError = 'Проверка обновления не удалось! Ошибка подключения.' + CRLF + 'Код ошибки: %d';
+  rstrUpdateFailedServerError = 'Проверка обновления не удалось! Сервер сообщает об ошибке ' + CRLF + 'Код ошибки: %d';
+  rstrFoundNewAppVersion = 'Доступна новая версия - "%s" Посетите сайт программы для загрузки обновлений.';
+  rstrLatestVersion = 'У вас самая свежая версия.';
 
 const
   lat: set of AnsiChar = ['A' .. 'Z', 'a' .. 'z', '\', '-', ':', '`', ',', '.', '0' .. '9', '_', ' ', '(', ')', '[', ']', '{', '}'];
@@ -1364,6 +1377,63 @@ begin
     end;
   end; // else Settings.UseProxyForUpdate
   InitHTTP(idHTTP);
+end;
+
+procedure CheckUpdates;
+var
+  SL: TStringList;
+  LF: TMemoryStream;
+  i: Integer;
+  S: string;
+  HTTP: TidHTTP;
+  IdSocksInfo: TIdSocksInfo;
+  IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
+
+begin
+  LF := TMemoryStream.Create;
+  try
+    SL := TStringList.Create;
+    try
+      HTTP := TidHTTP.Create;
+      IdSocksInfo := TIdSocksInfo.Create(nil);
+      IdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+
+      SetProxySettingsGlobal(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
+      try
+        HTTP.Get(IncludeUrlSlash(Settings.UpdateURL) + PROGRAM_VERINFO_FILENAME, LF);
+      except
+        on E: EIdSocketError do
+          if E.LastError = 11001 then
+            MHLShowError(rstrUpdateFailedServerNotFound, [E.LastError])
+          else
+            MHLShowError(rstrUpdateFailedConnectionError, [E.LastError]);
+        on E: Exception do
+          MHLShowError(rstrUpdateFailedServerError, [HTTP.ResponseCode]);
+      end;
+      { TODO -oNickR -cRefactoring : проверить использование файла last_version.info. Возможно он больше нигде не нужен и можно не сохранять его на диск }
+      LF.SaveToFile(Settings.SystemFileName[sfAppVerInfo]);
+      SL.LoadFromFile(Settings.SystemFileName[sfAppVerInfo]);
+      if SL.Count > 0 then
+        if CompareStr(Version, SL[0]) < 0 then
+        begin
+          S := CRLF;
+          for i := 1 to SL.Count - 1 do
+            S := S + '  ' + SL[i] + CRLF;
+
+          MHLShowInfo(Format(rstrFoundNewAppVersion, [SL[0] + CRLF + S + CRLF]));
+        end
+        else if not AutoCheck then
+          MHLShowInfo(rstrLatestVersion);
+      AutoCheck := False;
+    finally
+      IdSSLIOHandlerSocketOpenSSL.Free;
+      IdSocksInfo.Free;
+      HTTP.Free;
+      SL.Free;
+    end;
+  finally
+    LF.Free;
+  end;
 end;
 
 
