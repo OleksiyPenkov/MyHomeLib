@@ -58,6 +58,7 @@ type
     function fb2EPUB(const InpFile: string; const OutFile: string): Boolean;
     function fb2PDF(const InpFile: string; const OutFile: string): Boolean;
     function fb2Mobi(const InpFile, OutFile: string): Boolean;
+    procedure SendToZip;
 
   strict private
     function PrepareFile(const BookKey: TBookKey): Boolean;
@@ -125,6 +126,7 @@ var
   R: TBookRecord;
   FTargetFolder: string;
   FTargetFileName: string;
+  FTempFileName: string;
 begin
   Result := False;
   try
@@ -166,9 +168,17 @@ begin
       Dialogs.ShowMessage(rstrCheckTemplateValidity);
       Exit;
     end;
-    FTargetFileName := Trim(FTargetFileName) + R.FileExt;
 
-    FFileOprecord.TargetFile := TPath.Combine(FTargetFolder, FTargetFileName);
+    FTargetFileName := Trim(TPath.Combine(FTargetFolder, FTargetFileName));
+    FTargetFileName := TPath.Combine(FDeviceDir, FTargetFileName);
+    if Length(FTargetFileName) < 250 then
+      FTargetFileName := FTargetFileName + R.FileExt
+    else begin
+      FTargetFileName  := Copy(FTargetFileName, 1, 240);
+      FTargetFileName  := Format('%s.%d%s',[FTargetFileName, R.BookKey.BookID, R.FileExt]);
+    end;
+
+    FFileOprecord.TargetFile := FTargetFileName;
     FFileOprecord.SourceFile := R.GetBookFileName;
 
     //
@@ -183,7 +193,13 @@ begin
         Exit;
       end;
 
-      FFileOprecord.SourceFile := TPath.Combine(FTempPath, FTargetFileName);
+      if Length(R.Title) < 250 then
+        FTempFileName := Format('%s%s',[R.Title, R.FileExt])
+      else begin
+        FTempFileName := Format('%s%s',[Copy(R.Title, 1, 240), R.FileExt])
+      end;
+
+      FFileOprecord.SourceFile := TPath.Combine(FTempPath, FTempFileName);
       R.SaveBookToFile(FFileOprecord.SourceFile);
 
       if (FBookFormat in [bfFb2, bfFb2Archive]) and FOverwriteFB2Info then
@@ -196,10 +212,22 @@ begin
   end;
 end;
 
-function TExportToDeviceThread.SendFileToDevice: Boolean;
+procedure TExportToDeviceThread.SendToZip;
 var
-  DestFileName: string;
   archiver: TMHLZip;
+begin
+  begin
+    try
+      archiver := TMHLZip.Create(FFileOprecord.TargetFile + ZIP_EXTENSION, False);
+      archiver.BaseDir := Settings.TempDir;
+      archiver.AddFiles(FFileOprecord.SourceFile);
+    finally
+      FreeAndNil(archiver);
+    end;
+  end;
+end;
+
+function TExportToDeviceThread.SendFileToDevice: Boolean;
 begin
   if not FileExists(FFileOprecord.SourceFile) then
   begin
@@ -208,8 +236,6 @@ begin
     Exit;
   end;
 
-  DestFileName := TPath.Combine(FDeviceDir, FFileOprecord.TargetFile);
-
   //
   // TODO -cBug: тут некоторая фигня. Мы вызываем конверторы, даже если исходная книга не FB2. Я помню, что режим для не-FB2 книг выставляется более-менее правильно, но...
   //
@@ -217,33 +243,24 @@ begin
   try
     case FExportMode of
       emFB2:
-        unit_globals.CopyFile(FFileOprecord.SourceFile, DestFileName);
+        unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
-      emFB2Zip:
-        begin
-          try
-            archiver := TMHLZip.Create(DestFileName + ZIP_EXTENSION, False);
-            archiver.BaseDir := Settings.TempDir;
-            archiver.AddFiles(FFileOprecord.SourceFile);
-          finally
-            FreeAndNil(archiver);
-          end;
-        end;
+      emFB2Zip: SendToZip;
 
       emTxt:
-        unit_globals.ConvertToTxt(FFileOprecord.SourceFile, DestFileName, FTXTEncoding);
+        unit_globals.ConvertToTxt(FFileOprecord.SourceFile, FFileOprecord.TargetFile, FTXTEncoding);
 
       emLrf:
-        Result := fb2Lrf(FFileOprecord.SourceFile, DestFileName);
+        Result := fb2Lrf(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
       emEpub:
-        Result := fb2EPUB(FFileOprecord.SourceFile, DestFileName);
+        Result := fb2EPUB(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
       emPDF:
-        Result := fb2PDF(FFileOprecord.SourceFile, DestFileName);
+        Result := fb2PDF(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
       emMobi:
-        Result := fb2Mobi(FFileOprecord.SourceFile, DestFileName);
+        Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
     end;
   except
     // подавляем исключения дабы не прерывать процесс
