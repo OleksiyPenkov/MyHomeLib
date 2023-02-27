@@ -126,6 +126,7 @@ var
   R: TBookRecord;
   FTargetFolder: string;
   FTargetFileName: string;
+  FTargetFullFilePath: string;
   FTempFileName: string;
 begin
   Result := False;
@@ -169,16 +170,15 @@ begin
       Exit;
     end;
 
-    FTargetFileName := Trim(TPath.Combine(FTargetFolder, FTargetFileName));
-    FTargetFileName := TPath.Combine(FDeviceDir, FTargetFileName);
-    if Length(FTargetFileName) < 250 then
-      FTargetFileName := FTargetFileName + R.FileExt
-    else begin
-      FTargetFileName  := Copy(FTargetFileName, 1, 240);
-      FTargetFileName  := Format('%s.%d%s',[FTargetFileName, R.BookKey.BookID, R.FileExt]);
-    end;
+    FTargetFullFilePath := Trim(TPath.Combine(FTargetFolder, FTargetFileName));
+    FTargetFullFilePath := TPath.Combine(FDeviceDir, FTargetFullFilePath);
 
-    FFileOprecord.TargetFile := FTargetFileName;
+    if Length(FTargetFullFilePath) < 250 then
+      FTargetFullFilePath := FTargetFullFilePath + R.FileExt
+    else
+      FTargetFullFilePath  := Format('%s.%d%s',[copy(FTargetFullFilePath, 1, 240), R.BookKey.BookID, R.FileExt]);
+
+    FFileOprecord.TargetFile := FTargetFullFilePath;
     FFileOprecord.SourceFile := R.GetBookFileName;
 
     //
@@ -193,10 +193,10 @@ begin
         Exit;
       end;
 
-      if Length(R.Title) < 250 then
-        FTempFileName := Format('%s%s',[R.Title, R.FileExt])
+      if Length(FTargetFileName) < 250 then
+        FTempFileName := Format('%s%s',[FTargetFileName, R.FileExt])
       else begin
-        FTempFileName := Format('%s%s',[Copy(R.Title, 1, 240), R.FileExt])
+        FTempFileName := Format('%s%s',[Copy(FTargetFileName, 1, 240), R.FileExt])
       end;
 
       FFileOprecord.SourceFile := TPath.Combine(FTempPath, FTempFileName);
