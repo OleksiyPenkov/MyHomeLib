@@ -251,6 +251,7 @@ type
     function GetBookStream: TStream;
     function GetBookDescriptorStream: TStream;
     procedure SaveBookToFile(const DestFileName: String);
+    function SaveBookToStream:TStream;
   end;
 
   // --------------------------------------------------------------------------
@@ -1157,6 +1158,11 @@ begin
   finally
     FreeAndNil(SourceStream);
   end;
+end;
+
+function TBookRecord.SaveBookToStream: TStream;
+begin
+  Result := GetBookStream;
 end;
 
 // ============================================================================

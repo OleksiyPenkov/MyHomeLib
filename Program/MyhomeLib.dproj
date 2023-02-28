@@ -6,7 +6,7 @@
         <DCC_DependencyCheckOutputName>Release\Bin\MyhomeLib.exe</DCC_DependencyCheckOutputName>
         <MainSource>MyHomeLib.dpr</MainSource>
         <ProjectVersion>19.5</ProjectVersion>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Base>True</Base>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -127,8 +127,8 @@
         <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
         <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Build>834</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileVersion=2.3.4.834;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.3.829;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Build>836</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=2.3.4.836;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.3.829;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
         <BT_BuildType>Debug</BT_BuildType>

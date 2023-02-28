@@ -54,11 +54,16 @@ type
     FProcessedFiles: string;
     FDeviceDir: string;
 
+    FCurrentFileStream: TStream;
+
+    FMaxTempPathLength: Integer;
+
     function fb2Lrf(const InpFile: string; const OutFile: string): Boolean;
     function fb2EPUB(const InpFile: string; const OutFile: string): Boolean;
     function fb2PDF(const InpFile: string; const OutFile: string): Boolean;
     function fb2Mobi(const InpFile, OutFile: string): Boolean;
     procedure SendToZip;
+    procedure SetDeviceDir(const Value: string);
 
   strict private
     function PrepareFile(const BookKey: TBookKey): Boolean;
@@ -73,7 +78,7 @@ type
     constructor Create;
 
     property BookIdList: TBookIdList read FBookIdList write FBookIdList;
-    property DeviceDir: string read FDeviceDir write FDeviceDir;
+    property DeviceDir: string read FDeviceDir write SetDeviceDir;
     property ProcessedFiles: string read FProcessedFiles;
     property ExportMode: TExportMode read FExportMode write FExportMode;
     property ExtractOnly: boolean write FExtractOnly;
@@ -100,6 +105,9 @@ resourcestring
   rstrFilesProcessed = 'Записано файлов: %u из %u';
   rstrCompleted = 'Завершение операции ...';
 
+const
+  MaxPathLength = 240;
+
 { TExportToDeviceThread }
 
 constructor TExportToDeviceThread.Create;
@@ -114,6 +122,8 @@ begin
   FFileNameTemplate := FSettings.FileNameTemplate;
   FOverwriteFB2Info := FSettings.OverwriteFB2Info;
   FTXTEncoding := FSettings.TXTEncoding;
+
+  FMaxTempPathLength := MaxPathLength - Length(FTempPath);
 end;
 
 //
@@ -173,10 +183,10 @@ begin
     FTargetFullFilePath := Trim(TPath.Combine(FTargetFolder, FTargetFileName));
     FTargetFullFilePath := TPath.Combine(FDeviceDir, FTargetFullFilePath);
 
-    if Length(FTargetFullFilePath) < 250 then
+    if Length(FTargetFullFilePath) < MaxPathLength then
       FTargetFullFilePath := FTargetFullFilePath + R.FileExt
     else
-      FTargetFullFilePath  := Format('%s.%d%s',[copy(FTargetFullFilePath, 1, 240), R.BookKey.BookID, R.FileExt]);
+      FTargetFullFilePath  := Format('%s.%d%s',[copy(FTargetFullFilePath, 1, MaxPathLength), R.BookKey.BookID, R.FileExt]);
 
     FFileOprecord.TargetFile := FTargetFullFilePath;
     FFileOprecord.SourceFile := R.GetBookFileName;
@@ -193,11 +203,11 @@ begin
         Exit;
       end;
 
-      if Length(FTargetFileName) < 250 then
+      if Length(FTargetFileName) < FMaxTempPathLength then
         FTempFileName := Format('%s%s',[FTargetFileName, R.FileExt])
-      else begin
-        FTempFileName := Format('%s%s',[Copy(FTargetFileName, 1, 240), R.FileExt])
-      end;
+      else
+        FTempFileName := Format('%s%s',[Copy(FTargetFileName, 1, FMaxTempPathLength), R.FileExt]);
+
 
       FFileOprecord.SourceFile := TPath.Combine(FTempPath, FTempFileName);
       R.SaveBookToFile(FFileOprecord.SourceFile);
@@ -227,40 +237,56 @@ begin
   end;
 end;
 
+procedure TExportToDeviceThread.SetDeviceDir(const Value: string);
+begin
+  FDeviceDir := Value;
+//  FMaxTargetFolderLength := MaxPathLength - Length(FDeviceDir);
+end;
+
 function TExportToDeviceThread.SendFileToDevice: Boolean;
 begin
+  Result := False;
   if not FileExists(FFileOprecord.SourceFile) then
   begin
     ShowMessage(Format(rstrFileNotFound, [FFileOprecord.SourceFile]), MB_ICONERROR or MB_OK);
-    Result := False;
     Exit;
   end;
 
-  //
-  // TODO -cBug: тут некоторая фигня. Мы вызываем конверторы, даже если исходная книга не FB2. Я помню, что режим для не-FB2 книг выставляется более-менее правильно, но...
-  //
-  Result := True;
   try
-    case FExportMode of
-      emFB2:
-        unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+    if FBookFormat in [bfFb2, bfFb2Archive] then
+    begin
+      case FExportMode of
+        emFB2: begin
+                 unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+                 Result := True;
+               end;
 
-      emFB2Zip: SendToZip;
+        emFB2Zip: begin
+                    SendToZip;
+                    Result := True;
+                  end;
 
-      emTxt:
-        unit_globals.ConvertToTxt(FFileOprecord.SourceFile, FFileOprecord.TargetFile, FTXTEncoding);
+        emTxt: begin
+                 unit_globals.ConvertToTxt(FFileOprecord.SourceFile, FFileOprecord.TargetFile, FTXTEncoding);
+                 Result := True;
+               end;
+        emLrf:
+          Result := fb2Lrf(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
-      emLrf:
-        Result := fb2Lrf(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+        emEpub:
+          Result := fb2EPUB(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
-      emEpub:
-        Result := fb2EPUB(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+        emPDF:
+          Result := fb2PDF(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 
-      emPDF:
-        Result := fb2PDF(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-
-      emMobi:
-        Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+        emMobi:
+          Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+      end;
+    end
+    else
+    begin
+      unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+      Result := True;
     end;
   except
     // подавляем исключения дабы не прерывать процесс
