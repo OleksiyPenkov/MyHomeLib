@@ -535,12 +535,11 @@ begin
 
   try
     archiver := TMHLZip.Create(archiveFileName, False);
-    archiver.BaseDir := FFolder;
 
     if EditorMode then
     begin
       archiver.AddFiles(fbdFileName);
-      Result := archiver.Test;
+      Result := archiver.Test(archiveFileName);
 
       if Result then
         SysUtils.DeleteFile(fbdFileName);
@@ -549,7 +548,7 @@ begin
     begin
       archiver.AddFiles(fbdFileName);
       archiver.AddFiles(bookFileName);
-      Result := archiver.Test;
+      Result := archiver.Test(archiveFileName);
 //
       if Result then
       begin

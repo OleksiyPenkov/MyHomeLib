@@ -229,7 +229,6 @@ begin
   begin
     try
       archiver := TMHLZip.Create(FFileOprecord.TargetFile + ZIP_EXTENSION, False);
-      archiver.BaseDir := Settings.TempDir;
       archiver.AddFiles(FFileOprecord.SourceFile);
     finally
       FreeAndNil(archiver);

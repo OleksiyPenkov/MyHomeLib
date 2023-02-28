@@ -224,7 +224,6 @@ begin
 
         FProgressEngine.AddProgress;
       finally
-        Zip.CloseArchive;
         FreeAndNil(Zip);
       end;
     end;

@@ -35,7 +35,6 @@ type
       FResult: Boolean;
       FLastID: Integer;
       FHeader: TZipHeader;
-      procedure SetBaseDir(const Value: string);
       function GetLastSize: Integer;
       function GetLastName: string;
     function GetFileCount: Integer;
@@ -54,17 +53,15 @@ type
 
       function Find(AFileName: string): Boolean;
       function FindNext: Boolean;
-      function Test: Boolean;
+      function Test(const AFileName: string): Boolean;
 
 
       procedure AddFiles(const FileNames: string);
       procedure AddFromStream(const AFileName: string; Stream: TStream);
       procedure RenameFile(const OldFileName, NewFileName: string);
-      procedure CloseArchive;
 
       property LastName: string read GetLastName;
       property FileCount: Integer read GetFileCount;
-      property BaseDir: string write SetBaseDir;
       property LastSize: Integer read GetLastSize;
   end;
 
@@ -242,14 +239,10 @@ begin
 
 end;
 
-procedure TMHLZip.SetBaseDir(const Value: string);
-begin
-  //
-end;
-
-function TMHLZip.Test: Boolean;
+function TMHLZip.Test(const AFileName: string): Boolean;
 begin
  //
+  Result := FZip.IsValid(AFileName)
 end;
 
 procedure TMHLZip.AddFiles(const FileNames: string);
@@ -260,11 +253,6 @@ end;
 procedure TMHLZip.AddFromStream(const AFileName: string; Stream: TStream);
 begin
   FZip.Add(Stream, AFileName);
-end;
-
-procedure TMHLZip.CloseArchive;
-begin
-  // empty function for compatibility
 end;
 
 constructor TMHLZip.Create(AFileName: string; RO: boolean);
