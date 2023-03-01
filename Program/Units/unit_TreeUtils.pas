@@ -39,11 +39,56 @@ procedure FillSeriesTree(Tree: TVirtualStringTree; const SeriesIterator: ISeries
 procedure FillGenresTree(Tree: TVirtualStringTree; const GenreIterator: IGenreIterator; FillFB2: Boolean = False; const SelectCode: string = '');
 procedure FillGroupsList(Tree: TVirtualStringTree; const GroupIterator: IGroupIterator; SelectID: Integer = MHL_INVALID_ID);
 
+function Export2HTML(const Tag: integer; const Path: string; var Tree: TBookTree): string;
+
 implementation
 
 uses
   unit_UserData,
-  Generics.Collections;
+  unit_Settings,
+  Generics.Collections,
+  System.Classes;
+
+//  ============= Exports =====================================================
+function Export2HTML;
+const
+  HTMLHead =
+    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">' + CRLF +
+    '<html>' + CRLF +
+    '<head>' + CRLF +
+    '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + CRLF +
+    '  <title>MyHomeLib HTML</title>' + CRLF +
+    '</head>' + CRLF +
+    '<body>' + CRLF;
+  HTMLFoot =
+    '</body>' + CRLF +
+    '</html>' + CRLF;
+
+  Ext: array [351 .. 353] of string = ('html', 'txt', 'rtf');
+var
+  FS: TFileStream;
+  Str: AnsiString;
+  Data: Pointer;
+begin
+  Result := (Path + 'book_list.' + Ext[Tag]);
+
+  FS := TFileStream.Create(Result, fmCreate);
+  try
+    case Tag of
+      351:
+        Str := HTMLHead + Tree.ContentToHTML(tstAll) + HTMLFoot;
+      352:
+        Str := AnsiString(Tree.ContentToText(tstAll, Chr(9)));
+      353:
+        Str := Tree.ContentToRTF(tstAll);
+    end;
+    Data := PChar(Str);
+    FS.WriteBuffer(Data^, Length(Str));
+  finally
+    FreeAndNil(FS);
+  end;
+end;
+
 
 // ============================================================================
 procedure GetSelections(Tree: TBookTree; out List: TSelectionList);

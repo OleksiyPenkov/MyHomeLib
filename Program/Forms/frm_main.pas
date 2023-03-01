@@ -6216,47 +6216,11 @@ begin
 end;
 
 procedure TfrmMain.Export2HTMLExecute(Sender: TObject);
-const
-  HTMLHead =
-    '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">' + CRLF +
-    '<html>' + CRLF +
-    '<head>' + CRLF +
-    '  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">' + CRLF +
-    '  <title>MyHomeLib HTML</title>' + CRLF +
-    '</head>' + CRLF +
-    '<body>' + CRLF;
-  HTMLFoot =
-    '</body>' + CRLF +
-    '</html>' + CRLF;
-
-  Ext: array [351 .. 353] of string = ('html', 'txt', 'rtf');
 var
   Tree: TBookTree;
-  FS: TFileStream;
-  Str: AnsiString;
-  Data: Pointer;
-  FileName: string;
 begin
   GetActiveTree(Tree);
-  FileName := (Settings.TempPath + 'book_list.' + Ext[(Sender as TAction).Tag]);
-
-  FS := TFileStream.Create(FileName, fmCreate);
-  try
-    case (Sender as TAction).Tag of
-      351:
-        Str := HTMLHead + Tree.ContentToHTML(tstAll) + HTMLFoot;
-      352:
-        Str := AnsiString(Tree.ContentToUnicode(tstAll, Chr(9)));
-      353:
-        Str := Tree.ContentToRTF(tstAll);
-    end;
-    Data := PChar(Str);
-    FS.WriteBuffer(Data^, Length(Str));
-  finally
-    FreeAndNil(FS);
-  end;
-
-  SimpleShellExecute(Handle, FileName);
+  SimpleShellExecute(Handle, Export2HTML((Sender as TAction).Tag, Settings.TempPath, Tree));
 end;
 
 procedure TfrmMain.ExportUserDataExecute(Sender: TObject);

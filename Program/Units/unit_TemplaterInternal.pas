@@ -6,7 +6,7 @@
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             12.02.2010
-  * Description         Базовый шаблонизатор. Реализации конкретных классов находятся в модуле Templater
+  * Description         пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ Templater
   *
   * $Id: unit_TemplaterInternal.pas 1064 2011-09-02 11:33:04Z eg_ $
   *
@@ -40,10 +40,10 @@ type
   end;
 
 resourcestring
-  rstrEInvalidTemplate = 'Неверный шаблон, позиция %d';
-  rstrEInvalidParam = 'Нераспознанный параметр "%s"';
-  rstrEUnopenedBracket = 'Неоткрытая скобка, позиция %d';
-  rstrEUnclosedBracket = 'Незакрытая скобка, позиция %d';
+  rstrEInvalidTemplate = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ %d';
+  rstrEInvalidParam = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ "%s"';
+  rstrEUnopenedBracket = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ %d';
+  rstrEUnclosedBracket = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ %d';
 
 type
   // --------------------------------------------------------------------------
@@ -288,7 +288,7 @@ begin
       if FTopLevel then
         RaiseTemplateError(rstrEUnopenedBracket, nPos);
 
-      // + проверки на пустоту ??? уже забыл зачем
+      // + пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ??? пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
       endPos := nPos + 1;
       Exit;
@@ -358,7 +358,7 @@ begin
   while nPos <= nLen do
   begin
     ch := strTemplate[nPos];
-    if not IsLetter(ch) then
+    if not ch.IsLetter then
       Break;
 
     strLiteral := strLiteral + ch;

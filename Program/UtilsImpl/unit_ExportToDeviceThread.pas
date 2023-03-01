@@ -54,8 +54,6 @@ type
     FProcessedFiles: string;
     FDeviceDir: string;
 
-    FCurrentFileStream: TStream;
-
     FMaxTempPathLength: Integer;
 
     function fb2Lrf(const InpFile: string; const OutFile: string): Boolean;
@@ -219,6 +217,7 @@ begin
     Result := True;
   except
     // подавляем исключения дабы не прерывать процесс
+    // on Exception do ShowMessage(R.GetBookFileName, 1);
   end;
 end;
 
