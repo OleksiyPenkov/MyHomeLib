@@ -1314,6 +1314,9 @@ end;
 procedure SetProxySettingsUpdate(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
 begin
 // прокси для обновлений, а не скачивания книг
+  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvSSLv2,sslvSSLv3,sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
+  IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
+
   if Settings.UseProxyForUpdate then
   begin
     with IdHTTP.ProxyParams do
