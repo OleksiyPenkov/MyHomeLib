@@ -12,10 +12,8 @@ object frmSettings: TfrmSettings
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object pcSetPages: TPageControl
     AlignWithMargins = True
@@ -23,7 +21,7 @@ object frmSettings: TfrmSettings
     Top = 3
     Width = 455
     Height = 397
-    ActivePage = tsBehavour
+    ActivePage = tsInterface
     Align = alClient
     TabOrder = 1
     object tsDevices: TTabSheet
@@ -87,7 +85,7 @@ object frmSettings: TfrmSettings
             ExplicitWidth = 126
           end
           object btnDeviceDir: TButton
-            Left = 359
+            Left = 355
             Top = 46
             Width = 75
             Height = 25
@@ -112,7 +110,7 @@ object frmSettings: TfrmSettings
           object edDeviceDir: TMHLAutoCompleteEdit
             Left = 15
             Top = 48
-            Width = 338
+            Width = 334
             Height = 21
             Anchors = [akLeft, akTop, akRight]
             TabOrder = 1
@@ -215,7 +213,7 @@ object frmSettings: TfrmSettings
             Caption = #1060#1072#1081#1083': '
           end
           object btnFolderTemplate: TButton
-            Left = 359
+            Left = 355
             Top = 26
             Width = 75
             Height = 25
@@ -225,7 +223,7 @@ object frmSettings: TfrmSettings
             OnClick = EditFolderTemplate
           end
           object btnFileNameTemplate: TButton
-            Left = 359
+            Left = 355
             Top = 53
             Width = 75
             Height = 25
@@ -237,7 +235,7 @@ object frmSettings: TfrmSettings
           object edFolderTemplate: TEdit
             Left = 59
             Top = 28
-            Width = 294
+            Width = 290
             Height = 21
             Anchors = [akLeft, akTop, akRight]
             ReadOnly = True
@@ -247,7 +245,7 @@ object frmSettings: TfrmSettings
           object edFileNameTemplate: TEdit
             Left = 59
             Top = 55
-            Width = 294
+            Width = 290
             Height = 21
             Anchors = [akLeft, akTop, akRight]
             ReadOnly = True
@@ -308,7 +306,7 @@ object frmSettings: TfrmSettings
           object cbTXTEncoding: TComboBox
             Left = 102
             Top = 62
-            Width = 332
+            Width = 328
             Height = 21
             Style = csDropDownList
             Anchors = [akLeft, akTop, akRight]
@@ -355,14 +353,14 @@ object frmSettings: TfrmSettings
         object edReadDir: TMHLAutoCompleteEdit
           Left = 9
           Top = 23
-          Width = 344
+          Width = 340
           Height = 21
           Anchors = [akLeft, akTop, akRight]
           TabOrder = 0
           TextHint = #1048#1089#1087#1086#1083#1100#1079#1086#1074#1072#1090#1100' '#1087#1072#1087#1082#1091' '#1087#1086' '#1091#1084#1086#1083#1095#1072#1085#1080#1102
         end
         object btnSelectReadDir: TButton
-          Left = 359
+          Left = 355
           Top = 21
           Width = 75
           Height = 25
@@ -450,6 +448,7 @@ object frmSettings: TfrmSettings
         ColumnClick = False
         GridLines = True
         HideSelection = False
+        Items.ItemData = {}
         ReadOnly = True
         RowSelect = True
         TabOrder = 0
@@ -473,6 +472,7 @@ object frmSettings: TfrmSettings
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
+        ExplicitWidth = 437
         object Label31: TLabel
           AlignWithMargins = True
           Left = 3
@@ -504,6 +504,14 @@ object frmSettings: TfrmSettings
           Height = 13
           Caption = #1056#1072#1079#1084#1077#1088' '#1096#1088#1080#1092#1090#1072' '#1072#1085#1085#1086#1090#1072#1094#1080#1080':'
           FocusControl = edShortFontSize
+        end
+        object Label25: TLabel
+          Left = 223
+          Top = 25
+          Width = 181
+          Height = 13
+          Caption = '* '#1090#1088#1077#1073#1091#1077#1090#1089#1103' '#1087#1077#1088#1077#1079#1072#1087#1091#1089#1082' '#1087#1088#1086#1075#1088#1072#1084#1084#1099
+          FocusControl = edFontSize
         end
         object Button1: TButton
           Left = 223
@@ -666,6 +674,8 @@ object frmSettings: TfrmSettings
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 1
+        ExplicitWidth = 437
+        ExplicitHeight = 180
         object Label32: TLabel
           AlignWithMargins = True
           Left = 3
@@ -1073,7 +1083,7 @@ object frmSettings: TfrmSettings
         Transparent = True
       end
       object lblProxyPort: TLabel
-        Left = 330
+        Left = 326
         Top = 33
         Width = 29
         Height = 13
@@ -1083,9 +1093,10 @@ object frmSettings: TfrmSettings
         FocusControl = edProxyPort
         ParentColor = False
         Transparent = True
+        ExplicitLeft = 330
       end
       object lblProxyPassword: TLabel
-        Left = 280
+        Left = 276
         Top = 60
         Width = 41
         Height = 13
@@ -1095,6 +1106,7 @@ object frmSettings: TfrmSettings
         FocusControl = edProxyPassword
         ParentColor = False
         Transparent = True
+        ExplicitLeft = 280
       end
       object lblProxyUser: TLabel
         Left = 15
@@ -1133,7 +1145,7 @@ object frmSettings: TfrmSettings
         Transparent = True
       end
       object lblProxyPortUpdate: TLabel
-        Left = 319
+        Left = 315
         Top = 191
         Width = 29
         Height = 13
@@ -1143,9 +1155,10 @@ object frmSettings: TfrmSettings
         FocusControl = edProxyPortUpdate
         ParentColor = False
         Transparent = True
+        ExplicitLeft = 319
       end
       object lblProxyPasswordUpdate: TLabel
-        Left = 269
+        Left = 265
         Top = 218
         Width = 41
         Height = 13
@@ -1155,6 +1168,7 @@ object frmSettings: TfrmSettings
         FocusControl = edProxyPasswordUpdate
         ParentColor = False
         Transparent = True
+        ExplicitLeft = 269
       end
       object lblProxyUserUpdate: TLabel
         Left = 7
@@ -1190,13 +1204,13 @@ object frmSettings: TfrmSettings
       object edProxyServer: TEdit
         Left = 62
         Top = 30
-        Width = 256
+        Width = 252
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 1
       end
       object edProxyPort: TEdit
-        Left = 364
+        Left = 360
         Top = 30
         Width = 68
         Height = 21
@@ -1208,7 +1222,7 @@ object frmSettings: TfrmSettings
         OnExit = CheckNumValue
       end
       object edProxyPassword: TEdit
-        Left = 328
+        Left = 324
         Top = 57
         Width = 104
         Height = 21
@@ -1219,7 +1233,7 @@ object frmSettings: TfrmSettings
       object edProxyUsername: TEdit
         Left = 97
         Top = 57
-        Width = 172
+        Width = 168
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 4
@@ -1251,13 +1265,13 @@ object frmSettings: TfrmSettings
       object edProxyServerUpdate: TEdit
         Left = 54
         Top = 188
-        Width = 256
+        Width = 252
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 7
       end
       object edProxyPortUpdate: TEdit
-        Left = 353
+        Left = 349
         Top = 188
         Width = 68
         Height = 21
@@ -1269,7 +1283,7 @@ object frmSettings: TfrmSettings
         OnExit = CheckNumValue
       end
       object edProxyPasswordUpdate: TEdit
-        Left = 317
+        Left = 313
         Top = 215
         Width = 104
         Height = 21
@@ -1280,7 +1294,7 @@ object frmSettings: TfrmSettings
       object edProxyUsernameUpdate: TEdit
         Left = 86
         Top = 215
-        Width = 172
+        Width = 168
         Height = 21
         Anchors = [akLeft, akTop, akRight]
         TabOrder = 10
@@ -1404,6 +1418,7 @@ object frmSettings: TfrmSettings
         ColumnClick = False
         GridLines = True
         HideSelection = False
+        Items.ItemData = {}
         ReadOnly = True
         RowSelect = True
         TabOrder = 0
@@ -1426,7 +1441,8 @@ object frmSettings: TfrmSettings
         BevelOuter = bvNone
         ShowCaption = False
         TabOrder = 0
-        ExplicitTop = 7
+        ExplicitWidth = 437
+        ExplicitHeight = 374
         DesignSize = (
           441
           375)
@@ -1448,10 +1464,10 @@ object frmSettings: TfrmSettings
           ExplicitWidth = 65
         end
         object Label10: TLabel
-          Left = 9
+          Left = 15
           Top = 330
-          Width = 137
-          Height = 18
+          Width = 131
+          Height = 13
           Alignment = taRightJustify
           Caption = #1064#1072#1073#1083#1086#1085' '#1079#1072#1075#1086#1083#1086#1074#1082#1072' '#1082#1085#1080#1075#1080':'
           WordWrap = True
@@ -1468,6 +1484,7 @@ object frmSettings: TfrmSettings
           Color = clBtnFace
           ParentColor = False
           TabOrder = 0
+          ExplicitWidth = 425
         end
         object cbMinimizeToTray: TCheckBox
           AlignWithMargins = True
@@ -1481,6 +1498,7 @@ object frmSettings: TfrmSettings
           Color = clBtnFace
           ParentColor = False
           TabOrder = 1
+          ExplicitWidth = 425
         end
         object cbAutoStartDwnld: TCheckBox
           AlignWithMargins = True
@@ -1492,6 +1510,7 @@ object frmSettings: TfrmSettings
           Align = alTop
           Caption = #1057#1090#1072#1088#1090#1086#1074#1072#1090#1100' '#1079#1072#1082#1072#1095#1082#1080' '#1072#1074#1090#1086#1084#1072#1090#1080#1095#1077#1089#1082#1080
           TabOrder = 2
+          ExplicitWidth = 425
         end
         object cbAllowMixedCollections: TCheckBox
           AlignWithMargins = True
@@ -1505,6 +1524,7 @@ object frmSettings: TfrmSettings
           Color = clBtnFace
           ParentColor = False
           TabOrder = 3
+          ExplicitWidth = 425
         end
         object cbDeleteDeleted: TCheckBox
           AlignWithMargins = True
@@ -1518,6 +1538,7 @@ object frmSettings: TfrmSettings
           Color = clBtnFace
           ParentColor = False
           TabOrder = 4
+          ExplicitWidth = 425
         end
         object cbAutoLoadReview: TCheckBox
           AlignWithMargins = True
@@ -1531,6 +1552,7 @@ object frmSettings: TfrmSettings
           Color = clBtnFace
           ParentColor = False
           TabOrder = 5
+          ExplicitWidth = 425
         end
         object cbDeleteFiles: TCheckBox
           AlignWithMargins = True
@@ -1544,6 +1566,7 @@ object frmSettings: TfrmSettings
           Color = clBtnFace
           ParentColor = False
           TabOrder = 6
+          ExplicitWidth = 425
         end
         object cbOverwriteFB2Info: TCheckBox
           AlignWithMargins = True
@@ -1557,6 +1580,7 @@ object frmSettings: TfrmSettings
           Caption = #1055#1077#1088#1077#1079#1072#1087#1080#1089#1099#1074#1072#1090#1100' '#1079#1072#1075#1086#1083#1086#1074#1086#1082' fb2'
           TabOrder = 7
           OnClick = cbOverwriteFB2InfoClick
+          ExplicitWidth = 425
         end
         object edTitleTemplate: TEdit
           Left = 152
@@ -1567,6 +1591,7 @@ object frmSettings: TfrmSettings
           ReadOnly = True
           TabOrder = 8
           Text = '[%s [(%n) ]- ]%t'
+          ExplicitWidth = 197
         end
         object btnTitleTemplate: TButton
           Left = 358
@@ -1577,6 +1602,7 @@ object frmSettings: TfrmSettings
           Caption = #1048#1079#1084#1077#1085#1080#1090#1100
           TabOrder = 9
           OnClick = EditTextTemplate
+          ExplicitLeft = 354
         end
         object cbSelectedIsChecked: TCheckBox
           AlignWithMargins = True
@@ -1590,7 +1616,7 @@ object frmSettings: TfrmSettings
           Caption = #1054#1073#1088#1072#1073#1072#1090#1099#1074#1072#1090#1100' '#1074#1099#1076#1077#1083#1077#1085#1085#1099#1077'  '#1082#1072#1082' '#1086#1090#1084#1077#1095#1077#1085#1085#1099#1077' '
           TabOrder = 10
           OnClick = cbOverwriteFB2InfoClick
-          ExplicitTop = 215
+          ExplicitWidth = 425
         end
         object cbIgnoreArchives: TCheckBox
           AlignWithMargins = True
@@ -1604,6 +1630,7 @@ object frmSettings: TfrmSettings
           Caption = #1048#1075#1085#1086#1088#1080#1088#1086#1074#1072#1090#1100' '#1086#1090#1089#1091#1090#1089#1090#1074#1091#1102#1097#1080#1077' '#1072#1088#1093#1080#1074#1099
           TabOrder = 11
           OnClick = cbIgnoreArchivesClick
+          ExplicitWidth = 425
         end
       end
     end
@@ -1843,11 +1870,13 @@ object frmSettings: TfrmSettings
     Caption = 'pnButtons'
     ShowCaption = False
     TabOrder = 2
+    ExplicitTop = 402
+    ExplicitWidth = 613
     DesignSize = (
       617
       41)
     object btnOk: TButton
-      Left = 453
+      Left = 449
       Top = 10
       Width = 75
       Height = 25
@@ -1857,9 +1886,10 @@ object frmSettings: TfrmSettings
       ModalResult = 1
       TabOrder = 0
       OnClick = SaveSettingsClick
+      ExplicitLeft = 445
     end
     object btnCancel: TButton
-      Left = 534
+      Left = 530
       Top = 10
       Width = 75
       Height = 25
@@ -1868,6 +1898,7 @@ object frmSettings: TfrmSettings
       Caption = '&'#1054#1090#1084#1077#1085#1072
       ModalResult = 2
       TabOrder = 1
+      ExplicitLeft = 526
     end
     object btnHelp: TButton
       Left = 12
@@ -1908,6 +1939,7 @@ object frmSettings: TfrmSettings
       00000001062004300437043D043E043504400000000000000000000000FFFFFF
       FFFFFFFFFF000000000000000000000000011121043E0440044204380440043E
       0432043A04300420004404300439043B043E043204}
+    ExplicitHeight = 393
   end
   object dlgColors: TColorDialog
     Left = 32

@@ -202,6 +202,7 @@ type
     lbProxyType: TLabel;
     cbProxyType: TComboBox;
     cbIgnoreArchives: TCheckBox;
+    Label25: TLabel;
 
     procedure SaveSettingsClick(Sender: TObject);
     procedure ShowHelpClick(Sender: TObject);

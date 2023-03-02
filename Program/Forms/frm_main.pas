@@ -724,7 +724,10 @@ type
     procedure edLocateSeriesChange(Sender: TObject);
     procedure cbLangSelectAChange(Sender: TObject);
     procedure btnClearFilterEditsClick(Sender: TObject);
-    procedure pmMarkSelectedClick(Sender: TObject);  // Выбор языка в списке
+    procedure pmMarkSelectedClick(Sender: TObject);
+    procedure tvAuthorsMeasureTextHeight(Sender: TBaseVirtualTree;
+      TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+      const Text: string; var Extent: Integer);  // Выбор языка в списке
 
   protected
     procedure WMGetSysCommand(var Message: TMessage); message WM_SYSCOMMAND;
@@ -1236,16 +1239,28 @@ var
   ShortFontSize : Integer;
 
   procedure SetTreeViewColor(AControl: TBookTree);
+  var
+    Height: cardinal;
   begin
     AControl.Color := BGColor;
     AControl.Font.Size := TreeFontSize;
+    AControl.ReinitNode(AControl.GetFirst, True);
+    AControl.Font.Size := TreeFontSize;
+    Height := AControl.Canvas.TextHeight('Щ');
+    AControl.DefaultNodeHeight := round(Height  + TreeFontSize / 4);
+    AControl.Header.Height := TreeFontSize * 2;
     AControl.Font.Color := FontColor;
   end;
 
   procedure SetTreeViewColor2(AControl: TVirtualStringTree);
+  var
+    Height: cardinal;
   begin
     AControl.Color := BGColor;
+    AControl.ReinitNode(AControl.GetFirst, True);
     AControl.Font.Size := TreeFontSize;
+    Height := AControl.Canvas.TextHeight('Щ');
+    AControl.DefaultNodeHeight := round(Height  + TreeFontSize / 4);
     AControl.Font.Color := FontColor;
   end;
 
@@ -1308,8 +1323,6 @@ end;
 
 procedure TfrmMain.ReadINIData;
 begin
-  SetColors;
-
   //
   // Синхронизация с настройками
   //
@@ -1358,6 +1371,8 @@ begin
 
   pgControl.ActivePageIndex := Settings.ActivePage;
   pgControlChange(nil); // update the toolbar, etc
+
+  SetColors;
 end;
 
 procedure TfrmMain.DoApplyFilter(Sender: TObject);
@@ -2945,6 +2960,12 @@ begin
   begin
     frmMain.ActiveControl := tvBooksA;
   end;
+end;
+
+procedure TfrmMain.tvAuthorsMeasureTextHeight(Sender: TBaseVirtualTree;
+  TargetCanvas: TCanvas; Node: PVirtualNode; Column: TColumnIndex;
+  const Text: string; var Extent: Integer);
+begin
 end;
 
 // ----------------------------------------------------------------------------

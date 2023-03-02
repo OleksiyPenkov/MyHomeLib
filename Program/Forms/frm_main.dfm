@@ -373,10 +373,11 @@ object frmMain: TfrmMain
           IncrementalSearch = isAll
           PopupMenu = pmAuthor
           TabOrder = 1
-          TreeOptions.PaintOptions = [toPopupMode, toShowDropmark, toShowHorzGridLines, toThemeAware, toUseBlendedImages]
+          TreeOptions.PaintOptions = [toPopupMode, toShowDropmark, toShowHorzGridLines, toShowRoot, toThemeAware, toUseBlendedImages]
           TreeOptions.SelectionOptions = [toFullRowSelect, toRightClickSelect, toCenterScrollIntoView]
           OnChange = tvAuthorsChange
           OnKeyDown = tvAuthorsKeyDown
+          OnMeasureTextHeight = tvAuthorsMeasureTextHeight
           Touch.InteractiveGestures = [igPan, igPressAndTap]
           Touch.InteractiveGestureOptions = [igoPanSingleFingerHorizontal, igoPanSingleFingerVertical, igoPanInertia, igoPanGutter, igoParentPassthrough]
           Columns = <>
@@ -528,7 +529,6 @@ object frmMain: TfrmMain
           OnHeaderClick = tvBooksTreeHeaderClick
           OnKeyDown = tvBooksTreeKeyDown
           OnMouseUp = tvBooksTreeMouseUp
-          ExplicitTop = 32
           Columns = <
             item
               BiDiMode = bdLeftToRight
@@ -669,10 +669,16 @@ object frmMain: TfrmMain
           Colors.UnfocusedColor = clGray
           Colors.UnfocusedSelectionColor = clWhite
           Colors.UnfocusedSelectionBorderColor = clWhite
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
           Header.AutoSizeIndex = 0
           Header.MainColumn = -1
           Header.Options = [hoColumnResize, hoDrag]
           IncrementalSearch = isAll
+          ParentFont = False
           PopupMenu = pmAuthor
           TabOrder = 1
           TreeOptions.PaintOptions = [toPopupMode, toShowDropmark, toShowHorzGridLines, toThemeAware, toUseBlendedImages]
@@ -883,7 +889,7 @@ object frmMain: TfrmMain
           Colors.UnfocusedSelectionColor = clWhite
           Colors.UnfocusedSelectionBorderColor = clWhite
           Header.AutoSizeIndex = 0
-          Header.Height = 20
+          Header.Height = 35
           Header.Options = [hoColumnResize, hoDrag, hoHotTrack, hoOwnerDraw, hoRestrictDrag, hoShowHint, hoShowImages, hoShowSortGlyphs, hoVisible]
           Header.PopupMenu = pmHeaders
           Header.Style = hsFlatButtons
@@ -2002,7 +2008,7 @@ object frmMain: TfrmMain
             150)
           object lblTotalBooksF: TLabel
             AlignWithMargins = True
-            Left = 1958
+            Left = 1930
             Top = 9
             Width = 12
             Height = 19
