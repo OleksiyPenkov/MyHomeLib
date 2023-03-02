@@ -723,8 +723,8 @@ begin
     FProxyUsername := iniFile.ReadString(NETWORK_SECTION, 'proxy-user', '');
     FProxyPassword := DecodePassString(iniFile.ReadString(NETWORK_SECTION, 'proxy-pass', ''));
     FProxyPort := iniFile.ReadInteger(NETWORK_SECTION, 'proxy-port', 0);
-    FUpdateURL := iniFile.ReadString(NETWORK_SECTION, 'update_server', ' https://oleksiypenkov.github.io/update/');
-    FInpxURL := iniFile.ReadString(NETWORK_SECTION, 'inpx-url', ' https://oleksiypenkov.github.io/inpx/');
+    FUpdateURL := iniFile.ReadString(NETWORK_SECTION, 'update_server', 'https://oleksiypenkov.github.io/update/');
+    FInpxURL := iniFile.ReadString(NETWORK_SECTION, 'inpx-url', 'https://oleksiypenkov.github.io/inpx/');
     FErrorLog := iniFile.ReadBool(NETWORK_SECTION, 'use_error_log', False);
     FTimeOut := iniFile.ReadInteger(NETWORK_SECTION, 'time-out', 9000);
     FReadTimeOut := iniFile.ReadInteger(NETWORK_SECTION, 'read_time-out', 90000);
