@@ -236,7 +236,7 @@ object frmMain: TfrmMain
     Width = 786
     Height = 685
     HelpContext = 1
-    ActivePage = tsByAuthor
+    ActivePage = tsByGroup
     Align = alClient
     OwnerDraw = True
     TabOrder = 2
@@ -2008,7 +2008,7 @@ object frmMain: TfrmMain
             150)
           object lblTotalBooksF: TLabel
             AlignWithMargins = True
-            Left = 1930
+            Left = 1916
             Top = 9
             Width = 12
             Height = 19

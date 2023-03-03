@@ -1480,6 +1480,11 @@ begin
     FCollection.SetProperty(PROP_LAST_AUTHOR_BOOK, FLastAuthorBookID.BookID);
     FCollection.SetProperty(PROP_LAST_SERIES, FLastSeriesStr);
     FCollection.SetProperty(PROP_LAST_SERIES_BOOK, FLastSeriesBookID.BookID);
+
+    FCollection.SetProperty(PROP_BOOKS_LANG_FILTER, cbLangSelectA.ItemIndex);
+    FCollection.SetProperty(PROP_SERIES_LANG_FILTER, cbLangSelectS.ItemIndex);
+    FCollection.SetProperty(PROP_GENRES_LANG_FILTER, cbLangSelectG.ItemIndex);
+    FCollection.SetProperty(PROP_GROUPS_LANG_FILTER, cbLangSelectF.ItemIndex);
   end;
 end;
 
@@ -1548,6 +1553,12 @@ var
       end;
       Node := Tree.GetNext(Node);
     end;
+  end;
+
+  procedure RestoreLangFilter(const Index: integer; LangComboBox: TComboBox);
+  begin
+    LangComboBox.ItemIndex := Index;
+    cbLangSelectAChange(LangComboBox);
   end;
 
 
@@ -1654,6 +1665,12 @@ begin
 
     UpdateActions;
     UpdateAllEditActions;
+
+    // ---- Recover laguage filters
+    RestoreLangFilter(FCollection.GetProperty(PROP_BOOKS_LANG_FILTER), cbLangSelectA);
+    RestoreLangFilter(FCollection.GetProperty(PROP_SERIES_LANG_FILTER), cbLangSelectS);
+    RestoreLangFilter(FCollection.GetProperty(PROP_GENRES_LANG_FILTER), cbLangSelectG);
+    RestoreLangFilter(FCollection.GetProperty(PROP_GROUPS_LANG_FILTER), cbLangSelectF);
 
     FInvisible := False;
     FindLastBook(FCollection.GetProperty(PROP_LAST_AUTHOR_BOOK), tvBooksA);
