@@ -2937,7 +2937,7 @@ begin
 
   if (FIgnoreAuthorChange) or (Node = nil) then
   begin
-   tvBooksA.Clear;
+//   tvBooksA.Clear;
    Exit;
   end;
 
@@ -3422,30 +3422,30 @@ var
   Tree: TBookTree;
   Selected: PVirtualNode;
 begin
-//  if (Button = mbLeft) and (ssShift in Shift) then
-//  begin
-//    try
-//      Tree := Sender as TBookTree;
-//      ClearLabels(Tree.Tag, True);
-//      Node := Tree.GetFirstSelected;
-//      Selected := Node;
-//      while Assigned(Node) do
-//      begin
-//        Data := Tree.GetNodeData(Node);
-//        if Data^.nodeType = ntBookInfo then
-//        begin
-//          if Tree.CheckState[Node] = csCheckedNormal then
-//            Tree.CheckState[Node] := csUncheckedNormal
-//          else
-//            Tree.CheckState[Node] := csCheckedNormal;
-//          Tree.Selected[Node] := False;
-//        end;
-//        Node := Tree.GetNextSelected(Node);
-//      end; // while
-//    finally
-//      Tree.Selected[Selected] := True;
-//    end;
-//  end; // if
+  if (Button = mbLeft) and (ssShift in Shift) then
+  begin
+    try
+      Tree := Sender as TBookTree;
+      ClearLabels(Tree.Tag, True);
+      Node := Tree.GetFirstSelected;
+      Selected := Node;
+      while Assigned(Node) do
+      begin
+        Data := Tree.GetNodeData(Node);
+        if Data^.nodeType = ntBookInfo then
+        begin
+          if Tree.CheckState[Node] = csCheckedNormal then
+            Tree.CheckState[Node] := csUncheckedNormal
+          else
+            Tree.CheckState[Node] := csCheckedNormal;
+          Tree.Selected[Node] := False;
+        end;
+        Node := Tree.GetNextSelected(Node);
+      end; // while
+    finally
+      Tree.Selected[Selected] := True;
+    end;
+  end; // if
 end;
 
 //

@@ -236,7 +236,7 @@ object frmMain: TfrmMain
     Width = 786
     Height = 685
     HelpContext = 1
-    ActivePage = tsByGroup
+    ActivePage = tsByGenre
     Align = alClient
     OwnerDraw = True
     TabOrder = 2
@@ -264,7 +264,6 @@ object frmMain: TfrmMain
         Height = 587
         Align = alLeft
         TabOrder = 2
-        ExplicitHeight = 586
         object pnAuthorSearch: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
@@ -390,8 +389,6 @@ object frmMain: TfrmMain
         Height = 587
         Align = alClient
         TabOrder = 3
-        ExplicitWidth = 541
-        ExplicitHeight = 586
         object AuthorBookInfoSplitter: TMHLSplitter
           Left = 0
           Top = 426
@@ -417,8 +414,6 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
-          ExplicitTop = 431
-          ExplicitWidth = 535
         end
         object pnAuthorBooksTitle: TMHLSimplePanel
           AlignWithMargins = True
@@ -434,7 +429,6 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 535
           object lblBooksTotalA: TLabel
             Left = 432
             Top = 0
@@ -484,7 +478,6 @@ object frmMain: TfrmMain
             OnChange = cbLangSelectAChange
             Items.Strings = (
               '-')
-            ExplicitLeft = 368
           end
         end
         object tvBooksA: TBookTree
@@ -605,7 +598,6 @@ object frmMain: TfrmMain
         ParentColor = False
         TabOrder = 0
         Wrapable = False
-        ExplicitWidth = 768
       end
       object tbarAuthorsEng: TToolBar
         AlignWithMargins = True
@@ -621,7 +613,6 @@ object frmMain: TfrmMain
         ParentColor = False
         TabOrder = 1
         Wrapable = False
-        ExplicitWidth = 768
       end
     end
     object tsBySerie: TTabSheet
@@ -1895,6 +1886,7 @@ object frmMain: TfrmMain
         Height = 657
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 656
         object tvGroups: TVirtualStringTree
           AlignWithMargins = True
           Left = 3
@@ -1943,6 +1935,7 @@ object frmMain: TfrmMain
           Height = 25
           Align = alBottom
           TabOrder = 1
+          ExplicitTop = 628
           object btnAddGroup: TButton
             Left = 0
             Top = 0
@@ -1979,6 +1972,8 @@ object frmMain: TfrmMain
         Height = 657
         Align = alClient
         TabOrder = 1
+        ExplicitWidth = 541
+        ExplicitHeight = 656
         object GroupBookInfoSplitter: TMHLSplitter
           Left = 0
           Top = 498
@@ -2003,12 +1998,14 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
+          ExplicitTop = 503
+          ExplicitWidth = 535
           DesignSize = (
             539
             150)
           object lblTotalBooksF: TLabel
             AlignWithMargins = True
-            Left = 1916
+            Left = 1902
             Top = 9
             Width = 12
             Height = 19
@@ -2039,6 +2036,7 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 535
           object lblBooksTotalF: TLabel
             Left = 432
             Top = 0
@@ -2089,6 +2087,7 @@ object frmMain: TfrmMain
             OnChange = cbLangSelectAChange
             Items.Strings = (
               '-')
+            ExplicitLeft = 368
           end
         end
         object tvBooksF: TBookTree
