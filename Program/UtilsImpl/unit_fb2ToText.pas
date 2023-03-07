@@ -100,17 +100,15 @@ begin
          (pos('<empty-line',S)<> 0)   or
          (pos('<subtitle>',S) <> 0)
       then
-        SLOut.Add('')
-      else
-      begin
-        ClearString(S);
+        SLOut.Add('');
 
-        tmpStr := ProceedString(S,'<subtitle>','</subtitle>');
-        if tmpStr <> '' then SLOut.Add(tmpStr);
+      ClearString(S);
 
-        tmpStr := ProceedString(S,'<p>','</p>');
-        if tmpStr <> '' then SLOut.Add(tmpStr);
-      end;
+      tmpStr := ProceedString(S,'<subtitle>','</subtitle>');
+      if tmpStr <> '' then SLOut.Add(tmpStr);
+
+      tmpStr := ProceedString(S,'<p>','</p>');
+      if tmpStr <> '' then SLOut.Add(tmpStr);
 
       inc(i);
     end;
