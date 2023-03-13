@@ -838,7 +838,9 @@ end;
 initialization
   SQLite3_Initialize;
 
-  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, SQLite_FormatSettings);
+//  GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, SQLite_FormatSettings);
+  GetLocaleFormatSettings($0400, SQLite_FormatSettings);
+
   SQLite_FormatSettings.ShortDateFormat := DATE_FORMAT;
   SQLite_FormatSettings.LongDateFormat := DATE_FORMAT;
   SQLite_FormatSettings.DateSeparator := '-';

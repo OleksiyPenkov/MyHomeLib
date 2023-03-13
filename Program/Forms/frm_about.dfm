@@ -22,8 +22,8 @@ object frmAbout: TfrmAbout
     Height = 289
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 245
-    ExplicitHeight = 288
+    ExplicitWidth = 235
+    ExplicitHeight = 256
     object versionInfoLabel: TLabel
       AlignWithMargins = True
       Left = 3

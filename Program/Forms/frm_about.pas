@@ -60,13 +60,18 @@ uses
   unit_Helpers;
 
 resourcestring
-  rstrAppVersionInfo = 'Версия: %s';
+  rstrAppVersionInfo   = 'Версия: %s';
+  rstrAppVersionInfo64 = 'Версия: %s x64';
 
 {$R *.dfm}
 
 procedure TfrmAbout.FormCreate(Sender: TObject);
 begin
-  versionInfoLabel.Caption := Format(rstrAppVersionInfo, [unit_MHLHelpers.GetFileVersion(Application.ExeName)]);
+  {$IFDEF  WIN64}
+     versionInfoLabel.Caption := Format(rstrAppVersionInfo64, [unit_MHLHelpers.GetFileVersion(Application.ExeName)]);
+  {$ELSE}
+    versionInfoLabel.Caption := Format(rstrAppVersionInfo, [unit_MHLHelpers.GetFileVersion(Application.ExeName)]);
+  {$ENDIF}
 end;
 
 procedure TfrmAbout.RzURLLabel1LinkClick(Sender: TObject; const Link: string; LinkType: TSysLinkType);

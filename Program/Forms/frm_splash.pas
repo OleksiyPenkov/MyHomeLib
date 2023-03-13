@@ -27,7 +27,8 @@ type
   TfrmSplash = class(TForm)
     Image1: TImage;
     lblState: TLabel;
-    RzLabel1: TLabel;
+    lblVersion: TLabel;
+    procedure FormCreate(Sender: TObject);
   private
   public
   end;
@@ -38,5 +39,12 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TfrmSplash.FormCreate(Sender: TObject);
+begin
+  {$IFDEF  WIN64}
+     lblVersion.Caption := lblVersion.Caption + ' x64';
+  {$ENDIF}
+end;
 
 end.

@@ -151,8 +151,6 @@ uses
 {$R *.res}
 
 begin
-  {$INCLUDE FastMM4Options.inc}
-
   Application.Initialize;
 
   if FirstHinstanceRunning(1) then

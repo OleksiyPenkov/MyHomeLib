@@ -13,6 +13,7 @@ object frmSplash: TfrmSplash
   Position = poScreenCenter
   PrintScale = poNone
   Scaled = False
+  OnCreate = FormCreate
   TextHeight = 13
   object Image1: TImage
     Left = 0
@@ -2267,7 +2268,7 @@ object frmSplash: TfrmSplash
     Transparent = True
     Layout = tlCenter
   end
-  object RzLabel1: TLabel
+  object lblVersion: TLabel
     Left = 340
     Top = 94
     Width = 30
