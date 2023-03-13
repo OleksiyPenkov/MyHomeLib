@@ -28,6 +28,9 @@ type
     TFileOprecord = record
       SourceFile: string;
       TargetFile: string;
+        TempFile: string;
+        FileName: string;
+          Stream: TStream;
     end;
 
   protected
@@ -60,8 +63,11 @@ type
     function fb2EPUB(const InpFile: string; const OutFile: string): Boolean;
     function fb2PDF(const InpFile: string; const OutFile: string): Boolean;
     function fb2Mobi(const InpFile, OutFile: string): Boolean;
-    procedure SendToZip;
+    procedure ExportToZip;
     procedure SetDeviceDir(const Value: string);
+    function CallExternalConverter: boolean;
+    function ProcessFileFromStream: boolean;
+    function ExportToFB2: boolean;
 
   strict private
     function PrepareFile(const BookKey: TBookKey): Boolean;
@@ -136,6 +142,7 @@ var
   FTargetFileName: string;
   FTargetFullFilePath: string;
   FTempFileName: string;
+  Stream: TStream;
 begin
   Result := False;
   try
@@ -188,6 +195,7 @@ begin
 
     FFileOprecord.TargetFile := FTargetFullFilePath;
     FFileOprecord.SourceFile := R.GetBookFileName;
+    FFileOprecord.FileName:= FTargetFileName + R.FileExt;
 
     //
     // Если файл в архиве - распаковываем в $tmp
@@ -206,12 +214,13 @@ begin
       else
         FTempFileName := Format('%s%s',[Copy(FTargetFileName, 1, FMaxTempPathLength), R.FileExt]);
 
+      FFileOprecord.TempFile :=  TPath.Combine(FTempPath, FTempFileName);
 
-      FFileOprecord.SourceFile := TPath.Combine(FTempPath, FTempFileName);
-      R.SaveBookToFile(FFileOprecord.SourceFile);
+      FFileOprecord.Stream := R.GetBookStream;
 
       if (FBookFormat in [bfFb2, bfFb2Archive]) and FOverwriteFB2Info then
-        WriteFb2InfoToFile(R, FFileOprecord.SourceFile);
+        WriteFb2InfoToStream(R, FFileOprecord.Stream);
+
     end;
 
     Result := True;
@@ -221,24 +230,92 @@ begin
   end;
 end;
 
-procedure TExportToDeviceThread.SendToZip;
+procedure TExportToDeviceThread.ExportToZip;
 var
   archiver: TMHLZip;
 begin
-  begin
-    try
-      archiver := TMHLZip.Create(FFileOprecord.TargetFile + ZIP_EXTENSION, False);
-      archiver.AddFiles(FFileOprecord.SourceFile);
-    finally
-      FreeAndNil(archiver);
-    end;
+  try
+    archiver := TMHLZip.Create(FFileOprecord.TargetFile + ZIP_EXTENSION, False);
+    FFileOprecord.Stream.Seek(0, soFromBeginning);
+    archiver.AddFromStream(FFileOprecord.FileName, FFileOprecord.Stream);
+  finally
+    FreeAndNil(archiver);
   end;
 end;
 
 procedure TExportToDeviceThread.SetDeviceDir(const Value: string);
 begin
   FDeviceDir := Value;
-//  FMaxTargetFolderLength := MaxPathLength - Length(FDeviceDir);
+end;
+
+function StreamToFile(const AFileName: string; AStream: TStream): boolean;
+var
+  Stream: TMemoryStream;
+begin
+  Result := False;
+  try
+    Stream := TMemoryStream.Create;
+    AStream.Seek(0, soFromBeginning);
+    Stream.CopyFrom(AStream, AStream.Size);
+    Stream.SaveToFile(AFileName);
+    Result := True;
+  finally
+    FreeAndNil(Stream);
+  end;
+end;
+
+function TExportToDeviceThread.CallExternalConverter: boolean;
+begin
+  Result := False;
+  try
+    if FFileOprecord.Stream <> nil then
+    begin
+      StreamToFile(FFileOprecord.TempFile, FFileOprecord.Stream);
+      FFileOprecord.SourceFile := FFileOprecord.TempFile;
+    end;
+
+    case FExportMode of
+      emLrf:
+        Result := fb2Lrf(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+
+      emEpub:
+        Result := fb2EPUB(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+
+      emPDF:
+        Result := fb2PDF(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+
+      emMobi:
+        Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+    end;
+  except
+    // supress excerptions
+  end;
+end;
+
+function TExportToDeviceThread.ExportToFB2: boolean;
+begin
+ if FFileOprecord.Stream <> nil then
+   Result := StreamToFile(FFileOprecord.TargetFile, FFileOprecord.Stream)
+ else
+   Result := unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+end;
+
+function TExportToDeviceThread.ProcessFileFromStream: boolean;
+begin
+  Result := False;
+  try
+
+    case FExportMode of
+         emFB2: ExportToFB2;
+
+      emFB2Zip: ExportToZip;
+
+         emTxt: unit_globals.ConvertToTxt(FFileOprecord.TargetFile, FTXTEncoding, FFileOprecord.Stream);
+    end;
+    Result := True;
+  except
+    // suppress excerptions
+  end;
 end;
 
 function TExportToDeviceThread.SendFileToDevice: Boolean;
@@ -250,45 +327,16 @@ begin
     Exit;
   end;
 
-  try
-    if FBookFormat in [bfFb2, bfFb2Archive] then
-    begin
-      case FExportMode of
-        emFB2: begin
-                 unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-                 Result := True;
-               end;
-
-        emFB2Zip: begin
-                    SendToZip;
-                    Result := True;
-                  end;
-
-        emTxt: begin
-                 unit_globals.ConvertToTxt(FFileOprecord.SourceFile, FFileOprecord.TargetFile, FTXTEncoding);
-                 Result := True;
-               end;
-        emLrf:
-          Result := fb2Lrf(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-
-        emEpub:
-          Result := fb2EPUB(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-
-        emPDF:
-          Result := fb2PDF(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-
-        emMobi:
-          Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-      end;
-    end
-    else
-    begin
-      unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-      Result := True;
+  if FBookFormat in [bfFb2, bfFb2Archive] then
+  begin
+    case FExportMode of
+        emFB2, emFB2Zip, emTxt: Result := ProcessFileFromStream;
+      else
+        Result := CallExternalConverter;
     end;
-  except
-    // подавляем исключения дабы не прерывать процесс
-  end;
+  end
+    else
+      Result := unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
 end;
 
 function TExportToDeviceThread.fb2Lrf(const InpFile: string; const OutFile: string): Boolean;
@@ -347,7 +395,6 @@ begin
   FProgressEngine.BeginOperation(Length(FBookIdList), rstrFilesProcessed, rstrFilesProcessed);
   try
     totalBooks := Length(FBookIdList);
-
     for i := 0 to totalBooks - 1 do
     begin
       if Canceled then
@@ -360,6 +407,9 @@ begin
           FProcessedFiles := FFileOprecord.SourceFile;
 
         if not FExtractOnly Then Res := SendFileToDevice;
+
+        if FFileOprecord.Stream <> nil then
+          FreeAndNil(FFileOprecord.Stream);
       end;
 
       if not Res and (i < totalBooks - 1) then

@@ -26,7 +26,7 @@ type
      function GetEncoding(const S: string):TEncoding;
      function ConvertEncoding(ResEncoding: TTXTEncoding):TEncoding;
   public
-    procedure Convert(const FileIn: string; const FileOut: string; ResEncoding: TTXTEncoding);
+    procedure Convert(const FileOut: string; ResEncoding: TTXTEncoding; Stream: TStream);
   end;
 
 implementation
@@ -72,7 +72,7 @@ begin
 
 end;
 
-procedure TFb2ToText.Convert(const FileIn: string; const FileOut: string; ResEncoding: TTXTEncoding);
+procedure TFb2ToText.Convert(const FileOut: string; ResEncoding: TTXTEncoding; Stream: TStream);
 var
   i: integer;
   S : string;
@@ -83,8 +83,11 @@ begin
     SlIn := TStringList.Create;
     SlOut := TStringList.Create;
 
-    SlIn.LoadFromFile(FileIn);
-    SlIn.LoadFromFile(FileIn, GetEncoding(SLIn[0]));
+    Stream.Seek(0, soFromBeginning);
+    SlIn.LoadFromStream(Stream);
+    Stream.Seek(0, soFromBeginning);
+    SlIn.LoadFromStream(Stream, GetEncoding(SLIn[0]));
+
 
     i := 0;
     while (pos('<body',SlIn[i]) = 0) do inc(i);

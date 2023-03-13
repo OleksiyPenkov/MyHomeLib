@@ -57,7 +57,7 @@ type
 
 
       procedure AddFiles(const FileNames: string);
-      procedure AddFromStream(const AFileName: string; Stream: TStream);
+      procedure AddFromStream(const AFileName: string; AStream: TStream);
       procedure RenameFile(const OldFileName, NewFileName: string);
 
       property LastName: string read GetLastName;
@@ -250,9 +250,9 @@ begin
   FZip.Add(FileNames);
 end;
 
-procedure TMHLZip.AddFromStream(const AFileName: string; Stream: TStream);
+procedure TMHLZip.AddFromStream(const AFileName: string; AStream: TStream);
 begin
-  FZip.Add(Stream, AFileName);
+  FZip.Add(AStream, AFileName);
 end;
 
 constructor TMHLZip.Create(AFileName: string; RO: boolean);

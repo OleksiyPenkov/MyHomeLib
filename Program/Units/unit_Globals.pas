@@ -372,8 +372,8 @@ type
   function ClearDir(const DirectoryName: string): Boolean;
   //function IsRelativePath(const FileName: string): Boolean;
   function CreateFolders(const Root: string; const Path: string): Boolean;
-  procedure CopyFile(const SourceFileName: string; const DestFileName: string);
-  procedure ConvertToTxt(const SourceFileName: string; DestFileName: string; Enc: TTXTEncoding);
+  function CopyFile(const SourceFileName: string; const DestFileName: string): boolean;
+  procedure ConvertToTxt(DestFileName: string; Enc: TTXTEncoding; Stream: TStream);
 
   function IncludeUrlSlash(const S: string): string;
 
@@ -590,11 +590,12 @@ begin
 end;
 {$WARNINGS OFF}
 
-procedure CopyFile(const SourceFileName: string; const DestFileName: string);
+function CopyFile(const SourceFileName: string; const DestFileName: string): boolean;
 var
   SourceFile: TFileStream;
   DestFile: TFileStream;
 begin
+  Result := False;
   SourceFile := TFileStream.Create(SourceFileName, fmOpenRead or fmShareDenyNone);
   try
     DestFile := TFileStream.Create(DestFileName, fmCreate or fmShareDenyRead);
@@ -604,20 +605,21 @@ begin
     finally
       DestFile.Free;
     end;
+    Result := True;
   finally
     SourceFile.Free;
   end;
 end;
 {$WARNINGS ON}
 
-procedure ConvertToTxt(const SourceFileName: string; DestFileName: string; Enc: TTXTEncoding);
+procedure ConvertToTxt(DestFileName: string; Enc: TTXTEncoding; Stream: TStream);
 var
   Converter: TFb2ToText;
 begin
   Converter := TFb2ToText.Create;
   try
     DestFileName := ChangeFileExt(DestFileName, '.txt');
-    Converter.Convert(SourceFileName, DestFileName, Enc);
+    Converter.Convert(DestFileName, Enc, Stream);
   finally
     Converter.Free;
   end;
