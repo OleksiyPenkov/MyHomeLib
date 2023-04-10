@@ -766,8 +766,8 @@ begin
         if FCollection.GetAuthorFilterType = ALPHA_FILTER_NON_ALPHA then
         begin
           AddToWhere(Where,
-            '(SUBSTR(a.SearchName, 1, 1) NOT IN (' + ENGLISH_ALPHABET_SEPARATORS + ')) AND ' +
-            '(SUBSTR(a.SearchName, 1, 1) NOT IN (' + RUSSIAN_ALPHABET_SEPARATORS + '))'
+            '(SUBSTR(a.SearchName, 1, 1) NOT IN (' + LATIN_ALPHABET_SEPARATORS + ')) AND ' +
+            '(SUBSTR(a.SearchName, 1, 1) NOT IN (' + CYRILLIC_ALPHABET_SEPARATORS + '))'
           );
         end
         else if (FCollection.GetAuthorFilterType <> '') and (FCollection.GetAuthorFilterType <> ALPHA_FILTER_ALL) then
@@ -992,8 +992,8 @@ begin
         if FCollection.GetSeriesFilterType = ALPHA_FILTER_NON_ALPHA then
         begin
           AddToWhere(Where,
-            '(SUBSTR(s.SearchSeriesTitle, 1, 1) NOT IN (' + ENGLISH_ALPHABET_SEPARATORS + ')) AND ' +
-            '(SUBSTR(s.SearchSeriesTitle, 1, 1) NOT IN (' + RUSSIAN_ALPHABET_SEPARATORS + '))'
+            '(SUBSTR(s.SearchSeriesTitle, 1, 1) NOT IN (' + LATIN_ALPHABET_SEPARATORS + ')) AND ' +
+            '(SUBSTR(s.SearchSeriesTitle, 1, 1) NOT IN (' + CYRILLIC_ALPHABET_SEPARATORS + '))'
           );
         end
         else if FCollection.GetSeriesFilterType <> ALPHA_FILTER_ALL then

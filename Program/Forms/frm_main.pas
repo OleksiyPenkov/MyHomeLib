@@ -1839,8 +1839,8 @@ end;
 
 procedure TfrmMain.CreateAlphabetToolbar;
 const
-  EngAlphabet: string = ALPHA_FILTER_ALL + ALPHA_FILTER_NON_ALPHA + ENGLISH_ALPHABET;
-  RusAlphabet: string = ALPHA_FILTER_ALL + ALPHA_FILTER_NON_ALPHA + RUSSIAN_ALPHABET;
+  EngAlphabet: string = ALPHA_FILTER_ALL + ALPHA_FILTER_NON_ALPHA + LATIN_ALPHABET;
+  RusAlphabet: string = ALPHA_FILTER_ALL + ALPHA_FILTER_NON_ALPHA + CYRILLIC_ALPHABET;
 
 var
   Image: TBitmap;
@@ -2930,30 +2930,33 @@ var
 {$IFDEF USELOGGER}
   logger: IScopeLogger;
 {$ENDIF}
+
+  procedure ClearScreen;
+  begin
+    lblAuthor.Caption := '...';
+    lblBooksTotalA.Caption := '()';
+    ipnlAuthors.Clear;
+    tvBooksA.Clear;
+  end;
+
 begin
 {$IFDEF USELOGGER}
 //  logger := GetScopeLogger('TfrmMain.tvAuthorsChange');
 {$ENDIF}
 
-  if (FIgnoreAuthorChange) or (Node = nil) then
-  begin
-//   tvBooksA.Clear;
-   Exit;
-  end;
+  if tvAuthors.RootNodeCount = 0 then ClearScreen;
+  if (FIgnoreAuthorChange) or (Node = nil) then Exit;
 
-
-  SavedCursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
   try
     Data := tvAuthors.GetNodeData(Node);
     if not Assigned(Data) then
     begin
-      lblAuthor.Caption := '...';
-      lblBooksTotalA.Caption := '()';
-      ipnlAuthors.Clear;
-      tvBooksA.Clear;
+      ClearScreen;
       Exit;
     end;
+
+    SavedCursor := Screen.Cursor;
+    Screen.Cursor := crHourGlass;
 
     if FLastAuthorID <> Data^.AuthorID then
     begin
@@ -2998,10 +3001,22 @@ var
 {$IFDEF USELOGGER}
   logger: IScopeLogger;
 {$ENDIF}
+
+  procedure ClearScreen;
+  begin
+    lblSeries.Caption := '...';
+    lblBooksTotalS.Caption := '()';
+    ipnlSeries.Clear;
+    tvBooksS.Clear;
+  end;
+
 begin
 {$IFDEF USELOGGER}
   logger := GetScopeLogger('TfrmMain.tvSeriesChange');
 {$ENDIF}
+
+  if tvSeries.RootNodeCount = 0 then ClearScreen;
+  if (Node = nil) then Exit;
 
   SavedCursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
@@ -3009,10 +3024,7 @@ begin
     Data := tvSeries.GetNodeData(Node);
     if not Assigned(Data) then
     begin
-      lblSeries.Caption := '...';
-      lblBooksTotalS.Caption := '()';
-      ipnlSeries.Clear;
-      tvBooksS.Clear;
+      ClearScreen;
       Exit;
     end;
 

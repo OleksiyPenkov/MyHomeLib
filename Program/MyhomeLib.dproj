@@ -129,8 +129,8 @@
         <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
         <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Build>843</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileVersion=2.3.5.843;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.4;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Build>845</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=2.3.5.845;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.4;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <VerInfo_Locale>2073</VerInfo_Locale>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Private>false</VerInfo_Private>
@@ -142,9 +142,9 @@
         <VerInfo_Release>5</VerInfo_Release>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.3.5.844;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.3.5;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.3.5.845;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.3.5;Comments=</VerInfo_Keys>
         <VerInfo_Release>5</VerInfo_Release>
-        <VerInfo_Build>844</VerInfo_Build>
+        <VerInfo_Build>845</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
