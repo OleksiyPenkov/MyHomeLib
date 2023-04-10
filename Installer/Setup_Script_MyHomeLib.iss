@@ -7,12 +7,12 @@ AppID={{B9B6C409-01CB-4AB6-8E4F-403B49A25B56}
 OutputDir=.
 SourceDir=.
 AppVerName=MyHomeLib v.2.3
-AppCopyright=© 2019 Aleksey Penkov
+AppCopyright=© 2023 Oleksiy Penkov
 UninstallDisplayIcon={app}\MyHomeLib.exe
 WizardImageFile=.\Images\SetupModern20.bmp
 WizardSmallImageFile=.\Images\SetupModernSmall20.bmp
 SetupIconFile=.\Images\Setup.ico
-OutputBaseFilename=Setup_MyHomeLib_2_3
+OutputBaseFilename=Setup_MyHomeLib.2.3
 AppPublisherURL=https://github.com/OleksiyPenkov/myhomelib/
 AppSupportURL=https://github.com/OleksiyPenkov/myhomelib/
 AppUpdatesURL=https://github.com/OleksiyPenkov/myhomelib/
@@ -21,7 +21,7 @@ AllowNoIcons=yes
 Compression=lzma/ultra
 SolidCompression=yes
 LicenseFile=License.txt
-VersionInfoVersion=2.3.3.829
+VersionInfoVersion=2.3.5.845
 
 [Dirs]
 Name: "{userappdata}\MyHomeLib"; Permissions: everyone-modify
@@ -34,7 +34,9 @@ Source: .\MyHomeLib_2_3\converters\fb2epub\*.*; DestDir: {app}\converters\fb2epu
 Source: .\MyHomeLib_2_3\converters\fb2mobi\*.*; DestDir: {app}\converters\fb2epub\
 Source: .\MyHomeLib_2_3\genres_nonfb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\genres_fb2.glst; DestDir: {app}; Flags: replacesameversion
-Source: .\MyHomeLib_2_3\sqlite3.dll; DestDir: {app}; Flags: replacesameversion
+Source: .\MyHomeLib_2_3x64\sqlite3.dll; DestDir: {app}; Flags: replacesameversion
+Source: .\MyHomeLib_2_3x64\libeay32.dll; DestDir: {app}; Flags: replacesameversion
+Source: .\MyHomeLib_2_3x64\ssleay32.dll; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\collections.ini; DestDir: {userappdata}\MyHomeLib
 Source: .\MyHomeLib_2_3\MyHomeLib.exe; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\MyHomeLib.chm; DestDir: {app}; Flags: replacesameversion
