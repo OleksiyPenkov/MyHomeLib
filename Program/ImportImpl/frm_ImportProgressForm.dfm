@@ -8,9 +8,11 @@ inherited ImportProgressForm: TImportProgressForm
   Padding.Right = 10
   Padding.Bottom = 10
   Position = poMainFormCenter
-  ExplicitWidth = 376
-  ExplicitHeight = 119
-  PixelsPerInch = 96
+  ExplicitWidth = 382
+  ExplicitHeight = 125
+  DesignSize = (
+    370
+    87)
   TextHeight = 13
   object txtComment: TLabel
     AlignWithMargins = True
@@ -33,12 +35,10 @@ inherited ImportProgressForm: TImportProgressForm
     Height = 17
     Align = alTop
     TabOrder = 0
-    ExplicitLeft = 13
-    ExplicitTop = 43
-    ExplicitWidth = 443
+    ExplicitWidth = 346
   end
   object btnCancel: TButton
-    Left = 285
+    Left = 277
     Top = 52
     Width = 75
     Height = 25
@@ -48,6 +48,7 @@ inherited ImportProgressForm: TImportProgressForm
     Default = True
     TabOrder = 1
     OnClick = btnCancelClick
-    ExplicitLeft = 378
+    ExplicitLeft = 273
+    ExplicitTop = 51
   end
 end
