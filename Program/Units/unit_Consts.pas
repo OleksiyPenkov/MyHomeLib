@@ -110,6 +110,7 @@ const
   COLLECTIONINFO_FILENAME = 'collection.info'; // file holding URL, Script, etc
   TEMP_FOLDER_NAME = '_myhomelib';
   UPDATE_LOGFILE = 'update.log';
+  PROGRAM_HOMEPAGE = 'https://github.com/OleksiyPenkov/myhomelib/';
 
   //
   // Номера вкладок в главном окне ( = tags)

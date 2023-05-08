@@ -31,7 +31,7 @@ uses
 type
   TfrmAbout = class(TForm)
     RzPanel1: TMHLSimplePanel;
-    RzURLLabel1: TMHLLinkLabel;
+    RzURLLabel: TMHLLinkLabel;
     RzBitBtn1: TButton;
     versionInfoLabel: TLabel;
     RzLabel1: TLabel;
@@ -43,7 +43,8 @@ type
     RzLabel8: TLabel;
     Label1: TLabel;
     procedure FormCreate(Sender: TObject);
-    procedure RzURLLabel1LinkClick(Sender: TObject; const Link: string; LinkType: TSysLinkType);
+    procedure RzURLLabelLinkClick(Sender: TObject; const Link: string; LinkType: TSysLinkType);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
   public
@@ -57,7 +58,8 @@ implementation
 
 uses
   SysUtils,
-  unit_Helpers;
+  unit_Helpers,
+  unit_Consts;
 
 resourcestring
   rstrAppVersionInfo   = 'Версия: %s';
@@ -74,7 +76,12 @@ begin
   {$ENDIF}
 end;
 
-procedure TfrmAbout.RzURLLabel1LinkClick(Sender: TObject; const Link: string; LinkType: TSysLinkType);
+procedure TfrmAbout.FormShow(Sender: TObject);
+begin
+  RzURLLabel.Caption := Format('<a href="%s">%s</a>', [PROGRAM_HOMEPAGE, PROGRAM_HOMEPAGE]);
+end;
+
+procedure TfrmAbout.RzURLLabelLinkClick(Sender: TObject; const Link: string; LinkType: TSysLinkType);
 begin
   SimpleShellExecute(Handle, Link);
 end;

@@ -13,6 +13,7 @@ object frmAbout: TfrmAbout
   Font.Style = []
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnShow = FormShow
   TextHeight = 13
   object RzPanel1: TMHLSimplePanel
     AlignWithMargins = True
@@ -22,8 +23,6 @@ object frmAbout: TfrmAbout
     Height = 289
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 235
-    ExplicitHeight = 256
     object versionInfoLabel: TLabel
       AlignWithMargins = True
       Left = 3
@@ -147,17 +146,14 @@ object frmAbout: TfrmAbout
       Caption = #1040#1083#1077#1082#1089#1077#1081' '#1055#1077#1085#1100#1082#1086#1074#13#1053#1080#1082#1086#1083#1072#1081' '#1056#1099#1084#1072#1085#1086#1074#13#10'eg'
       ExplicitWidth = 90
     end
-    object RzURLLabel1: TMHLLinkLabel
+    object RzURLLabel: TMHLLinkLabel
       Left = 13
       Top = 227
-      Width = 225
-      Height = 17
+      Width = 4
+      Height = 4
       Alignment = taCenter
-      Caption = 
-        '<a href="https://myhomelib.org">https://github.com/OleksiyPenkov' +
-        '/myhomelib/</a>'
       TabOrder = 1
-      OnLinkClick = RzURLLabel1LinkClick
+      OnLinkClick = RzURLLabelLinkClick
     end
     object RzBitBtn1: TButton
       Left = 91
