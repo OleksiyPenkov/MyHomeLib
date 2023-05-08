@@ -31,12 +31,12 @@ Source: .\MyHomeLib_2_3\AlReader\AlReader2\*.*; DestDir: {app}\AlReader\AlReader
 Source: .\MyHomeLib_2_3\converters\fb2lrf\*.*; DestDir: {app}\converters\fb2lrf\
 Source: .\MyHomeLib_2_3\converters\fb2pdf\*.*; DestDir: {app}\converters\fb2pdf\
 Source: .\MyHomeLib_2_3\converters\fb2epub\*.*; DestDir: {app}\converters\fb2epub\
-Source: .\MyHomeLib_2_3\converters\fb2mobi\*.*; DestDir: {app}\converters\fb2epub\
+Source: .\MyHomeLib_2_3\converters\fb2mobi\*.*; DestDir: {app}\converters\fb2mobi\
 Source: .\MyHomeLib_2_3\genres_nonfb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\genres_fb2.glst; DestDir: {app}; Flags: replacesameversion
-Source: .\MyHomeLib_2_3x64\sqlite3.dll; DestDir: {app}; Flags: replacesameversion
-Source: .\MyHomeLib_2_3x64\libeay32.dll; DestDir: {app}; Flags: replacesameversion
-Source: .\MyHomeLib_2_3x64\ssleay32.dll; DestDir: {app}; Flags: replacesameversion
+Source: .\MyHomeLib_2_3\sqlite3.dll; DestDir: {app}; Flags: replacesameversion
+Source: .\MyHomeLib_2_3\libeay32.dll; DestDir: {app}; Flags: replacesameversion
+Source: .\MyHomeLib_2_3\ssleay32.dll; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\collections.ini; DestDir: {userappdata}\MyHomeLib
 Source: .\MyHomeLib_2_3\MyHomeLib.exe; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3\MyHomeLib.chm; DestDir: {app}; Flags: replacesameversion

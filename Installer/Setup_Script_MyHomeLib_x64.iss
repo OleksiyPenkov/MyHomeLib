@@ -32,7 +32,7 @@ Source: .\MyHomeLib_2_3x64\AlReader\AlReader2\*.*; DestDir: {app}\AlReader\AlRea
 Source: .\MyHomeLib_2_3x64\converters\fb2lrf\*.*; DestDir: {app}\converters\fb2lrf\
 Source: .\MyHomeLib_2_3x64\converters\fb2pdf\*.*; DestDir: {app}\converters\fb2pdf\
 Source: .\MyHomeLib_2_3x64\converters\fb2epub\*.*; DestDir: {app}\converters\fb2epub\
-Source: .\MyHomeLib_2_3x64\converters\fb2mobi\*.*; DestDir: {app}\converters\fb2epub\
+Source: .\MyHomeLib_2_3x64\converters\fb2mobi\*.*; DestDir: {app}\converters\fb2mobi\
 Source: .\MyHomeLib_2_3x64\genres_nonfb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3x64\genres_fb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: .\MyHomeLib_2_3x64\sqlite3.dll; DestDir: {app}; Flags: replacesameversion
