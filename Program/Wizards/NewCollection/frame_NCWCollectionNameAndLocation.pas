@@ -143,13 +143,13 @@ end;
 
 function TframeNCWNameAndLocation.Activate(LoadData: Boolean): Boolean;
 begin
+  Result := True;
   if LoadData then
   begin
     if FPParams^.Operation = otInpx then
       Result := GetCollectionDataFromINPX;
     IsDataValid;
-  end
-  else Result := True;
+  end;
 end;
 
 function TframeNCWNameAndLocation.Deactivate(CheckData: Boolean): Boolean;
