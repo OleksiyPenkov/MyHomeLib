@@ -129,8 +129,8 @@
         <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
         <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Build>848</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileVersion=2.4.0.848;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.3.4;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Build>850</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=2.4.0.850;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.4.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Private>false</VerInfo_Private>
         <VerInfo_Special>false</VerInfo_Special>
@@ -139,11 +139,13 @@
         <UWP_DelphiLogo150>Resources\Images\splashScreen9.png</UWP_DelphiLogo150>
         <VerInfo_Release>0</VerInfo_Release>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
+        <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
+        <VerInfo_Locale>1033</VerInfo_Locale>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.4.0.848;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.4.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.4.0.850;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.4.0;Comments=</VerInfo_Keys>
         <VerInfo_Release>0</VerInfo_Release>
-        <VerInfo_Build>848</VerInfo_Build>
+        <VerInfo_Build>850</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
@@ -152,6 +154,7 @@
         <UWP_DelphiLogo44>Resources\Images\splashScreen9.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>Resources\Images\splashScreen9.png</UWP_DelphiLogo150>
         <VerInfo_MinorVer>4</VerInfo_MinorVer>
+        <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2)'!=''">
         <DCC_RemoteDebug>true</DCC_RemoteDebug>

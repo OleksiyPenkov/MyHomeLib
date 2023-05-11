@@ -2,10 +2,11 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2011 Aleksey Penkov
+  * Copyright (C) 2008-2023 Oleksiy Penkov
   *
-  * Author(s)           Aleksey Penkov
+  * Author(s)           Oleksiy Penkov
   * Created             20.05.2011
+  * Reworked            20.03.2023
   * Description
   *
   *
@@ -165,7 +166,6 @@ begin
   else
     Mode := smFull;
 
-
   for i := 0 to High(FZip.FileInfos) do
   begin
     FN := TEncoding.UTF8.GetString(FZip.FileInfos[i].FileName);
@@ -175,7 +175,6 @@ begin
                 begin
                   Result := True;
                   FLastID := FZip.GetFileIndex(FN);
-
                   Break;
                 end;
               end;
@@ -186,10 +185,10 @@ begin
                   FLastID := FZip.GetFileIndex(FN);
                   Break;
                 end;
-              end;
+             end;
+      else FLastID := -1;
     end;
-
-  end;
+  end
 end;
 
 function TMHLZip.FindNext: Boolean;
@@ -271,6 +270,7 @@ begin
   else
     FZip.Open(AFileName, zmWrite);
 
+  FLastID := 0;
 end;
 
 destructor TMHLZip.Destroy;

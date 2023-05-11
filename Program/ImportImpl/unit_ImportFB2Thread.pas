@@ -168,7 +168,7 @@ begin
         try
           Zip := TMHLZip.Create(FFiles[i], True);
           j := 0; numFb2FilesInZip := 0;
-          if Zip.Find('*.*') then
+          if Zip.Find('*.fb2') then
           repeat
             R.Clear;
             AFileName := Zip.LastName;
