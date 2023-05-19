@@ -2,7 +2,7 @@ object frmEditor: TfrmEditor
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
-  Caption = #1042#1074#1077#1076#1080#1090#1077' '#1090#1077#1082#1089#1090' '#1074#1099#1088#1072#1078#1077#1085#1080#1103
+  Caption = #1042#1074#1077#1076#1110#1090#1100' '#1090#1077#1082#1089#1090' '#1074#1080#1088#1072#1079#1091
   ClientHeight = 203
   ClientWidth = 392
   Color = clBtnFace
@@ -13,9 +13,7 @@ object frmEditor: TfrmEditor
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
-  PixelsPerInch = 96
   TextHeight = 13
   object mmMemo: TMemo
     AlignWithMargins = True
@@ -26,6 +24,8 @@ object frmEditor: TfrmEditor
     Align = alClient
     ScrollBars = ssVertical
     TabOrder = 0
+    ExplicitWidth = 382
+    ExplicitHeight = 108
   end
   object RzGroupBox4: TPanel
     AlignWithMargins = True
@@ -37,6 +37,8 @@ object frmEditor: TfrmEditor
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 114
+    ExplicitWidth = 382
     object btnNotEq: TButton
       Tag = 52
       Left = 306
@@ -148,30 +150,34 @@ object frmEditor: TfrmEditor
     Caption = 'pnButtons'
     ShowCaption = False
     TabOrder = 2
+    ExplicitTop = 162
+    ExplicitWidth = 388
     DesignSize = (
       392
       40)
     object btnOk: TButton
-      Left = 229
+      Left = 225
       Top = 10
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
-      Caption = '&'#1057#1086#1093#1088#1072#1085#1080#1090#1100
+      Caption = '&'#1047#1073#1077#1088#1077#1075#1090#1080
       Default = True
       ModalResult = 1
       TabOrder = 0
+      ExplicitLeft = 221
     end
     object btnCancel: TButton
-      Left = 310
+      Left = 306
       Top = 10
       Width = 75
       Height = 25
       Anchors = [akTop, akRight]
       Cancel = True
-      Caption = '&'#1054#1090#1084#1077#1085#1072
+      Caption = '&'#1042#1110#1076#1084#1110#1085#1072
       ModalResult = 2
       TabOrder = 1
+      ExplicitLeft = 302
     end
   end
 end
