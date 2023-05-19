@@ -269,14 +269,14 @@ uses
   unit_Templater;
 
 resourcestring
-  rstrStandart = 'Стандартное';
-  rstrNeedTemplate = 'Необходимо задать шаблон для заголовка книги в разделе "Разное"';
-  rstrChangeFileType = 'Изменение типа файлов';
-  rstrAddFileType = 'Добавление типа файлов';
-  rstrTypeAlreadyInTheList = 'Тип "%s" уже есть в списке!';
-  rstrChangeScriptParams = 'Изменение параметров скрипта';
-  rstrAddScript = 'Добавление скрипта';
-  rstrProvideFolder = 'Укажите папку';
+rstrStandart = 'Стандартне';
+  rstrNeedTemplate = 'Необхідно встановити шаблон для заголовка книги в розділі "Різне"';
+  rstrChangeFileType = 'Зміна типу файлів';
+  rstrAddFileType = 'Додавання типу файлів';
+  rstrTypeAlreadyInTheList = 'Тип "%s" вже є у списку!';
+  rstrChangeScriptParams = 'Зміна параметрів скрипта';
+  rstrAddScript = 'Додавання скрипта';
+  rstrProvideFolder = 'Вкажіть папку';
 
 {$R *.dfm}
 
