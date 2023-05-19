@@ -56,7 +56,7 @@ uses
   unit_Helpers;
 
 resourcestring
-  rstrClose = 'Закрыть';
+  rstrClose = 'Закрити';
 
 {$R *.dfm}
 

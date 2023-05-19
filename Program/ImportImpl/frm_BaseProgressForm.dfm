@@ -2,8 +2,8 @@ object ProgressFormBase: TProgressFormBase
   Left = 0
   Top = 0
   Caption = 'ProgressFormBase'
-  ClientHeight = 282
-  ClientWidth = 410
+  ClientHeight = 283
+  ClientWidth = 414
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText

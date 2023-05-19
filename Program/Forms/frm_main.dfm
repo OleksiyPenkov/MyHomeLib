@@ -2010,7 +2010,7 @@ object frmMain: TfrmMain
             150)
           object lblTotalBooksF: TLabel
             AlignWithMargins = True
-            Left = 1766
+            Left = 1753
             Top = 9
             Width = 12
             Height = 19
@@ -2836,13 +2836,13 @@ object frmMain: TfrmMain
     Left = 128
     Top = 280
     object pmiReadBook: TMenuItem
-      Caption = #1063#1080#1090#1072#1090#1100
+      Caption = #1063#1080#1090#1072#1090#1080
       ImageIndex = 12
       ShortCut = 13
       OnClick = ReadBookExecute
     end
     object pmiSendToDevice: TMenuItem
-      Caption = #1054#1090#1087#1088#1072#1074#1080#1090#1100' '#1085#1072' '#1091#1089#1090#1088#1086#1081#1089#1090#1074#1086
+      Caption = #1053#1072#1076#1110#1089#1083#1072#1090#1080' '#1085#1072' '#1087#1088#1080#1089#1090#1088#1110#1081
       ImageIndex = 7
       ShortCut = 16452
       OnClick = SendToDeviceExecute
@@ -2851,7 +2851,7 @@ object frmMain: TfrmMain
       Action = acBookAdd2DownloadList
     end
     object pmiScripts: TMenuItem
-      Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1100' '#1089#1082#1088#1080#1087#1090
+      Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1080' '#1089#1082#1088#1080#1087#1090
       ImageIndex = 29
     end
     object N44: TMenuItem
@@ -2866,18 +2866,18 @@ object frmMain: TfrmMain
       Caption = '-'
     end
     object miGoToAuthor: TMenuItem
-      Caption = #1055#1077#1088#1077#1081#1090#1080' '#1082' '#1072#1074#1090#1086#1088#1091
+      Caption = #1055#1077#1088#1077#1081#1090#1080' '#1076#1086' '#1072#1074#1090#1086#1088#1072
       ImageIndex = 35
       ShortCut = 49217
       OnClick = miGoToAuthorClick
     end
     object pmiBookInfo: TMenuItem
-      Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103' '#1086' '#1082#1085#1080#1075#1077
+      Caption = #1030#1085#1092#1086#1088#1084#1072#1094#1110#1103' '#1087#1088#1086' '#1082#1085#1080#1075#1091
       ShortCut = 16457
       OnClick = ShowBookInfo
     end
     object miBookEdit: TMenuItem
-      Caption = #1048#1079#1084#1077#1085#1080#1090#1100' '#1086#1087#1080#1089#1072#1085#1080#1077
+      Caption = #1047#1084#1110#1085#1080#1090#1080' '#1086#1087#1080#1089
       ImageIndex = 3
       ShortCut = 16453
       OnClick = EditBookExecute
@@ -2893,10 +2893,10 @@ object frmMain: TfrmMain
       OnClick = AddBookToGroup
     end
     object pmiGroups: TMenuItem
-      Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1075#1088#1091#1087#1087#1091
+      Caption = #1044#1086#1076#1072#1090#1080' '#1076#1086' '#1075#1088#1091#1087#1080
     end
     object miDelFavorites: TMenuItem
-      Caption = #1059#1076#1072#1083#1080#1090#1100' '#1080#1079' '#1075#1088#1091#1087#1087#1099
+      Caption = #1042#1080#1076#1072#1083#1080#1090#1080' '#1110#1079' '#1075#1088#1091#1087#1080
       ImageIndex = 21
       Visible = False
       OnClick = DeleteBookFromGroup
@@ -2936,24 +2936,24 @@ object frmMain: TfrmMain
     end
     object pmiCheckAll: TMenuItem
       Tag = 2
-      Caption = #1054#1090#1084#1077#1090#1080#1090#1100' '#1074#1089#1077
+      Caption = #1042#1110#1076#1079#1085#1072#1095#1080#1090#1080' '#1074#1089#1077
       ImageIndex = 24
       ShortCut = 16449
       OnClick = pmiCheckAllClick
     end
     object pmiSelectAll: TMenuItem
-      Caption = #1042#1099#1076#1077#1083#1080#1090#1100' '#1074#1089#1077
+      Caption = #1042#1080#1076#1110#1083#1080#1090#1080' '#1074#1089#1077
       ShortCut = 16467
       OnClick = pmiSelectAllClick
     end
     object pmMarkSelected: TMenuItem
-      Caption = #1054#1090#1084#1077#1090#1080#1090#1100' '#1074#1099#1076#1077#1083#1077#1085#1085#1099#1077
+      Caption = #1042#1110#1076#1079#1085#1072#1095#1080#1090#1080' '#1074#1080#1076#1110#1083#1077#1085#1110
       ShortCut = 16461
       OnClick = pmMarkSelectedClick
     end
     object pmiDeselectAll: TMenuItem
       Tag = 1
-      Caption = #1057#1085#1103#1090#1100' '#1086#1090#1084#1077#1090#1082#1080
+      Caption = #1047#1085#1103#1090#1080' '#1087#1086#1079#1085#1072#1095#1082#1080
       ImageIndex = 32
       ShortCut = 16469
       OnClick = pmiDeselectAllClick
@@ -2963,7 +2963,7 @@ object frmMain: TfrmMain
       Hint = '-'
     end
     object miCopyClBrd: TMenuItem
-      Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1074' '#1073#1091#1092#1077#1088
+      Caption = #1050#1086#1087#1110#1102#1074#1072#1090#1080' '#1074' '#1073#1091#1092#1077#1088
       ImageIndex = 31
       ShortCut = 16451
       OnClick = miCopyClBrdClick
@@ -2979,7 +2979,7 @@ object frmMain: TfrmMain
     Left = 40
     Top = 288
     object miCopyAuthor: TMenuItem
-      Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1074' '#1073#1091#1092#1077#1088' '
+      Caption = #1050#1086#1087#1110#1102#1074#1072#1090#1080' '#1074' '#1073#1091#1092#1077#1088
       ShortCut = 16451
       OnClick = miCopyAuthorClick
     end
@@ -2987,7 +2987,7 @@ object frmMain: TfrmMain
       Caption = '-'
     end
     object miAddToSearch: TMenuItem
-      Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' "'#1055#1086#1080#1089#1082'"'
+      Caption = #1044#1086#1076#1072#1090#1080' '#1076#1086' "'#1055#1086#1096#1091#1082#1091'"'
       OnClick = miAddToSearchClick
     end
   end
@@ -8611,12 +8611,12 @@ object frmMain: TfrmMain
     end
     object N4: TMenuItem
       Tag = 11
-      Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+      Caption = #1053#1072#1079#1074#1072
       OnClick = HeaderPopupItemClick
     end
     object N8: TMenuItem
       Tag = 12
-      Caption = #1057#1077#1088#1080#1103
+      Caption = #1057#1077#1088#1110#1103
       OnClick = HeaderPopupItemClick
     end
     object N10: TMenuItem
@@ -8631,17 +8631,17 @@ object frmMain: TfrmMain
     end
     object N21: TMenuItem
       Tag = 15
-      Caption = #1056#1072#1079#1084#1077#1088
+      Caption = #1056#1086#1079#1084#1110#1088
       OnClick = HeaderPopupItemClick
     end
     object N13: TMenuItem
       Tag = 16
-      Caption = #1052#1086#1103' '#1086#1094#1077#1085#1082#1072
+      Caption = #1052#1086#1103' '#1086#1094#1110#1085#1082#1072
       OnClick = HeaderPopupItemClick
     end
     object N15: TMenuItem
       Tag = 17
-      Caption = #1044#1086#1073#1072#1074#1083#1077#1085#1086
+      Caption = #1044#1086#1076#1072#1085#1086
       OnClick = HeaderPopupItemClick
     end
     object N28: TMenuItem
@@ -8651,12 +8651,12 @@ object frmMain: TfrmMain
     end
     object N22: TMenuItem
       Tag = 19
-      Caption = #1050#1086#1083#1083#1077#1082#1094#1080#1103
+      Caption = #1050#1086#1083#1077#1082#1094#1110#1103
       OnClick = HeaderPopupItemClick
     end
     object N42: TMenuItem
       Tag = 21
-      Caption = #1071#1079#1099#1082
+      Caption = #1052#1086#1074#1072
       OnClick = HeaderPopupItemClick
     end
     object N45: TMenuItem
@@ -8673,7 +8673,7 @@ object frmMain: TfrmMain
       Caption = '-'
     end
     object N27: TMenuItem
-      Caption = #1057#1090#1072#1085#1076#1072#1088#1090#1085#1099#1077
+      Caption = #1057#1090#1072#1085#1076#1072#1088#1090#1085#1110
       OnClick = N27Click
     end
   end
@@ -8690,14 +8690,14 @@ object frmMain: TfrmMain
     Left = 128
     Top = 424
     object N29: TMenuItem
-      Caption = #1054#1090#1082#1088#1099#1090#1100'/'#1057#1074#1077#1088#1085#1091#1090#1100
+      Caption = #1042#1110#1076#1082#1088#1080#1090#1080'/'#1047#1075#1086#1088#1085#1091#1090#1080
       OnClick = TrayIconDblClick
     end
     object N32: TMenuItem
       Caption = '-'
     end
     object N33: TMenuItem
-      Caption = #1042#1099#1093#1086#1076
+      Caption = #1042#1080#1093#1110#1076
       OnClick = N33Click
     end
   end
@@ -8707,7 +8707,7 @@ object frmMain: TfrmMain
     Left = 128
     Top = 376
     object mi_dwnl_LocateAuthor: TMenuItem
-      Caption = #1055#1077#1088#1077#1081#1090#1080' '#1082' '#1072#1074#1090#1086#1088#1091
+      Caption = #1055#1077#1088#1077#1081#1090#1080' '#1076#1086' '#1072#1074#1090#1086#1088#1072
       ImageIndex = 35
       OnClick = mi_dwnl_LocateAuthorClick
     end
@@ -8715,7 +8715,7 @@ object frmMain: TfrmMain
       Caption = '-'
     end
     object mi_dwnl_Delete: TMenuItem
-      Caption = #1059#1076#1072#1083#1080#1090#1100
+      Caption = #1042#1080#1076#1072#1083#1080#1090#1080
       ImageIndex = 2
       OnClick = btnDeleteDownloadClick
     end

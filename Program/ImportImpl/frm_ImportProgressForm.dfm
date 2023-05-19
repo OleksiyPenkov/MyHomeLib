@@ -1,8 +1,8 @@
 inherited ImportProgressForm: TImportProgressForm
   BorderStyle = bsDialog
   Caption = #1030#1084#1087#1086#1088#1090
-  ClientHeight = 86
-  ClientWidth = 366
+  ClientHeight = 85
+  ClientWidth = 362
   Padding.Left = 10
   Padding.Top = 10
   Padding.Right = 10
@@ -11,14 +11,14 @@ inherited ImportProgressForm: TImportProgressForm
   ExplicitWidth = 378
   ExplicitHeight = 124
   DesignSize = (
-    366
-    86)
+    362
+    85)
   TextHeight = 13
   object txtComment: TLabel
     AlignWithMargins = True
     Left = 13
     Top = 13
-    Width = 340
+    Width = 336
     Height = 13
     Align = alTop
     AutoSize = False
@@ -31,15 +31,14 @@ inherited ImportProgressForm: TImportProgressForm
   object ProgressBar: TProgressBar
     Left = 10
     Top = 29
-    Width = 346
+    Width = 342
     Height = 17
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 342
   end
   object btnCancel: TButton
-    Left = 265
-    Top = 51
+    Left = 257
+    Top = 50
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
@@ -49,6 +48,5 @@ inherited ImportProgressForm: TImportProgressForm
     TabOrder = 1
     OnClick = btnCancelClick
     ExplicitLeft = 261
-    ExplicitTop = 50
   end
 end
