@@ -65,11 +65,11 @@ implementation
 {$R *.dfm}
 
 resourcestring
-  rstrDlgCaption = 'Удаление коллекции';
-  rstrDeleteRadioCaption = '&Удалить коллекцию';
-  rstrDeleteRadioHint = 'Полностью удалить коллекцию. Книги из коллекции останутся на диске.';
-  rstrUnregisterRadioCaption = '&Отключить коллекцию';
-  rstrUnregisterRadioHint = 'Удалить коллекцию из списка доступных. Вы сможете подключить её заново с помощью Мастера добавления коллекций.';
+rstrDlgCaption = 'Видалення колекції';
+   rstrDeleteRadioCaption = 'Видалити колекцію';
+   rstrDeleteRadioHint = 'Повністю видалити колекцію. Книги з колекції залишаться на диску.';
+   rstrUnregisterRadioCaption = '&Вимкнути колекцію';
+   rstrUnregisterRadioHint = 'Видалити колекцію зі списку доступних. Ви зможете підключити її заново за допомогою Майстра додавання колекцій.';
 
 function AskDeleteCollectionAction: TDeleteCollectionAction;
 const

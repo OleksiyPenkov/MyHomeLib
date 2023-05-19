@@ -8,6 +8,7 @@ object frmBookSearch: TfrmBookSearch
   ClientHeight = 58
   ClientWidth = 258
   Color = clBtnFace
+  CustomTitleBar.Height = 5
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -18,11 +19,9 @@ object frmBookSearch: TfrmBookSearch
   GlassFrame.Right = 5
   GlassFrame.Bottom = 5
   KeyPreview = True
-  OldCreateOrder = False
   Position = poMainFormCenter
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
-  PixelsPerInch = 96
   TextHeight = 13
   object RzPanel1: TMHLSimplePanel
     Left = 0
@@ -32,7 +31,6 @@ object frmBookSearch: TfrmBookSearch
     Align = alClient
     BorderWidth = 5
     TabOrder = 0
-    ExplicitHeight = 63
     object Label1: TLabel
       AlignWithMargins = True
       Left = 8
@@ -40,8 +38,8 @@ object frmBookSearch: TfrmBookSearch
       Width = 242
       Height = 13
       Align = alTop
-      Caption = #1055#1086#1080#1089#1082' '#1087#1086' '#1085#1072#1079#1074#1072#1085#1080#1102
-      ExplicitWidth = 98
+      Caption = #1055#1086#1096#1091#1082' '#1079#1072' '#1085#1072#1079#1074#1086#1102
+      ExplicitWidth = 88
     end
     object edText: TEdit
       AlignWithMargins = True

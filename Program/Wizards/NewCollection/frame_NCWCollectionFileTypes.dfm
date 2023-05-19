@@ -13,7 +13,6 @@ inherited frameNCWCollectionFileTypes: TframeNCWCollectionFileTypes
     Height = 59
     Margins.Left = 14
     Margins.Right = 14
-    Images = DMUser.SeverityImagesBig
     ImageIndex = 0
     Align = alTop
     ExplicitTop = 126

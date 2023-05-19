@@ -116,12 +116,12 @@ uses
 {$R *.dfm}
 
 resourcestring
-  rstrCreationCollection = 'Создание коллекции';
-  rstrDataImport = 'Импорт данныx';
-  rstrDataImporting = 'Импортируем данные';
-  rstrRegistration = 'Регистрируем коллекцию';
-  rstrDownloadFailed = 'Закачка не удалась. Сервер сообщает об ошибке.';
-  rstrImportDoneWithErrors = 'Импорт закончен с ошибками. Продолжить регистрацию коллекции ?';
+rstrCreationCollection = 'Створення колекції';
+   rstrDataImport = 'Імпорт даних';
+   rstrDataImporting = 'Імпортуємо дані';
+   rstrRegistration = 'Реєструємо колекцію';
+   rstrDownloadFailed = 'Завантаження не вдалося. Сервер повідомляє про помилку.';
+   rstrImportDoneWithErrors = 'Імпорт закінчено з помилками. Продовжити реєстрацію колекції ?';
 
 destructor TNewCollectionWizard.Destroy;
 begin

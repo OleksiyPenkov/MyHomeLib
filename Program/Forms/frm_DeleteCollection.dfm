@@ -2,7 +2,7 @@ object dlgDeleteCollection: TdlgDeleteCollection
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = #1059#1076#1072#1083#1077#1085#1080#1077' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
+  Caption = #1042#1080#1076#1072#1083#1077#1085#1085#1103' '#1082#1086#1083#1077#1082#1094#1110#1111
   ClientHeight = 212
   ClientWidth = 427
   Color = clBtnFace
@@ -11,9 +11,7 @@ object dlgDeleteCollection: TdlgDeleteCollection
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poOwnerFormCenter
-  PixelsPerInch = 96
   TextHeight = 13
   object pnMessage: TMHLSimplePanel
     Left = 0
@@ -24,6 +22,8 @@ object dlgDeleteCollection: TdlgDeleteCollection
     Color = clWindow
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 423
+    ExplicitHeight = 175
     DesignSize = (
       427
       176)
@@ -89,33 +89,33 @@ object dlgDeleteCollection: TdlgDeleteCollection
     object txtDelete: TLabel
       Left = 88
       Top = 49
-      Width = 274
+      Width = 270
       Height = 26
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
-      Caption = 
-        #1055#1086#1083#1085#1086#1089#1090#1100#1102' '#1091#1076#1072#1083#1080#1090#1100' '#1082#1086#1083#1083#1077#1082#1094#1080#1102'. '#1050#1085#1080#1075#1080' '#1080#1079' '#1082#1086#1083#1083#1077#1082#1094#1080#1080' '#1086#1089#1090#1072#1085#1091#1090#1089#1103' '#1085#1072' '#1076#1080#1089 +
-        #1082#1077'.'
+      Caption = #1055#1086#1074#1085#1110#1089#1090#1102' '#1074#1080#1076#1072#1083#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102'. '#1050#1085#1080#1075#1080' '#1082#1086#1083#1077#1082#1094#1110#1111' '#1079#1072#1083#1080#1096#1072#1090#1100#1089#1103' '#1085#1072' '#1076#1080#1089#1082#1091'.'
       WordWrap = True
+      ExplicitWidth = 274
     end
     object txtUnregister: TLabel
       Left = 88
       Top = 119
-      Width = 330
+      Width = 326
       Height = 51
       Anchors = [akLeft, akTop, akRight]
       AutoSize = False
       Caption = 
-        #1059#1076#1072#1083#1080#1090#1100' '#1082#1086#1083#1083#1077#1082#1094#1080#1102' '#1080#1079' '#1089#1087#1080#1089#1082#1072' '#1076#1086#1089#1090#1091#1087#1085#1099#1093'. '#1042#1099' '#1089#1084#1086#1078#1077#1090#1077' '#1087#1086#1076#1082#1083#1102#1095#1080#1090#1100' '#1077#1105' ' +
-        #1079#1072#1085#1086#1074#1086' '#1089' '#1087#1086#1084#1086#1097#1100#1102' '#1052#1072#1089#1090#1077#1088#1072' '#1076#1086#1073#1072#1074#1083#1077#1085#1080#1103' '#1082#1086#1083#1083#1077#1082#1094#1080#1081'.'
+        #1042#1080#1076#1072#1083#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102' '#1079#1110' '#1089#1087#1080#1089#1082#1091' '#1076#1086#1089#1090#1091#1087#1085#1080#1093'. '#1042#1080' '#1079#1084#1086#1078#1077#1090#1077' '#1087#1110#1076#1082#1083#1102#1095#1080#1090#1080' '#1111#1111' ' +
+        #1079#1072#1085#1086#1074#1086' '#1079#1072' '#1076#1086#1087#1086#1084#1086#1075#1086#1102' '#1052#1072#1081#1089#1090#1088#1072' '#1076#1086#1076#1072#1074#1072#1085#1085#1103' '#1082#1086#1083#1077#1082#1094#1110#1081'.'
       WordWrap = True
+      ExplicitWidth = 330
     end
     object rbDelete: TRadioButton
       Left = 73
       Top = 26
       Width = 248
       Height = 17
-      Caption = '&'#1059#1076#1072#1083#1080#1090#1100' '#1082#1086#1083#1083#1077#1082#1094#1080#1102
+      Caption = '&'#1042#1080#1076#1072#1083#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102
       Checked = True
       TabOrder = 0
       TabStop = True
@@ -125,7 +125,7 @@ object dlgDeleteCollection: TdlgDeleteCollection
       Top = 96
       Width = 248
       Height = 17
-      Caption = '&'#1054#1090#1082#1083#1102#1095#1080#1090#1100' '#1082#1086#1083#1083#1077#1082#1094#1080#1102
+      Caption = '&'#1042#1080#1084#1082#1085#1091#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102
       TabOrder = 1
     end
   end
@@ -136,11 +136,13 @@ object dlgDeleteCollection: TdlgDeleteCollection
     Height = 36
     Align = alBottom
     TabOrder = 1
+    ExplicitTop = 175
+    ExplicitWidth = 423
     DesignSize = (
       427
       36)
     object btnCancel: TButton
-      Left = 344
+      Left = 340
       Top = 6
       Width = 75
       Height = 25
@@ -149,9 +151,10 @@ object dlgDeleteCollection: TdlgDeleteCollection
       Caption = #1054#1090#1084#1077#1085#1072
       ModalResult = 2
       TabOrder = 1
+      ExplicitLeft = 336
     end
     object btnOk: TButton
-      Left = 263
+      Left = 259
       Top = 6
       Width = 75
       Height = 25
@@ -160,6 +163,7 @@ object dlgDeleteCollection: TdlgDeleteCollection
       Default = True
       ModalResult = 1
       TabOrder = 0
+      ExplicitLeft = 255
     end
   end
 end

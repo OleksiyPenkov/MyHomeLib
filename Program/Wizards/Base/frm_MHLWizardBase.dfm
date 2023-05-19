@@ -33,7 +33,7 @@ object MHLWizardBase: TMHLWizardBase
       520
       39)
     object btnCancel: TButton
-      Left = 432
+      Left = 428
       Top = 8
       Width = 75
       Height = 25
@@ -42,10 +42,10 @@ object MHLWizardBase: TMHLWizardBase
       Caption = #1042#1110#1076#1084#1110#1085#1072
       TabOrder = 0
       OnClick = OnCancel
-      ExplicitLeft = 428
+      ExplicitLeft = 424
     end
     object btnForward: TButton
-      Left = 338
+      Left = 334
       Top = 8
       Width = 75
       Height = 25
@@ -53,10 +53,10 @@ object MHLWizardBase: TMHLWizardBase
       Caption = #1042#1087#1077#1088#1077#1076' >'
       TabOrder = 1
       OnClick = DoChangePage
-      ExplicitLeft = 334
+      ExplicitLeft = 330
     end
     object btnBackward: TButton
-      Left = 257
+      Left = 253
       Top = 8
       Width = 75
       Height = 25
@@ -64,7 +64,7 @@ object MHLWizardBase: TMHLWizardBase
       Caption = '< '#1053#1072#1079#1072#1076
       TabOrder = 2
       OnClick = DoChangePage
-      ExplicitLeft = 253
+      ExplicitLeft = 249
     end
   end
 end

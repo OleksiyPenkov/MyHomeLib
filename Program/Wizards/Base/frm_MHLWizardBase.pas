@@ -74,8 +74,8 @@ var
 implementation
 
 resourcestring
-  rstrCaptionCancel = 'Отмена';
-  rstrCaptionClose = 'Закрыть';
+  rstrCaptionCancel = 'Відміна';
+  rstrCaptionClose = 'Закрити';
 
 {$R *.dfm}
 

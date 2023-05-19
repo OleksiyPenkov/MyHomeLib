@@ -94,12 +94,12 @@ uses
   dm_user;
 
 resourcestring
-  rstrProcessingFile = 'Обрабатываем файл %s';
-  rstrAddedBooks = 'Добавлено %u книг';
-  rstrErrorInpStructure = 'Ошибка структуры inp. Файл %s, Строка %u ';
-  rstrDBErrorInp = 'Ошибка базы данных при импорте книги. Файл %s, Строка %u ';
-  rstrUpdatingDB = 'Обновление базы данных. Пожалуйста, подождите ... ';
-  rstrInvalidFormat = 'Неверный формат файла INPX!';
+   rstrProcessingFile = 'Обробляємо файл %s';
+   rstrAddedBooks = 'Додано %u книг';
+   rstrErrorInpStructure = 'Помилка структури inp. Файл %s, Рядок %u';
+   rstrDBErrorInp = 'Помилка бази даних під час імпорту книги. Файл %s, Рядок %u';
+   rstrUpdatingDB = 'Оновлення бази даних. Будь ласка зачекайте ... ';
+   rstrInvalidFormat = 'Неправильний формат файлу INPX!';
 
 const
   FieldsDescr: array [1 .. 20] of TFieldDescr = (

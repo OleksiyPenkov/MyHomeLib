@@ -61,9 +61,9 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrVersionFrom = 'Версия от ddddd';
-  rstrExportingCollection = 'Экспортируем коллекцию.';
-  rstrSaving = 'Сохраняем документ. Подождите, пожалуйста.';
+   rstrVersionFrom = 'Версія від ddddd';
+   rstrExportingCollection = 'Експортуємо колекцію.';
+   rstrSaving = 'Зберігаємо документ. Зачекайте будь-ласка.';
 
 const
   BOOKS_INFO_FILE = 'books.inp'; { TODO -oNickR -cRefactoring : добавить в систебные файлы? }

@@ -184,10 +184,10 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrFileNotSelected = 'Файл не выбран!';
-  rstrProvideAtLeastOneAuthor = 'Укажите минимум одного автора!';
-  rstrProvideBookTitle = 'Укажите название книги!';
-  rstrFailedToRename = 'Переименование не удалось!' + CRLF + 'Возможно, файл заблокирован другой программой.';
+rstrFileNotSelected = 'Файл не вибраний!';
+   rstrProvideAtLeastOneAuthor = 'Вкажіть мінімум одного автора!';
+   rstrProvideBookTitle = 'Вкажіть назву книги!';
+   rstrFailedToRename = 'Перейменування не вдалося!' + CRLF + 'Можливо, файл заблоковано іншою програмою.';
 
 {$R *.dfm}
 

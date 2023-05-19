@@ -91,7 +91,7 @@ uses
   dm_user;
 
 resourcestring
-  rstrChooseDataFolder = 'Выберите папку для сохранения данных';
+  rstrChooseDataFolder = 'Виберіть папку для збереження даних';
 
 {$R *.dfm}
 
