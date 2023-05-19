@@ -177,12 +177,12 @@ type
 implementation
 
 resourcestring
-  rstrSerieLabel = 'Серия:';
-  rstrGenreLabel = 'Жанр(ы):';
-  rstrNoAnnotationHint = 'Аннотация отсутствует';
-  rsrtCopyLabel = 'Копировать';
+  rstrSerieLabel = 'Серія:';
+  rstrGenreLabel = 'Жанр(и):';
+  rstrNoAnnotationHint = 'Анотація відсутня';
+  rsrtCopyLabel = 'Копіювати';
   rsrtFiledLabel = 'Поле';
-  rsrtValueLabel = 'Значение';
+  rsrtValueLabel = 'Значення';
 
 function GetCoverWidth(Height: Integer): Integer;
 begin
@@ -306,10 +306,10 @@ begin
 
   if csDesigning in ComponentState then
   begin
-    FTitle.Caption := 'Название книги';
+    FTitle.Caption := 'Назва книги';
     FAuthors.Caption := '<a>Автор книги</a> <a>Автор книги</a>';
-    FSeries.Caption := '<a>Название серии</a>';
-    FGenres.Caption := '<a>Название жанра</a> <a>Название жанра</a> <a>Название жанра</a>';
+    FSeries.Caption := '<a>Назва серії</a>';
+    FGenres.Caption := '<a>Назва жанру</a> <a>Назва жанру</a> <a>Назва жанру</a>';
   end;
 
   FTitle.SetBounds(0, 0, 300, 20);

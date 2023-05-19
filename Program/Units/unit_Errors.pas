@@ -31,22 +31,22 @@ type
   EDBError = class(Exception);
 
 resourcestring
-  rstrErrorInvalidArgument = 'Invalid argument';
-  rstrErrorNotSupported = 'Operation is not supported';
+   rstrErrorInvalidArgument = 'Invalid argument';
+   rstrErrorNotSupported = 'Operation is not supported';
 
-  rstrAllFieldsShouldBeFilled = 'Все поля должны быть заполнены!';
+   rstrAllFieldsShouldBeFilled = 'Всі поля повинні бути заповнені!';
 
-  rstrCollectionAlreadyExists = 'Коллекция "%s" уже существует!';
-  rstrFileDoesntExists = 'Файл "%s" не существует!';
-  rstrFileAlreadyExistsInDB = 'Файл "%s" используется другой коллекцией!';
+   rstrCollectionAlreadyExists = 'Колекція %s вже існує!';
+   rstrFileDoesntExists = 'Файл %s не існує!';
+   rstrFileAlreadyExistsInDB = 'Файл %s використовується іншою колекцією!';
 
-  rstrArchiveNotFound = 'Архив "%s" не найден!';
-  rstrFileNotFound = 'Файл "%s" не найден!';
+   rstrArchiveNotFound = 'Архів "%s" не знайдено!';
+   rstrFileNotFound = 'Файл %s не знайдено!';
 
-  rstrErrorOnlyForCurrentCollection = 'Операция недоступна. Текущая коллекция: "%s", а книга принадлежит коллекции "%s".';
+   rstrErrorOnlyForCurrentCollection = 'Операція недоступна. Поточна колекція: %s, а книга належить колекції %s.';
 
-  rstrCheckFilterParams = 'Проверьте параметры фильтра';
-  rstrFilterParamError = 'Синтаксическая ошибка.' + CRLF + 'Проверьте параметры фильтра';
+   rstrCheckFilterParams = 'Перевірте параметри фільтра';
+   rstrFilterParamError = 'Синтаксична помилка.' + CRLF + 'Перевірте параметри фільтра';
 
 function MHLShowInfo(
   const InfoMessage: string;

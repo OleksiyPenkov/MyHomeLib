@@ -8,7 +8,7 @@ inherited frameNCWCollectionFileTypes: TframeNCWCollectionFileTypes
   object pageHint: TMHLStaticTip [0]
     AlignWithMargins = True
     Left = 14
-    Top = 148
+    Top = 150
     Width = 432
     Height = 59
     Margins.Left = 14
@@ -22,19 +22,19 @@ inherited frameNCWCollectionFileTypes: TframeNCWCollectionFileTypes
     Width = 460
     ExplicitWidth = 460
     inherited lblTitle: TLabel
-      Width = 91
-      Caption = #1060#1086#1088#1084#1072#1090' '#1092#1072#1081#1083#1086#1074
-      ExplicitWidth = 91
+      Width = 432
+      Caption = #1060#1086#1088#1084#1072#1090' '#1092#1072#1081#1083#1110#1074
+      ExplicitWidth = 87
     end
     inherited lblSubTitle: TLabel
-      Width = 361
-      Caption = #1059#1082#1072#1078#1080#1090#1077', '#1082#1085#1080#1075#1080' '#1074' '#1082#1072#1082#1086#1084' '#1092#1086#1088#1084#1072#1090#1077' '#1042#1099' '#1087#1083#1072#1085#1080#1088#1091#1077#1090#1077' '#1093#1088#1072#1085#1080#1090#1100' '#1074' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
-      ExplicitWidth = 361
+      Width = 425
+      Caption = #1042#1082#1072#1078#1110#1090#1100' '#1082#1085#1080#1075#1080' '#1074' '#1103#1082#1086#1084#1091' '#1092#1086#1088#1084#1072#1090#1110' '#1042#1080' '#1087#1083#1072#1085#1091#1108#1090#1077' '#1079#1073#1077#1088#1110#1075#1072#1090#1080' '#1074' '#1082#1086#1083#1077#1082#1094#1110#1111
+      ExplicitWidth = 353
     end
   end
   object Panel3: TPanel
     Left = 0
-    Top = 56
+    Top = 58
     Width = 460
     Height = 89
     Margins.Left = 7
@@ -56,7 +56,7 @@ inherited frameNCWCollectionFileTypes: TframeNCWCollectionFileTypes
       Margins.Right = 7
       Margins.Bottom = 0
       Align = alTop
-      Caption = #1050#1085#1080#1075#1080' '#1074' &'#1076#1088#1091#1075#1080#1093' '#1092#1086#1088#1084#1072#1090#1072#1093' (fbd, pdf, djvu)'
+      Caption = #1050#1085#1080#1075#1080' '#1074' '#1110#1085#1096#1080#1093' '#1092#1086#1088#1084#1072#1090#1072#1093' (fbd, pdf, djvu)'
       TabOrder = 0
       OnClick = OnSetFileType
     end
@@ -71,7 +71,7 @@ inherited frameNCWCollectionFileTypes: TframeNCWCollectionFileTypes
       Margins.Right = 7
       Margins.Bottom = 0
       Align = alTop
-      Caption = #1050#1085'&'#1080#1075#1080' '#1074' '#1092#1086#1088#1084#1072#1090#1077' FictionBook'
+      Caption = #1050#1085#1080#1075#1080' '#1091' '#1092#1086#1088#1084#1072#1090#1110' FictionBook'
       Checked = True
       TabOrder = 1
       TabStop = True
@@ -82,7 +82,7 @@ inherited frameNCWCollectionFileTypes: TframeNCWCollectionFileTypes
       Top = 66
       Width = 403
       Height = 17
-      Caption = #1053#1072#1095#1072#1090#1100' '#1080#1084#1087#1086#1088#1090' '#1082#1085#1080#1075' '#1087#1086#1089#1083#1077' '#1089#1086#1079#1076#1072#1085#1080#1103' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
+      Caption = #1056#1086#1079#1087#1086#1095#1072#1090#1080' '#1110#1084#1087#1086#1088#1090' '#1082#1085#1080#1075' '#1087#1110#1089#1083#1103' '#1089#1090#1074#1086#1088#1077#1085#1085#1103' '#1082#1086#1083#1077#1082#1094#1110#1111
       Checked = True
       State = cbChecked
       TabOrder = 2

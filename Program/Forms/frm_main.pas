@@ -160,7 +160,6 @@ type
     tbtnDownloadList_Add: TToolButton;
     N1: TMenuItem;
     miGoSite: TMenuItem;
-    miGoForum: TMenuItem;
     pgControl: TPageControl;
     tsSearch: TTabSheet;
     tsByGroup: TTabSheet;
@@ -391,8 +390,8 @@ type
     acEditSerie: TAction;
     acEditGenre: TAction;
     acEditBook: TAction;
-    acEditConver2FBD: TAction;
-    acEditAutoConver2FBD: TAction;
+    acEditConvert2FBD: TAction;
+    acEditAutoConvert2FBD: TAction;
     N36: TMenuItem;
     N47: TMenuItem;
     N48: TMenuItem;
@@ -1021,8 +1020,8 @@ uses
   frm_DeleteCollection, unit_ImportOldUserData;
 
 resourcestring
-  rstrFileNotFoundMsg = 'Файл %s не найден!' + CRLF + 'Проверьте настройки коллекции!';
-  rstrCreatingFilter = 'Подготовка фильтра ...';
+  rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перевірте налаштування колекції!';
+  rstrCreatingFilter = 'Підготовка фільтра ...';
   rstrApplyingFilter = 'Применяем фильтр ...';
   rstrNoUpdatesAvailable = 'Нет доступных обновлений';
   rstrNotFromDownloadsError = 'Операция недоступна из списка закачек.';
@@ -1600,7 +1599,7 @@ begin
     IsFB2 := isFB2Collection(CollectionType);
     IsNonFB2 := isNonFB2Collection(CollectionType);
 
-    acEditConver2FBD.Enabled := IsPrivate and not IsFB2;
+    acEditConvert2FBD.Enabled := IsPrivate and not IsFB2;
 
 
     //

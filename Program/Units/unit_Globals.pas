@@ -428,13 +428,13 @@ uses
   unit_Settings;
 
 resourcestring
-  rstrUnableToLaunch = ' Не удалось запустить %s ! ';
-  rstrBookNotFoundInArchive = 'В архиве "%s" не найдено описание книги!';
-  rstrUpdateFailedServerNotFound = 'Проверка обновления не удалось! Сервер не найден.' + CRLF + 'Код ошибки: %d';
-  rstrUpdateFailedConnectionError = 'Проверка обновления не удалось! Ошибка подключения.' + CRLF + 'Код ошибки: %d';
-  rstrUpdateFailedServerError = 'Проверка обновления не удалось! Сервер сообщает об ошибке ' + CRLF + 'Код ошибки: %d';
-  rstrFoundNewAppVersion = 'Доступна новая версия - "%s" Посетите сайт программы для загрузки обновлений.';
-  rstrLatestVersion = 'У вас самая свежая версия.';
+rstrUnableToLaunch = 'Не вдалося запустити %s! ';
+   rstrBookNotFoundInArchive = 'В архіві "%s" не знайдено опису книги!';
+   rstrUpdateFailedServerNotFound = 'Перевірка оновлення не вдалося! Сервер не знайдено.' + CRLF + 'Код помилки: %d';
+   rstrUpdateFailedConnectionError = 'Перевірити оновлення не вдалося! Помилка підключення.' + CRLF + 'Код помилки: %d';
+   rstrUpdateFailedServerError = 'Перевірити оновлення не вдалося! Сервер повідомляє про помилку '+CRLF+'Код помилки: %d';
+   rstrFoundNewAppVersion = 'Доступна нова версія - "%s" Відвідайте сайт програми для завантаження оновлень.';
+   rstrLatestVersion = 'У вас найсвіжіша версія.';
 
 const
   lat: set of AnsiChar = ['A' .. 'Z', 'a' .. 'z', '\', '-', ':', '`', ',', '.', '0' .. '9', '_', ' ', '(', ')', '[', ']', '{', '}'];

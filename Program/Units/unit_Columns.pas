@@ -97,19 +97,19 @@ uses
   unit_Helpers;
 
 resourcestring
-  rstrAuthor = 'Автор';
-  rstrTitle = 'Название';
-  rstrSeries = 'Серия';
-  rstrNO = '№';
-  rstrSize = 'Размер';
-  rstrRate = 'Моя оценка';
-  rstrDate = 'Добавлено';
-  rstrGenre = 'Жанр';
-  rstrCollection = 'Коллекция';
-  rstrType = 'Тип';
-  rstrLang = 'Язык';
-  rstrLibrate = 'Рейтинг';
-  rstrLibID = 'BookID';
+rstrAuthor = 'Автор';
+   rstrTitle = 'Назва';
+   rstrSeries = 'Серія';
+   rstrNO = '№';
+   rstrSize = 'Розмір';
+   rstrRate = 'Моя оцінка';
+   rstrDate = 'Додано';
+   rstrGenre = 'Жанр';
+   rstrCollection = 'Колекція';
+   rstrType = 'Тип';
+   rstrLang = 'Мова';
+   rstrLibrate = 'Рейтинг';
+   rstrLibID = 'BookID';
 
 const
   //

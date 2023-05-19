@@ -11,7 +11,7 @@
   * $Id: unit_ReviewParser.pas 1186 2015-05-14 05:20:24Z koreec $
   *
   * History
-  * NickR 15.02.2010    Код переформатирован
+  * NickR 15.02.2010    РљРѕРґ РїРµСЂРµС„РѕСЂРјР°С‚РёСЂРѕРІР°РЅ
   *
   ****************************************************************************** *)
 
@@ -99,17 +99,17 @@ begin
 
   if pos('lib.rus.ec', URL) <> 0 then
   begin
-    ANNOTATION_START := '<h2>Аннотация</h2>';
+    ANNOTATION_START := '<h2>РђРЅРЅРѕС‚Р°С†РёСЏ</h2>';
     ANNOTATION_END := '<h3>';
 
-    BEG_PREFIX := 'Впечатления';
+    BEG_PREFIX := 'Р’РїРµС‡Р°С‚Р»РµРЅРёСЏ';
     BLOCK_PREFIX := '/polka/show/';
     BLOCK_END := '<hr>';
     END_ALL := '/stat/r/';
     idxReviewBlockStart := Pos(BEG_PREFIX, page);
   end
   else begin
-    ANNOTATION_START := '<h2>Аннотация</h2>';
+    ANNOTATION_START := '<h2>РђРЅРЅРѕС‚Р°С†РёСЏ</h2>';
     ANNOTATION_END := '<form';
 
     BLOCK_PREFIX := '/polka/show/';
@@ -118,7 +118,7 @@ begin
 
   end;
 
-  // аннотация
+  // Р°РЅРЅРѕС‚Р°С†РёСЏ
   idxReviewBlockStart := Pos(ANNOTATION_START, page);
   Delete(page, 1 , idxReviewBlockStart);
   idxReviewBlockStart := 1;
@@ -143,7 +143,7 @@ begin
 //  SL.Text := page;
 //  sl.SaveToFile('E:\temp\out.html');
 
-  // отзывы
+  // РѕС‚Р·С‹РІС‹
 
   idxReviewBlockStart := Pos(BLOCK_PREFIX, page);
   idxEndAllBookReviews := Pos(END_ALL, page);

@@ -8,7 +8,7 @@ inherited frameNCWProgress: TframeNCWProgress
   object txtComment: TLabel [0]
     AlignWithMargins = True
     Left = 14
-    Top = 63
+    Top = 65
     Width = 432
     Height = 13
     Margins.Left = 14
@@ -17,7 +17,7 @@ inherited frameNCWProgress: TframeNCWProgress
     Margins.Bottom = 0
     Align = alTop
     AutoSize = False
-    Caption = #1048#1084#1087#1086#1088#1090#1080#1088#1091#1077#1084'...'
+    Caption = #1030#1084#1087#1086#1088#1090#1091#1108#1084#1086'...'
     EllipsisPosition = epEndEllipsis
     ExplicitLeft = -25
     ExplicitTop = 13
@@ -26,7 +26,7 @@ inherited frameNCWProgress: TframeNCWProgress
   object Bar: TProgressBar [1]
     AlignWithMargins = True
     Left = 14
-    Top = 83
+    Top = 85
     Width = 432
     Height = 17
     Margins.Left = 14
@@ -41,21 +41,21 @@ inherited frameNCWProgress: TframeNCWProgress
     ExplicitWidth = 460
     inherited lblTitle: TLabel
       Width = 432
-      Caption = #1057#1086#1079#1076#1072#1085#1080#1077' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
-      ExplicitWidth = 121
+      Caption = #1057#1090#1074#1086#1088#1077#1085#1085#1103' '#1082#1086#1083#1077#1082#1094#1110#1111
+      ExplicitWidth = 115
     end
     inherited lblSubTitle: TLabel
       Width = 425
-      Caption = #1055#1086#1076#1086#1078#1076#1080#1090#1077', '#1087#1086#1082#1072' '#1084#1072#1089#1090#1077#1088' '#1079#1072#1082#1086#1085#1095#1080#1090' '#1089#1086#1079#1076#1072#1085#1080#1077' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
-      ExplicitWidth = 285
+      Caption = #1047#1072#1095#1077#1082#1072#1081#1090#1077', '#1087#1086#1082#1080' '#1084#1072#1081#1089#1090#1077#1088' '#1079#1072#1082#1110#1085#1095#1080#1090#1100' '#1089#1090#1074#1086#1088#1077#1085#1085#1103' '#1082#1086#1083#1077#1082#1094#1110#1111
+      ExplicitWidth = 301
     end
   end
   object errorLog: TListView
     AlignWithMargins = True
     Left = 14
-    Top = 107
+    Top = 109
     Width = 432
-    Height = 150
+    Height = 148
     Margins.Left = 14
     Margins.Top = 7
     Margins.Right = 14
@@ -71,17 +71,19 @@ inherited frameNCWProgress: TframeNCWProgress
     ColumnClick = False
     HoverTime = 65535
     Items.ItemData = {
-      03C10000000400000000000000FFFFFFFFFFFFFFFF01000000FFFFFFFF000000
-      00000C49006E0066006F0020004D0065007300730061006700650001000000FF
-      FFFFFFFFFFFFFF01000000FFFFFFFF00000000000F5700610072006E0069006E
-      00670020004D0065007300730061006700650002000000FFFFFFFFFFFFFFFF01
-      000000FFFFFFFF00000000000D4500720072006F00720020004D006500730073
-      00610067006500FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFF0000000000
-      FFFFFFFFFFFF}
+      05CD0000000400000000000000FFFFFFFFFFFFFFFF01000000FFFFFFFF000000
+      00000C49006E0066006F0020004D006500730073006100670065000000000001
+      000000FFFFFFFFFFFFFFFF01000000FFFFFFFF00000000000F5700610072006E
+      0069006E00670020004D006500730073006100670065000000000002000000FF
+      FFFFFFFFFFFFFF01000000FFFFFFFF00000000000D4500720072006F00720020
+      004D0065007300730061006700650000000000FFFFFFFFFFFFFFFFFFFFFFFF00
+      000000FFFFFFFF0000000000FFFFFFFFFFFF}
     RowSelect = True
     SmallImages = DMUser.SeverityImages
     TabOrder = 1
     ViewStyle = vsReport
+    ExplicitTop = 107
+    ExplicitHeight = 150
   end
   object pnButtons: TPanel
     Left = 0
@@ -101,7 +103,7 @@ inherited frameNCWProgress: TframeNCWProgress
       Width = 75
       Height = 25
       Anchors = [akLeft, akBottom]
-      Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+      Caption = #1047#1073#1077#1088#1077#1075#1090#1080
       TabOrder = 0
     end
   end

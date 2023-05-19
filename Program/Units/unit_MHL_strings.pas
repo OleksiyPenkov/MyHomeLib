@@ -20,21 +20,21 @@ unit unit_MHL_strings;
 interface
 
 resourcestring
-  rstrMainUnableToCopy = 'Копирование книг из избранного невозможно.';
+  rstrMainUnableToCopy = 'Копіювання книг із обраного неможливе.';
   rstrMainConnectToDb = 'Подключение БД...';
-  rstrMainLoadingCollection = 'Загрузка коллекции...';
-  rstrMainCheckUpdates = 'Проверка обновлений...';
+  rstrMainLoadingCollection = 'Завантаження колекції...';
+  rstrMainCheckUpdates = 'Перевірка оновлень...';
 
-  rstrCancelOperationWarningMsg = 'Вы действительно хотите прервать операцию?';
+  rstrCancelOperationWarningMsg = 'Ви дійсно хочете перервати операцію?';
 
   rstrReadyMessage = 'Готово';
 
   //
   // Названия коллекций по-умолчанию
   //
-  rstrLocalLibRusEcDefName = 'Локальная коллекция Либрусек';
-  rstrOnlineLibRusEcDefName = 'Онлайн коллекция Либрусек';
-  rstrOnlineGenesisDefName = 'Онлайн коллекция Genesis';
+  rstrLocalLibRusEcDefName = 'Локальна колекція Лібрусек';
+  rstrOnlineLibRusEcDefName = 'Онлайн колекція Лібрусек';
+  rstrOnlineGenesisDefName = 'Онлайн колекція Genesis';
 
   rstrLocalLibRusEcDefLocation = 'librusec_local';
   rstrOnlineLibRusEcDefLocation = 'librusec_online';
@@ -43,14 +43,14 @@ resourcestring
   //
   //
   //
-  rstrBookProcessedMsg1 = 'Обработано книг: %u';
-  rstrBookProcessedMsg2 = 'Обработано книг: %u из %u';
+  rstrBookProcessedMsg1 = 'Оброблено книг: %u';
+  rstrBookProcessedMsg2 = 'Оброблено книг: %u из %u';
 
   //
   // Форма редактирования/создания FBD и пунк меню в главной форме
   //
-  rstrEditFBD = 'Редактировать FBD';
-  rstrConvert2FBD = 'Преобразовать FBD';
+  rstrEditFBD = 'Редагувати FBD';
+  rstrConvert2FBD = 'Перетворити FBD';
 
 implementation
 

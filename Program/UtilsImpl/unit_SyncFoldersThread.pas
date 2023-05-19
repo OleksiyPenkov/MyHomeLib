@@ -49,7 +49,7 @@ uses
   unit_Interfaces;
 
 resourcestring
-  rstrBuildingFileList = 'Построение списка файлов ...';
+  rstrBuildingFileList = 'Створення списку файлів ...';
 
 { TImportXMLThread }
 

@@ -63,12 +63,12 @@ uses
   unit_MHLArchiveHelpers;
 
 resourcestring
-  rstrShowCollectionType = 'Укажите название коллекции.';
-  rstrShowCollectionFile = 'Укажите файл коллекции.';
-  rstrShowCollectionFolder = 'Укажите расположение папки с книгами.';
-  rstrSelectFolder = 'Выберите папку с книгами';
-  rstrDamagedArchive = 'Архив поврежден или имеет неправильный формат!';
-  rstrInvalidFormat = 'Неверный формат файла INPX!';
+rstrShowCollectionType = 'Вкажіть назву колекції.';
+   rstrShowCollectionFile = 'Вкажіть файл колекції.';
+   rstrShowCollectionFolder = 'Вкажіть розташування папки з книгами.';
+   rstrSelectFolder = 'Виберіть папку з книгами';
+   rstrDamagedArchive = 'Архів пошкоджено або має неправильний формат!';
+   rstrInvalidFormat = 'Неправильний формат файлу INPX!';
 
 {$R *.dfm}
 

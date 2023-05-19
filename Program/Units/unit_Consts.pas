@@ -20,8 +20,8 @@ unit unit_Consts;
 interface
 
 resourcestring
-  rstrNoTitle = 'Без названия';
-  rstrUnknownAuthor = 'Неизвестный';
+  rstrNoTitle = 'Без назви';
+  rstrUnknownAuthor = 'Невідомий';
 
 const
   CR = #13;

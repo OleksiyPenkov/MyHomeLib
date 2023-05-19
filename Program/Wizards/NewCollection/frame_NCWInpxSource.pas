@@ -83,8 +83,8 @@ uses
   IniFiles;
 
 resourcestring
-  rstrServerDownload = 'Выбранный файл INPX будет скачан с сервера.';
-  rstrLocal = 'Коллекция на основе файла *.inpx. Укажите путь к файлу.';
+  rstrServerDownload = 'Вибраний файл INPX буде завантажений із сервера.';
+  rstrLocal = 'Колекція на основі файлу *.inpx. Вкажіть шлях до файлу.';
   //rstrGroupLibrusec = 'Библиотека Lib.rus.ec';
   //rstrGroupFlibusta = 'Библиотека Flibusta';
   //rstrGroupTraum = 'Библиотека Траума';

@@ -1,4 +1,4 @@
-(* *****************************************************************************
+﻿(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -6,7 +6,7 @@
   *
   * Author(s)           Nick Rymanov (nrymanov@gmail.com)
   * Created             12.02.2010
-  * Description         ������� ������������. ���������� ���������� ������� ��������� � ������ Templater
+  * Description         Базовый шаблонизатор. Реализации конкретных классов находятся в модуле Templater
   *
   * $Id: unit_TemplaterInternal.pas 1064 2011-09-02 11:33:04Z eg_ $
   *
@@ -40,10 +40,10 @@ type
   end;
 
 resourcestring
-  rstrEInvalidTemplate = '�������� ������, ������� %d';
-  rstrEInvalidParam = '�������������� �������� "%s"';
-  rstrEUnopenedBracket = '���������� ������, ������� %d';
-  rstrEUnclosedBracket = '���������� ������, ������� %d';
+rstrEInvalidTemplate = 'Неправильний шаблон, позиція %d';
+   rstrEInvalidParam = 'Нерозпізнаний параметр %s';
+   rstrEUnopenedBracket = 'Невідкрита дужка, позиція %d';
+   rstrEUnclosedBracket = 'Незакрита дужка, позиція %d';
 
 type
   // --------------------------------------------------------------------------
@@ -288,7 +288,7 @@ begin
       if FTopLevel then
         RaiseTemplateError(rstrEUnopenedBracket, nPos);
 
-      // + �������� �� ������� ??? ��� ����� �����
+      // + проверки на пустоту ??? уже забыл зачем
 
       endPos := nPos + 1;
       Exit;

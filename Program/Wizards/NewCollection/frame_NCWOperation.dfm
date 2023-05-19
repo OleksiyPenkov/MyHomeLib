@@ -8,7 +8,7 @@ inherited frameNCWOperation: TframeNCWOperation
   object pageHint: TMHLStaticTip [0]
     AlignWithMargins = True
     Left = 14
-    Top = 140
+    Top = 142
     Width = 302
     Height = 58
     Margins.Left = 14
@@ -23,18 +23,18 @@ inherited frameNCWOperation: TframeNCWOperation
     ExplicitWidth = 330
     inherited lblTitle: TLabel
       Width = 302
-      Caption = #1058#1080#1087' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
-      ExplicitWidth = 85
+      Caption = #1058#1080#1087' '#1082#1086#1083#1077#1082#1094#1110#1111
+      ExplicitWidth = 72
     end
     inherited lblSubTitle: TLabel
       Width = 295
-      Caption = #1059#1082#1072#1078#1080#1090#1077' '#1090#1080#1087' '#1085#1086#1074#1086#1081' '#1082#1086#1083#1083#1077#1082#1094#1080#1080
-      ExplicitWidth = 156
+      Caption = #1042#1082#1072#1078#1110#1090#1100' '#1090#1080#1087' '#1085#1086#1074#1086#1111' '#1082#1086#1083#1077#1082#1094#1110#1111
+      ExplicitWidth = 145
     end
   end
   object Panel1: TPanel
     Left = 0
-    Top = 56
+    Top = 58
     Width = 330
     Height = 81
     Align = alTop
@@ -50,7 +50,7 @@ inherited frameNCWOperation: TframeNCWOperation
       Margins.Top = 7
       Margins.Right = 7
       Margins.Bottom = 0
-      Caption = '&'#1053#1086#1074#1072#1103' '#1087#1091#1089#1090#1072#1103' '#1082#1086#1083#1083#1077#1082#1094#1080#1103
+      Caption = #1053#1086#1074#1072' '#1087#1086#1088#1086#1078#1085#1103' '#1082#1086#1083#1077#1082#1094#1110#1103
       Checked = True
       TabOrder = 0
       TabStop = True
@@ -66,7 +66,7 @@ inherited frameNCWOperation: TframeNCWOperation
       Margins.Top = 7
       Margins.Right = 7
       Margins.Bottom = 0
-      Caption = '&'#1057#1091#1097#1077#1089#1090#1074#1091#1102#1097#1072#1103' '#1082#1086#1083#1083#1077#1082#1094#1080#1103' (hlc)'
+      Caption = #1030#1089#1085#1091#1102#1095#1072' '#1082#1086#1083#1077#1082#1094#1110#1103' (hlc2)'
       TabOrder = 1
       OnClick = OnSetCollectionType
     end
@@ -80,7 +80,7 @@ inherited frameNCWOperation: TframeNCWOperation
       Margins.Top = 7
       Margins.Right = 7
       Margins.Bottom = 0
-      Caption = #1050#1086#1083#1083#1077#1082#1094#1080#1103' '#1080#1079' '#1092#1072#1081#1083#1072' inpx'
+      Caption = #1050#1086#1083#1077#1082#1094#1110#1103' '#1079' '#1092#1072#1081#1083#1091' inpx'
       TabOrder = 2
       OnClick = OnSetCollectionType
     end

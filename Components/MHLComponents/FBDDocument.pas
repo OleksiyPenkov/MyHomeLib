@@ -129,8 +129,8 @@ type
   end;
 
 resourcestring
-  rstrErrorCreatingFBD = 'Ошибка создания FBD!';
-  rstrErrorLaunching = 'Не удалось запустить %s !';
+rstrErrorCreatingFBD = 'Помилка створення FBD!';
+   rstrErrorLaunching = 'Не вдалося запустити %s!';
 
 implementation
 
