@@ -3,3 +3,6 @@ Out
 /Program/*.dsk
 __history
 *.~pas
+Common
+x64
+/Installer/x86
