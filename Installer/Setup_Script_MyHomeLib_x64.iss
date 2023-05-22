@@ -56,13 +56,6 @@ Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {
 Name: {group}\{#MyAppName} website; Filename: {app}\{#MyAppName}.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
 Name: {group}\{cm:UninstallProgram, My Home Library}; Filename: {uninstallexe}
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#AppExeName}"; Tasks: quicklaunchicon
-[Tasks]
-Name: desktopicon; Description: {cm:CreateDesktopIcon}
-Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; Flags: unchecked
-
-[Languages]
-Name: English; MessagesFile: compiler:Default.isl
-Name: Ukrainian; MessagesFile: compiler:Languages\Ukrainian.isl
 
 [UninstallDelete]
 Name: {userappdata}\{#MyAppName}\Data; Type: filesandordirs
