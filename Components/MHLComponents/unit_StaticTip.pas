@@ -131,7 +131,7 @@ var
   ImageWidth, ImageHeight: Integer;
   ImageTop, ImageLeft: Integer;
 begin
-  LGlassEnabled := StyleServices.ThemesEnabled and DwmCompositionEnabled and not (csDesigning in ComponentState);
+  LGlassEnabled := StyleServices.Enabled and DwmCompositionEnabled and not (csDesigning in ComponentState);
 
   if LGlassEnabled then
   begin
