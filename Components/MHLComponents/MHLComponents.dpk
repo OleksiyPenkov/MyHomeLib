@@ -37,7 +37,11 @@ requires
   IndySystem,
   IndyProtocols,
   soaprtl,
+{$IFDEF WIN32}
   VirtualTreesDD;
+{$ELSE}
+  VirtualTreesDR;
+{$ENDIF}
 
 contains
   unit_StaticTip in 'unit_StaticTip.pas',
