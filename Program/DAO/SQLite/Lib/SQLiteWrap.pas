@@ -270,8 +270,8 @@ begin
   // !!!!!!!! TEST ONLY !!!!!!!!
   //
   ExecSQL('PRAGMA synchronous = NORMAL');
+  ExecSQL('PRAGMA cache_size = 16000');
   // Slow down:
-  //  ExecSQL('PRAGMA cache_size = 16000');
   //  ExecSQL('PRAGMA count_changes = 0');
   //
   // !!!!!!!! TEST ONLY !!!!!!!!
