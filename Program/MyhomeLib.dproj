@@ -10,8 +10,9 @@
         <Base>True</Base>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
-        <Platform Condition="'$(Platform)'==''">Win64</Platform>
+        <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
+        <ProjectName Condition="'$(ProjectName)'==''">MyhomeLib</ProjectName>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
@@ -129,8 +130,8 @@
         <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
         <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-        <VerInfo_Build>861</VerInfo_Build>
-        <VerInfo_Keys>CompanyName=;FileVersion=2.4.1.861;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.4.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
+        <VerInfo_Build>862</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileVersion=2.4.1.862;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.4.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_Private>false</VerInfo_Private>
         <VerInfo_Special>false</VerInfo_Special>
@@ -144,9 +145,9 @@
         <VerInfo_PreRelease>false</VerInfo_PreRelease>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.4.0.858;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.4.0;Comments=</VerInfo_Keys>
-        <VerInfo_Release>0</VerInfo_Release>
-        <VerInfo_Build>858</VerInfo_Build>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.4.1.861;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.4.0;Comments=</VerInfo_Keys>
+        <VerInfo_Release>1</VerInfo_Release>
+        <VerInfo_Build>861</VerInfo_Build>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
@@ -1195,6 +1196,9 @@
                     <Platform Name="Win64">
                         <Operation>1</Operation>
                     </Platform>
+                    <Platform Name="Win64x">
+                        <Operation>1</Operation>
+                    </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectiOSDeviceDebug">
                     <Platform Name="iOSDevice32">
@@ -1488,6 +1492,7 @@
                 <ProjectRoot Platform="OSXARM64" Name="$(PROJECTNAME).app"/>
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="Win64x" Name="$(PROJECTNAME)"/>
             </Deployment>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
