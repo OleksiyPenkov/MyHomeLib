@@ -95,7 +95,7 @@
     <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
     <VerInfo_Locale>1033</VerInfo_Locale>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+    <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     <VerInfo_Keys>CompanyName=;FileVersion=2.3.4.837;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=1.0.0.0;Comments=;ProgramID=com.embarcadero.$(MSBuildProjectName);FileDescription=$(MSBuildProjectName);ProductName=$(MSBuildProjectName)</VerInfo_Keys>
     <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
     <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
@@ -112,7 +112,7 @@
     <VerInfo_MinorVer>0</VerInfo_MinorVer>
     <VerInfo_Release>0</VerInfo_Release>
     <VerInfo_Build>0</VerInfo_Build>
-    <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+    <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_1)'!=''">
     <DCC_Warnings>false</DCC_Warnings>
@@ -135,8 +135,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>918</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.918;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>920</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.920;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
@@ -161,7 +161,7 @@
     <UWP_DelphiLogo150>Resources\Images\splashScreen9.png</UWP_DelphiLogo150>
     <VerInfo_MinorVer>5</VerInfo_MinorVer>
     <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-    <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+    <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_2)'!=''">
     <DCC_RemoteDebug>true</DCC_RemoteDebug>
@@ -192,7 +192,7 @@
     <BRCC_Language>russian</BRCC_Language>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-    <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
+    <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
     <DCC_DcuOutput>Out\Units64</DCC_DcuOutput>
     <VerInfo_MajorVer>1</VerInfo_MajorVer>

@@ -13,7 +13,6 @@ object MHLWizardBase: TMHLWizardBase
   Font.Name = 'Tahoma'
   Font.Style = []
   Position = poMainFormCenter
-  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   TextHeight = 13
