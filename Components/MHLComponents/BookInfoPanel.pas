@@ -19,6 +19,7 @@ unit BookInfoPanel;
 interface
 
 uses
+  Winapi.Windows,
   Controls,
   Graphics,
   Classes,
@@ -70,9 +71,11 @@ type
     procedure OnAnnotationClicked(Sender: TObject);
     procedure SetInfoPriority(const Value: Boolean);
     procedure CopyToClipboard(Sender: TObject);
+    procedure LayoutControls;
 
   protected
     procedure Resize; override;
+    procedure ChangeScale(M, D: Integer; isDpiChange: Boolean); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -254,9 +257,7 @@ begin
   FGenreLabel.SetBounds(0, 60, 70, 20);  FGenres.SetBounds(70, 60, 140, 20);
   FAnnotation.SetBounds(0, 80, 300, 120);
   FFb2Info.SetBounds(0, 80, 300, 120);
-  //
-  //
-  //
+
   Constraints.MinHeight := 150;
 end;
 
@@ -287,7 +288,52 @@ end;
 procedure TInfoPanel.Resize;
 begin
   FCover.Width := GetCoverWidth(FCover.Height);
+  LayoutControls;
   inherited;
+end;
+
+procedure TInfoPanel.LayoutControls;
+var
+  RowH, LblW, W, H, Y: Integer;
+begin
+  if not Assigned(FInfoPanel) then
+    Exit;
+
+  W := FInfoPanel.ClientWidth;
+  H := FInfoPanel.ClientHeight;
+  if (W <= 0) or (H <= 0) then
+    Exit;
+
+  // Sync bold label fonts with parent (ParentFont=False due to Font.Style)
+  FTitle.Font.Height := FInfoPanel.Font.Height;
+  FTitle.Font.Name := FInfoPanel.Font.Name;
+  FSerieLabel.Font.Height := FInfoPanel.Font.Height;
+  FSerieLabel.Font.Name := FInfoPanel.Font.Name;
+  FGenreLabel.Font.Height := FInfoPanel.Font.Height;
+  FGenreLabel.Font.Name := FInfoPanel.Font.Name;
+
+  RowH := MulDiv(20, CurrentPPI, 96);
+  LblW := MulDiv(70, CurrentPPI, 96);
+
+  Y := 0;
+  FTitle.SetBounds(0, Y, W, RowH);
+  Inc(Y, RowH);
+  FAuthors.SetBounds(0, Y, W, RowH);
+  Inc(Y, RowH);
+  FSerieLabel.SetBounds(0, Y, LblW, RowH);
+  FSeries.SetBounds(LblW, Y, W - LblW, RowH);
+  Inc(Y, RowH);
+  FGenreLabel.SetBounds(0, Y, LblW, RowH);
+  FGenres.SetBounds(LblW, Y, W - LblW, RowH);
+  Inc(Y, RowH);
+  FAnnotation.SetBounds(0, Y, W, H - Y);
+  FFb2Info.SetBounds(0, Y, W, H - Y);
+end;
+
+procedure TInfoPanel.ChangeScale(M, D: Integer; isDpiChange: Boolean);
+begin
+  inherited;
+  LayoutControls;
 end;
 
 procedure TInfoPanel.OnAnnotationClicked(Sender: TObject);
