@@ -59,7 +59,7 @@ object frmAbout: TfrmAbout
       Height = 13
       Align = alTop
       Alignment = taCenter
-      Caption = '(c) 2008-2023 Oleksiy Penkov'
+      Caption = '(c) 2008-2026 Oleksiy Penkov'
       ExplicitWidth = 143
     end
     object RzLabel3: TLabel
