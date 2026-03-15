@@ -18,6 +18,8 @@ type
     vilMenu: TVirtualImageList;
     DownloadImageCollection: TImageCollection;
     vilDownload: TVirtualImageList;
+    FileTypeImageCollection: TImageCollection;
+    vilFileType: TVirtualImageList;
   private
     FCurrentTheme: TIconTheme;
     FThemeLoaded: Boolean;
@@ -114,6 +116,18 @@ const
     'exit',                   // 33 acApplicationExit
     '',                       // 34 (unused)
     'go-to-author'            // 35 miGoToAuthor
+  );
+
+  // File type icon names for pmScripts dropdown menu
+  CFileTypeOrder: array[0..7] of string = (
+    'filetype-fb2',       // 0
+    'filetype-fb2zip',    // 1
+    'filetype-lrf',       // 2
+    'filetype-txt',       // 3
+    'filetype-epub',      // 4
+    'filetype-pdf',       // 5
+    'filetype-mobi',      // 6
+    'script'              // 7
   );
 
   // Download toolbar icon names — indices match old ilToolImages ImageIndex values
@@ -254,6 +268,8 @@ begin
     ThemePrefix + 'MENU_', CMenuOrder);
   LoadCollection(DownloadImageCollection, vilDownload,
     ThemePrefix + 'DOWNLOAD_', CDownloadOrder);
+  LoadCollection(FileTypeImageCollection, vilFileType,
+    ThemePrefix + 'FILETYPE_', CFileTypeOrder);
 
   FThemeLoaded := True;
 end;

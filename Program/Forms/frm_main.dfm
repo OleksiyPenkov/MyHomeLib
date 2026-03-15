@@ -79,6 +79,7 @@ object frmMain: TfrmMain
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
+    Transparent = True
     ToolbarControls = (
       tbtnRead
       tbtnDownloadList_Add
@@ -3053,7 +3054,7 @@ object frmMain: TfrmMain
     Top = 336
   end
   object pmScripts: TPopupMenu
-    Images = ilFileTypes
+    Images = dmImages.vilFileType
     OwnerDraw = True
     Left = 40
     Top = 240

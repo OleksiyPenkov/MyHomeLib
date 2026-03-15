@@ -44,6 +44,16 @@ LIGHT_MENU_DESELECT_ALL RCDATA "Light\png\deselect-all_16.png"
 LIGHT_MENU_EXIT RCDATA "Light\png\exit_16.png"
 LIGHT_MENU_GO_TO_AUTHOR RCDATA "Light\png\go-to-author_16.png"
 
+// FileType (24px)
+LIGHT_FILETYPE_FILETYPE_FB2 RCDATA "Light\png\filetype-fb2_24.png"
+LIGHT_FILETYPE_FILETYPE_FB2ZIP RCDATA "Light\png\filetype-fb2zip_24.png"
+LIGHT_FILETYPE_FILETYPE_LRF RCDATA "Light\png\filetype-lrf_24.png"
+LIGHT_FILETYPE_FILETYPE_TXT RCDATA "Light\png\filetype-txt_24.png"
+LIGHT_FILETYPE_FILETYPE_EPUB RCDATA "Light\png\filetype-epub_24.png"
+LIGHT_FILETYPE_FILETYPE_PDF RCDATA "Light\png\filetype-pdf_24.png"
+LIGHT_FILETYPE_FILETYPE_MOBI RCDATA "Light\png\filetype-mobi_24.png"
+LIGHT_FILETYPE_SCRIPT RCDATA "Light\png\script_24.png"
+
 // Download (16px)
 LIGHT_DOWNLOAD_PLAY RCDATA "Light\png\play_16.png"
 LIGHT_DOWNLOAD_STOP RCDATA "Light\png\stop_16.png"
@@ -97,6 +107,16 @@ DARK_MENU_COPY_TO_CLIPBOARD RCDATA "Dark\png\copy-to-clipboard_16.png"
 DARK_MENU_DESELECT_ALL RCDATA "Dark\png\deselect-all_16.png"
 DARK_MENU_EXIT RCDATA "Dark\png\exit_16.png"
 DARK_MENU_GO_TO_AUTHOR RCDATA "Dark\png\go-to-author_16.png"
+
+// FileType (24px)
+DARK_FILETYPE_FILETYPE_FB2 RCDATA "Dark\png\filetype-fb2_24.png"
+DARK_FILETYPE_FILETYPE_FB2ZIP RCDATA "Dark\png\filetype-fb2zip_24.png"
+DARK_FILETYPE_FILETYPE_LRF RCDATA "Dark\png\filetype-lrf_24.png"
+DARK_FILETYPE_FILETYPE_TXT RCDATA "Dark\png\filetype-txt_24.png"
+DARK_FILETYPE_FILETYPE_EPUB RCDATA "Dark\png\filetype-epub_24.png"
+DARK_FILETYPE_FILETYPE_PDF RCDATA "Dark\png\filetype-pdf_24.png"
+DARK_FILETYPE_FILETYPE_MOBI RCDATA "Dark\png\filetype-mobi_24.png"
+DARK_FILETYPE_SCRIPT RCDATA "Dark\png\script_24.png"
 
 // Download (16px)
 DARK_DOWNLOAD_PLAY RCDATA "Dark\png\play_16.png"

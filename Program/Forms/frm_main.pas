@@ -2061,8 +2061,7 @@ procedure TfrmMain.CreateScriptMenu;
 const
   ExpCount = 6;
   ExpTypes: array [0 .. ExpCount] of string = ('  fb2', '  fb2.zip', '  LRF', '  txt', ' epub', '  pdf', ' .mobi');
-  Icons: array [0 .. ExpCount] of Integer = (18, 19, 20, 21, 24, 25, 20);
-  IconsSmall: array [0 .. ExpCount] of Integer = (0, 1, 2, 3, 4, 5, 11);
+  IconsSmall: array [0 .. ExpCount] of Integer = (0, 1, 2, 3, 4, 5, 6);
 var
   Item, ItemP, ItemM: TMenuItem;
   F: Integer;
@@ -2096,14 +2095,11 @@ begin
       pmScripts.Items.Insert(ExpCount + 1, Item);
     end;
 
-    tbSendToDevice.ImageIndex := Icons[ord(Settings.ExportMode)];
-    // pmScripts.Items[i].Caption := '>> ' + ExpTypes[i] + ' <<';
     F := ExpCount + 2;
   end
   else
   begin
     F := 0;
-    tbSendToDevice.ImageIndex := 1;
   end;
 
   { TODO 1 -oNickR -cRefactoring :заменить этот код на создание TFileRun }
@@ -2114,7 +2110,7 @@ begin
     Item.Caption := Settings.Scripts[i].Title;
     Item.Tag := 901 + i;
     Item.OnClick := SendToDeviceExecute;
-    Item.ImageIndex := 6;
+    Item.ImageIndex := 7;  // 'script' in CFileTypeOrder
     pmScripts.Items.Insert(i + F, Item);
 
     // ------ context -----------------

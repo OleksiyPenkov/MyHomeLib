@@ -37,4 +37,16 @@ object dmImages: TdmImages
     Left = 344
     Top = 120
   end
+  object FileTypeImageCollection: TImageCollection
+    Images = <>
+    Left = 56
+    Top = 200
+  end
+  object vilFileType: TVirtualImageList
+    ImageCollection = FileTypeImageCollection
+    Width = 24
+    Height = 24
+    Left = 200
+    Top = 200
+  end
 end
