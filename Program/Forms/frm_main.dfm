@@ -1968,7 +1968,7 @@ object frmMain: TfrmMain
             Width = 70
             Height = 25
             Action = acGroupCreate
-            Caption = #1057#1086#1079#1076#1072#1090#1100
+            Caption = #1057#1090#1074#1086#1088#1080#1090#1080
             TabOrder = 0
           end
           object btnDeleteGroup: TButton
@@ -1977,7 +1977,7 @@ object frmMain: TfrmMain
             Width = 70
             Height = 25
             Action = acGroupDelete
-            Caption = #1059#1076#1072#1083#1080#1090#1100
+            Caption = #1042#1080#1076#1072#1083#1080#1090#1080
             TabOrder = 1
           end
           object btnClearGroup: TButton
@@ -1986,7 +1986,7 @@ object frmMain: TfrmMain
             Width = 70
             Height = 25
             Action = acGroupClear
-            Caption = #1054#1095#1080#1089#1090#1080#1090#1100
+            Caption = #1054#1095#1080#1089#1090#1080#1090#1080
             TabOrder = 2
           end
         end
