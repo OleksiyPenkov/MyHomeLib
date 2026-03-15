@@ -23,8 +23,8 @@ uses
   Winapi.Windows, System.SysUtils, Registry;
 
 const
-  CStyleLight = 'Win10Modern';
-  CStyleDark  = 'Win10ModernDark';
+  CStyleLight = 'Windows10';
+  CStyleDark  = 'Windows10Dark';
 
 class function TMHLThemeManager.DetectSystemDarkMode: Boolean;
 var
