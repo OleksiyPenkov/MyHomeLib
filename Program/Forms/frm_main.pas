@@ -1551,6 +1551,7 @@ var
         Tree.ClearSelection;
         Tree.Selected[Node] := True;
         Tree.FocusedNode := Node;
+        Tree.ScrollIntoView(Node, True);
         Break;
       end;
       Node := Tree.GetNext(Node);

@@ -93,13 +93,17 @@ begin
 
       Genre.Clear;
       for i := 0 to High(BookRecord.Genres) do
-        Genre.Add(BookRecord.Genres[i].FB2GenreCode);
+        if BookRecord.Genres[i].FB2GenreCode <> '' then
+          Genre.Add(BookRecord.Genres[i].FB2GenreCode);
 
       if BookRecord.Series <> NO_SERIES_TITLE then
       begin
         try
-          Sequence.Clear;
-          S := Sequence.Add;
+          // Update the first sequence without clearing others (#57)
+          if Sequence.Count > 0 then
+            S := Sequence[0]
+          else
+            S := Sequence.Add;
 
           S.Name := BookRecord.Series;
           S.Number := BookRecord.SeqNumber;
@@ -165,13 +169,17 @@ begin
 
       Genre.Clear;
       for i := 0 to High(BookRecord.Genres) do
-        Genre.Add(BookRecord.Genres[i].FB2GenreCode);
+        if BookRecord.Genres[i].FB2GenreCode <> '' then
+          Genre.Add(BookRecord.Genres[i].FB2GenreCode);
 
       if BookRecord.Series <> NO_SERIES_TITLE then
       begin
         try
-          Sequence.Clear;
-          S := Sequence.Add;
+          // Update the first sequence without clearing others (#57)
+          if Sequence.Count > 0 then
+            S := Sequence[0]
+          else
+            S := Sequence.Add;
 
           S.Name := BookRecord.Series;
           S.Number := BookRecord.SeqNumber;

@@ -91,7 +91,7 @@ begin
       if FTerminate then Break;
 
       FLastDir := S;
-      if Assigned(FOnFile) then
+      if (F.Attr and faDirectory = 0) and Assigned(FOnFile) then
         FOnFile(Self, F);
 
       if (F.Attr and faDirectory = faDirectory) and (F.Name <> '.') and (F.Name <> '..') then
