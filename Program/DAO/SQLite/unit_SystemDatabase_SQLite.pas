@@ -169,6 +169,7 @@ type
     procedure AddBookToGroup(const BookKey: TBookKey; GroupID: Integer; const BookRecord: TBookRecord);
     procedure CopyBookToGroup(const BookKey: TBookKey; SourceGroupID: Integer; TargetGroupID: Integer; MoveBook: Boolean);
     procedure DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
+    procedure CleanCollectionBooks(const DatabaseID: Integer);
 
     //
     // Пользовательские данные
@@ -1460,6 +1461,30 @@ begin
     query.ExecSQL;
   finally
     FreeAndNil(Query);
+  end;
+end;
+
+procedure TSystemData_SQLite.CleanCollectionBooks(const DatabaseID: Integer);
+const
+  SQL_DELETE_BOOKGROUPS = 'DELETE FROM BookGroups WHERE DatabaseID = ?';
+  SQL_DELETE_BOOKS = 'DELETE FROM Books WHERE DatabaseID = ?';
+var
+  query: TSQLiteQuery;
+begin
+  query := FDatabase.NewQuery(SQL_DELETE_BOOKGROUPS);
+  try
+    query.SetParam(0, DatabaseID);
+    query.ExecSQL;
+  finally
+    FreeAndNil(query);
+  end;
+
+  query := FDatabase.NewQuery(SQL_DELETE_BOOKS);
+  try
+    query.SetParam(0, DatabaseID);
+    query.ExecSQL;
+  finally
+    FreeAndNil(query);
   end;
 end;
 

@@ -137,6 +137,7 @@ type
     procedure AddBookToGroup(const BookKey: TBookKey; GroupID: Integer; const BookRecord: TBookRecord);
     procedure CopyBookToGroup(const BookKey: TBookKey; SourceGroupID: Integer; TargetGroupID: Integer; MoveBook: Boolean);
     procedure DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
+    procedure CleanCollectionBooks(const DatabaseID: Integer);
 
     //
     // Пользовательские данные

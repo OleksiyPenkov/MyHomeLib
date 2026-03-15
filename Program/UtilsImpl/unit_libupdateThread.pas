@@ -200,6 +200,10 @@ begin
             // clear most tables in a collection
             Teletype(Format(rstrRemovingOldCollection, [updateInfo.Name]), tsInfo);
             Collection.TruncateTablesBeforeImport;
+
+            // Remove stale favorites entries for this collection from the system DB
+            // (old BookIDs won't match after re-import)
+            FSystemData.CleanCollectionBooks(updateInfo.CollectionID);
           end; //if FULL
 
           //  импортирум данные
