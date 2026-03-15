@@ -13,7 +13,7 @@
 ;*****************************************************************************
 
 [Setup]
-PrivilegesRequired=poweruser
+PrivilegesRequired=admin
 AppID={{B9B6C409-01CB-4AB6-8E4F-403B49A25B56}
 OutputDir=.\Out
 SourceDir=.
@@ -28,7 +28,7 @@ SolidCompression=yes
 LicenseFile=Common\License.txt
 VersionInfoVersion = {#AppVersion}
 AppName = {#MyAppName}
-DefaultDirName = {commonpf}\{#MyAppName}\
+DefaultDirName = {autopf}\{#MyAppName}\
 DefaultGroupName = {#MyAppName}
 AppVerName = {#MyAppName + " v. " + ShortVersion}
 UninstallDisplayIcon = {app}\{#AppExeName}
@@ -45,7 +45,6 @@ Name: {group}\Довідка {#MyAppName}; Filename: {app}\{#MyAppName}.chm; Wor
 Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}; Tasks: desktopicon
 Name: {group}\{#MyAppName} website; Filename: {app}\{#MyAppName}.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
 Name: {group}\{cm:UninstallProgram, My Home Library}; Filename: {uninstallexe}
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#AppExeName}"; Tasks: quicklaunchicon
 
 [UninstallDelete]
 Name: {userappdata}\{#MyAppName}\Data; Type: filesandordirs
@@ -76,7 +75,6 @@ Source: Common\License.txt; DestDir: {app}; Flags: replacesameversion
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}
-Name: "quicklaunchicon"; Description: "Create a &Quick Launch icon"; GroupDescription: "Additional icons:"; Flags: unchecked
 
 [Languages]
 Name: English; MessagesFile: compiler:Default.isl
