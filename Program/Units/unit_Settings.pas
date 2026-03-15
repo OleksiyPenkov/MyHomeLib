@@ -105,6 +105,7 @@ type
     FFileSRCollapsed: Boolean;
     FOtherSRCollapsed: Boolean;
     FEditToolBarVisible: Boolean;
+    FThemeMode: Integer;
 
     // NETWORK_SECTION
     FProxyServer: string;
@@ -302,6 +303,7 @@ type
     property ShowRusBar: Boolean read FShowRusBar write FShowRusBar;
     property ShowEngBar: Boolean read FShowEngBar write FShowEngBar;
     property EditToolBarVisible: Boolean read FEditToolBarVisible write FEditToolBarVisible;
+    property ThemeMode: Integer read FThemeMode write FThemeMode;
     property ShowStatusBar: Boolean read FShowStatusBar write FShowStatusBar;
 
     property TreeFontSize: Integer read FTreeFontSize write FTreeFontSize;
@@ -707,6 +709,7 @@ begin
     FFileSRCollapsed := iniFile.ReadBool(INTERFACE_SECTION, 'FileSR', False);
     FOtherSRCollapsed := iniFile.ReadBool(INTERFACE_SECTION, 'OtherSR', False);
     FEditToolBarVisible := iniFile.ReadBool(INTERFACE_SECTION, 'ShowEditToolBar', False);
+    FThemeMode := iniFile.ReadInteger(INTERFACE_SECTION, 'ThemeMode', 0);
 
     if iniFile.ReadInteger(INTERFACE_SECTION, 'Lang', 0) = 0 then
       FAppLanguage := alEng
@@ -885,6 +888,7 @@ begin
     iniFile.WriteBool(INTERFACE_SECTION, 'FileSR', FFileSRCollapsed);
     iniFile.WriteBool(INTERFACE_SECTION, 'OtherSR', FOtherSRCollapsed);
     iniFile.WriteBool(INTERFACE_SECTION, 'ShowEditToolBar', FEditToolBarVisible);
+    iniFile.WriteInteger(INTERFACE_SECTION, 'ThemeMode', FThemeMode);
 
     SaveSplitters(iniFile);
 

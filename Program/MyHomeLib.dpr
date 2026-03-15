@@ -170,7 +170,7 @@ begin
     // Важно! сначала создаем датамодули и главную форму, а потом - остальные формы!
     Application.CreateForm(TDMUser, DMUser);
     DMUser.Init;
-    TMHLThemeManager.ApplyTheme(tmSystem);
+    TMHLThemeManager.ApplyTheme(TMHLThemeMode(Settings.ThemeMode));
 
     Application.CreateForm(TfrmMain, frmMain);
     Application.CreateForm(TfrmGenreTree, frmGenreTree);
