@@ -6,9 +6,9 @@ Modernize MyHomeLib's visual appearance to match Windows 10/11 native look & fee
 
 ## Design Decisions
 
-- **Target style:** Windows 11 Modern Light & Dark (built-in VCL Styles)
+- **Target style:** Win10Modern (light) & Win10ModernDark (dark) VCL Styles
 - **Theme switching:** Auto-detect Windows system theme; user override in Settings (Light / Dark / System)
-- **Icons:** Fluent UI System Icons (Microsoft, open source SVGs) via `TImageCollection` + `TVirtualImageList`
+- **Icons:** Fluent UI System Icons (Microsoft, open source SVGs) loaded from files into `TImageCollection` + `TVirtualImageList`
 - **DPI:** PerMonitorV2 DPI awareness, all forms scaled
 - **Scope:** Visual refresh only — no changes to layout, navigation, or functionality
 
@@ -38,7 +38,7 @@ Modernize MyHomeLib's visual appearance to match Windows 10/11 native look & fee
 
 ### Phase 1: VCL Styles + Theme Switching (foundation)
 
-1. Add `Windows11 Modern Light` and `Windows11 Modern Dark` style resources to `MyhomeLib.dproj`
+1. Add `Win10Modern` and `Win10ModernDark` style resources to `MyhomeLib.dproj`
 2. Create a `unit_ThemeManager.pas` utility:
    - Detect Windows system theme (light/dark) via registry or `dwmapi`
    - Apply matching VCL Style at startup
