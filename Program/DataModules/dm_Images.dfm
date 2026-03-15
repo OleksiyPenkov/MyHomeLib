@@ -20,8 +20,8 @@ object dmImages: TdmImages
   end
   object vilMenu: TVirtualImageList
     ImageCollection = MenuImageCollection
-    Width = 16
-    Height = 16
+    Width = 24
+    Height = 24
     Left = 200
     Top = 120
   end
@@ -32,8 +32,8 @@ object dmImages: TdmImages
   end
   object vilDownload: TVirtualImageList
     ImageCollection = DownloadImageCollection
-    Width = 16
-    Height = 16
+    Width = 24
+    Height = 24
     Left = 344
     Top = 120
   end

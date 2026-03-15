@@ -1243,8 +1243,8 @@ var
     AControl.ReinitNode(AControl.GetFirst, True);
     AControl.Font.Size := TreeFontSize;
     Height := AControl.Canvas.TextHeight('Щ');
-    AControl.DefaultNodeHeight := round(Height  + TreeFontSize / 4);
-    AControl.Header.Height := TreeFontSize * 2;
+    AControl.DefaultNodeHeight := round(Height + Height div 4);
+    AControl.Header.Height := round(Height * 1.5);
     AControl.Font.Color := FontColor;
   end;
 
@@ -1256,7 +1256,7 @@ var
     AControl.ReinitNode(AControl.GetFirst, True);
     AControl.Font.Size := TreeFontSize;
     Height := AControl.Canvas.TextHeight('Щ');
-    AControl.DefaultNodeHeight := round(Height  + TreeFontSize / 4);
+    AControl.DefaultNodeHeight := round(Height + Height div 4);
     AControl.Font.Color := FontColor;
   end;
 

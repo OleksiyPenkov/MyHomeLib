@@ -89,11 +89,11 @@ for (const theme of ['LIGHT', 'DARK']) {
   rc.push(`// Toolbar (32px)`);
   rc.push(...generateSection(theme, 'TOOLBAR', TOOLBAR_ICONS, 32));
   rc.push('');
-  rc.push(`// Menu (16px)`);
-  rc.push(...generateSection(theme, 'MENU', MENU_ICONS, 16));
+  rc.push(`// Menu (24px)`);
+  rc.push(...generateSection(theme, 'MENU', MENU_ICONS, 24));
   rc.push('');
-  rc.push(`// Download (16px)`);
-  rc.push(...generateSection(theme, 'DOWNLOAD', DOWNLOAD_ICONS, 16));
+  rc.push(`// Download (24px)`);
+  rc.push(...generateSection(theme, 'DOWNLOAD', DOWNLOAD_ICONS, 24));
   rc.push('');
 }
 

@@ -108,13 +108,20 @@ type
 implementation
 
 uses
+  Winapi.Windows,
   SysUtils,
   Math,
   StrUtils,
+  Forms,
   unit_Consts,
   dm_user,
   unit_Helpers,
   unit_MHLHelpers;
+
+function DPIScale(Value: Integer): Integer; inline;
+begin
+  Result := MulDiv(Value, Screen.PixelsPerInch, 96);
+end;
 
 resourcestring
 rstrSingleSeries = 'Серія: %s';
@@ -471,18 +478,20 @@ var
     i: Integer;
     X, Y: Integer;
     w, h: Integer;
+    Img: TPngImage;
   begin
-    w := FStarImage.Width;
-    h := FStarImage.Height;
-    X := CellRect.Left + (CellRect.Right - CellRect.Left - 10 {w} * 5) div 2;
+    w := DPIScale(FStarImage.Width);
+    h := DPIScale(FStarImage.Height);
+    X := CellRect.Left + (CellRect.Right - CellRect.Left - w * 5) div 2;
     Y := CellRect.Top + (CellRect.Bottom - CellRect.Top - h) div 2;
     for i := 0 to 4 do
     begin
       if Value > i then
-        FStarImage.Draw(TargetCanvas, Rect(X, Y, X + w, Y + h))
+        Img := FStarImage
       else
-        FEmptyStarImage.Draw(TargetCanvas, Rect(X, Y, X + w, Y + h));
-      Inc(X, 10 {w});
+        Img := FEmptyStarImage;
+      TargetCanvas.StretchDraw(Rect(X, Y, X + w, Y + h), Img);
+      Inc(X, w);
     end;
   end;
 
@@ -521,11 +530,11 @@ var
 
     if Assigned(StateImage) then
     begin
-      w := StateImage.Width;
-      h := StateImage.Height;
+      w := DPIScale(StateImage.Width);
+      h := DPIScale(StateImage.Height);
       X := CellRect.Left + (CellRect.Right - CellRect.Left - w) div 2;
       Y := CellRect.Top + (CellRect.Bottom - CellRect.Top - h) div 2;
-      StateImage.Draw(TargetCanvas, Rect(X, Y, X + w, Y + h));
+      TargetCanvas.StretchDraw(Rect(X, Y, X + w, Y + h), StateImage);
     end;
   end;
 
