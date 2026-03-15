@@ -254,8 +254,8 @@ begin
 
     Result := True;
   except
-    // подавляем исключения дабы не прерывать процесс
-    // on Exception do ShowMessage(R.GetBookFileName, 1);
+    on E: Exception do
+      FLastError := Format('PrepareFile exception: %s', [E.Message]);
   end;
 end;
 
@@ -512,10 +512,6 @@ begin
   FailedCount := 0;
   ErrorLog := TStringList.Create;
   try
-    ErrorLog.Add(Format('DeviceDir=%s', [FDeviceDir]));
-    ErrorLog.Add(Format('UseMTP=%s, ShellItem=%s', [BoolToStr(FUseMTP, True), BoolToStr(Assigned(FDeviceShellItem), True)]));
-    ErrorLog.Add('---');
-
     FProgressEngine.BeginOperation(Length(FBookIdList), rstrFilesProcessed, rstrFilesProcessed);
     try
       totalBooks := Length(FBookIdList);
@@ -559,7 +555,6 @@ begin
       FProgressEngine.EndOperation;
     end;
 
-    // Save error log and notify user (#52)
     if FailedCount > 0 then
     begin
       LogFileName := Settings.SystemFileName[sfExportErrorLog];

@@ -3606,6 +3606,7 @@ var
   ExportMode: TExportMode;
   UseMTP: Boolean;
   DeviceShellItem: IShellItem;
+  GroupData: PGroupData;
 begin
   Assert(Assigned(FCollection));
   GetActiveTree(Tree);
@@ -3617,6 +3618,17 @@ begin
     CurrentSelectedAuthor := lblAuthor.Caption
   else
     CurrentSelectedAuthor := '';
+
+  if pgControl.ActivePageIndex = PAGE_FAVORITES then
+  begin
+    GroupData := tvGroups.GetNodeData(tvGroups.GetFirstSelected);
+    if Assigned(GroupData) then
+      CurrentSelectedGroup := GroupData^.Text
+    else
+      CurrentSelectedGroup := '';
+  end
+  else
+    CurrentSelectedGroup := '';
 
   if Length(BookIDList) = 0 then
   begin

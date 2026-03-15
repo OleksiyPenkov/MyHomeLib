@@ -404,6 +404,7 @@ type
 
 var
   CurrentSelectedAuthor: string; //Текущий выбранный автор для передачи в парсер экспорта
+  CurrentSelectedGroup: string;  //Текущая выбранная группа для передачи в парсер экспорта
 
 implementation
 

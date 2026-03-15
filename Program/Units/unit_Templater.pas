@@ -24,7 +24,7 @@ uses
   unit_Globals;
 
 const
-  COL_MASK_ELEMENTS = 13;
+  COL_MASK_ELEMENTS = 14;
 
 type
   TErrorType = (ErFine, ErTemplate, ErBlocks, ErElements);
@@ -68,7 +68,7 @@ function TTemplater.ValidateTemplate(const Template: string;
 const
   { DONE : совпадает с названием константы }
   MASK_ELEMENTS: array [1 .. COL_MASK_ELEMENTS] of string = ('f', 'fa', 't',
-    's', 'n', 'id', 'g', 'ga', 'ff', 'fl', 'rg', 'fn', 'fc');
+    's', 'n', 'id', 'g', 'ga', 'ff', 'fl', 'rg', 'fn', 'fc', 'gr');
 var
   stack: array [0..255] of TElement;
   h, k, i, j, StackPos, ElementPos, last_char,
@@ -300,22 +300,36 @@ begin
   MaskElements[2].templ := 'rg';
   MaskElements[2].value := Trim(CleanFileName(R.RootGenre.GenreAlias));
 
-  MaskElements[3].templ := 'g';
-  if R.GenreCount > 0 then
-    MaskElements[3].value := Trim(CleanFileName(R.Genres[0].GenreAlias))
+  // %gr must be before %g to avoid partial match
+  MaskElements[3].templ := 'gr';
+  if CurrentSelectedGroup <> '' then
+  begin
+    s := CurrentSelectedGroup;
+    if TemplType = TpPath then
+      StrReplace('/', '\', s)
+    else
+      s := CleanFileName(s);
+    MaskElements[3].value := Trim(s);
+  end
   else
     MaskElements[3].value := '';
 
-  MaskElements[4].templ := 'ff';
-  if R.AuthorCount > 0 then
-  begin
-    s := Trim(CheckSymbols(R.Authors[ Low(R.Authors)].FLastName, True));
-    MaskElements[4].value := s[1];
-  end
+  MaskElements[4].templ := 'g';
+  if R.GenreCount > 0 then
+    MaskElements[4].value := Trim(CleanFileName(R.Genres[0].GenreAlias))
   else
     MaskElements[4].value := '';
 
-  MaskElements[5].templ := 'fa';
+  MaskElements[5].templ := 'ff';
+  if R.AuthorCount > 0 then
+  begin
+    s := Trim(CheckSymbols(R.Authors[ Low(R.Authors)].FLastName, True));
+    MaskElements[5].value := s[1];
+  end
+  else
+    MaskElements[5].value := '';
+
+  MaskElements[6].templ := 'fa';
   AuthorName := '';
   if R.AuthorCount > 0 then
     for i := 0 to High(R.Authors) do
@@ -324,51 +338,49 @@ begin
       if i < High(R.Authors) then
         AuthorName := AuthorName + ', ';
     end;
-  MaskElements[5].value := CleanFileName(AuthorName);
+  MaskElements[6].value := CleanFileName(AuthorName);
 
-  MaskElements[6].templ := 'fl';
+  MaskElements[7].templ := 'fl';
   if R.AuthorCount > 0 then
-    MaskElements[6].value := Trim(CleanFileName(R.Authors[0].FLastName))
-  else
-    MaskElements[6].value := '';
-
-  MaskElements[7].templ := 'fn';
-  if R.AuthorCount > 0 then
-    MaskElements[7].value := Trim(CleanFileName(R.Authors[0].FLastName + ' ' + R.Authors[0].FFirstName))
+    MaskElements[7].value := Trim(CleanFileName(R.Authors[0].FLastName))
   else
     MaskElements[7].value := '';
 
-  MaskElements[8].templ := 'fc';
-  if CurrentSelectedAuthor <> ''  then
-    MaskElements[8].value := CurrentSelectedAuthor
-  else
-    // Повтор алгоритма из пункта 9
+  MaskElements[8].templ := 'fn';
   if R.AuthorCount > 0 then
-    MaskElements[8].value := Trim(CleanFileName(R.Authors[0].GetFullName))
+    MaskElements[8].value := Trim(CleanFileName(R.Authors[0].FLastName + ' ' + R.Authors[0].FFirstName))
   else
     MaskElements[8].value := '';
 
-  // Может поменять шаблон? т.к. при добавлении шаблонов на f приходится менять структуру.
-  MaskElements[9].templ := 'f';
+  MaskElements[9].templ := 'fc';
+  if CurrentSelectedAuthor <> '' then
+    MaskElements[9].value := CurrentSelectedAuthor
+  else
   if R.AuthorCount > 0 then
     MaskElements[9].value := Trim(CleanFileName(R.Authors[0].GetFullName))
   else
     MaskElements[9].value := '';
 
-  MaskElements[10].templ := 's';
-  MaskElements[10].value := Trim(CleanFileName(R.Series));
-
-  MaskElements[11].templ := 'n';
-  if R.SeqNumber <> 0 then
-    MaskElements[11].value := Format('%.2d', [R.SeqNumber])
+  MaskElements[10].templ := 'f';
+  if R.AuthorCount > 0 then
+    MaskElements[10].value := Trim(CleanFileName(R.Authors[0].GetFullName))
   else
-    MaskElements[11].value := '';
+    MaskElements[10].value := '';
 
-  MaskElements[12].templ := 't';
-  MaskElements[12].value := Trim(CleanFileName(R.Title));
+  MaskElements[11].templ := 's';
+  MaskElements[11].value := Trim(CleanFileName(R.Series));
 
-  MaskElements[13].templ := 'id';
-  MaskElements[13].value := R.LibID;
+  MaskElements[12].templ := 'n';
+  if R.SeqNumber <> 0 then
+    MaskElements[12].value := Format('%.2d', [R.SeqNumber])
+  else
+    MaskElements[12].value := '';
+
+  MaskElements[13].templ := 't';
+  MaskElements[13].value := Trim(CleanFileName(R.Title));
+
+  MaskElements[14].templ := 'id';
+  MaskElements[14].value := R.LibID;
 
   // Цикл удаления "пустых" блоков
   for i := Low(MaskElements) to High(MaskElements) do
