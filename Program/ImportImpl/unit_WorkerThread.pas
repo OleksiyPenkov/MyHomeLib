@@ -233,7 +233,7 @@ end;
 // ============================================================================
 procedure TWorker.Initialize;
 begin
-  CoInitializeEx(nil, COINIT_MULTITHREADED or COINIT_APARTMENTTHREADED);
+  CoInitializeEx(nil, COINIT_APARTMENTTHREADED);
 end;
 
 // ============================================================================

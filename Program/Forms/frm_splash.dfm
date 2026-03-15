@@ -2,8 +2,8 @@ object frmSplash: TfrmSplash
   Left = 0
   Top = 0
   BorderStyle = bsNone
-  ClientHeight = 259
-  ClientWidth = 401
+  ClientHeight = 263
+  ClientWidth = 362
   Color = 8796164
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,15 +12,15 @@ object frmSplash: TfrmSplash
   Font.Style = []
   Position = poScreenCenter
   PrintScale = poNone
-  Scaled = False
   OnCreate = FormCreate
   TextHeight = 13
   object Image1: TImage
-    Left = 0
-    Top = 0
-    Width = 401
-    Height = 258
-    Align = alTop
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 356
+    Height = 257
+    Align = alClient
     AutoSize = True
     Center = True
     Picture.Data = {
@@ -2248,14 +2248,15 @@ object frmSplash: TfrmSplash
       1F225A9148A47E8868452291FAA1FF07A36E496349B1F7330000000049454E44
       AE426082}
     Proportional = True
-    ExplicitWidth = 399
+    Stretch = True
+    ExplicitWidth = 351
+    ExplicitHeight = 240
   end
   object lblState: TLabel
-    Left = 0
-    Top = 232
-    Width = 401
+    Left = 8
+    Top = 216
+    Width = 357
     Height = 27
-    Align = alBottom
     Alignment = taCenter
     AutoSize = False
     Caption = #1030#1085#1110#1094#1110#1072#1083#1110#1079#1072#1094#1110#1103' ...'
@@ -2269,7 +2270,7 @@ object frmSplash: TfrmSplash
     Layout = tlCenter
   end
   object lblVersion: TLabel
-    Left = 340
+    Left = 300
     Top = 94
     Width = 30
     Height = 23

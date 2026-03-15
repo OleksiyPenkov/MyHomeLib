@@ -4,8 +4,8 @@ object frmMain: TfrmMain
   HelpContext = 2
   ActiveControl = edLocateAuthor
   Caption = 'MyHomeLib'
-  ClientHeight = 1014
-  ClientWidth = 1157
+  ClientHeight = 772
+  ClientWidth = 792
   Color = clBtnFace
   Constraints.MinHeight = 600
   Constraints.MinWidth = 800
@@ -53,7 +53,6 @@ object frmMain: TfrmMain
     AC410000AC410000AC410000AC410000AC410000AC410000AC410000AC41}
   Menu = MainMenu
   Position = poDesigned
-  Scaled = False
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -61,7 +60,7 @@ object frmMain: TfrmMain
   object tlbrMain: TToolBar
     Left = 0
     Top = 0
-    Width = 1157
+    Width = 792
     Height = 40
     HelpContext = 146
     ButtonHeight = 40
@@ -73,6 +72,7 @@ object frmMain: TfrmMain
     ShowHint = True
     TabOrder = 0
     Wrapable = False
+    ExplicitWidth = 778
     object tbtnRead: TToolButton
       Left = 0
       Top = 0
@@ -97,7 +97,7 @@ object frmMain: TfrmMain
       OnClick = SendToDeviceExecute
     end
     object ToolButton13: TToolButton
-      Left = 138
+      Left = 154
       Top = 0
       Width = 8
       Caption = 'ToolButton13'
@@ -105,19 +105,19 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object tbtnRus: TToolButton
-      Left = 146
+      Left = 162
       Top = 0
       Action = acShowRusAlphabet
       ImageIndex = 3
     end
     object tbtnEng: TToolButton
-      Left = 187
+      Left = 203
       Top = 0
       Action = acShowEngAlphabet
       ImageIndex = 4
     end
     object ToolButton12: TToolButton
-      Left = 228
+      Left = 244
       Top = 0
       Width = 8
       Caption = 'ToolButton12'
@@ -125,7 +125,7 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object tbtnWizard: TToolButton
-      Left = 236
+      Left = 252
       Top = 0
       Caption = #1042#1099#1073#1088#1072#1090#1100' '#1082#1086#1083#1083#1077#1082#1094#1080#1102
       DropdownMenu = pmCollection
@@ -135,7 +135,7 @@ object frmMain: TfrmMain
       OnClick = tbtnWizardClick
     end
     object ToolButton3: TToolButton
-      Left = 277
+      Left = 293
       Top = 0
       Width = 8
       Caption = 'ToolButton3'
@@ -143,7 +143,7 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object BtnFav_add: TToolButton
-      Left = 285
+      Left = 301
       Top = 0
       Action = acBookAdd2Favorites
       DropdownMenu = pmGroups
@@ -151,7 +151,7 @@ object frmMain: TfrmMain
       Style = tbsDropDown
     end
     object ToolButton7: TToolButton
-      Left = 341
+      Left = 373
       Top = 0
       Width = 8
       Caption = 'ToolButton7'
@@ -159,7 +159,7 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object tbSelectAll: TToolButton
-      Left = 349
+      Left = 381
       Top = 0
       Hint = #1042#1110#1076#1079#1085#1072#1095#1080#1090#1080' '#1074#1089#1077
       Caption = 'tbSelectAll'
@@ -167,7 +167,7 @@ object frmMain: TfrmMain
       OnClick = tbSelectAllClick
     end
     object tbCollapse: TToolButton
-      Left = 390
+      Left = 422
       Top = 0
       Hint = #1056#1086#1079#1075#1086#1088#1085#1091#1090#1080'/'#1047#1075#1086#1088#1085#1091#1090#1080' '#1089#1087#1080#1089#1086#1082
       Caption = 'tbCollapse'
@@ -175,7 +175,7 @@ object frmMain: TfrmMain
       OnClick = tbCollapseClick
     end
     object ToolButton1: TToolButton
-      Left = 431
+      Left = 463
       Top = 0
       Width = 8
       Caption = 'ToolButton1'
@@ -183,7 +183,7 @@ object frmMain: TfrmMain
       Style = tbsSeparator
     end
     object btnSwitchTreeMode: TToolButton
-      Left = 439
+      Left = 471
       Top = 0
       Hint = #1055#1077#1088#1077#1082#1083#1102#1095#1080#1090#1080' '#1074' '#1088#1077#1078#1080#1084' "'#1058#1072#1073#1083#1080#1094#1103'"'
       Caption = 'btnSwitchTreeMode'
@@ -191,54 +191,39 @@ object frmMain: TfrmMain
       OnClick = btnSwitchTreeModeClick
     end
     object tbtnShowDeleted: TToolButton
-      Left = 480
+      Left = 512
       Top = 0
       Action = acViewHideDeletedBooks
       ImageIndex = 12
     end
     object tbtnShowLocalOnly: TToolButton
-      Left = 521
+      Left = 553
       Top = 0
       Action = acViewShowLocalOnly
       ImageIndex = 13
     end
     object tbtnShowCover: TToolButton
-      Left = 562
+      Left = 594
       Top = 0
       Action = acShowBookInfoPanel
       ImageIndex = 14
     end
     object ToolButton5: TToolButton
-      Left = 603
+      Left = 635
       Top = 0
       Width = 8
       Caption = 'ToolButton5'
       ImageIndex = 27
       Style = tbsSeparator
     end
-    object ToolButton4: TToolButton
-      Left = 611
-      Top = 0
-      Hint = #1054#1085#1086#1074#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1111
-      Action = acToolsUpdateOnlineCollections
-      ImageIndex = 27
-    end
-    object ToolButton6: TToolButton
-      Left = 652
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton6'
-      ImageIndex = 28
-      Style = tbsSeparator
-    end
     object tbtnSettings: TToolButton
-      Left = 660
+      Left = 643
       Top = 0
       Action = acToolsSettings
       ImageIndex = 17
     end
     object tbtnHelp: TToolButton
-      Left = 701
+      Left = 684
       Top = 0
       Hint = #1044#1086#1074#1110#1076#1082#1072
       Action = acHelpHelp
@@ -249,8 +234,8 @@ object frmMain: TfrmMain
     AlignWithMargins = True
     Left = 3
     Top = 65
-    Width = 1151
-    Height = 927
+    Width = 786
+    Height = 685
     HelpContext = 1
     ActivePage = tsByAuthor
     Align = alClient
@@ -258,13 +243,15 @@ object frmMain: TfrmMain
     TabOrder = 2
     OnChange = pgControlChange
     OnDrawTab = pgControlDrawTab
+    ExplicitWidth = 772
+    ExplicitHeight = 652
     object tsByAuthor: TTabSheet
       HelpContext = 135
       Caption = #1040#1074#1090#1086#1088#1080
       object AuthorsViewSplitter: TMHLSplitter
         Left = 230
         Top = 70
-        Height = 829
+        Height = 574
         MinSize = 230
         ResizeControl = pnAuthorsView
         ExplicitLeft = 392
@@ -275,9 +262,10 @@ object frmMain: TfrmMain
         Left = 0
         Top = 70
         Width = 230
-        Height = 829
+        Height = 574
         Align = alLeft
         TabOrder = 2
+        ExplicitHeight = 541
         object pnAuthorSearch: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
@@ -360,7 +348,7 @@ object frmMain: TfrmMain
           Left = 3
           Top = 35
           Width = 224
-          Height = 791
+          Height = 536
           Align = alClient
           ChangeDelay = 250
           Colors.BorderColor = 15987699
@@ -399,14 +387,16 @@ object frmMain: TfrmMain
       object pnAuthorBooksView: TMHLSimplePanel
         Left = 233
         Top = 70
-        Width = 910
-        Height = 829
+        Width = 537
+        Height = 574
         Align = alClient
         TabOrder = 3
+        ExplicitWidth = 523
+        ExplicitHeight = 541
         object AuthorBookInfoSplitter: TMHLSplitter
           Left = 0
-          Top = 668
-          Width = 910
+          Top = 413
+          Width = 537
           Height = 3
           Cursor = crVSplit
           Align = alBottom
@@ -417,8 +407,8 @@ object frmMain: TfrmMain
         object ipnlAuthors: TInfoPanel
           AlignWithMargins = True
           Left = 3
-          Top = 674
-          Width = 904
+          Top = 419
+          Width = 531
           Height = 152
           Align = alBottom
           Color = clBlack
@@ -429,12 +419,14 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
+          ExplicitTop = 386
+          ExplicitWidth = 517
         end
         object pnAuthorBooksTitle: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 904
+          Width = 531
           Height = 26
           Align = alTop
           Font.Charset = DEFAULT_CHARSET
@@ -444,8 +436,9 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 517
           object lblBooksTotalA: TLabel
-            Left = 811
+            Left = 438
             Top = 0
             Width = 93
             Height = 26
@@ -453,6 +446,7 @@ object frmMain: TfrmMain
             Alignment = taRightJustify
             Caption = '('#1082#1110#1083#1100#1082#1110#1089#1090#1100' '#1082#1085#1080#1075')'
             Layout = tlCenter
+            ExplicitLeft = 452
             ExplicitHeight = 13
           end
           object lblAuthor: TLabel
@@ -466,7 +460,7 @@ object frmMain: TfrmMain
             ExplicitHeight = 13
           end
           object lblLang: TLabel
-            Left = 717
+            Left = 344
             Top = 0
             Width = 31
             Height = 26
@@ -474,11 +468,12 @@ object frmMain: TfrmMain
             Alignment = taRightJustify
             Caption = #1052#1086#1074#1072
             Layout = tlCenter
+            ExplicitLeft = 358
             ExplicitHeight = 13
           end
           object cbLangSelectA: TComboBox
             AlignWithMargins = True
-            Left = 751
+            Left = 378
             Top = 3
             Width = 50
             Height = 21
@@ -491,14 +486,15 @@ object frmMain: TfrmMain
             OnChange = cbLangSelectAChange
             Items.Strings = (
               '-')
+            ExplicitLeft = 364
           end
         end
         object tvBooksA: TBookTree
           AlignWithMargins = True
           Left = 3
           Top = 35
-          Width = 904
-          Height = 630
+          Width = 531
+          Height = 375
           Align = alClient
           Colors.BorderColor = 15987699
           Colors.DisabledColor = clGray
@@ -601,7 +597,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 1137
+        Width = 764
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorsRus'
@@ -611,12 +607,13 @@ object frmMain: TfrmMain
         ParentColor = False
         TabOrder = 0
         Wrapable = False
+        ExplicitWidth = 750
       end
       object tbarAuthorsEng: TToolBar
         AlignWithMargins = True
         Left = 3
         Top = 38
-        Width = 1137
+        Width = 764
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorFilter1'
@@ -626,6 +623,7 @@ object frmMain: TfrmMain
         ParentColor = False
         TabOrder = 1
         Wrapable = False
+        ExplicitWidth = 750
       end
     end
     object tsBySerie: TTabSheet
@@ -634,7 +632,7 @@ object frmMain: TfrmMain
       object SeriesViewSplitter: TMHLSplitter
         Left = 230
         Top = 70
-        Height = 829
+        Height = 574
         MinSize = 230
         ResizeControl = pnSeriesView
         ExplicitLeft = 392
@@ -645,15 +643,16 @@ object frmMain: TfrmMain
         Left = 0
         Top = 70
         Width = 230
-        Height = 829
+        Height = 574
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 587
         object tvSeries: TVirtualStringTree
           AlignWithMargins = True
           Left = 3
           Top = 35
           Width = 224
-          Height = 791
+          Height = 549
           Align = alClient
           ChangeDelay = 250
           Colors.BorderColor = 15987699
@@ -773,14 +772,16 @@ object frmMain: TfrmMain
       object pnSerieBooksView: TMHLSimplePanel
         Left = 233
         Top = 70
-        Width = 910
-        Height = 829
+        Width = 537
+        Height = 574
         Align = alClient
         TabOrder = 1
+        ExplicitWidth = 545
+        ExplicitHeight = 587
         object SerieBookInfoSplitter: TMHLSplitter
           Left = 0
-          Top = 670
-          Width = 910
+          Top = 415
+          Width = 551
           Height = 3
           Cursor = crVSplit
           Align = alBottom
@@ -791,8 +792,8 @@ object frmMain: TfrmMain
         object ipnlSeries: TInfoPanel
           AlignWithMargins = True
           Left = 3
-          Top = 676
-          Width = 904
+          Top = 421
+          Width = 545
           Height = 150
           Align = alBottom
           Color = clBlack
@@ -801,12 +802,14 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
+          ExplicitTop = 434
+          ExplicitWidth = 539
         end
         object pnSerieBooksTitle: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 904
+          Width = 545
           Height = 26
           Align = alTop
           Font.Charset = DEFAULT_CHARSET
@@ -816,8 +819,9 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 539
           object lblBooksTotalS: TLabel
-            Left = 811
+            Left = 452
             Top = 0
             Width = 93
             Height = 26
@@ -838,7 +842,7 @@ object frmMain: TfrmMain
             ExplicitHeight = 13
           end
           object lbl1: TLabel
-            Left = 717
+            Left = 358
             Top = 0
             Width = 31
             Height = 26
@@ -851,7 +855,7 @@ object frmMain: TfrmMain
           object cbLangSelectS: TComboBox
             Tag = 1
             AlignWithMargins = True
-            Left = 751
+            Left = 392
             Top = 3
             Width = 50
             Height = 21
@@ -871,8 +875,8 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 35
-          Width = 904
-          Height = 632
+          Width = 531
+          Height = 377
           Align = alClient
           Colors.BorderColor = 15987699
           Colors.DisabledColor = clGray
@@ -906,6 +910,8 @@ object frmMain: TfrmMain
           OnHeaderClick = tvBooksTreeHeaderClick
           OnKeyDown = tvBooksTreeKeyDown
           OnMouseUp = tvBooksTreeMouseUp
+          ExplicitWidth = 539
+          ExplicitHeight = 390
           Columns = <
             item
               MinWidth = 30
@@ -977,7 +983,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 3
         Top = 38
-        Width = 1137
+        Width = 764
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorFilter1'
@@ -985,12 +991,13 @@ object frmMain: TfrmMain
         Images = ilAlphabetNormal
         TabOrder = 2
         Wrapable = False
+        ExplicitWidth = 772
       end
       object tbarSeriesRus: TToolBar
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 1137
+        Width = 764
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorFilter1'
@@ -998,6 +1005,7 @@ object frmMain: TfrmMain
         Images = ilAlphabetNormal
         TabOrder = 3
         Wrapable = False
+        ExplicitWidth = 772
       end
     end
     object tsByGenre: TTabSheet
@@ -1006,7 +1014,7 @@ object frmMain: TfrmMain
       object GenresViewSplitter: TMHLSplitter
         Left = 230
         Top = 0
-        Height = 899
+        Height = 644
         MinSize = 230
         ResizeControl = pnGenresView
         ExplicitLeft = 392
@@ -1017,15 +1025,16 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 230
-        Height = 899
+        Height = 644
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 657
         object tvGenres: TVirtualStringTree
           AlignWithMargins = True
           Left = 3
           Top = 3
           Width = 224
-          Height = 893
+          Height = 651
           Align = alClient
           ChangeDelay = 250
           Colors.BorderColor = 15987699
@@ -1062,14 +1071,16 @@ object frmMain: TfrmMain
       object pnGenreBooksView: TMHLSimplePanel
         Left = 233
         Top = 0
-        Width = 910
-        Height = 899
+        Width = 551
+        Height = 644
         Align = alClient
         TabOrder = 1
+        ExplicitWidth = 545
+        ExplicitHeight = 657
         object GenreBookInfoSplitter: TMHLSplitter
           Left = 0
-          Top = 790
-          Width = 910
+          Top = 535
+          Width = 551
           Height = 3
           Cursor = crVSplit
           Align = alBottom
@@ -1081,7 +1092,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 904
+          Width = 545
           Height = 26
           Align = alTop
           Font.Charset = DEFAULT_CHARSET
@@ -1091,8 +1102,9 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 539
           object lblBooksTotalG: TLabel
-            Left = 811
+            Left = 452
             Top = 0
             Width = 93
             Height = 26
@@ -1113,7 +1125,7 @@ object frmMain: TfrmMain
             ExplicitHeight = 13
           end
           object lbl2: TLabel
-            Left = 717
+            Left = 358
             Top = 0
             Width = 31
             Height = 26
@@ -1126,7 +1138,7 @@ object frmMain: TfrmMain
           object cbLangSelectG: TComboBox
             Tag = 2
             AlignWithMargins = True
-            Left = 751
+            Left = 392
             Top = 3
             Width = 50
             Height = 21
@@ -1144,8 +1156,8 @@ object frmMain: TfrmMain
         object ipnlGenres: TInfoPanel
           AlignWithMargins = True
           Left = 3
-          Top = 796
-          Width = 904
+          Top = 541
+          Width = 531
           Height = 100
           Align = alBottom
           Color = clBlack
@@ -1154,14 +1166,16 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
+          ExplicitTop = 554
+          ExplicitWidth = 539
         end
         object tvBooksG: TBookTree
           Tag = 2
           AlignWithMargins = True
           Left = 3
           Top = 35
-          Width = 904
-          Height = 752
+          Width = 531
+          Height = 497
           Align = alClient
           Colors.BorderColor = 15987699
           Colors.DisabledColor = clGray
@@ -1195,6 +1209,8 @@ object frmMain: TfrmMain
           OnHeaderClick = tvBooksTreeHeaderClick
           OnKeyDown = tvBooksTreeKeyDown
           OnMouseUp = tvBooksTreeMouseUp
+          ExplicitWidth = 539
+          ExplicitHeight = 510
           Columns = <
             item
               BiDiMode = bdLeftToRight
@@ -1261,7 +1277,7 @@ object frmMain: TfrmMain
       object SearchViewSplitter: TMHLSplitter
         Left = 230
         Top = 0
-        Height = 899
+        Height = 644
         MinSize = 230
         ResizeControl = pnSearchView
         ExplicitLeft = 185
@@ -1271,14 +1287,16 @@ object frmMain: TfrmMain
       object pnSearchBooksView: TMHLSimplePanel
         Left = 233
         Top = 0
-        Width = 910
-        Height = 899
+        Width = 551
+        Height = 644
         Align = alClient
         TabOrder = 1
+        ExplicitWidth = 545
+        ExplicitHeight = 657
         object SearchBookInfoSplitter: TMHLSplitter
           Left = 0
-          Top = 740
-          Width = 910
+          Top = 498
+          Width = 545
           Height = 3
           Cursor = crVSplit
           Align = alBottom
@@ -1290,8 +1308,8 @@ object frmMain: TfrmMain
         object ipnlSearch: TInfoPanel
           AlignWithMargins = True
           Left = 3
-          Top = 746
-          Width = 904
+          Top = 504
+          Width = 539
           Height = 150
           Align = alBottom
           Color = clBlack
@@ -1305,7 +1323,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 904
+          Width = 539
           Height = 26
           Align = alTop
           TabOrder = 0
@@ -1317,10 +1335,10 @@ object frmMain: TfrmMain
             Caption = #1055#1088#1077#1089#1077#1090
           end
           object lblTotalBooksFL: TLabel
-            Left = 811
+            Left = 446
             Top = 0
             Width = 93
-            Height = 26
+            Height = 13
             Align = alRight
             Alignment = taRightJustify
             Caption = '('#1082#1110#1083#1100#1082#1110#1089#1090#1100' '#1082#1085#1080#1075')'
@@ -1331,7 +1349,6 @@ object frmMain: TfrmMain
             Font.Style = [fsBold]
             ParentFont = False
             Layout = tlCenter
-            ExplicitHeight = 13
           end
           object cbPresetName: TComboBox
             Left = 42
@@ -1364,8 +1381,8 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 35
-          Width = 904
-          Height = 702
+          Width = 531
+          Height = 447
           Align = alClient
           Colors.BorderColor = 15987699
           Colors.DisabledColor = clGray
@@ -1399,6 +1416,8 @@ object frmMain: TfrmMain
           OnHeaderClick = tvBooksTreeHeaderClick
           OnKeyDown = tvBooksTreeKeyDown
           OnMouseUp = tvBooksTreeMouseUp
+          ExplicitWidth = 539
+          ExplicitHeight = 460
           Columns = <
             item
               MaxWidth = 1000
@@ -1474,15 +1493,16 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 230
-        Height = 899
+        Height = 644
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 657
         object SearchParams: TCategoryPanelGroup
           AlignWithMargins = True
           Left = 3
           Top = 3
           Width = 224
-          Height = 855
+          Height = 600
           VertScrollBar.Tracking = True
           Align = alClient
           HeaderFont.Charset = DEFAULT_CHARSET
@@ -1493,8 +1513,9 @@ object frmMain: TfrmMain
           TabOrder = 0
           object ctpOther: TCategoryPanel
             Top = 491
-            Caption = #1056#1110#1079#1085#1077
+            Caption = #1056#1072#1079#1085#1086#1077
             TabOrder = 0
+            ExplicitWidth = 185
             object Label30: TLabel
               Left = 7
               Top = 97
@@ -1509,25 +1530,25 @@ object frmMain: TfrmMain
               Width = 26
               Height = 13
               Alignment = taRightJustify
-              Caption = #1052#1086#1074#1072
+              Caption = #1071#1079#1099#1082
             end
             object Label4: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 212
+              Width = 178
               Height = 13
               Align = alTop
-              Caption = #1056#1086#1079#1090#1072#1096#1091#1074#1072#1085#1085#1103
-              ExplicitWidth = 73
+              Caption = #1056#1072#1079#1084#1077#1097#1077#1085#1080#1077
+              ExplicitWidth = 62
             end
             object Label8: TLabel
-              Left = 11
+              Left = 7
               Top = 151
-              Width = 34
+              Width = 38
               Height = 13
               Alignment = taRightJustify
-              Caption = #1054#1094#1110#1085#1082#1072
+              Caption = #1054#1094#1077#1085#1082#1072
             end
             object cbDate: TComboBox
               Left = 55
@@ -1537,12 +1558,12 @@ object frmMain: TfrmMain
               TabOrder = 0
               OnKeyDown = PresetFieldKeyDown
               Items.Strings = (
-                #1089#1100#1086#1075#1086#1076#1085#1110
-                #1079#1072' 3 '#1076#1085#1110
-                #1079#1072' '#1090#1080#1078#1076#1077#1085#1100
-                #1079#1072' 2 '#1090#1080#1078#1085#1110
-                #1079#1072' '#1084#1110#1089#1103#1094#1100
-                #1079#1072' 3 '#1084#1110#1089#1103#1094#1110)
+                #1089#1077#1075#1086#1076#1085#1103
+                #1079#1072' 3 '#1076#1085#1103
+                #1079#1072' '#1085#1077#1076#1077#1083#1102
+                #1079#1072' 2 '#1085#1077#1076#1077#1083#1080
+                #1079#1072' '#1084#1077#1089#1103#1094
+                #1079#1072' 3 '#1084#1077#1089#1103#1094#1072)
             end
             object cbLang: TComboBox
               Left = 55
@@ -1589,26 +1610,29 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 22
-              Width = 212
+              Width = 178
               Height = 21
               Align = alTop
               Style = csDropDownList
+              ItemIndex = 0
               TabOrder = 2
+              Text = #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1074#1089#1077
               Items.Strings = (
-                #1055#1086#1082#1072#1079#1091#1074#1072#1090#1080' '#1074#1089#1077
-                #1058#1110#1083#1100#1082#1080' '#1079#1072#1074#1072#1085#1090#1072#1078#1077#1085#1110
-                #1058#1110#1083#1100#1082#1080' '#1053#1045' '#1079#1072#1074#1072#1085#1090#1072#1078#1077#1085#1110)
+                #1055#1086#1082#1072#1079#1099#1074#1072#1090#1100' '#1074#1089#1077
+                #1058#1086#1083#1100#1082#1086' '#1089#1082#1072#1095#1072#1085#1085#1099#1077
+                #1058#1086#1083#1100#1082#1086' '#1053#1045' '#1089#1082#1072#1095#1072#1085#1085#1099#1077)
             end
             object cbDeleted: TCheckBox
               AlignWithMargins = True
               Left = 5
               Top = 49
-              Width = 210
+              Width = 176
               Height = 17
               Margins.Left = 5
               Align = alTop
-              Caption = #1055#1088#1080#1093#1086#1074#1091#1074#1072#1090#1080' '#1074#1080#1076#1072#1083#1077#1085#1110
+              Caption = #1057#1082#1088#1099#1074#1072#1090#1100' '#1091#1076#1072#1083#1077#1085#1085#1099#1077
               TabOrder = 3
+              ExplicitWidth = 193
             end
             object cbLibRate: TComboBox
               Left = 55
@@ -1628,12 +1652,13 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 5
               Top = 72
-              Width = 210
+              Width = 176
               Height = 17
               Margins.Left = 5
               Align = alTop
-              Caption = #1058#1110#1083#1100#1082#1080' '#1087#1088#1086#1095#1080#1090#1072#1085#1110
+              Caption = #1058#1086#1083#1100#1082#1086' '#1087#1088#1086#1095#1080#1090#1072#1085#1085#1099#1077
               TabOrder = 5
+              ExplicitWidth = 193
             end
           end
           object ctpFile: TCategoryPanel
@@ -1641,41 +1666,39 @@ object frmMain: TfrmMain
             Height = 177
             Caption = #1060#1072#1081#1083
             TabOrder = 1
+            ExplicitWidth = 220
             object Label27: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 212
+              Width = 19
               Height = 13
               Align = alTop
-              Caption = #1030#1084#39#1103
-              ExplicitWidth = 18
+              Caption = #1048#1084#1103
             end
             object Label29: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 95
-              Width = 212
+              Width = 18
               Height = 13
               Align = alTop
               Caption = #1058#1080#1087
-              ExplicitWidth = 18
             end
             object Label28: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 49
-              Width = 212
+              Width = 72
               Height = 13
               Align = alTop
-              Caption = #1055#1072#1087#1082#1072' ('#1072#1088#1093#1110#1074')'
-              ExplicitWidth = 68
+              Caption = #1055#1072#1087#1082#1072' ('#1072#1088#1093#1080#1074')'
             end
             object edFFile: TMHLButtonedEdit
               AlignWithMargins = True
               Left = 3
               Top = 22
-              Width = 212
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 0
@@ -1686,7 +1709,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 68
-              Width = 212
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 1
@@ -1697,7 +1720,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 114
-              Width = 212
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 2
@@ -1710,72 +1733,67 @@ object frmMain: TfrmMain
             Height = 314
             Caption = #1050#1085#1080#1075#1072
             TabOrder = 2
+            ExplicitWidth = 220
             object Label5: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 3
-              Width = 212
+              Width = 31
               Height = 13
               Align = alTop
               Caption = #1040#1074#1090#1086#1088
-              ExplicitWidth = 31
             end
             object Label24: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 49
-              Width = 212
+              Width = 48
               Height = 13
               Align = alTop
-              Caption = #1053#1072#1079#1074#1072
-              ExplicitWidth = 30
+              Caption = #1053#1072#1079#1074#1072#1085#1080#1077
             end
             object Label26: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 141
-              Width = 212
+              Width = 28
               Height = 13
               Align = alTop
               Caption = #1046#1072#1085#1088
-              ExplicitWidth = 28
             end
             object Label6: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 95
-              Width = 212
+              Width = 31
               Height = 13
               Align = alTop
-              Caption = #1057#1077#1088#1110#1103
-              ExplicitWidth = 27
+              Caption = #1057#1077#1088#1080#1103
             end
             object Label7: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 238
-              Width = 212
+              Width = 55
               Height = 13
               Align = alBottom
-              Caption = #1040#1085#1086#1090#1072#1094#1110#1103
-              ExplicitWidth = 45
+              Caption = #1040#1085#1085#1086#1090#1072#1094#1080#1103
             end
             object Label3: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 191
-              Width = 212
+              Width = 86
               Height = 13
               Margins.Top = 0
               Align = alTop
-              Caption = #1050#1083#1102#1095#1086#1074#1110' '#1089#1083#1086#1074#1072
-              ExplicitWidth = 74
+              Caption = #1050#1083#1102#1095#1077#1074#1099#1077' '#1089#1083#1086#1074#1072
             end
             object edFFullName: TMHLButtonedEdit
               AlignWithMargins = True
               Left = 3
               Top = 22
-              Width = 212
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 0
@@ -1786,7 +1804,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 68
-              Width = 212
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 1
@@ -1797,7 +1815,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 114
-              Width = 212
+              Width = 195
               Height = 21
               Align = alTop
               TabOrder = 2
@@ -1808,7 +1826,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 160
-              Width = 212
+              Width = 195
               Height = 21
               Margins.Bottom = 10
               Align = alTop
@@ -1821,7 +1839,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 257
-              Width = 212
+              Width = 195
               Height = 21
               Margins.Bottom = 10
               Align = alBottom
@@ -1833,7 +1851,7 @@ object frmMain: TfrmMain
               AlignWithMargins = True
               Left = 3
               Top = 210
-              Width = 212
+              Width = 195
               Height = 21
               Hint = #1050#1083#1102#1095#1077#1074#1099#1077' '#1089#1083#1086#1074#1072
               Align = alTop
@@ -1848,14 +1866,12 @@ object frmMain: TfrmMain
         object pnSearchControl: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
-          Top = 864
+          Top = 609
           Width = 224
           Height = 32
           Align = alBottom
           TabOrder = 1
-          DesignSize = (
-            224
-            32)
+          ExplicitTop = 622
           object btnApplyFilter: TButton
             Left = 0
             Top = 2
@@ -1865,13 +1881,12 @@ object frmMain: TfrmMain
             TabOrder = 0
           end
           object btnClearFilterEdits: TButton
-            Left = 149
+            Left = 81
             Top = 2
             Width = 75
             Height = 25
-            Hint = #1054#1095#1080#1089#1090#1080#1090#1080' '#1074#1089#1110' '#1087#1086#1083#1103
-            Anchors = [akTop, akRight]
-            Caption = #1054#1095#1080#1089#1090#1080#1090#1080
+            Hint = #1054#1095#1080#1089#1090#1080#1090#1100' '#1074#1089#1077' '#1087#1086#1083#1103
+            Caption = #1054#1095#1080#1089#1090#1080#1090#1100
             TabOrder = 1
             OnClick = btnClearFilterEditsClick
           end
@@ -1884,7 +1899,7 @@ object frmMain: TfrmMain
       object GroupsViewSplitter: TMHLSplitter
         Left = 230
         Top = 0
-        Height = 899
+        Height = 644
         MinSize = 230
         ResizeControl = pnGroupsView
         ExplicitLeft = 392
@@ -1895,15 +1910,16 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 230
-        Height = 899
+        Height = 644
         Align = alLeft
         TabOrder = 0
+        ExplicitHeight = 657
         object tvGroups: TVirtualStringTree
           AlignWithMargins = True
           Left = 3
           Top = 3
           Width = 224
-          Height = 862
+          Height = 620
           Align = alClient
           ChangeDelay = 250
           Colors.BorderColor = 15987699
@@ -1941,7 +1957,7 @@ object frmMain: TfrmMain
         object RzPanel8: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
-          Top = 871
+          Top = 629
           Width = 224
           Height = 25
           Align = alBottom
@@ -1978,14 +1994,16 @@ object frmMain: TfrmMain
       object pnGroupBooksView: TMHLSimplePanel
         Left = 233
         Top = 0
-        Width = 910
-        Height = 899
+        Width = 551
+        Height = 644
         Align = alClient
         TabOrder = 1
+        ExplicitWidth = 545
+        ExplicitHeight = 657
         object GroupBookInfoSplitter: TMHLSplitter
           Left = 0
-          Top = 740
-          Width = 910
+          Top = 485
+          Width = 551
           Height = 3
           Cursor = crVSplit
           Align = alBottom
@@ -1996,8 +2014,8 @@ object frmMain: TfrmMain
         object ipnlFavorites: TInfoPanel
           AlignWithMargins = True
           Left = 3
-          Top = 746
-          Width = 904
+          Top = 491
+          Width = 545
           Height = 150
           Align = alBottom
           Color = clBlack
@@ -2006,12 +2024,14 @@ object frmMain: TfrmMain
           OnAuthorLinkClicked = AuthorLinkClicked
           OnSeriesLinkClicked = SeriesLinkClicked
           OnGenreLinkClicked = GenreLinkClicked
+          ExplicitTop = 504
+          ExplicitWidth = 539
           DesignSize = (
-            904
+            531
             150)
           object lblTotalBooksF: TLabel
             AlignWithMargins = True
-            Left = 2888
+            Left = 1695
             Top = 9
             Width = 12
             Height = 19
@@ -2032,7 +2052,7 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 904
+          Width = 531
           Height = 26
           Align = alTop
           Font.Charset = DEFAULT_CHARSET
@@ -2042,8 +2062,9 @@ object frmMain: TfrmMain
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
+          ExplicitWidth = 539
           object lblBooksTotalF: TLabel
-            Left = 811
+            Left = 452
             Top = 0
             Width = 93
             Height = 26
@@ -2064,7 +2085,7 @@ object frmMain: TfrmMain
             ExplicitHeight = 13
           end
           object lbl3: TLabel
-            Left = 717
+            Left = 358
             Top = 0
             Width = 31
             Height = 26
@@ -2077,7 +2098,7 @@ object frmMain: TfrmMain
           object cbLangSelectF: TComboBox
             Tag = 4
             AlignWithMargins = True
-            Left = 751
+            Left = 392
             Top = 3
             Width = 50
             Height = 21
@@ -2097,8 +2118,8 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 35
-          Width = 904
-          Height = 702
+          Width = 531
+          Height = 447
           Align = alClient
           Colors.BorderColor = 15987699
           Colors.DisabledColor = clGray
@@ -2133,6 +2154,8 @@ object frmMain: TfrmMain
           OnHeaderClick = tvBooksTreeHeaderClick
           OnKeyDown = tvBooksTreeKeyDown
           OnMouseUp = tvBooksTreeMouseUp
+          ExplicitWidth = 539
+          ExplicitHeight = 460
           Columns = <
             item
               BiDiMode = bdLeftToRight
@@ -2199,7 +2222,7 @@ object frmMain: TfrmMain
         AlignWithMargins = True
         Left = 3
         Top = 3
-        Width = 1137
+        Width = 772
         Height = 22
         ButtonWidth = 30
         Images = ilToolImages
@@ -2299,15 +2322,15 @@ object frmMain: TfrmMain
       object Panel1: TMHLSimplePanel
         Left = 0
         Top = 28
-        Width = 1143
-        Height = 871
+        Width = 778
+        Height = 629
         Align = alClient
         TabOrder = 1
         object RzPanel2: TMHLSimplePanel
           AlignWithMargins = True
           Left = 3
-          Top = 826
-          Width = 1137
+          Top = 584
+          Width = 772
           Height = 42
           Align = alBottom
           TabOrder = 1
@@ -2337,10 +2360,10 @@ object frmMain: TfrmMain
           end
           object lblDownloadCount: TLabel
             AlignWithMargins = True
-            Left = 1041
+            Left = 676
             Top = 3
             Width = 93
-            Height = 36
+            Height = 13
             Align = alRight
             Alignment = taRightJustify
             Caption = '('#1082#1110#1083#1100#1082#1110#1089#1090#1100' '#1082#1085#1080#1075')'
@@ -2351,7 +2374,6 @@ object frmMain: TfrmMain
             Font.Style = [fsBold]
             ParentFont = False
             Layout = tlCenter
-            ExplicitHeight = 13
           end
           object pbDownloadProgress: TProgressBar
             Left = 0
@@ -2366,8 +2388,8 @@ object frmMain: TfrmMain
           AlignWithMargins = True
           Left = 3
           Top = 3
-          Width = 1137
-          Height = 817
+          Width = 772
+          Height = 575
           Align = alClient
           Colors.BorderColor = 15987699
           Colors.DisabledColor = clGray
@@ -2421,7 +2443,7 @@ object frmMain: TfrmMain
   object tlbrEdit: TToolBar
     Left = 0
     Top = 40
-    Width = 1157
+    Width = 792
     Height = 22
     ButtonHeight = 19
     ButtonWidth = 185
@@ -2431,6 +2453,7 @@ object frmMain: TfrmMain
     AllowTextButtons = True
     TabOrder = 1
     Wrapable = False
+    ExplicitWidth = 778
     object tbtnEditAuthor: TToolButton
       Left = 0
       Top = 0
@@ -2493,8 +2516,8 @@ object frmMain: TfrmMain
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 995
-    Width = 1157
+    Top = 753
+    Width = 792
     Height = 19
     AutoHint = True
     Panels = <
@@ -2510,6 +2533,8 @@ object frmMain: TfrmMain
       end>
     OnDrawPanel = StatusBarDrawPanel
     OnResize = StatusBarResize
+    ExplicitTop = 720
+    ExplicitWidth = 778
   end
   object MainMenu: TMainMenu
     Images = ilMainMenu
@@ -2565,7 +2590,7 @@ object frmMain: TfrmMain
         Action = acBookAdd2Favorites
       end
       object miAddToGroup: TMenuItem
-        Caption = #1044#1086#1076#1072#1090#1080' '#1076#1086' '#1075#1088#1091#1087#1080
+        Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1075#1088#1091#1087#1087#1091
         OnClick = acBookAdd2GroupExecute
         object TMenuItem
         end
@@ -2577,7 +2602,7 @@ object frmMain: TfrmMain
         Caption = '-'
       end
       object miCopyToCollection: TMenuItem
-        Caption = #1050#1086#1087#1110#1102#1074#1072#1090#1080' '#1076#1086' '#1082#1086#1083#1077#1082#1094#1110#1111
+        Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1074' '#1082#1086#1083#1083#1077#1082#1094#1080#1102
         ImageIndex = 23
       end
       object N74: TMenuItem
@@ -2597,7 +2622,7 @@ object frmMain: TfrmMain
         Action = acCollectionNew
       end
       object miCollSelect: TMenuItem
-        Caption = #1042#1080#1073#1088#1072#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102
+        Caption = #1042#1099#1073#1088#1072#1090#1100' '#1082#1086#1083#1083#1077#1082#1094#1080#1102
         ImageIndex = 27
       end
       object miCollsettings: TMenuItem
@@ -2613,17 +2638,17 @@ object frmMain: TfrmMain
         Caption = #1030#1084#1087#1086#1088#1090
         object miFb2Import: TMenuItem
           Action = acImportFb2
-          Caption = #1060#1072#1081#1083#1080' fb2 '#1090#1072' fb2.zip'
+          Caption = #1060#1072#1081#1083#1099' fb2 '#1080' fb2.zip'
           ImageIndex = 18
         end
         object miPdfdjvu: TMenuItem
           Action = acImportNonFB2
-          Caption = #1060#1072#1081#1083#1080' '#1085#1077'-fb2'
+          Caption = #1060#1072#1081#1083#1099' '#1085#1077'-fb2'
           ImageIndex = 8
         end
         object miFBDImport: TMenuItem
           Action = acImportFBD
-          Caption = #1060#1072#1081#1083#1080' FBD (pdf.zip djvu.zip)'
+          Caption = #1060#1072#1081#1083#1099' FBD (pdf.zip djvu.zip)'
           ImageIndex = 20
         end
         object N14: TMenuItem
@@ -2636,7 +2661,7 @@ object frmMain: TfrmMain
       object N40: TMenuItem
         Caption = #1045#1082#1089#1087#1086#1088#1090
         object N46: TMenuItem
-          Caption = #1045#1082#1089#1087#1086#1088#1090' '#1072#1082#1090#1080#1074#1085#1086#1075#1086' '#1089#1087#1080#1089#1082#1091
+          Caption = #1069#1082#1089#1087#1086#1088#1090' '#1072#1082#1090#1080#1074#1085#1086#1075#1086' '#1089#1087#1080#1089#1082#1072
           object miExportToHTML: TMenuItem
             Tag = 351
             Action = acExport2HTML
@@ -2794,7 +2819,7 @@ object frmMain: TfrmMain
         Action = acToolsClearReadFolder
       end
       object mmiScripts: TMenuItem
-        Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1080' '#1089#1082#1088#1080#1087#1090
+        Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1100' '#1089#1082#1088#1080#1087#1090
         ImageIndex = 29
       end
       object N49: TMenuItem
@@ -2883,7 +2908,7 @@ object frmMain: TfrmMain
     end
     object miAddFavorites: TMenuItem
       Tag = 1
-      Caption = #1044#1086#1076#1072#1090#1080' '#1074' '#1086#1073#1088#1072#1085#1077
+      Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1080#1079#1073#1088#1072#1085#1085#1086#1077
       ImageIndex = 13
       ShortCut = 16454
       OnClick = AddBookToGroup
@@ -2995,523 +3020,11 @@ object frmMain: TfrmMain
     Height = 32
     Width = 32
     Left = 280
-    Top = 320
+    Top = 280
     Bitmap = {
-      494C01011C001D00040020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
-      0000000000003600000028000000800000000001000001002000000000000000
-      0200000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
+      494C01011B001D00040020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
+      000000000000360000002800000080000000E0000000010020000000000000C0
+      0100000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -3557,8 +3070,8 @@ object frmMain: TfrmMain
       13B52112087402010142000000360000002D0000002100000011000000040000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000006423B29970B0A
-      0844000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000717171B1313030FF323232FF3635
       36FF363433FF363432FF363433FFDCC29AFFDDC39BFFDDC39BFFDDC39BFFDDC3
@@ -3573,8 +3086,8 @@ object frmMain: TfrmMain
       97FE9A6B4AF6814720F5492A11AE0704024E00000036000000290000001D0000
       000B000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      0000030202270000000A000000000000000001010017907D50D3F0CA72FF453C
-      2A9B000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000717172FD605B5AFF87807BFF7D76
       70FF8D8586FF867C7DFFD8BA8BFFF5EED7FFF6EED8FFF6EED8FFF6EED8FFF6EE
@@ -3588,9 +3101,9 @@ object frmMain: TfrmMain
       F8FFFCFAF9FFFCFAF9FFFCFAF9FFFCFAF9FFFCFAF9FFFCFAF9FFFCFAF9FFFCFA
       F9FFFCFAF9FFEEE4DCFFB79377FB814822F4391F0E8E0000002D000000200000
       0013000000020000000000000000000000000000000000000000000000000000
-      000000000000000000000000000000000000000000000000000000000000251A
-      0D7B3E280E9B0000000D000000000000000001010118D2B36CF7E9CA7BFFA278
-      38E21D14096F0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000666666FD66615FFF8C8884FF7A75
       71FF989391FF888080FFD9BB8CFFF2E8CAFFEEE0BEFFCE9726FFD9B15EFFD9B2
@@ -3604,9 +3117,9 @@ object frmMain: TfrmMain
       DCFFD9C1AEFFC8A689FFC39B7BFFBD936EFFBE9470FFC6A080FFCDAA8FFFDDC5
       B3FFF0E6DFFFFCFAF9FFFCFAF9FFECE1D8FF9E704FF65D3417B70301001C0000
       0009000000000000000000000000000000000000000000000000000000000000
-      00000000000000000000000000000000000000000000000000002B1D0D83281B
-      0D7F00000000000000000000000000000014000000100101011C6D5B3CB81312
-      0F58191109672F200E8900000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000006C6C6CFF757171FF96918EFF7E78
       74FF6E6965FF726D68FFD8BA88FFEFE2BEFFE1C893FFCE982FFFC88D1AFFD5A9
@@ -3620,10 +3133,10 @@ object frmMain: TfrmMain
       60FFB88B65FFBB8E69FFBE926DFFC0946FFFC19671FFC19772FFC19672FFC095
       70FFBE936EFFCFAF95FFF0E6DEFFFCFAF9FFF9F5F2FFB7957AF96E3E1CCC0301
       0106000000000000000000000000000000000000000000000000000000000000
-      0000000000150F0E0D5D11100E61100F0E60100F0F60281E138631200D8A0000
-      0000000000000A0C0A48487857C470C88BF571C88BF53F6D50BC080B09450000
-      0000000000002C1D0C842B20148A100F0F6011100E6111100E610F0E0D5D0000
-      0017000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000727272FF7B7877FF979291FF8781
       80FF7B7876FF7D7978FFD7B885FFEBDCB1FFDEC389FFC9901FFFC89535FFD2A6
       4EFFD7B366FFEBDCB1FFC1830BFFCFA043FFC68F29FFCF9F40FFC08007FFEBDC
@@ -3636,10 +3149,10 @@ object frmMain: TfrmMain
       65FFBB8F6AFFBF936EFFC19772FFC49A75FFC59C78FFC69D79FFC69C78FFC49B
       76FFC29874FFC09570FFBF936EFFE1CDBDFFFCFAF9FFFCFAF8FFB7947AF86035
       18B1010000010000000000000000000000000000000000000000000000000000
-      00066A6157D3EAE5DFFFEDE9E4FFEDE9E4FFECEAE5FFB77F3CF6000000040000
-      00000E120F577AE49AFF79E198FF78DC96FF7BDD98FF7AE199FF78E49AFF1015
-      125D0000000000000001AD7635F0ECE9E4FFEDE9E4FFEDE9E3FFEAE5DFFF746B
-      60DA000000080000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000707070FF4B4848FF5E595BFF645F
       60FF615B5CFF686363FFD6B681FFE9D6A5FFDEC180FFD2A12CFFD09E22FFD8B0
       4EFFD4A62FFFDFC27CFFCD9715FFD5AB45FFCD9B2DFFD4A016FFD2A12CFFE9D6
@@ -3652,10 +3165,10 @@ object frmMain: TfrmMain
       68FFBE936EFFC29773FFE5E2E0FFE6E4E1FFE6E4E1FFE6E4E2FFCAA27EFFC9A0
       7CFFC69D79FFC39975FFC09570FFBC906AFFD6BBA6FFFCFAF9FFFAF7F5FFA77E
       5FF53F220F750000000000000000000000000000000000000000000000000000
-      0015C2BBB0FDFFFFFFFFFFFFFFFFFFFFFFFFFFF5E4FF3121108A000000000000
-      00106EC388F279DE98FF7ADA97FF7EDC9AFF75D993FF7BDA98FF7ADE98FF72CC
-      8DF70000001400000000291D0E81FFF2DDFFFFFFFFFFFFFFFFFFFFFFFFFFCCC4
-      B9FF0101011B0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000686868FF565252FFC0BDBDFF9F9C
       9DFF9E9B9CFFA3A1A1FFD6B57DFFE7D198FFDEC17EFFCF9510FFCF9A1FFFD6A9
       3FFFCF9D29FFCF9715FFCA8E04FFD3A336FFCB9420FFD19E2CFFC98D04FFE7D1
@@ -3668,10 +3181,10 @@ object frmMain: TfrmMain
       6CFFC19671FFC59B77FFE8E8E8FFE9E9E9FFEAEAEAFFEAEAEAFFCEA886FFCDA5
       83FFCAA27EFFC69D79FFC29874FFBE936EFFBA8D68FFDCC5B3FFFCFAF9FFF0E7
       E1FF834C27EC0A04011200000000000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFF3D4B0FF0F0B0652000000000D11
-      0E5479E399FF73D891FFB4EAC4FFE1F6E7FF89DEA2FF70D78FFF7BDA98FF79E3
-      99FF1015115C000000000B08054AF0CFA8FFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF7B7879FF868483FF1311
       10FF1B1918FF1A1818FFD5B379FFE6CB8CFFE6CB8CFFDBB666FFE0C078FFD4A3
       3AFFD2A344FFCA8B0AFFC88804FFD19D32FFC98F1DFFD29D2FFFC68501FFE6CB
@@ -3684,10 +3197,10 @@ object frmMain: TfrmMain
       6EFFC39974FFC79E7BFFEAEAEAFFEBEBEBFFECECECFFECECECFFD3AD8CFFD0AA
       88FFCDA683FFC9A07DFFC59B77FFC09570FFBC8F6AFFB88A65FFECDFD6FFFCFA
       F8FFC3A690FC542E159C00000000000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFEFCDA4FF0A07054500000000151D
-      186B79E299FF7ADA97FF88DEA1FF92E0A9FFD8F4E0FF8FDFA7FF75D993FF7AE3
-      9AFF19231C74000000000706043DECC89CFFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF7B7878FFE9E6E6FFEEED
       EDFFFFFFFFFFFFFFFFFFD5B276FFE4C67EFFE4C67EFFE4C67EFFE4C67EFFD19E
       34FFC98802FFD09C2FFFC48403FFCE992DFFC68B1AFFCA8901FFCD9522FFE4C6
@@ -3700,10 +3213,10 @@ object frmMain: TfrmMain
       70FFC49B76FFC9A17DFFEAE7E5FFEBE8E6FFECEAE8FFECEAE8FFD7B292FFD3AE
       8DFFCFA987FFCBA380FFC69D79FFC19772FFBD916BFFB88B65FFC39E80FFFCF9
       F8FFF5EEEAFF844B25F30603020C000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFF6DAB9FF130E075D000000000809
-      084179E299FF7ADA97FF77DA95FF6FD78FFF91E0A8FFBBECC9FF76D994FF79E2
-      99FF0A0C0B49000000000F0B0654F4D5B1FFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF807A7AFFEDEBEBFFFFFF
       FFFFFFFFFFFFFFFFFFFFD4B173FFE3C272FFE3C272FFE3C272FFE3C272FFE2BF
       6FFFE1BE6DFFE3C172FFE1BE6DFFE1BF6FFFE1BE6EFFE0BE6DFFE3C171FFE3C2
@@ -3716,10 +3229,10 @@ object frmMain: TfrmMain
       70FFC59B77FFCAA27EFFCEA886FFD3AE8DFFD8B493FFDCBA99FFD9B696FFD5B0
       8FFFD0AA88FFCBA482FFC79E7AFFC29773FFBD916CFFB98B65FFB4855FFFEADD
       D3FFFCFAF8FFA98163F52E180B56000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFFEF5E9FF442E14A1000000000000
-      0003569367D679E399FF7BDA97FF7BDB98FF75D993FF77D995FF7AE29AFF5C9D
-      70DD00000006000000003C281199FEF3E4FFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF807A7AFFFAF9F8FFFFFF
       FFFFFFFFFFFFFFFFFFFFEEE2CFFFD6B47AFFD7B579FFD7B579FFD7B579FFD7B5
       79FFD7B579FFD7B579FFD7B579FFD7B579FFD7B579FFD7B579FFD7B579FFD7B5
@@ -3732,10 +3245,10 @@ object frmMain: TfrmMain
       70FFC59B77FFC9A17EFFEFEFEFFFF1F1F1FFF2F2F2FFF2F2F2FFD9B798FFD4AF
       8EFFD0AA88FFCBA381FFC79D79FFC29773FFBD916CFFB88B65FFB4855EFFD1B5
       9FFFFCFAF8FFD5BEADFF623618B5000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFC8985CF5000000160000
-      00000202022354986CD879E59AFF7AE199FF7AE199FF79E49AFF65B37DE80304
-      032C0000000000000011BF8E53F1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF827B7CFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
       FDFFFFFFFFFFFFFFFFFF8F8B8BFF656565FF0000000000000000000000000000
@@ -3748,10 +3261,10 @@ object frmMain: TfrmMain
       6FFFC49A76FFC8A07CFFECE6E1FFF2F2F2FFF3F3F3FFF4F4F4FFE3CEBCFFD2AC
       8BFFCEA785FFCAA27EFFC59C78FFC19671FFBC906BFFB88A64FFB3845EFFC09B
       7CFFFCFAF8FFEADED6FF7B431EE6000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDEFDFFF583812B40000
-      0000000000000505043216211B70446E51BE457252C0202F2483010101180000
-      000000000000503310ADFCECD9FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF848181FFFBF9F8FFCDCC
       CCFFEAE9E9FFEAE9E9FFD4D1D2FFCCCACBFFCBC9C9FFCCCACBFFCCCACBFFDDDA
       DAFFFFFFFFFFFFFFFFFF888485FF656565FF0000000000000000000000000000
@@ -3764,10 +3277,10 @@ object frmMain: TfrmMain
       6DFFC29873FFC69D79FFD9BFAAFFF4F4F4FFF5F5F5FFF6F6F6FFF4F4F4FFDBC1
       AAFFCBA482FFC89F7BFFC49A75FFBF946FFFBB8E69FFB78963FFB2835CFFB88D
       6AFFFCFAF8FFF4EEE9FF854820F9000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6DAB9FF3420
-      0B902721167AD2B16BF30F0D0B4E000000000000000000000000000000000000
-      00063F280C9DF4D6B2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000656565FF83807EFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF817C7DFF656565FF0000000000000000000000000000
@@ -3780,10 +3293,10 @@ object frmMain: TfrmMain
       6AFFC09570FFC49A75FFC79E7AFFE0CCBAFFF7F7F7FFF8F8F8FFF7F7F7FFF4F4
       F4FFD8BFA9FFC59B77FFC19672FFBD916CFFB98C66FFB58660FFB1815AFFB081
       5CFFFCFAF8FFFBF9F8FF844820F9000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF6DE
-      C5FFD9AA5EFFE0C173FFE3BF69FF01010119000000000000000001010119865D
-      2FD2F8DFC2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000676767FF7D7877FFFFFFFFFFCECC
       CDFFCDCBCCFFD5D3D4FFFFFFFFFFFFFFFFFFCBC9CAFFCDCBCBFFCDCBCCFFCDCB
       CCFFFFFFFFFFFFFFFFFF797575FF656565FF0000000000000000000000000000
@@ -3796,10 +3309,10 @@ object frmMain: TfrmMain
       67FFBD916CFFC09571FFC39975FFC69D79FFDEC8B5FFF9F9F9FFF9F9F9FFF7F7
       F7FFF3F3F2FFCEAD92FFBE936EFFBB8E69FFB78963FFB3845DFFAF7D57FFB489
       66FFFCFAF8FFF4EDE9FF84481FF9000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFF0E3C2FFD6B058FFE2D0A5FB5251509F45454595757575B9E1E0DEF2FFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000006B6B6BFF837E7EFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFBFAFFFFFEFDFFFFFFFFFFFDFB
       FAFFFFFFFFFFFFFFFFFF767272FF656565FF0000000000000000000000000000
@@ -3812,10 +3325,10 @@ object frmMain: TfrmMain
       63FFBA8D67FFBD916CFFC09470FFC29773FFC39975FFE2CFC0FFFAFAFAFFF8F8
       F8FFF5F5F5FFE5DAD1FFBB8F69FFB88A64FFB4865FFFB1815AFFAD7A54FFBB95
       75FFFBF9F8FFE9DDD4FF7B431DE6000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFE0E0E0FFBABABAFFC0C0C0FFBFBFBFFFBFBFBFFFF4F4
-      F4FFFAF6EDFFF3E9D1FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFF6F6F6FFC0C0C0FFBEBEBEFFC0C0C0FFBABABAFFDEDEDEFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000717171FF8C8989FFFFFFFFFFCDCC
       CCFFEAE9EAFFEAE9EAFFDDDADAFFCCCACBFFCCCACAFFD5D1D2FFEAE9EAFFCDCB
       CBFFFFFFFFFFFFFFFFFF757271FF656565FF0000000000000000000000000000
@@ -3828,10 +3341,10 @@ object frmMain: TfrmMain
       5EFFBD9473FFB98C67FFBC8F6AFFBE926DFFBF936EFFC7A283FFFBFBFBFFF9F9
       F9FFF6F6F6FFF0EFEDFFB88A64FFB58660FFB1825BFFAE7C56FFAA7751FFCCAE
       98FFFBF9F8FFD3BBAAFF613518B5000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFE3E3E3FFC1C1C1FFC6C6C6FFC5C5C5FFC5C5C5FFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFC6C6C6FFC5C5C5FFC6C6C6FFC1C1C1FFE1E1E1FFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000787878FF9B9797FFFEFEFDFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFDFDFDFFFDFDFEFFFDFD
       FEFFFFFFFFFFFFFFFFFF767171FF656565FF0000000000000000000000000000
@@ -3844,10 +3357,10 @@ object frmMain: TfrmMain
       59FFEEEDECFFDBC8B9FFC39D7EFFB98C66FFBA8D69FFD9C1ADFFFCFCFCFFF9F9
       F9FFF6F6F6FFF0EDEBFFB4855FFFB1825BFFAE7D57FFAB7852FFA7734DFFE7D9
       CEFFFBF9F8FFA67E60F52E180B56000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFDEDEDEFFB8B8B8FFBEBEBEFFBEBEBEFFBEBEBEFFB2B2
-      B2FFAEAEAEFFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1F1F1FFAFAF
-      AFFFB2B2B2FFBEBEBEFFBEBEBEFFBEBEBEFFB8B8B8FFDCDCDCFFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000787878FF9B9898FFFFFFFFFFCBC4
       C5FFC9C2C3FFE8E6E6FFCCC5C7FFEAE7E7FFEAE7E7FFDCD8D8FFC9C3C3FFC9C3
       C3FFFFFEFEFFFFFFFFFF767271FF656565FF0000000000000000000000000000
@@ -3860,10 +3373,10 @@ object frmMain: TfrmMain
       54FFF0F0F0FFF3F3F3FFF5F5F5FFF5F3F1FFF7F5F3FFFCFCFCFFFBFBFBFFF8F8
       F8FFF5F5F5FFDDCEC1FFB08059FFAE7C56FFAB7852FFA8744DFFB78F6EFFFBF9
       F7FFF3ECE8FF844B24F30603020C000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFEBEBEBFFD2D2D2FFD6D6D6FFD6D6D6FFD6D6D6FFD5D5
-      D5FFD4D4D4FFF7F7F7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF8F8F8FFD5D5
-      D5FFD5D5D5FFD6D6D6FFD6D6D6FFD6D6D6FFD2D2D2FFE9E9E9FFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000747474FF979393FFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFF767271FF656565FF0000000000000000000000000000
@@ -3876,10 +3389,10 @@ object frmMain: TfrmMain
       4FFFEFEFEFFFF2F2F2FFF5F5F5FFF7F7F7FFF9F9F9FFFAFAFAFFF9F9F9FFF7F7
       F7FFEDE8E3FFB68D6BFFAC7A54FFAA7750FFA7734DFFA5724AFFE7DAD0FFFBF9
       F8FFBEA089FC542E149D00000000000000000000000000000000000000000000
-      0015B3ACA2F6FFFFFFFFD7D7D7FFA8A8A8FFAFAFAFFFAFAFAFFFAFAFAFFFADAD
-      ADFFABABABFFEFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1F1F1FFACAC
-      ACFFADADADFFAFAFAFFFAFAFAFFFAFAFAFFFA8A8A8FFD4D4D4FFFFFFFFFFBCB5
-      AAF80101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000006F6F6FFF8F8B8BFFFFFFFFFFFFFF
       FFFFFDFFFFFFFCFEFEFFFFFFFFFFFFFFFFFFFFFFFFFFFBFDFEFFFCFEFEFFFCFE
       FFFFFDFEFFFFFFFFFFFF767272FF656565FF0000000000000000000000000000
@@ -3892,10 +3405,10 @@ object frmMain: TfrmMain
       4AFFBA9678FFD0B8A6FFE4D8CFFFEEE9E5FFF7F6F5FFF3F0EEFFE8DED7FFD1B8
       A5FFB0815DFFAA7751FFA8754EFFA6724BFFA46F47FFD2B8A5FFFBF9F8FFEDE3
       DCFF824A25ED0A06021300000000000000000000000000000000000000000000
-      0014B6B0A6F5FFFFFFFFF6F7F9FFE2E3E4FFE5E6E7FFE5E6E7FFE5E6E7FFE4E5
-      E7FFE3E4E6FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE4E5
-      E6FFE4E5E7FFE5E6E7FFE5E6E7FFE5E6E7FFE2E3E4FFF5F6F8FFFFFFFFFFC0B9
-      AFF7010000190000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000707070FF8C8989FFF3E9E2FFFDF7
       F4FFF9EEEBFFF6EAE8FFF6EAE8FFF9EDEBFFF5E8E5FFF5E9E6FFF4E8E5FFDDC3
       BDFFDFC5C0FFFEF5F3FF777271FF656565FF0000000000000000000000000000
@@ -3908,10 +3421,10 @@ object frmMain: TfrmMain
       44FFA36E47FFA5714AFFA7734CFFA8744DFFA9754EFFA9764FFFA9754FFFA875
       4EFFA7734DFFA6724BFFA46F48FFA26D45FFC8A992FFFBF9F7FFF9F5F3FFA277
       59F53F220F750000000000000000000000000000000000000000000000000000
-      0015A1998BF5DDD9D4FDE1DAD3FDE6DCD4FDE6E1DCFDE5E0DBFDDFDAD4FDE3DF
-      D9FDE6E2DDFDDBD8D6FDD9D6D4FDDDD9D4FDDDD9D4FDDDD9D4FDDEDAD5FDE6E1
-      DCFDE5E1DCFDE5E1DCFDE5E1DCFDE5E1DCFDE6E1DCFDE1DCD7FDDDD9D3FDA89F
-      91F70101011A0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000777777FF8F8B8AFFF1E0D5FFEBDC
       CAFFEDC3B5FFE5B5A6FFE1AD9DFFE0AE9EFFDDA194FFE3AD9FFFE0A798FFE0A6
       96FFB64C30FFF2D2C5FF787270FF656565FF0000000000000000000000000000
@@ -3923,11 +3436,11 @@ object frmMain: TfrmMain
       00015E3316B1AE886CF8FAF8F6FFFBF9F7FFD1B8A7FF9A643CFF9B633BFF9D66
       3EFF9F6941FFA16B44FFA26D46FFA36E47FFA46F48FFA47048FFA47048FFA46F
       48FFA36E46FFA26C44FFA26D46FFD5BDACFFFBF9F7FFFBF8F7FFB18C71F85E34
-      16B1010000010000000000000000000000000000000000000000000000000101
-      01185F4C33F862482BFE634F35FE625B47FE63482AFE5F492CFE725E45FE644E
-      32FE5D482FFE6A5230FE6C532FFE5F4A32FE5F482BFE5D472AFE5E472AFE5E47
-      2AFE5E472AFE5D472AFE5E482BFE624B30FE62492EFE62492EFE624B2EFE614D
-      31FB0101011C0000000000000000000000000000000000000000000000000000
+      16B1010000010000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000868686FF989696FFF8EEE6FFF8E5
       D6FFF9E6DAFFFBE7DBFFF9E3D6FFF6DED1FFF2D9CCFFECD2C4FFE6CCC0FFE3C9
       BBFFE2C5B9FFEEDDD5FF757172FF656565FF0000000000000000000000000000
@@ -3939,11 +3452,11 @@ object frmMain: TfrmMain
       0000030101066E3C1AD0AF886CF9F6F2EEFFFBF8F7FFE8DBD2FFB48C6DFF9961
       39FF9B643BFF9D663EFF9E673FFF9F6941FFA06942FFA06A42FFA06A42FF9F69
       41FF9E6840FFB99274FFE9DDD4FFFBF9F7FFF7F3EFFFB18B70F96F3C1AD00301
-      0106000000000000000000000000000000000000000000000000000000000101
-      0118634B31F9655135FF60B7D1FF5DDCF8FF5A7470FF9F8971FFF3F2EFFFBEB8
-      B0FF6F562FFFD19921FFD99F22FF7B5F31FF72624FFF806D56FF7E6C54FF7E6C
-      54FF7E6C54FF7E6C55FF7C6952FF675036FF6D8A5DFF6D8559FF654D32FF644E
-      33FC0101011C0000000000000000000000000000000000000000000000000000
+      0106000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000007C7C7CE9888585FFA0A0A2FF9596
       98FF949597FF959598FF8E8F91FF848587FF7D7D81FF77787AFF6D6E71FF6869
       6CFF5C5E60FF59595BFF3C3636FF595858E60000000000000000000000000000
@@ -3955,11 +3468,11 @@ object frmMain: TfrmMain
       000000000000040201085C3214AD986746F4E5D7CDFFFBF8F7FFFBF9F7FFE8DC
       D3FFCAAD98FFB18666FFA77753FF9F6841FF9F6942FFA87956FFB38969FFCCAF
       9BFFE9DDD5FFFBF9F7FFFBF9F7FFE6D9D0FF9A6949F45D3215AD040201080000
-      0000000000000000000000000000000000000000000000000000000000000101
-      0119684E30FE675B44FF60D8FFFF5EF2FFFF588F98FFBEA895FFFFFFFFFFDCDB
-      DCFF856736FFE9AA1DFFF1B020FF8E6C30FF8D8176FFA59988FFA29584FFA295
-      84FFA29584FFA49786FF9F8F7DFF6C5B3FFF72AF77FF74AA74FF685337FF674F
-      34FF0101011E0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000007A7A7AC8787878FF828282FF6C6C
       6CFF626262FF656565FF5A5A5AFF4D4D4DFF4D4D4DFF4E4E4EFF464646FF4444
       44FF424242FF404040FF383838FF6F6F6FC80000000000000000000000000000
@@ -3972,10 +3485,10 @@ object frmMain: TfrmMain
       F7FFFBF9F7FFFBF9F7FFFBF9F7FFFBF9F7FFFBF9F7FFFBF9F7FFFBF9F7FFFBF9
       F7FFFBF9F7FFE8DCD3FFAD866AFA804620F13B1F0D6E00000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      000B5E4B34F1654827FF64746AFF629393FF625338FF725A3DFFAC9F8EFF8572
-      5AFF5E482CFF946E2BFF9A732AFF664F33FF5F482AFF5E4628FF5F4728FF5F47
-      28FF5F4728FF5F4728FF5F4829FF654B2EFF685939FF675637FF654A2DFF624E
-      35F70000000F0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000002727272A606060C0606060D45252
       52D14B4B4BD04C4C4CD04B4B4BD0484848D1484848D14B4B4BD1474747D14646
       46D0474747D1464646D34D4D4DC72C2C2C310000000000000000000000000000
@@ -3988,10 +3501,10 @@ object frmMain: TfrmMain
       40F1BE9C86FEDCC9BCFFE9DDD4FFF2EBE7FFF2EBE7FFE9DDD5FFDCCABDFFBF9E
       88FE946341F180451FF14A27128C080502100000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
-      00000605053925211B9327201996271F189627221C9626211C96231E18962520
-      1A9627231D9624201E9624201E9627221D9627231D9627231D9627231D962723
-      1D9627231D9627231D9627231D9627231D9627211C9627211C9626221C940706
-      063E000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -7096,24 +6609,8 @@ object frmMain: TfrmMain
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       000000000000000000000000000000000000424D3E000000000000003E000000
-      2800000080000000000100000100010000000000001000000000000000000000
+      2800000080000000E00000000100010000000000000E00000000000000000000
       000000000000000000000000FFFFFF0000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
-      0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -8585,7 +8082,7 @@ object frmMain: TfrmMain
     ColorDepth = cd32Bit
     DrawingStyle = dsTransparent
     Left = 280
-    Top = 432
+    Top = 360
     Bitmap = {
       494C01010C001100040010001000FFFFFFFF2110FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001002000000000000040
@@ -9252,7 +8749,7 @@ object frmMain: TfrmMain
     Height = 32
     Width = 32
     Left = 280
-    Top = 368
+    Top = 320
     Bitmap = {
       494C010118001D00040020002000FFFFFF002110FFFFFFFFFFFFFFFF424D3600
       000000000000360000002800000080000000E0000000010020000000000000C0

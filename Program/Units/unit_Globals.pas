@@ -25,6 +25,7 @@ uses
   SysUtils,
   Generics.Collections,
   VirtualTrees,
+  VirtualTrees.Types,
   IdHTTP,
   IdSocks,
   IdSSLOpenSSL,
@@ -504,9 +505,9 @@ end;
 
 function c_GetTempPath: String;
 var
-  Buffer: array[0..65536] of Char;
+  Buffer: array[0..MAX_PATH] of Char;
 begin
-  SetString(Result, Buffer, GetTempPath(Sizeof(Buffer)-1,Buffer));
+  SetString(Result, Buffer, GetTempPath(Length(Buffer), Buffer));
 end;
 
 function PosChr(aCh: Char; const S: string): Integer;
@@ -524,15 +525,8 @@ begin
 end;
 
 procedure StrReplace(const s1: string; const s2: string; var s3: string);
-var
-  p: Integer;
 begin
-  p := Pos(s1, s3);
-  while p > 0 do
-  begin
-    s3 := Copy(s3, 1, p - 1) + s2 + Copy(s3, p + Length(s1));
-    p := Pos(s1, s3);
-  end;
+  s3 := StringReplace(s3, s1, s2, [rfReplaceAll]);
 end;
 
 // Replace non-valid file name characters with spaces
@@ -542,8 +536,8 @@ var
 begin
   Result := Input;
 
-  Result := StringReplace(Result,'..','',[rfReplaceAll]);
   Result := StringReplace(Result,'...','',[rfReplaceAll]);
+  Result := StringReplace(Result,'..','',[rfReplaceAll]);
 
   for i := 1 to Length(Result) do
   begin
@@ -649,6 +643,7 @@ var
   SearchRec: TSearchRec;
   ACurrentDir: string;
 begin
+  Result := True;
   ACurrentDir := IncludeTrailingPathDelimiter(DirectoryName);
 
   try
@@ -725,15 +720,14 @@ begin
   //
   // Не обрезаем пробелы здесь!!! От их наличия зависит расположение файла - на букве или в каталоге '_'
   //
-  AuthorName := CheckSymbols(FullName); // Ф.И.О. - полностью!
+  AuthorName := Trim(CheckSymbols(FullName)); // Ф.И.О. - полностью!
+
+  if AuthorName = '' then
+    AuthorName := rstrUnknownAuthor;
 
   Letter := AuthorName[1];
   if not Letter.IsLetterOrDigit then
     Letter := '_';
-
-  AuthorName := Trim(AuthorName);
-  if AuthorName = '' then
-    AuthorName := rstrUnknownAuthor;
 
   Result := IncludeTrailingPathDelimiter(Letter) + IncludeTrailingPathDelimiter(AuthorName);
 end;
@@ -1192,7 +1186,12 @@ end;
 
 function CompareInt(i1, i2: Integer): Integer;
 begin
-  Result := Sign(i1 - i2);
+  if i1 > i2 then
+    Result := 1
+  else if i1 < i2 then
+    Result := -1
+  else
+    Result := 0;
 end;
 
 function CompareSeqNumber(i1, i2: Integer): Integer;
@@ -1244,7 +1243,7 @@ end;
 
 procedure SetProxySettingsGlobal(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
 begin
-  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvSSLv2,sslvSSLv3,sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
+  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
   IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
 
   with IdHTTP.ProxyParams do
@@ -1316,7 +1315,7 @@ end;
 procedure SetProxySettingsUpdate(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
 begin
 // прокси для обновлений, а не скачивания книг
-  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvSSLv2,sslvSSLv3,sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
+  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
   IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
 
   if Settings.UseProxyForUpdate then

@@ -32,6 +32,7 @@ uses
   Forms,
   Dialogs,
   VirtualTrees,
+  VirtualTrees.Types,
   StdCtrls,
   ComCtrls,
   Mask,

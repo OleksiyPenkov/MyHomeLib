@@ -32,6 +32,7 @@ uses
   Dialogs,
   ExtCtrls,
   VirtualTrees,
+  VirtualTrees.Types,
   StdCtrls,
   ShellApi,
   Mask,

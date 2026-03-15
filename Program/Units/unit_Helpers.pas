@@ -465,7 +465,7 @@ begin
     PChar(Operation),
     PChar(AFileName),
     PChar(AParameters),
-    PChar(Directory),
+    PChar(ADirectory),
     ShowCmd
   );
 end;

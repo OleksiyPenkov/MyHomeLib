@@ -1299,18 +1299,18 @@ begin
 
       if extra.Review <> '' then
         SetReview(BookKey, extra.Review);
+
+      //
+      // Обновим информацию в группах
+      //
+      FSystemData.SetExtra(BookKey, extra);
+
+      //
+      // Дадим возможность главному окну обновить измененные ноды
+      //
+      if Assigned(guiUpdateCallback) then
+        guiUpdateCallback(BookKey, extra);
     end;
-
-    //
-    // Обновим информацию в группах
-    //
-    FSystemData.SetExtra(BookKey, extra);
-
-    //
-    // Дадим возможность главному окну обновить измененные ноды
-    //
-    if Assigned(guiUpdateCallback) then
-      guiUpdateCallback(BookKey, extra);
   end;
 
   //
@@ -1589,14 +1589,11 @@ const
 var
   searchQuery: TSQLiteQuery;
   insertQuery: TSQLiteQuery;
-  SearchExpr: string;
 begin
   if NO_SERIES_TITLE = Title then
     Result := NO_SERIES_ID
   else
   begin
-    SearchExpr := ToUpper(Trim(Title));
-
     searchQuery := FDatabase.NewQuery(SQL_SELECT);
     try
       searchQuery.SetParam(0, Title);
@@ -1624,7 +1621,7 @@ end;
 
 procedure TBookCollection_SQLite.SetSeriesTitle(const SeriesID: Integer; const NewSeriesTitle: string);
 const
-  SQL_UPDATE = 'UPDATE Series Set SeriesTitle = ? WHERE BookID = ? ';
+  SQL_UPDATE = 'UPDATE Series Set SeriesTitle = ? WHERE SeriesID = ? ';
 begin
   Assert(SeriesID <> NO_SERIES_ID);
   Assert(NewSeriesTitle <> NO_SERIES_TITLE);
@@ -1663,9 +1660,7 @@ begin
       Query := FDatabase.NewQuery(SQL_DELETE_SERIES);
       try
         Query.SetParam(0, OldSeriesID);
-        //
-        // TODO : а где ExecSQL ?
-        //
+        Query.ExecSQL;
       finally
         FreeAndNil(Query);
       end;
