@@ -65,6 +65,7 @@ type
   private
     FURL: string;
     FPath: string;
+    FConnectionError: Boolean;
 
     function GetUpdate(Index: Integer): TUpdateInfo;
     procedure SetUpdate(Index: Integer; const Value: TUpdateInfo);
@@ -92,6 +93,7 @@ type
     property Items[Index: Integer]: TUpdateInfo read GetUpdate write SetUpdate; default;
     property URL: string read FURL write SetURL;
     property Path: string read FPath write FPath;
+    property ConnectionError: Boolean read FConnectionError;
   end;
 
 implementation
@@ -144,7 +146,13 @@ var
   SL: TStringList;
   i: Integer;
   URL: string;
+  HasVersionFiles: Boolean;
+  GotAny: Boolean;
 begin
+  FConnectionError := False;
+  HasVersionFiles := False;
+  GotAny := False;
+
   LF := TMemoryStream.Create;
   try
     HTTP := CreateHTTPClientUpdate;
@@ -154,6 +162,7 @@ begin
         if Items[i].FVersionFile = '' then
           Continue;
 
+        HasVersionFiles := True;
         URL := Items[i].URL + Items[i].FVersionFile;
 
         try
@@ -164,7 +173,10 @@ begin
             LF.Seek(0, soFromBeginning);
             SL.LoadFromStream(LF);
             if SL.Count > 0 then
+            begin
               Items[i].FExternalVersion := StrToInt(SL[0]);
+              GotAny := True;
+            end;
           finally
             SL.Free;
           end;
@@ -177,6 +189,9 @@ begin
   finally
     LF.Free;
   end;
+
+  if HasVersionFiles and not GotAny then
+    FConnectionError := True;
 end;
 
 constructor TUpdateInfoList.Create;
