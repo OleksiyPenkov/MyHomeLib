@@ -217,22 +217,31 @@ end;
 
 procedure TBookCollection.GetBookGenres(BookID: Integer; var BookGenres: TBookGenres; RootGenre: PGenreData = nil);
 var
-  i: Integer;
+  Count, Capacity: Integer;
   GenreIterator: IGenreIterator;
   Genre: TGenreData;
   FilterValue: TFilterValue;
 begin
   FilterValue.ValueInt := BookID;
-  GenreIterator := GetGenreIterator(gmByBook, @FilterValue); //Format('gl.%s = %d', [BOOK_ID_FIELD, BookID])
-  i := Length(BookGenres);
+  GenreIterator := GetGenreIterator(gmByBook, @FilterValue);
+  Count := Length(BookGenres);
+  Capacity := Count;
   while GenreIterator.Next(Genre) do
   begin
-    SetLength(BookGenres, i + 1);
-    BookGenres[i] := Genre;
-    Inc(i);
+    if Count >= Capacity then
+    begin
+      if Capacity = 0 then
+        Capacity := 4
+      else
+        Capacity := Capacity * 2;
+      SetLength(BookGenres, Capacity);
+    end;
+    BookGenres[Count] := Genre;
+    Inc(Count);
   end;
+  SetLength(BookGenres, Count);
 
-  if Assigned(RootGenre) then
+  if Assigned(RootGenre) and (Count > 0) then
     RootGenre^ := FGenreCache.GetRootGenre(BookGenres[0].GenreCode);
 end;
 
@@ -249,19 +258,28 @@ end;
 procedure TBookCollection.GetBookAuthors(BookID: Integer; var BookAuthors: TBookAuthors);
 var
   AuthorIterator: IAuthorIterator;
-  i: Integer;
+  Count, Capacity: Integer;
   FilterValue: TFilterValue;
   Author: TAuthorData;
 begin
   FilterValue.ValueInt := BookID;
   AuthorIterator := GetAuthorIterator(amByBook, @FilterValue);
-  i := Length(BookAuthors);
+  Count := Length(BookAuthors);
+  Capacity := Count;
   while AuthorIterator.Next(Author) do
   begin
-    SetLength(BookAuthors, i + 1);
-    BookAuthors[i] := Author;
-    Inc(i);
+    if Count >= Capacity then
+    begin
+      if Capacity = 0 then
+        Capacity := 4
+      else
+        Capacity := Capacity * 2;
+      SetLength(BookAuthors, Capacity);
+    end;
+    BookAuthors[Count] := Author;
+    Inc(Count);
   end;
+  SetLength(BookAuthors, Count);
 end;
 
 procedure TBookCollection.VerifyCurrentCollection(const DatabaseID: Integer);

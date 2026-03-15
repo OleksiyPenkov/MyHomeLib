@@ -164,7 +164,7 @@ end;
 
 procedure TImportInpxThreadBase.ParseData(const input: string; const OnlineCollection: Boolean; var R: TBookRecord);
 var
-  p, i: Integer;
+  i: Integer;
   slParams: TStringList;
   AuthorList: string;
   strLastName: string;
@@ -173,6 +173,7 @@ var
   GenreList: string;
   s: string;
   mm, dd, yy: word;
+  pStart, pCur, pItemStart, pSub, pSubStart: PChar;
 
   Max: Integer;
   CompRes: Integer;
@@ -196,41 +197,67 @@ begin
         flAuthor:
           begin // Список авторов
             AuthorList := slParams[i];
-            p := PosChr(INPX_ITEM_DELIMITER, AuthorList);
-            while p <> 0 do
+            pStart := PChar(AuthorList);
+            pCur := pStart;
+            while pCur^ <> #0 do
             begin
-              s := Copy(AuthorList, 1, p - 1);
-              Delete(AuthorList, 1, p);
+              // Find the end of this author entry (delimited by INPX_ITEM_DELIMITER)
+              pItemStart := pCur;
+              while (pCur^ <> #0) and (pCur^ <> INPX_ITEM_DELIMITER) do
+                Inc(pCur);
 
-              p := PosChr(INPX_SUBITEM_DELIMITER, s);
-              strLastName := Copy(s, 1, p - 1);
-              Delete(s, 1, p);
+              if pCur > pItemStart then
+              begin
+                // Parse author sub-fields (LastName,FirstName,MiddleName)
+                pSub := pItemStart;
 
-              p := PosChr(INPX_SUBITEM_DELIMITER, s);
-              strFirstName := Copy(s, 1, p - 1);
-              Delete(s, 1, p);
+                // LastName
+                pSubStart := pSub;
+                while (pSub < pCur) and (pSub^ <> INPX_SUBITEM_DELIMITER) do
+                  Inc(pSub);
+                SetString(strLastName, pSubStart, pSub - pSubStart);
+                if (pSub < pCur) then Inc(pSub);
 
-              strMidName := s;
+                // FirstName
+                pSubStart := pSub;
+                while (pSub < pCur) and (pSub^ <> INPX_SUBITEM_DELIMITER) do
+                  Inc(pSub);
+                SetString(strFirstName, pSubStart, pSub - pSubStart);
+                if (pSub < pCur) then Inc(pSub);
 
-              TAuthorsHelper.Add(R.Authors, strLastName, strFirstName, strMidName);
+                // MiddleName (rest until item delimiter)
+                SetString(strMidName, pSub, pCur - pSub);
 
-              p := PosChr(INPX_ITEM_DELIMITER, AuthorList);
+                TAuthorsHelper.Add(R.Authors, strLastName, strFirstName, strMidName);
+              end;
+
+              if pCur^ <> #0 then
+                Inc(pCur); // skip delimiter
             end;
           end;
 
         flGenre:
           begin // Список жанров
             GenreList := slParams[i];
-            p := PosChr(INPX_ITEM_DELIMITER, GenreList);
-            while p <> 0 do
+            pStart := PChar(GenreList);
+            pCur := pStart;
+            while pCur^ <> #0 do
             begin
-              if FGenresType = gtFb2 then
-                TGenresHelper.Add(R.Genres, '', '', Copy(GenreList, 1, p - 1))
-              else
-                TGenresHelper.Add(R.Genres, Copy(GenreList, 1, p - 1), '', '');
+              pItemStart := pCur;
+              while (pCur^ <> #0) and (pCur^ <> INPX_ITEM_DELIMITER) do
+                Inc(pCur);
 
-              Delete(GenreList, 1, p);
-              p := PosChr(INPX_ITEM_DELIMITER, GenreList);
+              if pCur > pItemStart then
+              begin
+                SetString(s, pItemStart, pCur - pItemStart);
+                if FGenresType = gtFb2 then
+                  TGenresHelper.Add(R.Genres, '', '', s)
+                else
+                  TGenresHelper.Add(R.Genres, s, '', '');
+              end;
+
+              if pCur^ <> #0 then
+                Inc(pCur);
             end;
           end;
 
@@ -304,11 +331,9 @@ begin
 end;
 
 procedure TImportInpxThreadBase.GetFields(const StructureInfo: string);
-const
-  del = ';';
 var
-  s: string;
-  p, i: Integer;
+  sl: TStringList;
+  i: Integer;
 
   function FindType(const s: string): TFields;
   var
@@ -324,25 +349,20 @@ var
   end;
 
 begin
-  s := StructureInfo;
+  sl := TStringList.Create;
+  try
+    sl.Delimiter := ';';
+    sl.StrictDelimiter := True;
+    sl.DelimitedText := StructureInfo;
 
-  // код
-  SetLength(FFields, 0);
-  i := 0;
-  p := Pos(del, s);
-  while p <> 0 do
-  begin
-    SetLength(FFields, i + 1);
-    FFields[i] := FindType(Copy(s, 1, p - 1));
-    Delete(s, 1, p);
-    p := Pos(del, s);
-
-    //
-    // если среди полей есть Folder, то необходимо использовать это поле при создании BookRecord
-    //
-    FUseStoredFolder := FUseStoredFolder or (FFields[i] = flFolder);
-
-    Inc(i);
+    SetLength(FFields, sl.Count);
+    for i := 0 to sl.Count - 1 do
+    begin
+      FFields[i] := FindType(sl[i]);
+      FUseStoredFolder := FUseStoredFolder or (FFields[i] = flFolder);
+    end;
+  finally
+    sl.Free;
   end;
 end;
 

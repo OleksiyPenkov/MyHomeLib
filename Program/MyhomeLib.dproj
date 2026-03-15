@@ -131,8 +131,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>857</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.4.0.857;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.4.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>859</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.4.0.859;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.4.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
