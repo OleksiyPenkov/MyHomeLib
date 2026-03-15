@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#475E74"/>
+      <stop offset="100%" stop-color="#2E4256"/>
+    </linearGradient>
+    <linearGradient id="sec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A5066"/>
+      <stop offset="100%" stop-color="#2E3F52"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#9AACBB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M7 12 L7 30 Q7 32 9 32 L31 32 Q33 32 33 30 L33 14 L22 14 L19 11 L9 11 Q7 11 7 12 Z" fill="url(#body)"/>
+    <path d="M7 16 L33 16 L33 30 Q33 32 31 32 L9 32 Q7 32 7 30 Z" fill="url(#sec)"/>
+    <line x1="17" y1="22" x2="27" y2="22" stroke="#3CB4DC" stroke-width="1.5"/>
+    <line x1="17" y1="25.5" x2="25" y2="25.5" stroke="#3CB4DC" stroke-width="1.5"/>
+    <line x1="17" y1="29" x2="22" y2="29" stroke="#3CB4DC" stroke-width="1.5"/>
+    <polyline points="12,21 14.5,24 17,21" stroke-width="1.5"/>
+  </g>
+</svg>

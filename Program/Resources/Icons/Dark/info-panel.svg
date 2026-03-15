@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#475E74"/>
+      <stop offset="100%" stop-color="#2E4256"/>
+    </linearGradient>
+    <linearGradient id="sec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3A5066"/>
+      <stop offset="100%" stop-color="#2E3F52"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#9AACBB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <rect x="6" y="7" width="28" height="26" rx="3" fill="url(#body)"/>
+    <rect x="6" y="7" width="14" height="26" rx="3" fill="url(#sec)"/>
+    <line x1="20" y1="7" x2="20" y2="33"/>
+    <circle cx="27" cy="17" r="5" fill="#3CB4DC" stroke="#9AACBB" stroke-width="1.2"/>
+    <text x="27" y="20" font-family="Segoe UI, Georgia" font-size="9" font-weight="bold" fill="#1a2a3a" text-anchor="middle" stroke="none">i</text>
+    <line x1="23" y1="26" x2="31" y2="26" stroke-width="1"/>
+    <line x1="23" y1="29" x2="29" y2="29" stroke-width="1"/>
+  </g>
+</svg>

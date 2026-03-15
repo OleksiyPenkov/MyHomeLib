@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Eraser / broom -->
+    <rect x="6" y="8" width="28" height="24" rx="4" fill="url(#body)"/>
+    <!-- Sweep lines -->
+    <line x1="12" y1="15" x2="28" y2="15" stroke-width="1.2"/>
+    <line x1="12" y1="20" x2="28" y2="20" stroke-width="1.2"/>
+    <line x1="12" y1="25" x2="28" y2="25" stroke-width="1.2"/>
+    <!-- X overlay -->
+    <line x1="14" y1="13" x2="26" y2="27" stroke="#E05555" stroke-width="2.5"/>
+    <line x1="26" y1="13" x2="14" y2="27" stroke="#E05555" stroke-width="2.5"/>
+  </g>
+</svg>

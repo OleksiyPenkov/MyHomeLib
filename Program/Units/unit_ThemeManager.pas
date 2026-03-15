@@ -20,7 +20,7 @@ type
 implementation
 
 uses
-  Winapi.Windows, System.SysUtils, Registry;
+  Winapi.Windows, System.SysUtils, Registry, dm_Images;
 
 const
   CStyleLight = 'Windows10';
@@ -65,6 +65,9 @@ begin
     StyleName := CStyleLight;
 
   TStyleManager.TrySetStyle(StyleName, False);
+
+  if Assigned(dmImages) then
+    dmImages.ApplyThemeIcons;
 end;
 
 end.

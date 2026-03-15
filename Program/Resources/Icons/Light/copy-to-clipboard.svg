@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
+    </linearGradient>
+    <linearGradient id="sec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C0D0E2"/>
+      <stop offset="100%" stop-color="#96AABE"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Back page -->
+    <rect x="12" y="6" width="20" height="26" rx="2" fill="url(#sec)"/>
+    <!-- Front page -->
+    <rect x="8" y="10" width="20" height="26" rx="2" fill="url(#body)"/>
+    <!-- Lines on front -->
+    <line x1="12" y1="17" x2="24" y2="17" stroke-width="1"/>
+    <line x1="12" y1="21" x2="24" y2="21" stroke-width="1"/>
+    <line x1="12" y1="25" x2="20" y2="25" stroke-width="1"/>
+    <!-- Clip at top -->
+    <rect x="14" y="8" width="8" height="5" rx="1.5" fill="#3CB4DC" stroke="#19375F" stroke-width="1"/>
+  </g>
+</svg>

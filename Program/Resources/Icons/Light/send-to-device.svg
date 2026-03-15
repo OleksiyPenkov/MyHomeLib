@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
+    </linearGradient>
+    <linearGradient id="sec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C0D0E2"/>
+      <stop offset="100%" stop-color="#96AABE"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Device / tablet -->
+    <rect x="16" y="6" width="18" height="26" rx="2.5" fill="url(#body)"/>
+    <rect x="18" y="9" width="14" height="18" rx="1" fill="url(#sec)"/>
+    <!-- Device button -->
+    <circle cx="25" cy="30" r="1.2" fill="#19375F"/>
+    <!-- Arrow from left -->
+    <line x1="6" y1="18" x2="15" y2="18" stroke-width="2"/>
+    <polyline points="12,14.5 15.5,18 12,21.5" stroke-width="2" fill="none"/>
+    <!-- Accent arrow head -->
+    <polyline points="12,14.5 15.5,18 12,21.5" stroke="#3CB4DC" stroke-width="1.5" fill="none"/>
+  </g>
+</svg>

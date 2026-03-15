@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
+    </linearGradient>
+    <linearGradient id="sec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C0D0E2"/>
+      <stop offset="100%" stop-color="#96AABE"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Panel frame -->
+    <rect x="6" y="7" width="28" height="26" rx="3" fill="url(#body)"/>
+    <!-- Split: left panel -->
+    <rect x="6" y="7" width="14" height="26" rx="3" fill="url(#sec)"/>
+    <line x1="20" y1="7" x2="20" y2="33"/>
+    <!-- Info "i" circle -->
+    <circle cx="27" cy="17" r="5" fill="#3CB4DC" stroke="#19375F" stroke-width="1.2"/>
+    <text x="27" y="20" font-family="Segoe UI, Georgia" font-size="9" font-weight="bold" fill="#fff" text-anchor="middle" stroke="none">i</text>
+    <!-- Info lines -->
+    <line x1="23" y1="26" x2="31" y2="26" stroke-width="1"/>
+    <line x1="23" y1="29" x2="29" y2="29" stroke-width="1"/>
+  </g>
+</svg>

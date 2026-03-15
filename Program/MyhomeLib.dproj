@@ -135,8 +135,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>907</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.907;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>908</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.908;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
@@ -212,6 +212,10 @@
     </DCCReference>
     <DCCReference Include="DataModules\dm_user.pas">
       <Form>DMUser</Form>
+      <DesignClass>TDataModule</DesignClass>
+    </DCCReference>
+    <DCCReference Include="DataModules\dm_Images.pas">
+      <Form>dmImages</Form>
       <DesignClass>TDataModule</DesignClass>
     </DCCReference>
     <DCCReference Include="Units\unit_Globals.pas" />

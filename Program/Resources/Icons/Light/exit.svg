@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Door frame -->
+    <path d="M10 7 L10 33 L26 33 L26 25" fill="url(#body)"/>
+    <path d="M26 15 L26 7 L10 7"/>
+    <!-- Arrow out -->
+    <line x1="18" y1="20" x2="34" y2="20" stroke="#E05555" stroke-width="2"/>
+    <polyline points="30,16 34,20 30,24" stroke="#E05555" stroke-width="2"/>
+  </g>
+</svg>

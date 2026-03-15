@@ -148,7 +148,8 @@ uses
   unit_MHLHttpClient in 'Units\unit_MHLHttpClient.pas',
   Vcl.Themes,
   Vcl.Styles,
-  unit_ThemeManager in 'Units\unit_ThemeManager.pas';
+  unit_ThemeManager in 'Units\unit_ThemeManager.pas',
+  dm_Images in 'DataModules\dm_Images.pas' {dmImages: TDataModule};
 
 {$R *.res}
 
@@ -171,6 +172,9 @@ begin
     Application.CreateForm(TDMUser, DMUser);
     DMUser.Init;
     TMHLThemeManager.ApplyTheme(TMHLThemeMode(Settings.ThemeMode));
+
+    Application.CreateForm(TdmImages, dmImages);
+    dmImages.ApplyThemeIcons;
 
     Application.CreateForm(TfrmMain, frmMain);
     Application.CreateForm(TfrmGenreTree, frmGenreTree);

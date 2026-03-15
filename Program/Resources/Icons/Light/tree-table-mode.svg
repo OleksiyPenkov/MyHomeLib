@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <defs>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
+    </linearGradient>
+    <linearGradient id="sec" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C0D0E2"/>
+      <stop offset="100%" stop-color="#96AABE"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- Table grid -->
+    <rect x="6" y="7" width="28" height="26" rx="3" fill="url(#body)"/>
+    <!-- Header row -->
+    <rect x="6" y="7" width="28" height="7" rx="3" fill="url(#sec)"/>
+    <line x1="6" y1="14" x2="34" y2="14"/>
+    <!-- Rows -->
+    <line x1="6" y1="20" x2="34" y2="20"/>
+    <line x1="6" y1="26" x2="34" y2="26"/>
+    <!-- Columns -->
+    <line x1="16" y1="7" x2="16" y2="33"/>
+    <line x1="26" y1="7" x2="26" y2="33"/>
+    <!-- Accent on header -->
+    <line x1="8" y1="10.5" x2="14" y2="10.5" stroke="#3CB4DC" stroke-width="1.5"/>
+  </g>
+</svg>
