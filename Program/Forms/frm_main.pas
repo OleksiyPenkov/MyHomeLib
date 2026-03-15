@@ -3659,6 +3659,8 @@ begin
 
   if ScriptID = 799 then // выбор папки; не зависит от формата
   begin
+    if FLastDeviceDir = '' then
+      FLastDeviceDir := Settings.DeviceDir;
     if not GetFolderShellItem(Handle, 'Вкажіть шлях', FLastDeviceDir, DeviceShellItem) then
       Exit;
     AFolder := FLastDeviceDir;
@@ -3671,6 +3673,8 @@ begin
 
     if (ScriptID < 1) and (Settings.PromptDevicePath) then
     begin
+      if FLastDeviceDir = '' then
+        FLastDeviceDir := Settings.DeviceDir;
       if not GetFolderShellItem(Handle, rstrProvideThePath, FLastDeviceDir, DeviceShellItem) then
         Exit
       else
