@@ -67,7 +67,9 @@ uses
   unit_ColorTabs,
   System.Actions,
   System.ImageList,
-  Vcl.Themes;
+  Vcl.Themes,
+  RzPanel, RzButton, RzStatus, RzTabs,
+  dm_Images;
 
 type
   TfrmMain = class(TForm)
@@ -125,21 +127,23 @@ type
     pmCollection: TPopupMenu;
     miUpdate: TMenuItem;
     miGoToAuthor: TMenuItem;
-    tlbrMain: TToolBar;
-    tbtnRead: TToolButton;
-    tbSendToDevice: TToolButton;
-    tbtnRus: TToolButton;
-    tbtnEng: TToolButton;
-    tbSelectAll: TToolButton;
-    tbCollapse: TToolButton;
-    tbtnShowCover: TToolButton;
-    tbtnShowDeleted: TToolButton;
-    ToolButton12: TToolButton;
-    ToolButton13: TToolButton;
-    ToolButton1: TToolButton;
-    ToolButton3: TToolButton;
-    BtnFav_add: TToolButton;
-    tbtnSettings: TToolButton;
+    tlbrMain: TRzToolbar;
+    tbtnRead: TRzToolButton;
+    tbSendToDevice: TRzToolButton;
+    tbtnRus: TRzToolButton;
+    tbtnEng: TRzToolButton;
+    tbSelectAll: TRzToolButton;
+    tbCollapse: TRzToolButton;
+    tbtnShowCover: TRzToolButton;
+    tbtnShowDeleted: TRzToolButton;
+    RzSep1: TRzSpacer;
+    RzSep2: TRzSpacer;
+    RzSep3: TRzSpacer;
+    RzSep4: TRzSpacer;
+    RzSep5: TRzSpacer;
+    RzSep6: TRzSpacer;
+    BtnFav_add: TRzToolButton;
+    tbtnSettings: TRzToolButton;
     pmScripts: TPopupMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -147,17 +151,17 @@ type
     pmiScripts: TMenuItem;
     mmiScripts: TMenuItem;
     miSyncOnline: TMenuItem;
-    btnSwitchTreeMode: TToolButton;
-    tbtnWizard: TToolButton;
-    tbtnShowLocalOnly: TToolButton;
-    tbtnDownloadList_Add: TToolButton;
+    btnSwitchTreeMode: TRzToolButton;
+    tbtnWizard: TRzToolButton;
+    tbtnShowLocalOnly: TRzToolButton;
+    tbtnDownloadList_Add: TRzToolButton;
     N1: TMenuItem;
     miGoSite: TMenuItem;
-    pgControl: TPageControl;
-    tsSearch: TTabSheet;
-    tsByGroup: TTabSheet;
+    pgControl: TRzPageControl;
+    tsSearch: TRzTabSheet;
+    tsByGroup: TRzTabSheet;
     ilFileTypes: TImageList;
-    tsByAuthor: TTabSheet;
+    tsByAuthor: TRzTabSheet;
     tvAuthors: TVirtualStringTree;
     pnAuthorSearch: TMHLSimplePanel;
     lblAuthorsSearch: TLabel;
@@ -178,7 +182,7 @@ type
     N22: TMenuItem;
     N25: TMenuItem;
     N27: TMenuItem;
-    tsBySerie: TTabSheet;
+    tsBySerie: TRzTabSheet;
     pnSeriesView: TMHLSimplePanel;
     tvSeries: TVirtualStringTree;
     pnSerieSearch: TMHLSimplePanel;
@@ -189,7 +193,7 @@ type
     pnSerieBooksTitle: TMHLSimplePanel;
     lblBooksTotalS: TLabel;
     ipnlSeries: TInfoPanel;
-    tsByGenre: TTabSheet;
+    tsByGenre: TRzTabSheet;
     pnGenresView: TMHLSimplePanel;
     tvGenres: TVirtualStringTree;
     pnGenreBooksView: TMHLSimplePanel;
@@ -202,32 +206,32 @@ type
     N29: TMenuItem;
     N32: TMenuItem;
     N33: TMenuItem;
-    tsDownload: TTabSheet;
+    tsDownload: TRzTabSheet;
     pmDownloadList: TPopupMenu;
     mi_dwnl_LocateAuthor: TMenuItem;
     N35: TMenuItem;
     mi_dwnl_Delete: TMenuItem;
     ilToolBar_Disabled: TImageList;
     N34: TMenuItem;
-    tlbrDownloadList: TToolBar;
-    BtnDwnldUp: TToolButton;
-    BtnDwnldDown: TToolButton;
-    BtnDelete: TToolButton;
-    BtnFirstRecord: TToolButton;
-    BtnLastRecord: TToolButton;
-    RzSpacer2: TToolButton;
-    ToolButton7: TToolButton;
+    tlbrDownloadList: TRzToolbar;
+    BtnDwnldUp: TRzToolButton;
+    BtnDwnldDown: TRzToolButton;
+    BtnDelete: TRzToolButton;
+    BtnFirstRecord: TRzToolButton;
+    BtnLastRecord: TRzToolButton;
+    DlSep1: TRzSpacer;
+    DlSep2: TRzSpacer;
     lblAuthor: TLabel;
     lblSeries: TLabel;
-    btnStartDownload: TToolButton;
-    btnPauseDownload: TToolButton;
+    btnStartDownload: TRzToolButton;
+    btnPauseDownload: TRzToolButton;
     Panel1: TMHLSimplePanel;
     RzPanel2: TMHLSimplePanel;
     lblDownloadState: TLabel;
     lblDnldAuthor: TLabel;
     lblDnldTitle: TLabel;
     lblDownloadCount: TLabel;
-    BtnSave: TToolButton;
+    BtnSave: TRzToolButton;
     N28: TMenuItem;
     N37: TMenuItem;
     miAddToSearch: TMenuItem;
@@ -313,12 +317,11 @@ type
     tbtnSplitter2: TToolButton;
     tbtnDeleteBook: TToolButton;
     tbtnAutoFBD: TToolButton;
-    tbtnHelp: TToolButton;
+    tbtnHelp: TRzToolButton;
     N46: TMenuItem;
     miExportToHTML: TMenuItem;
     txt1: TMenuItem;
     RTF1: TMenuItem;
-    ToolButton5: TToolButton;
     edFAnnotation: TMHLButtonedEdit;
     Label7: TLabel;
     pnAuthorsView: TMHLSimplePanel;
@@ -351,8 +354,7 @@ type
     pnSearchControl: TMHLSimplePanel;
     GroupsViewSplitter: TMHLSplitter;
     GroupBookInfoSplitter: TMHLSplitter;
-    ToolButton2: TToolButton;
-    tbtnClear: TToolButton;
+    tbtnClear: TRzToolButton;
     tvBooksA: TBookTree;
     tvBooksS: TBookTree;
     tvBooksG: TBookTree;
@@ -373,7 +375,10 @@ type
     acGroupCreate: TAction;
     acGroupDelete: TAction;
     acGroupClear: TAction;
-    StatusBar: TStatusBar;
+    StatusBar: TRzStatusBar;
+    spStatus: TRzStatusPane;
+    spHint: TRzStatusPane;
+    spInfo: TRzStatusPane;
     ilToolImages: TImageList;
     acSavePreset: TAction;
     acDeletePreset: TAction;
@@ -702,14 +707,10 @@ type
     procedure GenreLinkClicked(Sender: TObject; const Link: string; LinkType: TSysLinkType);
     procedure SeriesLinkClicked(Sender: TObject; const Link: string; LinkType: TSysLinkType);
     procedure UpdateBookAction(Sender: TObject);
-    procedure StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
-    procedure StatusBarResize(Sender: TObject);
     procedure tmrCheckUpdatesTimer(Sender: TObject);
     procedure acBookAdd2FavoritesExecute(Sender: TObject);
     procedure acBookAdd2GroupExecute(Sender: TObject);
     procedure acBookRemoveFromGroupExecute(Sender: TObject);
-    procedure pgControlDrawTab(Control: TCustomTabControl; TabIndex: Integer;
-      const Rect: TRect; Active: Boolean);
     procedure tbtnWizardClick(Sender: TObject);
     procedure acViewSetInfoPriorityExecute(Sender: TObject);
     procedure tmrSearchSTimer(Sender: TObject);
@@ -817,7 +818,7 @@ type
     //
     // Восстанавить тулбар в правильной позиции
     //
-    procedure ChangeToolbarVisability(ToolBars: array of TToolBar; ToolBar: TToolBar; ShowToolbar: Boolean);
+    procedure ChangeToolbarVisability(ToolBars: array of TWinControl; ToolBar: TWinControl; ShowToolbar: Boolean);
 
     //
     // Проверяет, не является ли текущая коллекция онлайн-коллекцией.
@@ -834,7 +835,7 @@ type
     //
     // Возвращает кнопку, соответствующую заданному фильтру.
     //
-    function GetFilterButton(ToolBars: array of TToolBar; const Filter: string): TToolButton;
+    function GetFilterButton(ToolBars: array of TWinControl; const Filter: string): TToolButton;
 
     //
     // Обработчик события для кнопок алфавитного тулбара на странице "Авторы"
@@ -867,9 +868,9 @@ type
 
     FFileOpMode: (fmFb2Zip, fmFb2);
 
-    FMainBars: array [0 .. 1] of TToolBar;
-    FAuthorBars: array [0 .. 1] of TToolBar;
-    FSerieBars: array [0 .. 1] of TToolBar;
+    FMainBars: array [0 .. 1] of TWinControl;
+    FAuthorBars: array [0 .. 1] of TWinControl;
+    FSerieBars: array [0 .. 1] of TWinControl;
 
     FLastLetterA: TToolButton;
     FLastLetterS: TToolButton;
@@ -2587,25 +2588,22 @@ end;
 
 function TfrmMain.GetShowStatusProgress: Boolean;
 begin
-  Result := (psOwnerDraw = StatusBar.Panels[1].Style);
+  Result := FStatusProgressBar.Visible;
 end;
 
 procedure TfrmMain.SetShowStatusProgress(const Value: Boolean);
 begin
-  if Value then
-    StatusBar.Panels[1].Style := psOwnerDraw
-  else
-    StatusBar.Panels[1].Style := psText;
+  FStatusProgressBar.Visible := Value;
 end;
 
 function TfrmMain.GetStatusMessage: string;
 begin
-  Result := StatusBar.Panels[0].Text;
+  Result := spStatus.Caption;
 end;
 
 procedure TfrmMain.SetStatusMessage(const Value: string);
 begin
-  StatusBar.Panels[0].Text := Value;
+  spStatus.Caption := Value;
   if StatusBar.Visible then
     StatusBar.Repaint;
 end;
@@ -2625,20 +2623,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const Rect: TRect);
-begin
-  if Panel = StatusBar.Panels[1] then
-  begin
-    FStatusProgressBar.BoundsRect := Rect;
-    FStatusProgressBar.PaintTo(StatusBar.Canvas.Handle, Rect.Left, Rect.Top);
-  end;
-end;
-
-procedure TfrmMain.StatusBarResize(Sender: TObject);
-begin
-  StatusBar.Panels[0].Width :=
-    StatusBar.Width - (StatusBar.Panels[1].Width + StatusBar.Panels[2].Width);
-end;
 
 function TfrmMain.LoadLastCollection: boolean;
 var
@@ -2760,7 +2744,7 @@ begin
   ShowStatusProgress := False;
   StatusProgress := 0;
 
-  StatusBar.Panels[2].Text := unit_MHLHelpers.GetFileVersion(Application.ExeName);
+  spInfo.Caption := unit_MHLHelpers.GetFileVersion(Application.ExeName);
   // SB
 end;
 
@@ -2792,9 +2776,6 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  if StyleServices.Enabled and not StyleServices.IsSystemStyle then
-    pgControl.OwnerDraw := False;
-
   FSystemData := SystemDB;
 
   ConnectTreeControllers;
@@ -3911,11 +3892,11 @@ begin
   acViewHideDeletedBooks.Checked := Settings.HideDeletedBooks;
 end;
 
-function TfrmMain.GetFilterButton(ToolBars: array of TToolBar; const Filter: string): TToolButton;
+function TfrmMain.GetFilterButton(ToolBars: array of TWinControl; const Filter: string): TToolButton;
 var
   RealFilter: string;
   barIndex: Integer;
-  bar: TToolBar;
+  bar: TWinControl;
   i: Integer;
 begin
   Result := nil;
@@ -5131,7 +5112,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.ChangeToolbarVisability(ToolBars: array of TToolBar; ToolBar: TToolBar; ShowToolbar: Boolean);
+procedure TfrmMain.ChangeToolbarVisability(ToolBars: array of TWinControl; ToolBar: TWinControl; ShowToolbar: Boolean);
 var
   BarTop: Integer;
   i: Integer;
@@ -6644,32 +6625,6 @@ begin
   Settings.ActivePage := pgControl.ActivePageIndex;
 end;
 
-procedure TfrmMain.pgControlDrawTab(Control: TCustomTabControl;
-  TabIndex: Integer; const Rect: TRect; Active: Boolean);
-var
-  AText: string;
-  APoint: TPoint;
-begin
-  // When VCL Style is active, OwnerDraw is disabled — this handler won't be called.
-  // This code only runs in classic (unstyled) mode.
-  with (Control as TPageControl).Canvas do
-  begin
-    Brush.Color := clMenuBar;
-    FillRect(Rect);
-    AText := TPageControl(Control).Pages[TabIndex].Caption;
-    APoint.X := (Rect.Right - Rect.Left) div 2 - TextWidth(AText) div 2;
-    APoint.Y := (Rect.Bottom - Rect.Top) div 2 - TextHeight(AText) div 2;
-    TextRect(Rect, Rect.Left + APoint.X, Rect.Top + APoint.Y, AText);
-
-    if Active then
-    begin
-      Pen.Color := $00EFD3C6;
-      Pen.Width := 3;
-      MoveTo(Rect.Left + 3, Rect.Top + 4);
-      LineTo(Rect.Right - 4, 4);
-    end;
-  end;
-end;
 
 procedure TfrmMain.ShowHelpExecute(Sender: TObject);
 begin

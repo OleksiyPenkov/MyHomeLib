@@ -28,6 +28,7 @@ uses
   SysUtils,
   Clipbrd,
   Menus,
+  RzCommon, RzPanel,
   FictionBook_21,
   StrUtils,
   unit_MHLHelpers,
@@ -35,10 +36,10 @@ uses
   MHLLinkLabel;
 
 type
-  TInfoPanel = class(TCustomPanel)
+  TInfoPanel = class(TRzPanel)
   private
     FCover: TImage;
-    FInfoPanel: TPanel;
+    FInfoPanel: TRzPanel;
     FTitle: TLabel;
     FAuthors: TMHLLinkLabel;
     FSerieLabel: TLabel;
@@ -55,14 +56,10 @@ type
     FOnAnnotationClicked: TNotifyEvent;
     FMenu: TPopupMenu;
 
-    FColor: TColor;
-
-
     FInfoPriority: Boolean;
 
     function GetShowCover: boolean;
     procedure SetShowCover(const Value: boolean);
-    procedure SetColor(Value: TColor);
 
     function GetShowAnnotation: Boolean;
     procedure SetShowAnnotation(const Value: Boolean);
@@ -105,66 +102,6 @@ type
     procedure Clear;
 
   published
-    property Align;
-    property Anchors;
-    property BiDiMode;
-    property Color read FColor write SetColor default clWindow;
-    //property Constraints;
-    property Ctl3D;
-    property UseDockManager default True;
-    property DockSite;
-    property DoubleBuffered;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property Enabled;
-    property FullRepaint;
-    property Font;
-    //property Locked;
-    property Padding;
-    property ParentBiDiMode;
-    property ParentBackground;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Touch;
-    property VerticalAlignment;
-    property Visible;
-
-    property OnAlignInsertBefore;
-    property OnAlignPosition;
-    property OnCanResize;
-    property OnClick;
-    property OnConstrainedResize;
-    property OnContextPopup;
-    property OnDockDrop;
-    property OnDockOver;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDock;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnGesture;
-    property OnGetSiteInfo;
-    property OnMouseActivate;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
-    property OnStartDock;
-    property OnStartDrag;
-    property OnUnDock;
-
     property ShowCover: Boolean read GetShowCover write SetShowCover default True;
     property ShowAnnotation: Boolean read GetShowAnnotation write SetShowAnnotation default True;
     property InfoPriority: Boolean read FInfoPriority write SetInfoPriority default False;
@@ -209,8 +146,8 @@ begin
 
   SetBounds(0, 0, 500, 200);
 
-  BevelOuter := bvNone;
-  ShowCaption := False;
+  BorderOuter := fsFlatRounded;
+  BorderInner := fsNone;
 
   FCover := TImage.Create(Self);
   FCover.Parent := Self;
@@ -221,12 +158,11 @@ begin
   FCover.Proportional := True;
   FCover.Stretch := True;
 
-  FInfoPanel := TPanel.Create(Self);
+  FInfoPanel := TRzPanel.Create(Self);
   FInfoPanel.Parent := Self;
   FInfoPanel.SetBounds(200, 0, 300, 200);
   FInfoPanel.Align := alClient;
-  FInfoPanel.BevelOuter := bvNone;
-  FInfoPanel.ShowCaption := False;
+  FInfoPanel.BorderOuter := fsNone;
 
   FTitle := TLabel.Create(FInfoPanel);
   FTitle.Parent := FInfoPanel;
@@ -394,14 +330,6 @@ begin
   FGenres.Caption := Genres;
 end;
 
-procedure TInfoPanel.SetColor(Value: TColor);
-begin
-  if FColor <> Value then
-  begin
-    FColor := Value;
-    FAnnotation.Color := Value;
-  end;
-end;
 
 procedure TInfoPanel.SetFb2Info(book: IXMLFictionBook; const Folder, FileName: string);
 var

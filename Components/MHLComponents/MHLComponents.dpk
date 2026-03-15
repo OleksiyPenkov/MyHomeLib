@@ -37,6 +37,7 @@ requires
   IndySystem,
   IndyProtocols,
   soaprtl,
+  RaizeComponentsVcl,
 {$IFDEF WIN32}
   VirtualTreesDD;
 {$ELSE}

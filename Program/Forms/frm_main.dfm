@@ -57,180 +57,188 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   TextHeight = 13
-  object tlbrMain: TToolBar
-    Left = 0
-    Top = 0
-    Width = 792
-    Height = 40
-    HelpContext = 146
-    ButtonHeight = 40
-    ButtonWidth = 41
-    Caption = 'tlbrMain'
-    DisabledImages = ilToolBar_Disabled
-    Images = ilToolBar
+  object tlbrMain: TRzToolbar
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 786
+    Height = 36
+    Margins.Left = 3
+    Margins.Top = 3
+    Margins.Right = 3
+    Margins.Bottom = 0
+    Align = alTop
+    AutoStyle = False
+    Images = dmImages.vilToolbar
+    RowHeight = 32
+    AutoSize = True
+    BorderInner = fsNone
+    BorderOuter = fsFlatRounded
+    BorderWidth = 0
+    FullRepaint = True
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    Wrapable = False
-    ExplicitWidth = 778
-    object tbtnRead: TToolButton
-      Left = 0
-      Top = 0
+    ToolbarControls = (
+      tbtnRead
+      tbtnDownloadList_Add
+      tbSendToDevice
+      RzSep1
+      tbtnRus
+      tbtnEng
+      RzSep2
+      tbtnWizard
+      RzSep3
+      BtnFav_add
+      RzSep4
+      tbSelectAll
+      tbCollapse
+      RzSep5
+      btnSwitchTreeMode
+      tbtnShowDeleted
+      tbtnShowLocalOnly
+      tbtnShowCover
+      RzSep6
+      tbtnSettings
+      tbtnHelp)
+    object tbtnRead: TRzToolButton
+      Left = 6
+      Top = 2
       Action = acBookRead
       ImageIndex = 0
     end
-    object tbtnDownloadList_Add: TToolButton
-      Left = 41
-      Top = 0
+    object tbtnDownloadList_Add: TRzToolButton
+      Left = 33
+      Top = 2
       Action = acBookAdd2DownloadList
       ImageIndex = 2
     end
-    object tbSendToDevice: TToolButton
+    object tbSendToDevice: TRzToolButton
       Tag = 900
-      Left = 82
-      Top = 0
+      Left = 60
+      Top = 2
       Hint = #1053#1072#1076#1110#1089#1083#1072#1090#1080' '#1085#1072' '#1087#1088#1080#1089#1090#1088#1110#1081
-      Caption = 'tbSendToDevice'
-      DropdownMenu = pmScripts
+      DropDownMenu = pmScripts
       ImageIndex = 1
-      Style = tbsDropDown
+      ToolStyle = tsDropDown
+      ParentShowHint = False
+      ShowHint = True
       OnClick = SendToDeviceExecute
     end
-    object ToolButton13: TToolButton
-      Left = 154
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton13'
-      ImageIndex = 11
-      Style = tbsSeparator
+    object RzSep1: TRzSpacer
+      Left = 100
+      Top = 2
     end
-    object tbtnRus: TToolButton
-      Left = 162
-      Top = 0
+    object tbtnRus: TRzToolButton
+      Left = 108
+      Top = 2
       Action = acShowRusAlphabet
       ImageIndex = 3
     end
-    object tbtnEng: TToolButton
-      Left = 203
-      Top = 0
+    object tbtnEng: TRzToolButton
+      Left = 135
+      Top = 2
       Action = acShowEngAlphabet
       ImageIndex = 4
     end
-    object ToolButton12: TToolButton
-      Left = 244
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton12'
-      ImageIndex = 10
-      Style = tbsSeparator
+    object RzSep2: TRzSpacer
+      Left = 162
+      Top = 2
     end
-    object tbtnWizard: TToolButton
-      Left = 252
-      Top = 0
-      Caption = #1042#1080#1073#1088#1072#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102
-      DropdownMenu = pmCollection
+    object tbtnWizard: TRzToolButton
+      Left = 170
+      Top = 2
+      Hint = #1042#1080#1073#1088#1072#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102
+      DropDownMenu = pmCollection
       ImageIndex = 6
       ParentShowHint = False
       ShowHint = True
       OnClick = tbtnWizardClick
     end
-    object ToolButton3: TToolButton
-      Left = 293
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton3'
-      ImageIndex = 4
-      Style = tbsSeparator
+    object RzSep3: TRzSpacer
+      Left = 197
+      Top = 2
     end
-    object BtnFav_add: TToolButton
-      Left = 301
-      Top = 0
+    object BtnFav_add: TRzToolButton
+      Left = 205
+      Top = 2
       Action = acBookAdd2Favorites
-      DropdownMenu = pmGroups
+      DropDownMenu = pmGroups
       ImageIndex = 15
-      Style = tbsDropDown
+      ToolStyle = tsDropDown
     end
-    object ToolButton7: TToolButton
-      Left = 373
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton7'
-      ImageIndex = 18
-      Style = tbsSeparator
+    object RzSep4: TRzSpacer
+      Left = 245
+      Top = 2
     end
-    object tbSelectAll: TToolButton
-      Left = 381
-      Top = 0
+    object tbSelectAll: TRzToolButton
+      Left = 253
+      Top = 2
       Hint = #1042#1110#1076#1079#1085#1072#1095#1080#1090#1080' '#1074#1089#1077
-      Caption = 'tbSelectAll'
       ImageIndex = 7
+      ParentShowHint = False
+      ShowHint = True
       OnClick = tbSelectAllClick
     end
-    object tbCollapse: TToolButton
-      Left = 422
-      Top = 0
+    object tbCollapse: TRzToolButton
+      Left = 280
+      Top = 2
       Hint = #1056#1086#1079#1075#1086#1088#1085#1091#1090#1080'/'#1047#1075#1086#1088#1085#1091#1090#1080' '#1089#1087#1080#1089#1086#1082
-      Caption = 'tbCollapse'
       ImageIndex = 8
+      ParentShowHint = False
+      ShowHint = True
       OnClick = tbCollapseClick
     end
-    object ToolButton1: TToolButton
-      Left = 463
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton1'
-      ImageIndex = 10
-      Style = tbsSeparator
+    object RzSep5: TRzSpacer
+      Left = 307
+      Top = 2
     end
-    object btnSwitchTreeMode: TToolButton
-      Left = 471
-      Top = 0
+    object btnSwitchTreeMode: TRzToolButton
+      Left = 315
+      Top = 2
       Hint = #1055#1077#1088#1077#1082#1083#1102#1095#1080#1090#1080' '#1074' '#1088#1077#1078#1080#1084' "'#1058#1072#1073#1083#1080#1094#1103'"'
-      Caption = 'btnSwitchTreeMode'
       ImageIndex = 10
+      ParentShowHint = False
+      ShowHint = True
       OnClick = btnSwitchTreeModeClick
     end
-    object tbtnShowDeleted: TToolButton
-      Left = 512
-      Top = 0
+    object tbtnShowDeleted: TRzToolButton
+      Left = 342
+      Top = 2
       Action = acViewHideDeletedBooks
       ImageIndex = 12
     end
-    object tbtnShowLocalOnly: TToolButton
-      Left = 553
-      Top = 0
+    object tbtnShowLocalOnly: TRzToolButton
+      Left = 369
+      Top = 2
       Action = acViewShowLocalOnly
       ImageIndex = 13
     end
-    object tbtnShowCover: TToolButton
-      Left = 594
-      Top = 0
+    object tbtnShowCover: TRzToolButton
+      Left = 396
+      Top = 2
       Action = acShowBookInfoPanel
       ImageIndex = 14
     end
-    object ToolButton5: TToolButton
-      Left = 635
-      Top = 0
-      Width = 8
-      Caption = 'ToolButton5'
-      ImageIndex = 27
-      Style = tbsSeparator
+    object RzSep6: TRzSpacer
+      Left = 423
+      Top = 2
     end
-    object tbtnSettings: TToolButton
-      Left = 643
-      Top = 0
+    object tbtnSettings: TRzToolButton
+      Left = 431
+      Top = 2
       Action = acToolsSettings
       ImageIndex = 17
     end
-    object tbtnHelp: TToolButton
-      Left = 684
-      Top = 0
+    object tbtnHelp: TRzToolButton
+      Left = 458
+      Top = 2
       Hint = #1044#1086#1074#1110#1076#1082#1072
       Action = acHelpHelp
       ImageIndex = 26
     end
   end
-  object pgControl: TPageControl
+  object pgControl: TRzPageControl
     AlignWithMargins = True
     Left = 3
     Top = 65
@@ -239,13 +247,11 @@ object frmMain: TfrmMain
     HelpContext = 1
     ActivePage = tsByAuthor
     Align = alClient
-    OwnerDraw = True
     TabOrder = 2
     OnChange = pgControlChange
-    OnDrawTab = pgControlDrawTab
     ExplicitWidth = 772
     ExplicitHeight = 652
-    object tsByAuthor: TTabSheet
+    object tsByAuthor: TRzTabSheet
       HelpContext = 135
       Caption = #1040#1074#1090#1086#1088#1080
       object AuthorsViewSplitter: TMHLSplitter
@@ -411,7 +417,7 @@ object frmMain: TfrmMain
           Width = 531
           Height = 152
           Align = alBottom
-          Color = clBlack
+          BorderOuter = fsFlatRounded
           TabOrder = 2
           OnResize = InfoPanelResize
           ShowAnnotation = False
@@ -601,11 +607,12 @@ object frmMain: TfrmMain
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorsRus'
-        Color = clMenuBar
+        DrawingStyle = dsGradient
         HotImages = ilAlphabetActive
         Images = ilAlphabetNormal
-        ParentColor = False
+        ParentColor = True
         TabOrder = 0
+        Transparent = True
         Wrapable = False
         ExplicitWidth = 750
       end
@@ -617,16 +624,17 @@ object frmMain: TfrmMain
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorFilter1'
-        Color = clMenuBar
+        DrawingStyle = dsGradient
         HotImages = ilAlphabetActive
         Images = ilAlphabetNormal
-        ParentColor = False
+        ParentColor = True
         TabOrder = 1
+        Transparent = True
         Wrapable = False
         ExplicitWidth = 750
       end
     end
-    object tsBySerie: TTabSheet
+    object tsBySerie: TRzTabSheet
       HelpContext = 135
       Caption = #1057#1077#1088#1110#1111
       object SeriesViewSplitter: TMHLSplitter
@@ -796,7 +804,7 @@ object frmMain: TfrmMain
           Width = 545
           Height = 150
           Align = alBottom
-          Color = clBlack
+          BorderOuter = fsFlatRounded
           TabOrder = 2
           OnResize = InfoPanelResize
           OnAuthorLinkClicked = AuthorLinkClicked
@@ -987,9 +995,12 @@ object frmMain: TfrmMain
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorFilter1'
+        DrawingStyle = dsGradient
         HotImages = ilAlphabetActive
         Images = ilAlphabetNormal
+        ParentColor = True
         TabOrder = 2
+        Transparent = True
         Wrapable = False
         ExplicitWidth = 772
       end
@@ -1001,14 +1012,17 @@ object frmMain: TfrmMain
         Height = 29
         AutoSize = True
         Caption = 'tbarAuthorFilter1'
+        DrawingStyle = dsGradient
         HotImages = ilAlphabetActive
         Images = ilAlphabetNormal
+        ParentColor = True
         TabOrder = 3
+        Transparent = True
         Wrapable = False
         ExplicitWidth = 772
       end
     end
-    object tsByGenre: TTabSheet
+    object tsByGenre: TRzTabSheet
       HelpContext = 135
       Caption = #1046#1072#1085#1088#1080
       object GenresViewSplitter: TMHLSplitter
@@ -1160,7 +1174,7 @@ object frmMain: TfrmMain
           Width = 531
           Height = 100
           Align = alBottom
-          Color = clBlack
+          BorderOuter = fsFlatRounded
           TabOrder = 2
           OnResize = InfoPanelResize
           OnAuthorLinkClicked = AuthorLinkClicked
@@ -1271,7 +1285,7 @@ object frmMain: TfrmMain
         end
       end
     end
-    object tsSearch: TTabSheet
+    object tsSearch: TRzTabSheet
       HelpContext = 126
       Caption = #1055#1086#1096#1091#1082
       object SearchViewSplitter: TMHLSplitter
@@ -1312,7 +1326,7 @@ object frmMain: TfrmMain
           Width = 539
           Height = 150
           Align = alBottom
-          Color = clBlack
+          BorderOuter = fsFlatRounded
           TabOrder = 2
           OnResize = InfoPanelResize
           OnAuthorLinkClicked = AuthorLinkClicked
@@ -1893,7 +1907,7 @@ object frmMain: TfrmMain
         end
       end
     end
-    object tsByGroup: TTabSheet
+    object tsByGroup: TRzTabSheet
       HelpContext = 125
       Caption = #1043#1088#1091#1087#1080
       object GroupsViewSplitter: TMHLSplitter
@@ -2018,7 +2032,7 @@ object frmMain: TfrmMain
           Width = 545
           Height = 150
           Align = alBottom
-          Color = clBlack
+          BorderOuter = fsFlatRounded
           TabOrder = 2
           OnResize = InfoPanelResize
           OnAuthorLinkClicked = AuthorLinkClicked
@@ -2215,21 +2229,39 @@ object frmMain: TfrmMain
         end
       end
     end
-    object tsDownload: TTabSheet
+    object tsDownload: TRzTabSheet
       HelpContext = 108
       Caption = #1057#1087#1080#1089#1086#1082' '#1079#1072#1074#1072#1085#1090#1072#1078#1077#1085#1100
-      object tlbrDownloadList: TToolBar
+      object tlbrDownloadList: TRzToolbar
         AlignWithMargins = True
         Left = 3
         Top = 3
         Width = 772
-        Height = 22
-        ButtonWidth = 30
-        Images = ilToolImages
+        Height = 24
+        Align = alTop
+        AutoStyle = False
+        Images = dmImages.vilDownload
+        RowHeight = 20
+        AutoSize = True
+        BorderInner = fsNone
+        BorderOuter = fsFlatRounded
+        FullRepaint = True
         ParentShowHint = False
         ShowHint = True
         TabOrder = 0
-        object btnStartDownload: TToolButton
+        ToolbarControls = (
+          btnStartDownload
+          btnPauseDownload
+          DlSep1
+          BtnFirstRecord
+          BtnDwnldUp
+          BtnDwnldDown
+          BtnLastRecord
+          DlSep2
+          BtnDelete
+          BtnSave
+          tbtnClear)
+        object btnStartDownload: TRzToolButton
           Left = 0
           Top = 0
           Hint = #1057#1090#1072#1088#1090
@@ -2237,7 +2269,7 @@ object frmMain: TfrmMain
           ImageIndex = 1
           OnClick = btnStartDownloadClick
         end
-        object btnPauseDownload: TToolButton
+        object btnPauseDownload: TRzToolButton
           Left = 30
           Top = 0
           Hint = #1057#1090#1086#1087
@@ -2245,13 +2277,11 @@ object frmMain: TfrmMain
           ImageIndex = 2
           OnClick = btnPauseDownloadClick
         end
-        object RzSpacer2: TToolButton
+        object DlSep1: TRzSpacer
           Left = 60
-          Top = 0
-          Width = 8
-          Style = tbsSeparator
+          Top = 2
         end
-        object BtnFirstRecord: TToolButton
+        object BtnFirstRecord: TRzToolButton
           Tag = 20
           Left = 68
           Top = 0
@@ -2260,7 +2290,7 @@ object frmMain: TfrmMain
           ImageIndex = 3
           OnClick = MoveDwnldListNodes
         end
-        object BtnDwnldUp: TToolButton
+        object BtnDwnldUp: TRzToolButton
           Tag = 21
           Left = 98
           Top = 0
@@ -2269,7 +2299,7 @@ object frmMain: TfrmMain
           ImageIndex = 4
           OnClick = MoveDwnldListNodes
         end
-        object BtnDwnldDown: TToolButton
+        object BtnDwnldDown: TRzToolButton
           Tag = 22
           Left = 128
           Top = 0
@@ -2278,7 +2308,7 @@ object frmMain: TfrmMain
           ImageIndex = 5
           OnClick = MoveDwnldListNodes
         end
-        object BtnLastRecord: TToolButton
+        object BtnLastRecord: TRzToolButton
           Tag = 23
           Left = 158
           Top = 0
@@ -2287,15 +2317,11 @@ object frmMain: TfrmMain
           ImageIndex = 6
           OnClick = MoveDwnldListNodes
         end
-        object ToolButton2: TToolButton
+        object DlSep2: TRzSpacer
           Left = 188
-          Top = 0
-          Width = 8
-          Caption = 'ToolButton2'
-          ImageIndex = 17
-          Style = tbsSeparator
+          Top = 2
         end
-        object BtnDelete: TToolButton
+        object BtnDelete: TRzToolButton
           Left = 196
           Top = 0
           Hint = #1059#1076#1072#1083#1080#1090#1100
@@ -2303,7 +2329,7 @@ object frmMain: TfrmMain
           ImageIndex = 7
           OnClick = btnDeleteDownloadClick
         end
-        object BtnSave: TToolButton
+        object BtnSave: TRzToolButton
           Left = 226
           Top = 0
           Hint = 'Save'
@@ -2311,7 +2337,7 @@ object frmMain: TfrmMain
           ImageIndex = 8
           OnClick = BtnSaveClick
         end
-        object tbtnClear: TToolButton
+        object tbtnClear: TRzToolButton
           Left = 256
           Top = 0
           Caption = #1054#1095#1080#1089#1090#1080#1090#1100
@@ -2514,30 +2540,42 @@ object frmMain: TfrmMain
       Style = tbsTextButton
     end
   end
-  object StatusBar: TStatusBar
+  object StatusBar: TRzStatusBar
     Left = 0
     Top = 753
     Width = 792
-    Height = 19
-    AutoHint = True
-    Panels = <
-      item
-        Width = 200
-      end
-      item
-        Width = 100
-      end
-      item
-        Alignment = taCenter
-        Width = 100
-      end>
-    OnDrawPanel = StatusBarDrawPanel
-    OnResize = StatusBarResize
+    Height = 22
+    BorderInner = fsNone
+    BorderOuter = fsNone
+    BorderWidth = 0
+    TabOrder = 3
     ExplicitTop = 720
     ExplicitWidth = 778
+    object spStatus: TRzStatusPane
+      Left = 0
+      Top = 0
+      Width = 200
+      Height = 22
+      Align = alLeft
+    end
+    object spHint: TRzStatusPane
+      Left = 200
+      Top = 0
+      Width = 100
+      Height = 22
+      Align = alLeft
+    end
+    object spInfo: TRzStatusPane
+      Left = 300
+      Top = 0
+      Width = 100
+      Height = 22
+      Align = alLeft
+      Alignment = taCenter
+    end
   end
   object MainMenu: TMainMenu
-    Images = ilMainMenu
+    Images = dmImages.vilMenu
     OwnerDraw = True
     Left = 40
     Top = 384
@@ -2852,7 +2890,7 @@ object frmMain: TfrmMain
     end
   end
   object pmMain: TPopupMenu
-    Images = ilMainMenu
+    Images = dmImages.vilMenu
     OwnerDraw = True
     Left = 128
     Top = 280
@@ -8054,7 +8092,7 @@ object frmMain: TfrmMain
       000000000000}
   end
   object pmCollection: TPopupMenu
-    Images = ilMainMenu
+    Images = dmImages.vilMenu
     OwnerDraw = True
     Left = 40
     Top = 336
@@ -8719,7 +8757,7 @@ object frmMain: TfrmMain
     end
   end
   object pmDownloadList: TPopupMenu
-    Images = ilMainMenu
+    Images = dmImages.vilMenu
     OwnerDraw = True
     Left = 128
     Top = 376
@@ -12451,7 +12489,7 @@ object frmMain: TfrmMain
       000000000000}
   end
   object pmGroups: TPopupMenu
-    Images = ilMainMenu
+    Images = dmImages.vilMenu
     OwnerDraw = True
     Left = 128
     Top = 328
@@ -12474,7 +12512,7 @@ object frmMain: TfrmMain
     Top = 320
   end
   object Actions: TActionList
-    Images = ilMainMenu
+    Images = dmImages.vilMenu
     Left = 576
     Top = 208
     object acShowMainToolbar: TAction

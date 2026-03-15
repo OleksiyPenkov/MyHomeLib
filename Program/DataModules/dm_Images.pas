@@ -3,7 +3,7 @@ unit dm_Images;
 interface
 
 uses
-  Winapi.Windows, System.SysUtils, System.Classes, System.IOUtils,
+  Winapi.Windows, System.SysUtils, System.Classes,
   Vcl.Controls, Vcl.Forms, Vcl.Graphics,
   Vcl.BaseImageCollection, Vcl.ImageCollection,
   System.ImageList, Vcl.ImgList, Vcl.VirtualImageList;
@@ -21,11 +21,16 @@ type
   private
     FCurrentTheme: TIconTheme;
     FThemeLoaded: Boolean;
-    FIconsPath: string;
+    FResModule: HMODULE;
+    procedure LoadResFile;
+    procedure FreeResFile;
+    function SanitizeName(const AName: string): string;
     procedure LoadCollection(ACollection: TImageCollection;
       AVirtualImageList: TVirtualImageList;
-      const ANames: array of string; ASize: Integer);
+      const AResPrefix: string;
+      const ANames: array of string);
   public
+    destructor Destroy; override;
     procedure LoadIcons(ATheme: TIconTheme);
     procedure ApplyThemeIcons;
     class function DetectIconTheme: TIconTheme; static;
@@ -42,6 +47,8 @@ implementation
 {$R *.dfm}
 
 const
+  CIconResFile = 'Icons\MHLIcons.dll';
+
   // Main toolbar icon names — indices match old ilToolBar ImageIndex values
   CToolbarOrder: array[0..27] of string = (
     'book-read',          // 0
@@ -140,20 +147,50 @@ begin
 end;
 
 
+destructor TdmImages.Destroy;
+begin
+  FreeResFile;
+  inherited;
+end;
+
+
+procedure TdmImages.LoadResFile;
+var
+  ResPath: string;
+begin
+  if FResModule <> 0 then
+    Exit;
+  ResPath := ExtractFilePath(Application.ExeName) + CIconResFile;
+  FResModule := LoadLibraryEx(PChar(ResPath), 0, LOAD_LIBRARY_AS_DATAFILE);
+end;
+
+
+procedure TdmImages.FreeResFile;
+begin
+  if FResModule <> 0 then
+  begin
+    FreeLibrary(FResModule);
+    FResModule := 0;
+  end;
+end;
+
+
+function TdmImages.SanitizeName(const AName: string): string;
+begin
+  Result := UpperCase(StringReplace(AName, '-', '_', [rfReplaceAll]));
+end;
+
+
 procedure TdmImages.LoadCollection(ACollection: TImageCollection;
   AVirtualImageList: TVirtualImageList;
-  const ANames: array of string; ASize: Integer);
+  const AResPrefix: string;
+  const ANames: array of string);
 var
   I: Integer;
+  RS: TResourceStream;
   Item: TImageCollectionItem;
-  ThemeFolder, FilePath, ItemName: string;
-  FS: TFileStream;
+  ResName, ItemName: string;
 begin
-  if FCurrentTheme = itDark then
-    ThemeFolder := FIconsPath + 'Dark' + PathDelim + 'png' + PathDelim
-  else
-    ThemeFolder := FIconsPath + 'Light' + PathDelim + 'png' + PathDelim;
-
   ACollection.Images.Clear;
   AVirtualImageList.Images.Clear;
 
@@ -170,16 +207,18 @@ begin
 
     if ANames[I] <> '' then
     begin
-      FilePath := ThemeFolder + ANames[I] + '_' + IntToStr(ASize) + '.png';
-      if FileExists(FilePath) then
-      begin
-        FS := TFileStream.Create(FilePath, fmOpenRead or fmShareDenyNone);
+      ResName := AResPrefix + SanitizeName(ANames[I]);
+      try
+        RS := TResourceStream.Create(FResModule, ResName, RT_RCDATA);
         try
           Item.SourceImages.Add;
-          Item.SourceImages[0].Image.LoadFromStream(FS);
+          Item.SourceImages[0].Image.LoadFromStream(RS);
         finally
-          FS.Free;
+          RS.Free;
         end;
+      except
+        on E: EResNotFound do
+          ; // leave empty placeholder
       end;
     end;
 
@@ -194,18 +233,27 @@ end;
 
 
 procedure TdmImages.LoadIcons(ATheme: TIconTheme);
+var
+  ThemePrefix: string;
 begin
-  FIconsPath := ExtractFilePath(Application.ExeName) + 'Resources' + PathDelim
-    + 'Icons' + PathDelim;
+  LoadResFile;
 
-  if not TDirectory.Exists(FIconsPath + 'Light' + PathDelim + 'png') then
+  if FResModule = 0 then
     Exit;
 
   FCurrentTheme := ATheme;
 
-  LoadCollection(ToolbarImageCollection, vilToolbar, CToolbarOrder, 40);
-  LoadCollection(MenuImageCollection, vilMenu, CMenuOrder, 16);
-  LoadCollection(DownloadImageCollection, vilDownload, CDownloadOrder, 16);
+  if ATheme = itDark then
+    ThemePrefix := 'DARK_'
+  else
+    ThemePrefix := 'LIGHT_';
+
+  LoadCollection(ToolbarImageCollection, vilToolbar,
+    ThemePrefix + 'TOOLBAR_', CToolbarOrder);
+  LoadCollection(MenuImageCollection, vilMenu,
+    ThemePrefix + 'MENU_', CMenuOrder);
+  LoadCollection(DownloadImageCollection, vilDownload,
+    ThemePrefix + 'DOWNLOAD_', CDownloadOrder);
 
   FThemeLoaded := True;
 end;

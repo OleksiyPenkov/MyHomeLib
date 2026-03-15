@@ -8,8 +8,8 @@ object dmImages: TdmImages
   end
   object vilToolbar: TVirtualImageList
     ImageCollection = ToolbarImageCollection
-    Width = 40
-    Height = 40
+    Width = 32
+    Height = 32
     Left = 56
     Top = 120
   end

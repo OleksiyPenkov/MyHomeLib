@@ -79,7 +79,7 @@
     <DCC_Inlining>off</DCC_Inlining>
     <DCC_DebugDCUs>true</DCC_DebugDCUs>
     <DCC_GenerateStackFrames>true</DCC_GenerateStackFrames>
-    <DCC_UsePackage>vclx;vcl;dbrtl;bdertl;rtl;vclactnband;vcldb;vcldbx;dsnap;vclib;ibxpress;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;webdsnap;inetdbbde;inetdbxpress;soaprtl;vclribbon;DbxCommonDriver;DbxClientDriver;DBXInterBaseDriver;DBXMySQLDriver;dbexpress;dbxcds;ZipmasterD12;VirtualTreesD12;vclAbsDBd12;lmdrtlx9rt_120;lmdrtl9rt_120;lmdcore9rt_120;lmdplugin1rt_120;dclZipForged11;vclZipForged12;$(DCC_UsePackage)</DCC_UsePackage>
+    <DCC_UsePackage>vclx;vcl;dbrtl;bdertl;rtl;vclactnband;vcldb;vcldbx;dsnap;vclib;ibxpress;IndyCore;IndySystem;IndyProtocols;xmlrtl;inet;VclSmp;vclie;webdsnap;inetdbbde;inetdbxpress;soaprtl;vclribbon;DbxCommonDriver;DbxClientDriver;DBXInterBaseDriver;DBXMySQLDriver;dbexpress;dbxcds;ZipmasterD12;VirtualTreesD12;vclAbsDBd12;lmdrtlx9rt_120;lmdrtl9rt_120;lmdcore9rt_120;lmdplugin1rt_120;dclZipForged11;vclZipForged12;RaizeComponentsVcl;$(DCC_UsePackage)</DCC_UsePackage>
     <DCC_DependencyCheckOutputName>MyhomeLib.exe</DCC_DependencyCheckOutputName>
     <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
     <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
@@ -90,7 +90,7 @@
     <VerInfo_Build>837</VerInfo_Build>
     <DCC_ExeOutput>Out\Bin\</DCC_ExeOutput>
     <DCC_DcuOutput>Out\Units\</DCC_DcuOutput>
-    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.1\Lib\RX13\Win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\Components\MHLComponents;$(DCC_ResourcePath)</DCC_ResourcePath>
     <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
     <VerInfo_Locale>1033</VerInfo_Locale>
@@ -101,7 +101,7 @@
     <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Base_Win64)'!=''">
-    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.1\Lib\RX13\Win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\Components\MHLComponents;$(DCC_ResourcePath)</DCC_ResourcePath>
     <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
     <BT_BuildType>Debug</BT_BuildType>
@@ -135,8 +135,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>908</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.908;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>918</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.918;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
