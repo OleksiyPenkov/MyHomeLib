@@ -27,6 +27,7 @@ uses
   ComCtrls,
   Graphics,
   Generics.Collections,
+  ShlObj,
   unit_Consts,
   IdHTTP,
   IdSocks,
@@ -69,6 +70,9 @@ type
 function GetFileName(key: TMHLFileName; out FileName: string): Boolean;
 
 function GetFolderName(Handle: Integer; const Caption: string; var strFolder: string): Boolean;
+function GetFolderShellItem(Handle: HWND; const Caption: string; var strFolder: string; out ShellItem: IShellItem): Boolean;
+function ShellCopyFile(const SourceFile: string; const DestFolder: IShellItem; const DestName: string): Boolean;
+function IsShellPath(const Path: string): Boolean;
 
 function CreateImageFromResource(GraphicClass: TGraphicClass; const ResName: string; ResType: PChar = RT_RCDATA): TGraphic;
 
@@ -92,10 +96,10 @@ uses
   Forms,
   dm_user,
   CommCtrl,
-  ShlObj,
   ShellAPI,
   ShLwApi,
-  ActiveX;
+  ActiveX,
+  ComObj;
 
 // ============================================================================
 // TIniStringList
@@ -408,6 +412,69 @@ begin
     if Result then strFolder := StrPas(TempPath);
     CoTaskMemFree(lpItemID);
   end;
+end;
+
+function GetFolderShellItem(Handle: HWND; const Caption: string; var strFolder: string; out ShellItem: IShellItem): Boolean;
+var
+  Dialog: IFileOpenDialog;
+  Options: Cardinal;
+  InitFolder: IShellItem;
+  DisplayName: PWideChar;
+begin
+  Result := False;
+  ShellItem := nil;
+
+  if Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) then
+  begin
+    Dialog.SetTitle(PChar(Caption));
+    Dialog.GetOptions(Options);
+    Dialog.SetOptions((Options or FOS_PICKFOLDERS) and not FOS_FORCEFILESYSTEM); // allow non-filesystem (MTP)
+
+    // Set initial folder if available
+    if (strFolder <> '') and Succeeded(SHCreateItemFromParsingName(PChar(strFolder), nil, IShellItem, InitFolder)) then
+      Dialog.SetFolder(InitFolder);
+
+    if Succeeded(Dialog.Show(Handle)) then
+    begin
+      if Succeeded(Dialog.GetResult(ShellItem)) then
+      begin
+        Result := True;
+        if Succeeded(ShellItem.GetDisplayName(SIGDN_DESKTOPABSOLUTEPARSING, DisplayName)) then
+        begin
+          strFolder := DisplayName;
+          CoTaskMemFree(DisplayName);
+        end;
+      end;
+    end;
+  end;
+end;
+
+function ShellCopyFile(const SourceFile: string; const DestFolder: IShellItem; const DestName: string): Boolean;
+var
+  FileOp: IFileOperation;
+  SrcItem: IShellItem;
+begin
+  Result := False;
+  if not Assigned(DestFolder) then
+    Exit;
+
+  if Succeeded(CoCreateInstance(CLSID_FileOperation, nil, CLSCTX_INPROC_SERVER, IFileOperation, FileOp)) then
+  begin
+    FileOp.SetOperationFlags(FOF_NOCONFIRMATION or FOF_NOERRORUI or FOF_SILENT);
+    if Succeeded(SHCreateItemFromParsingName(PChar(SourceFile), nil, IShellItem, SrcItem)) then
+    begin
+      if Succeeded(FileOp.CopyItem(SrcItem, DestFolder, PChar(DestName), nil)) then
+        Result := Succeeded(FileOp.PerformOperations);
+    end;
+  end;
+end;
+
+function IsShellPath(const Path: string): Boolean;
+begin
+  // MTP/shell paths start with \\?\ or ::{  or don't have a drive letter
+  Result := (Path <> '') and not TPath.DriveExists(Path) and
+    ((Pos('\\?\', Path) = 1) or (Pos('::{', Path) = 1) or
+     ((Length(Path) >= 2) and (Path[2] <> ':')));
 end;
 
 function CreateImageFromResource(GraphicClass: TGraphicClass; const ResName: string; ResType: PChar): TGraphic;

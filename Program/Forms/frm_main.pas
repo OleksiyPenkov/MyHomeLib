@@ -1006,6 +1006,7 @@ uses
   unit_Consts,
   unit_Export,
   unit_Utils,
+  ShlObj,
   unit_ExportToDevice,
   unit_Helpers,
   unit_Errors,
@@ -3603,10 +3604,14 @@ var
   S: string;
   Tree: TBookTree;
   ExportMode: TExportMode;
+  UseMTP: Boolean;
+  DeviceShellItem: IShellItem;
 begin
   Assert(Assigned(FCollection));
   GetActiveTree(Tree);
   FillBookIdList(Tree, BookIDList);
+
+  UseMTP := False;
 
   if pgControl.ActivePage = tsByAuthor then
     CurrentSelectedAuthor := lblAuthor.Caption
@@ -3642,9 +3647,10 @@ begin
 
   if ScriptID = 799 then // выбор папки; не зависит от формата
   begin
-    if not GetFolderName(Handle, 'Укажите путь', FLastDeviceDir) then
+    if not GetFolderShellItem(Handle, 'Вкажіть шлях', FLastDeviceDir, DeviceShellItem) then
       Exit;
     AFolder := FLastDeviceDir;
+    UseMTP := IsShellPath(AFolder);
     Dec(ScriptID, 901);
   end
   else
@@ -3653,10 +3659,13 @@ begin
 
     if (ScriptID < 1) and (Settings.PromptDevicePath) then
     begin
-      if not GetFolderName(Handle, rstrProvideThePath, FLastDeviceDir) then
+      if not GetFolderShellItem(Handle, rstrProvideThePath, FLastDeviceDir, DeviceShellItem) then
         Exit
       else
+      begin
         AFolder := FLastDeviceDir;
+        UseMTP := IsShellPath(AFolder);
+      end;
     end;
   end;
 
@@ -3695,7 +3704,7 @@ begin
 
   if (ScriptID >= 0) and (Settings.Scripts[ScriptID].Path <> '%COPY%') then
   begin
-    unit_ExportToDevice.ExportToDevice(AFolder, BookIDList, ExportMode, True, Files);
+    unit_ExportToDevice.ExportToDevice(AFolder, BookIDList, ExportMode, True, Files, DeviceShellItem, UseMTP);
     if Pos('%FILENAME%', Settings.Scripts[ScriptID].Params) <> 0 then
     begin
       StrReplace('%FILENAME%', Files, TMPParams);
@@ -3704,7 +3713,7 @@ begin
     Settings.Scripts[ScriptID].Run;
   end
   else
-    unit_ExportToDevice.ExportToDevice(AFolder, BookIDList, ExportMode, False, Files);
+    unit_ExportToDevice.ExportToDevice(AFolder, BookIDList, ExportMode, False, Files, DeviceShellItem, UseMTP);
 
   Settings.FolderTemplate := SaveFolderTemplate;
 end;

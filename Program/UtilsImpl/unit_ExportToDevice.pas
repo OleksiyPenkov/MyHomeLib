@@ -1,4 +1,4 @@
-﻿(* *****************************************************************************
+(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -18,6 +18,7 @@ uses
   Forms,
   Dialogs,
   Windows,
+  ShlObj,
   unit_Globals;
 
 procedure ExportToDevice(
@@ -25,7 +26,9 @@ procedure ExportToDevice(
   const IdList: TBookIdList;
   const Mode: TExportMode;
   const ExtractOnly: Boolean;
-  out ProcessedFiles:string
+  out ProcessedFiles: string;
+  const ADeviceShellItem: IShellItem = nil;
+  const AUseMTP: Boolean = False
   );
 
 procedure DownloadBooks(const IdList: TBookIdList);
@@ -33,6 +36,7 @@ procedure DownloadBooks(const IdList: TBookIdList);
 implementation
 
 uses
+  ActiveX,
   unit_ExportToDeviceThread,
   frm_ExportToDeviceProgressForm,
   unit_DownloadBooksThread,
@@ -47,11 +51,14 @@ procedure ExportToDevice(
   const IdList: TBookIdList;
   const Mode: TExportMode;
   const ExtractOnly: Boolean;
-  out ProcessedFiles: string
+  out ProcessedFiles: string;
+  const ADeviceShellItem: IShellItem;
+  const AUseMTP: Boolean
   );
 var
   worker: TExportToDeviceThread;
   frmProgress: TExportToDeviceProgressForm;
+  MarshalStream: IStream;
 begin
   worker := TExportToDeviceThread.Create;
   try
@@ -59,6 +66,15 @@ begin
     worker.BookIdList := IdList;
     worker.ExportMode := Mode;
     worker.ExtractOnly := ExtractOnly;
+    worker.UseMTP := AUseMTP;
+
+    // Marshal IShellItem for cross-thread use (MTP devices)
+    if AUseMTP and Assigned(ADeviceShellItem) then
+    begin
+      if Succeeded(CoMarshalInterThreadInterfaceInStream(IShellItem, ADeviceShellItem, MarshalStream)) then
+        worker.MarshalStream := MarshalStream;
+    end;
+
     frmProgress := TExportToDeviceProgressForm.Create(Application);
     try
       frmProgress.Caption := rstrSendToDevice;
@@ -96,4 +112,3 @@ end;
 
 
 end.
-

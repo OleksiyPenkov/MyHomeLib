@@ -16,6 +16,8 @@ interface
 
 uses
   Classes,
+  ShlObj,
+  ActiveX,
   unit_WorkerThread,
   unit_globals,
   Dialogs,
@@ -56,6 +58,10 @@ type
     FExtractOnly: boolean;
     FProcessedFiles: string;
     FDeviceDir: string;
+    FUseMTP: Boolean;
+    FMarshalStream: IStream;
+    FDeviceShellItem: IShellItem;
+    FLastError: string;
 
     FMaxTempPathLength: Integer;
 
@@ -83,6 +89,8 @@ type
 
     property BookIdList: TBookIdList read FBookIdList write FBookIdList;
     property DeviceDir: string read FDeviceDir write SetDeviceDir;
+    property UseMTP: Boolean read FUseMTP write FUseMTP;
+    property MarshalStream: IStream write FMarshalStream;
     property ProcessedFiles: string read FProcessedFiles;
     property ExportMode: TExportMode read FExportMode write FExportMode;
     property ExtractOnly: boolean write FExtractOnly;
@@ -96,6 +104,7 @@ uses
   IOUtils,
   unit_Consts,
   unit_Settings,
+  unit_Helpers,
   dm_user,
   unit_MHLHelpers,
   unit_MHLArchiveHelpers,
@@ -173,7 +182,8 @@ begin
       if FTargetFolder <> '' then
         FTargetFolder := IncludeTrailingPathDelimiter(Trim(FTargetFolder));
 
-      CreateFolders(DeviceDir, FTargetFolder);
+      if not FUseMTP then
+        CreateFolders(DeviceDir, FTargetFolder);
     end;
 
     //
@@ -207,9 +217,14 @@ begin
       until not FileExists(FTargetFullFilePath);
     end;
 
-    FFileOprecord.TargetFile := FTargetFullFilePath;
     FFileOprecord.SourceFile := R.GetBookFileName;
     FFileOprecord.FileName := FTargetFileName + R.FileExt;
+
+    // For MTP: write to temp, then shell-copy to device
+    if FUseMTP then
+      FFileOprecord.TargetFile := TPath.Combine(FTempPath, FFileOprecord.FileName)
+    else
+      FFileOprecord.TargetFile := FTargetFullFilePath;
 
     //
     // Если файл в архиве - распаковываем в $tmp
@@ -345,10 +360,15 @@ begin
 end;
 
 function TExportToDeviceThread.SendFileToDevice: Boolean;
+var
+  TempFile: string;
 begin
   Result := False;
+  FLastError := '';
+
   if not FileExists(FFileOprecord.SourceFile) then
   begin
+    FLastError := Format('Source not found: %s', [FFileOprecord.SourceFile]);
     ShowMessage(Format(rstrFileNotFound, [FFileOprecord.SourceFile]), MB_ICONERROR or MB_OK);
     Exit;
   end;
@@ -360,9 +380,67 @@ begin
     else
       Result := CallExternalConverter;
     end;
+
+    if not Result then
+    begin
+      FLastError := Format('ProcessFile failed, Mode=%d, Target=%s', [Ord(FExportMode), FFileOprecord.TargetFile]);
+      Exit;
+    end;
+
+    // For MTP: shell-copy the temp output file to the device, then clean up
+    if FUseMTP then
+    begin
+      // Determine the actual output file path
+      case FExportMode of
+        emFB2Zip: TempFile := FFileOprecord.TargetFile + ZIP_EXTENSION;
+        emLrf:    TempFile := ChangeFileExt(FFileOprecord.TargetFile, '.lrf');
+        emEpub:   TempFile := ChangeFileExt(FFileOprecord.TargetFile, '.epub');
+        emPDF:    TempFile := ChangeFileExt(FFileOprecord.TargetFile, '.pdf');
+        emMobi:   TempFile := ChangeFileExt(FFileOprecord.TargetFile, '.mobi');
+      else
+        TempFile := FFileOprecord.TargetFile;
+      end;
+
+      if not FileExists(TempFile) then
+      begin
+        FLastError := Format('Temp file not found: %s', [TempFile]);
+        Result := False;
+        Exit;
+      end;
+
+      if not Assigned(FDeviceShellItem) then
+      begin
+        FLastError := Format('DeviceShellItem is nil, DeviceDir=%s', [FDeviceDir]);
+        Result := False;
+        Exit;
+      end;
+
+      Result := ShellCopyFile(TempFile, FDeviceShellItem, ExtractFileName(TempFile));
+      if not Result then
+        FLastError := Format('ShellCopyFile failed: %s -> %s', [TempFile, ExtractFileName(TempFile)]);
+      DeleteFile(TempFile);
+    end;
   end
   else
+  begin
+    if FUseMTP then
+    begin
+      if not Assigned(FDeviceShellItem) then
+      begin
+        FLastError := Format('DeviceShellItem is nil, DeviceDir=%s', [FDeviceDir]);
+        Exit;
+      end;
+      Result := ShellCopyFile(FFileOprecord.SourceFile, FDeviceShellItem, FFileOprecord.FileName);
+      if not Result then
+        FLastError := Format('ShellCopyFile failed: %s -> %s', [FFileOprecord.SourceFile, FFileOprecord.FileName]);
+    end
+    else
+    begin
       Result := unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+      if not Result then
+        FLastError := Format('CopyFile failed: %s -> %s', [FFileOprecord.SourceFile, FFileOprecord.TargetFile]);
+    end;
+  end;
 end;
 
 function TExportToDeviceThread.fb2Lrf(const InpFile: string; const OutFile: string): Boolean;
@@ -403,10 +481,18 @@ begin
   FSystemData := DMUser.GetSystemDBConnection;
   Assert(Assigned(FSystemData));
   FTemplater := TTemplater.Create;
+
+  // Unmarshal IShellItem from the main thread's COM apartment
+  if FUseMTP and Assigned(FMarshalStream) then
+  begin
+    CoGetInterfaceAndReleaseStream(FMarshalStream, IShellItem, FDeviceShellItem);
+    FMarshalStream := nil;
+  end;
 end;
 
 procedure TExportToDeviceThread.Uninitialize;
 begin
+  FDeviceShellItem := nil;
   FTemplater.Free;
   FSystemData.ClearCollectionCache;
   inherited Uninitialize;
@@ -426,6 +512,10 @@ begin
   FailedCount := 0;
   ErrorLog := TStringList.Create;
   try
+    ErrorLog.Add(Format('DeviceDir=%s', [FDeviceDir]));
+    ErrorLog.Add(Format('UseMTP=%s, ShellItem=%s', [BoolToStr(FUseMTP, True), BoolToStr(Assigned(FDeviceShellItem), True)]));
+    ErrorLog.Add('---');
+
     FProgressEngine.BeginOperation(Length(FBookIdList), rstrFilesProcessed, rstrFilesProcessed);
     try
       totalBooks := Length(FBookIdList);
@@ -449,7 +539,7 @@ begin
         if not Res then
         begin
           Inc(FailedCount);
-          ErrorLog.Add(Format('%s  >>  %s', [DateTimeToStr(Now), FFileOprecord.FileName]));
+          ErrorLog.Add(Format('%s  >>  %s  |  %s', [DateTimeToStr(Now), FFileOprecord.FileName, FLastError]));
 
           if i < totalBooks - 1 then
           begin
@@ -473,7 +563,7 @@ begin
     if FailedCount > 0 then
     begin
       LogFileName := Settings.SystemFileName[sfExportErrorLog];
-      ErrorLog.SaveToFile(LogFileName);
+      ErrorLog.SaveToFile(LogFileName, TEncoding.UTF8);
       ShowMessage(Format(rstrExportErrors, [FailedCount, totalBooks, LogFileName]), MB_ICONWARNING or MB_OK);
     end;
   finally
