@@ -365,7 +365,7 @@ object frmSettings: TfrmSettings
           Width = 75
           Height = 25
           Anchors = [akTop, akRight]
-          Caption = #1042#1099#1073#1088#1072#1090#1100
+          Caption = #1042#1080#1073#1088#1072#1090#1080
           TabOrder = 1
           OnClick = SelectFolder
         end
@@ -527,7 +527,7 @@ object frmSettings: TfrmSettings
           Height = 25
           BevelKind = bkFlat
           BevelOuter = bvNone
-          Caption = #1059#1076#1072#1083#1077#1085#1085#1099#1077' '#1074' '#1086#1085#1083#1072#1081#1085' '#1073#1080#1073#1083#1080#1086#1090#1077#1082#1077
+          Caption = #1042#1080#1076#1072#1083#1077#1085#1110' '#1074' '#1086#1085#1083#1072#1081#1085' '#1073#1110#1073#1083#1110#1086#1090#1077#1094#1110
           Color = clWhite
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText

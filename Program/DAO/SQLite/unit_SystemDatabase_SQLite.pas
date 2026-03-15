@@ -213,8 +213,8 @@ uses
   unit_Errors;
 
 resourcestring
-  rstrInvalidCollection = 'Файл %s не является коллекцией.';
-  rstrFailedToMountDB = 'Ошибка загрузки файла коллекции %s';
+  rstrInvalidCollection = 'Файл %s не є колекцією.';
+  rstrFailedToMountDB = 'Помилка завантаження файлу колекції %s';
 
 // Generate table structure and minimal system data
 class procedure TSystemData_SQLite.CreateSystemTables(const DBUserFile: string);

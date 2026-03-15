@@ -137,14 +137,14 @@ begin
                    Options   := Rez;
                  end;
         COL_TITLE:begin
-                   Caption   := 'Название';
+                   Caption   := 'Назва';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
                    Options    := Rez;
                  end;
         COL_SERIES:begin
-                   Caption   := 'Серия';
+                   Caption   := 'Серія';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;
@@ -158,7 +158,7 @@ begin
                    Options    := Rez;
                  end;
         COL_SIZE:begin
-                   Caption   := 'Размер';
+                   Caption   := 'Розмір';
                    MaxWidth  := 900;
                    MinWidth  := 20;
                    Alignment := taRightJustify;
@@ -172,7 +172,7 @@ begin
                    Options    := Rez;
                  end;
         COL_DATE:begin
-                   Caption   := 'Добавлено';
+                   Caption   := 'Додано';
                    MaxWidth  := 900;
                    MinWidth  := 40;
                    Alignment := taLeftJustify;
@@ -186,7 +186,7 @@ begin
                    Options    := Rez;
                  end;
         COL_COLLECTION:begin
-                   Caption   := 'Коллекция';
+                   Caption   := 'Колекція';
                    MaxWidth  := 900;
                    MinWidth  := 30;
                    Alignment := taLeftJustify;

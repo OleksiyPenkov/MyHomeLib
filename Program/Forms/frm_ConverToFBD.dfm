@@ -135,7 +135,7 @@ object frmConvertToFBD: TfrmConvertToFBD
       Top = 17
       Width = 90
       Height = 25
-      Hint = #1054#1090#1082#1088#1099#1090#1100' '#1082#1085#1080#1075#1091
+      Hint = #1042#1110#1076#1082#1088#1080#1090#1080' '#1082#1085#1080#1075#1091
       Caption = #1042#1110#1076#1082#1088#1080#1090#1080
       ImageIndex = 2
       Images = ilButtonImages
@@ -241,7 +241,7 @@ object frmConvertToFBD: TfrmConvertToFBD
       Top = 10
       Width = 75
       Height = 25
-      Hint = #1055#1088#1077#1076#1099#1076#1091#1097#1072#1103' '#13#1082#1085#1080#1075#1072
+      Hint = #1055#1086#1087#1077#1088#1077#1076#1085#1103' '#13#1082#1085#1080#1075#1072
       Caption = #1053#1072#1079#1072#1076
       DoubleBuffered = True
       ParentDoubleBuffered = False
