@@ -122,8 +122,6 @@ type
     miRefreshGenres: TMenuItem;
     miDownloadBooks: TMenuItem;
     pmiDownloadBooks: TMenuItem;
-    ilToolBar: TImageList;
-    ilMainMenu: TImageList;
     pmCollection: TPopupMenu;
     miUpdate: TMenuItem;
     miGoToAuthor: TMenuItem;
@@ -211,7 +209,6 @@ type
     mi_dwnl_LocateAuthor: TMenuItem;
     N35: TMenuItem;
     mi_dwnl_Delete: TMenuItem;
-    ilToolBar_Disabled: TImageList;
     N34: TMenuItem;
     tlbrDownloadList: TRzToolbar;
     BtnDwnldUp: TRzToolButton;
@@ -379,7 +376,6 @@ type
     spStatus: TRzStatusPane;
     spHint: TRzStatusPane;
     spInfo: TRzStatusPane;
-    ilToolImages: TImageList;
     acSavePreset: TAction;
     acDeletePreset: TAction;
     acApplyPreset: TAction;
