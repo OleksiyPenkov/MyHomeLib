@@ -22,16 +22,12 @@ interface
 uses
   Classes,
   StrUtils,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL;
+  System.Net.HttpClient;
 
 type
   TReviewParser = class
   strict private
-    FidHTTP: TIdHTTP;
-    FidSocksInfo: TIdSocksInfo;
-    FidSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
+    FHTTPClient: THTTPClient;
 
     function GetPage(const url: string): string;
     function Extract(const page: string; const idxReviewBlockStart: Integer; const before: string; const after: string): string;
@@ -47,25 +43,18 @@ implementation
 
 uses
   SysUtils,
-  unit_Globals;
+  unit_Globals,
+  unit_MHLHttpClient;
 
 constructor TReviewParser.Create;
 begin
   inherited Create;
-
-  FidHTTP := TIdHTTP.Create;
-  FidSocksInfo := TIdSocksInfo.Create;
-  FidSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create;
-
-  SetProxySettingsGlobal(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
+  FHTTPClient := CreateHTTPClientGlobal;
 end;
 
 destructor TReviewParser.Destroy;
 begin
-  // do not close the idHTTP, as it was not created by the ctor
-  FreeAndNil(FidSSLIOHandlerSocketOpenSSL);
-  FreeAndNil(FidSocksInfo);
-  FreeAndNil(FidHTTP);
+  FreeAndNil(FHTTPClient);
   inherited Destroy;
 end;
 
@@ -176,7 +165,7 @@ begin
   try
     outputStream := TMemoryStream.Create;
     try
-      FidHTTP.Get(url, outputStream);
+      FHTTPClient.Get(url, outputStream);
 
 //      outputStream.Position := 0;
 //      outputStream.SaveToFile('e:\temp\test.out');

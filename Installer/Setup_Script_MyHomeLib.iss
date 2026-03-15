@@ -1,13 +1,13 @@
-﻿; ****************************************************************************
+; ****************************************************************************
 ;
-; InnoSetup script for MyHomeLib
+; InnoSetup script for MyHomeLib (Win32)
 ;
-; Copyright: ©2023 Oleksiy Penkov (aka Koreec)
+; Copyright: ©2008-2026 Oleksiy Penkov (aka Koreec)
 ;
 ; Author: Oleksiy Penkov   oleksiy.penkov@gmail.com
 ;
 ; Created                  22.05.2023
-; Description              
+; Description
 ;
 ;
 ;*****************************************************************************
@@ -15,18 +15,18 @@
 [Setup]
 #define SourceFolder = '..\Program\Out\Bin\'
 #define AppURL = 'https://github.com/OleksiyPenkov/MyHomeLib'
-#define protected Major 
+#define protected Major
 #define protected Minor
 #define protected Revision
 #define protected Build
 #define protected MyAppName = 'MyHomeLib'
 #define protected AppExeName = MyAppName + '.exe'
 #define protected FullSourcePath = SourceFolder + AppExeName
- 
+
 #define AppVersion GetVersionComponents(FullSourcePath, Major, Minor, Revision, Build)
 #define protected ShortVersion = Str(Major) +'.' + Str(Minor) +'.' + Str(Revision)
 #define LibFolder = 'x86\'
- 
+
 OutputBaseFilename = {#'Setup_' + MyAppName + '_' + ShortVersion}
 
 

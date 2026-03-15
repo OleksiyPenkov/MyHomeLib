@@ -26,9 +26,6 @@ uses
   Generics.Collections,
   VirtualTrees,
   VirtualTrees.Types,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL,
   unit_Consts,
   Dialogs;
 
@@ -389,11 +386,6 @@ type
   procedure DebugOut(const DebugMessage: string); overload;
   procedure DebugOut(const DebugMessage: string; const Args: array of const ); overload;
 
-  // настройки нужно брать из ProxyServer
-  procedure SetProxySettingsGlobal(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
-  // настройки из ProxyServerUpdate
-  procedure SetProxySettingsUpdate(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
-
   function GetSpecialPath(CSIDL: word): string;
   function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean;
 
@@ -417,11 +409,9 @@ uses
   Character,
   dm_user,
   ShlObj,
-  idStack,
-  idComponent,
-  IdBaseComponent,
-  IdAntiFreezeBase,
-  IdAntiFreeze,
+  System.Net.HttpClient,
+  System.Net.URLClient,
+  unit_MHLHttpClient,
   unit_fb2ToText,
   unit_Fb2Utils,
   unit_MHLGenerics,
@@ -1239,217 +1229,45 @@ begin
   Result := IncludeTrailingPathDelimiter(PChar(S));
 end;
 
-procedure InitHTTP(var IdHTTP: TidHTTP);
-begin
-  IdHTTP.Request.UserAgent := 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; MAAU)';
-
-  IdHTTP.ConnectTimeout := Settings.TimeOut;
-  IdHTTP.ReadTimeout := Settings.ReadTimeOut;
-
-  // idHTTP.CookieManager := frmMain.IdCookieManager;
-  IdHTTP.AllowCookies := True;
-
-  IdHTTP.HandleRedirects := True;
-end;
-
-procedure SetProxySettingsGlobal(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
-begin
-  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
-  IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
-
-  with IdHTTP.ProxyParams do
-  begin
-    if Settings.UseIESettings then
-    begin
-      ProxyServer := Settings.IEProxyServer;
-      ProxyPort := Settings.IEProxyPort;
-    end
-    else
-    begin
-        case Settings.ProxyType of
-        0: begin  // HTTP прокси
-             ProxyServer := Settings.ProxyServer;
-             ProxyPort := Settings.ProxyPort;
-             ProxyUsername := Settings.ProxyUsername;
-             ProxyPassword := Settings.ProxyPassword;
-           end;
-        1: begin  // SOCKS4 прокси
-             ProxyServer := '';
-             ProxyPort := 0;
-             with IdSocksInfo do
-             begin
-               Version := svSocks4;
-               Host := Settings.ProxyServer;
-               Port := Settings.ProxyPort;
-               if Settings.ProxyUsername <> '' then
-               begin
-                 Authentication := saUsernamePassword;
-                 Username := Settings.ProxyUsername;
-                 Password := Settings.ProxyPassword;
-               end
-               else
-               begin
-                 Authentication := saNoAuthentication;
-               end;
-               IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
-             end;
-           end;
-        2: begin  // SOCKS5 прокси
-             ProxyServer := '';
-             ProxyPort := 0;
-           with IdSocksInfo do
-             begin
-               Version := svSocks5;
-               Host := Settings.ProxyServer;
-               Port := Settings.ProxyPort;
-               if Settings.ProxyUsername <> '' then
-               begin
-                 Authentication := saUsernamePassword;
-                 Username := Settings.ProxyUsername;
-                 Password := Settings.ProxyPassword;
-               end
-              else
-              begin
-                Authentication := saNoAuthentication;
-              end;
-              IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
-            end;
-        end;
-      end;
-    end;
-  BasicAuthentication := True;
-  end;
-  InitHTTP(idHTTP);
-end;
-
-
-procedure SetProxySettingsUpdate(var IdHTTP: TidHTTP; IdSocksInfo: TIdSocksInfo; IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL);
-begin
-// прокси для обновлений, а не скачивания книг
-  IdSSLIOHandlerSocketOpenSSL.SSLOptions.SSLVersions := [sslvTLSv1,sslvTLSv1_1,sslvTLSv1_2];
-  IdHTTP.IOHandler := IdSSLIOHandlerSocketOpenSSL;
-
-  if Settings.UseProxyForUpdate then
-  begin
-    with IdHTTP.ProxyParams do
-    begin
-      case Settings.ProxyType of
-        0: begin  // HTTP прокси
-             ProxyServer := Settings.ProxyServerUpdate;
-             ProxyPort := Settings.ProxyPortUpdate;
-             ProxyUsername := Settings.ProxyUsernameUpdate;
-             ProxyPassword := Settings.ProxyPasswordUpdate;
-           end;
-        1: begin  // SOCKS4 прокси
-             ProxyServer := '';
-             ProxyPort := 0;
-             with IdSocksInfo do
-             begin
-               Version := svSocks4;
-               Host := Settings.ProxyServerUpdate;
-               Port := Settings.ProxyPortUpdate;
-               if Settings.ProxyUsername <> '' then
-               begin
-                 Authentication := saUsernamePassword;
-                 Username := Settings.ProxyUsernameUpdate;
-                 Password := Settings.ProxyPasswordUpdate;
-               end
-               else
-               begin
-                 Authentication := saNoAuthentication;
-               end;
-               IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
-             end;
-           end;
-        2: begin  // SOCKS5 прокси
-             ProxyServer := '';
-             ProxyPort := 0;
-           with IdSocksInfo do
-             begin
-               Version := svSocks5;
-               Host := Settings.ProxyServerUpdate;
-               Port := Settings.ProxyPortUpdate;
-               if Settings.ProxyUsername <> '' then
-               begin
-                 Authentication := saUsernamePassword;
-                 Username := Settings.ProxyUsernameUpdate;
-                 Password := Settings.ProxyPasswordUpdate;
-               end
-              else
-              begin
-                Authentication := saNoAuthentication;
-              end;
-              IdSSLIOHandlerSocketOpenSSL.TransparentProxy := IdSocksInfo;
-            end;
-        end;
-      end;
-
-    end;  // with IdHTTP.ProxyParams
-  end  // if Settings.UseProxyForUpdate
-  else
-  begin
-    with IdHTTP.ProxyParams do
-    begin
-      ProxyServer := '';
-      ProxyPort := 0;
-      ProxyUsername := '';
-      ProxyPassword := '';
-      BasicAuthentication := True;
-    end;
-  end; // else Settings.UseProxyForUpdate
-  InitHTTP(idHTTP);
-end;
-
 procedure CheckUpdates;
 var
   SL: TStringList;
   LF: TMemoryStream;
   i: Integer;
   S: string;
-  HTTP: TidHTTP;
-  IdSocksInfo: TIdSocksInfo;
-  IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
-
+  HTTP: THTTPClient;
 begin
   LF := TMemoryStream.Create;
   try
     SL := TStringList.Create;
     try
-      HTTP := TidHTTP.Create;
-      IdSocksInfo := TIdSocksInfo.Create(nil);
-      IdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
-
-      SetProxySettingsGlobal(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
+      HTTP := CreateHTTPClientGlobal;
       try
-        HTTP.Get(IncludeUrlSlash(Settings.UpdateURL) + PROGRAM_VERINFO_FILENAME, LF);
-      except
-        on E: EIdSocketError do
-          if E.LastError = 11001 then
-            MHLShowError(rstrUpdateFailedServerNotFound, [E.LastError])
-          else
-            MHLShowError(rstrUpdateFailedConnectionError, [E.LastError]);
-        on E: Exception do
-          MHLShowError(rstrUpdateFailedServerError, [HTTP.ResponseCode]);
+        try
+          HTTP.Get(IncludeUrlSlash(Settings.UpdateURL) + PROGRAM_VERINFO_FILENAME, LF);
+        except
+          on E: ENetHTTPClientException do
+            MHLShowError(rstrUpdateFailedConnectionError, [0]);
+          on E: Exception do
+            MHLShowError(rstrUpdateFailedServerError, [0]);
+        end;
+        LF.SaveToFile(Settings.SystemFileName[sfAppVerInfo]);
+        SL.LoadFromFile(Settings.SystemFileName[sfAppVerInfo]);
+        if SL.Count > 0 then
+          if CompareStr(Version, SL[0]) < 0 then
+          begin
+            S := CRLF;
+            for i := 1 to SL.Count - 1 do
+              S := S + '  ' + SL[i] + CRLF;
+            MHLShowInfo(Format(rstrFoundNewAppVersion, [SL[0] + CRLF + S + CRLF]));
+          end
+          else if not AutoCheck then
+            MHLShowInfo(rstrLatestVersion);
+        AutoCheck := False;
+      finally
+        HTTP.Free;
       end;
-      { TODO -oNickR -cRefactoring : проверить использование файла last_version.info. Возможно он больше нигде не нужен и можно не сохранять его на диск }
-      LF.SaveToFile(Settings.SystemFileName[sfAppVerInfo]);
-      SL.LoadFromFile(Settings.SystemFileName[sfAppVerInfo]);
-      if SL.Count > 0 then
-        if CompareStr(Version, SL[0]) < 0 then
-        begin
-          S := CRLF;
-          for i := 1 to SL.Count - 1 do
-            S := S + '  ' + SL[i] + CRLF;
-
-          MHLShowInfo(Format(rstrFoundNewAppVersion, [SL[0] + CRLF + S + CRLF]));
-        end
-        else if not AutoCheck then
-          MHLShowInfo(rstrLatestVersion);
-      AutoCheck := False;
     finally
-      IdSSLIOHandlerSocketOpenSSL.Free;
-      IdSocksInfo.Free;
-      HTTP.Free;
       SL.Free;
     end;
   finally

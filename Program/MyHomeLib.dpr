@@ -145,6 +145,7 @@ uses
   unit_Database_Abstract in 'DAO\unit_Database_Abstract.pas',
   unit_SystemDatabase_Abstract in 'DAO\unit_SystemDatabase_Abstract.pas',
   unit_treeController in 'Units\unit_treeController.pas',
+  unit_MHLHttpClient in 'Units\unit_MHLHttpClient.pas',
   Vcl.Themes,
   Vcl.Styles;
 

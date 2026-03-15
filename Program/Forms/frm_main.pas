@@ -53,14 +53,6 @@ uses
   unit_Messages,
   files_list,
   ActiveX,
-  idStack,
-  idComponent,
-  IdBaseComponent,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL,
-  IdAntiFreezeBase,
-  IdAntiFreeze,
   Buttons,
   MHLSplitter,
   ActnList,
@@ -119,7 +111,6 @@ type
     miCheckUpdates: TMenuItem;
     N30: TMenuItem;
     miShowHelp: TMenuItem;
-    IdAntiFreeze1: TIdAntiFreeze;
     N17: TMenuItem;
     pmAuthor: TPopupMenu;
     miCopyAuthor: TMenuItem;
@@ -685,7 +676,6 @@ type
     //
     //
     //
-    procedure HTTPWorkEnd(ASender: TObject; AWorkMode: TWorkMode);
     procedure tbClearEdAuthorClick(Sender: TObject);
     procedure btnClearEdSeriesClick(Sender: TObject);
     procedure HeaderPopupItemClick(Sender: TObject);
@@ -3732,12 +3722,6 @@ begin
     unit_ExportToDevice.ExportToDevice(AFolder, BookIDList, ExportMode, False, Files, DeviceShellItem, UseMTP);
 
   Settings.FolderTemplate := SaveFolderTemplate;
-end;
-
-procedure TfrmMain.HTTPWorkEnd(ASender: TObject; AWorkMode: TWorkMode);
-begin
-  StatusMessage := rstrReadyMessage;
-  ShowStatusProgress := False;
 end;
 
 procedure TfrmMain.DownloadBooks;

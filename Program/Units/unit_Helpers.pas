@@ -28,10 +28,7 @@ uses
   Graphics,
   Generics.Collections,
   ShlObj,
-  unit_Consts,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL;
+  unit_Consts;
 
 type
   TIniStringList = class(TStringList)

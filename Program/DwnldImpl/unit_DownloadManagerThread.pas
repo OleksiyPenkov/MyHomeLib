@@ -69,12 +69,9 @@ uses
   frm_main,
   SysUtils,
   DateUtils,
-  IdStack,
-  IdStackConsts,
-  IdException,
   Windows,
   dm_user,
-  IdMultipartFormData;
+  unit_Consts;
 
 resourcestring
 rstrDone = 'Готово';

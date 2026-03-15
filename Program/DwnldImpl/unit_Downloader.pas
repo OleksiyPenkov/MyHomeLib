@@ -1,4 +1,4 @@
-﻿(* *****************************************************************************
+(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -26,15 +26,9 @@ uses
   Classes,
   SysUtils,
   Dialogs,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL,
-  IdURI,
-  IdComponent,
-  IdStack,
-  IdStackConsts,
-  IdWinsock2,
-  IdMultipartFormData,
+  System.Net.HttpClient,
+  System.Net.URLClient,
+  System.Net.Mime,
   unit_Globals,
   unit_Interfaces;
 
@@ -56,11 +50,9 @@ type
   TDownloader = class
   private
     URL: string;
-    FidHTTP: TidHttp;
-    FidSocksInfo: TIdSocksInfo;
-    FidSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
+    FHTTPClient: THTTPClient;
 
-    FParams: TIdMultiPartFormDataStream;
+    FParams: TMultipartFormData;
     FResponse: TMemoryStream;
 
     FOnSetProgress: TProgressEvent;
@@ -69,7 +61,6 @@ type
     FNewURL: string;
     FNoProgress: boolean;
     Canceled: boolean;
-    FDownloadSize: Integer;
 
     FStartDate: TDateTime;
     FIgnoreErrors: boolean;
@@ -84,10 +75,8 @@ type
 
     function DoDownload(const Collection: IBookCollection; const BookRecord: TBookRecord): boolean;
 
-    procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
-    procedure HTTPWorkEnd(ASender: TObject; AWorkMode: TWorkMode);
-    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
-    procedure HTTPRedirect(Sender: TObject; var dest: string; var NumRedirect: Integer; var Handled: boolean; var VMethod: string);
+    procedure HTTPReceiveData(const Sender: TObject; AContentLength, AReadCount: Int64; var AAbort: Boolean);
+    procedure HTTPRedirect(const Sender: TObject; const ARequest: IHTTPRequest; const AResponse: IHTTPResponse; ARedirections: Integer; var AAllow: Boolean);
 
     procedure ProcessError(const LongMsg, ShortMsg, AFileName: string);
 
@@ -114,6 +103,7 @@ uses
   HTTPApp,
   StrUtils,
   DateUtils,
+  System.NetEncoding,
   unit_Settings,
   dm_user,
   unit_Consts,
@@ -121,7 +111,8 @@ uses
   unit_Messages,
   unit_Helpers,
   unit_ImportInpxThread,
-  unit_MHLArchiveHelpers;
+  unit_MHLArchiveHelpers,
+  unit_MHLHttpClient;
 
 resourcestring
 rstrWrongCredentials = 'Неправильний логін/пароль';
@@ -147,32 +138,22 @@ constructor TDownloader.Create;
 begin
   inherited Create;
 
-  FidHTTP := TidHttp.Create;
-  FidSocksInfo := TIdSocksInfo.Create;
-  FidSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create;
-  FidHTTP.OnWork := HTTPWork;
-  FidHTTP.OnWorkBegin := HTTPWorkBegin;
-  FidHTTP.OnWorkEnd := HTTPWorkEnd;
-  FidHTTP.OnRedirect := HTTPRedirect;
-  FidHTTP.HandleRedirects := True;
-
-  SetProxySettingsGlobal(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
+  FHTTPClient := CreateHTTPClientGlobal;
+  FHTTPClient.OnReceiveData := HTTPReceiveData;
+  FHTTPClient.OnRedirect := HTTPRedirect;
 
   FIgnoreErrors := False;
 end;
 
 destructor TDownloader.Destroy;
 begin
-  FreeAndNil(FidSSLIOHandlerSocketOpenSSL);
-  FreeAndNil(FidSocksInfo);
-  FreeAndNil(FidHTTP);
-
+  FreeAndNil(FHTTPClient);
   inherited Destroy;
 end;
 
 function TDownloader.AddParam(const Name: string; const Value: string): boolean;
 begin
-  FParams.AddFormField(Name, Value);
+  FParams.AddField(Name, Value);
   Result := True;
 end;
 
@@ -245,15 +226,19 @@ begin
   end;
 end;
 
-procedure TDownloader.HTTPRedirect(Sender: TObject; var dest: string; var NumRedirect: Integer; var Handled: boolean; var VMethod: string);
+procedure TDownloader.HTTPRedirect(const Sender: TObject; const ARequest: IHTTPRequest; const AResponse: IHTTPResponse; ARedirections: Integer; var AAllow: Boolean);
+var
+  RedirectURL: string;
 begin
-  if EndsText(FB2ZIP_EXTENSION, dest) then
-    FNewURL := dest
+  RedirectURL := AResponse.HeaderValue['Location'];
+  if EndsText(FB2ZIP_EXTENSION, RedirectURL) then
+    FNewURL := RedirectURL
   else
     FNewURL := '';
+  AAllow := True;
 end;
 
-procedure TDownloader.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
+procedure TDownloader.HTTPReceiveData(const Sender: TObject; AContentLength, AReadCount: Int64; var AAbort: Boolean);
 var
   ElapsedTime: Cardinal;
   Speed: string;
@@ -263,36 +248,19 @@ begin
 
   if Canceled then
   begin
-    FidHTTP.Disconnect;
+    AAbort := True;
     Exit;
   end;
 
-  if FDownloadSize <> 0 then
-    FOnSetProgress(AWorkCount * 100 div FDownloadSize, -1);
+  if AContentLength > 0 then
+    FOnSetProgress(AReadCount * 100 div AContentLength, -1);
 
   ElapsedTime := SecondsBetween(Now, FStartDate);
   if ElapsedTime > 0 then
   begin
-    Speed := FormatFloat('0.00', AWorkCount / 1024 / ElapsedTime);
+    Speed := FormatFloat('0.00', AReadCount / 1024 / ElapsedTime);
     FOnSetComment(Format(rstrSpeed, [Speed]), '');
   end;
-end;
-
-procedure TDownloader.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
-begin
-  if FNoProgress then
-    Exit;
-  FDownloadSize := AWorkCountMax;
-  FStartDate := Now;
-  FOnSetProgress(1, -1);
-end;
-
-procedure TDownloader.HTTPWorkEnd(ASender: TObject; AWorkMode: TWorkMode);
-begin
-  if FNoProgress then
-    Exit;
-  FOnSetProgress(100, -1);
-  FOnSetComment(rstrReadyMessage, '');
 end;
 
 function TDownloader.DoDownload(const Collection: IBookCollection; const BookRecord: TBookRecord): boolean;
@@ -310,7 +278,7 @@ begin
   try
     ctx := TRttiContext.Create;
     ConstParams := TStringList.Create;
-    FParams := TIdMultiPartFormDataStream.Create;
+    FParams := TMultipartFormData.Create;
 
     // Add macro from collection info
     ConstParams.Values['%USER%'] := Collection.GetProperty(PROP_LIBUSER);
@@ -493,62 +461,57 @@ begin
 end;
 
 function TDownloader.Query(Kind: TQueryKind; const Uri: string): boolean;
+var
+  Response: IHTTPResponse;
 begin
   Result := False;
+  Response := nil;
 
   URL := Uri;
   // Add result of last operation
   StrReplace('%RESURL%', FNewURL, URL);
 
   try
+    FStartDate := Now;
     case Kind of
       qkGet:
         begin
           FNoProgress := False;
-          FidHTTP.Get(TIdURI.URLEncode(URL), FResponse);
+          Response := FHTTPClient.Get(TNetEncoding.URL.Encode(URL), FResponse);
         end;
 
       qkPost:
         begin
           FNoProgress := True;
-          FidHTTP.Post(TIdURI.URLEncode(URL), FParams, FResponse);
+          Response := FHTTPClient.Post(TNetEncoding.URL.Encode(URL), FParams, FResponse);
         end;
     end;
     Result := True;
   except
-    on E: EIdSocketError do
+    on E: ENetHTTPClientException do
       if not FIgnoreErrors then
-      begin
-        case E.LastError of
-          WSAHOST_NOT_FOUND:
-            ProcessError(rstrServerNotFound,
-              rstrError + IntToStr(E.LastError), FFile);
-
-          Id_WSAETIMEDOUT:
-            ProcessError(rstrTimeout, rstrError + IntToStr(E.LastError), FFile);
-        else
-          ProcessError(rstrConnectionError,
-            rstrError + IntToStr(E.LastError), FFile);
-        end; // case
-      end;
+        ProcessError(rstrConnectionError, rstrError, FFile);
 
     on E: Exception do
-      if (FidHTTP.ResponseCode <> 405) and
-        not((FidHTTP.ResponseCode = 404) and (FNewURL <> '')) then
-        ProcessError(Format(rstrServerError, [E.Message]),
-          rstrErrorCode + IntToStr(FidHTTP.ResponseCode), FFile)
-      else
-        Result := True;
+    begin
+      if Assigned(Response) then
+      begin
+        if (Response.StatusCode <> 405) and
+          not((Response.StatusCode = 404) and (FNewURL <> '')) then
+          ProcessError(Format(rstrServerError, [E.Message]),
+            rstrErrorCode + IntToStr(Response.StatusCode), FFile)
+        else
+          Result := True;
+      end
+      else if not FIgnoreErrors then
+        ProcessError(Format(rstrServerError, [E.Message]), rstrError, FFile);
+    end;
   end; // try ... except
 end;
 
 procedure TDownloader.Stop;
 begin
-  try
-    FidHTTP.Disconnect;
-  except
-    //
-  end;
+  Canceled := True;
 end;
 
 end.

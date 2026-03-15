@@ -40,38 +40,4 @@ inherited frameNCWDownload: TframeNCWDownload
       ExplicitWidth = 287
     end
   end
-  object HTTP: TIdHTTP
-    OnWork = HTTPWork
-    OnWorkBegin = HTTPWorkBegin
-    OnWorkEnd = HTTPWorkEnd
-    HandleRedirects = True
-    ProxyParams.BasicAuthentication = False
-    ProxyParams.ProxyPort = 0
-    Request.ContentLength = -1
-    Request.ContentRangeEnd = -1
-    Request.ContentRangeStart = -1
-    Request.ContentRangeInstanceLength = -1
-    Request.Accept = 'text/html, */*'
-    Request.BasicAuthentication = False
-    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
-    Request.Ranges.Units = 'bytes'
-    Request.Ranges = <>
-    HTTPOptions = [hoForceEncodeParams]
-    Left = 16
-    Top = 112
-  end
-  object IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL
-    MaxLineAction = maException
-    Port = 0
-    DefaultPort = 0
-    SSLOptions.Mode = sslmUnassigned
-    SSLOptions.VerifyMode = []
-    SSLOptions.VerifyDepth = 0
-    Left = 192
-    Top = 112
-  end
-  object IdSocksInfo: TIdSocksInfo
-    Left = 72
-    Top = 112
-  end
 end

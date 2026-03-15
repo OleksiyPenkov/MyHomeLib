@@ -23,9 +23,7 @@ uses
   Windows,
   Classes,
   SysUtils,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL;
+  System.Net.HttpClient;
 
 type
   TUpdateInfo = class(TCollectionItem)
@@ -89,7 +87,7 @@ type
 
     procedure UpdateExternalVersions;
 
-    function DownloadUpdate(Index: Integer; HTTP: TidHTTP): Boolean;
+    function DownloadUpdate(Index: Integer; HTTP: THTTPClient): Boolean;
 
     property Items[Index: Integer]: TUpdateInfo read GetUpdate write SetUpdate; default;
     property URL: string read FURL write SetURL;
@@ -99,7 +97,8 @@ type
 implementation
 
 uses
-  unit_Globals;
+  unit_Globals,
+  unit_MHLHttpClient;
 
 { TUpdateInfoList }
 
@@ -140,9 +139,7 @@ end;
 
 procedure TUpdateInfoList.UpdateExternalVersions;
 var
-  HTTP: TidHTTP;
-  IdSocksInfo: TIdSocksInfo;
-  IdSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
+  HTTP: THTTPClient;
   LF: TMemoryStream;
   SL: TStringList;
   i: Integer;
@@ -150,12 +147,8 @@ var
 begin
   LF := TMemoryStream.Create;
   try
-    HTTP := TidHTTP.Create(nil);
-    IdSocksInfo := TIdSocksInfo.Create(nil);
-    IdSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create(nil);
+    HTTP := CreateHTTPClientUpdate;
     try
-      SetProxySettingsUpdate(HTTP, IdSocksInfo, IdSSLIOHandlerSocketOpenSSL);
-
       for i := 0 to Count - 1 do
       begin
         if Items[i].FVersionFile = '' then
@@ -172,17 +165,13 @@ begin
             SL.LoadFromStream(LF);
             if SL.Count > 0 then
               Items[i].FExternalVersion := StrToInt(SL[0]);
-
-            //SL.SaveToFile('E:\Temp\out.txt');
           finally
             SL.Free;
           end;
         except
         end;
-      end; // for
+      end;
     finally
-      IdSSLIOHandlerSocketOpenSSL.Free;
-      IdSocksInfo.Free;
       HTTP.Free;
     end;
   finally
@@ -195,7 +184,7 @@ begin
   inherited Create(TUpdateInfo);
 end;
 
-function TUpdateInfoList.DownloadUpdate(Index: Integer; HTTP: TidHTTP): Boolean;
+function TUpdateInfoList.DownloadUpdate(Index: Integer; HTTP: THTTPClient): Boolean;
 var
   MS: TMemoryStream;
   URL: string;

@@ -24,10 +24,7 @@ uses
   Classes,
   SysUtils,
   unit_ImportInpxThread,
-  IdHTTP,
-  IdSocks,
-  IdSSLOpenSSL,
-  IdComponent,
+  System.Net.HttpClient,
   unit_UserData;
 
 type
@@ -36,20 +33,15 @@ type
 
   TLibUpdateThread = class(TImportInpxThreadBase)
   private
-    FidHTTP: TidHTTP;
-    FidSocksInfo: TIdSocksInfo;
-    FidSSLIOHandlerSocketOpenSSL: TIdSSLIOHandlerSocketOpenSSL;
-    FDownloadSize: Integer;
-    FStartDate : TDateTime;
+    FHTTPClient: THTTPClient;
+    FStartDate: TDateTime;
     FUpdated: Boolean;
 
   protected
     procedure Initialize; override;
     procedure Uninitialize; override;
     procedure WorkFunction; override;
-    procedure HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: int64);
-    procedure HTTPWorkEnd(ASender: TObject; AWorkMode: TWorkMode);
-    procedure HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: int64);
+    procedure HTTPReceiveData(const Sender: TObject; AContentLength, AReadCount: Int64; var AAbort: Boolean);
 
   public
     constructor Create;
@@ -68,7 +60,8 @@ uses
   unit_WorkerThread,
   unit_Lib_Updates,
   unit_Interfaces,
-  unit_Logger;
+  unit_Logger,
+  unit_MHLHttpClient;
 
 resourcestring
 rstrDownloadProgress = 'Завантажено: %u%% із %u байт';
@@ -108,64 +101,38 @@ begin
   FGenresType := gtFb2;
 end;
 
-procedure TLibUpdateThread.HTTPWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
+procedure TLibUpdateThread.HTTPReceiveData(const Sender: TObject; AContentLength, AReadCount: Int64; var AAbort: Boolean);
 var
-  ElapsedTime : Cardinal;
+  ElapsedTime: Cardinal;
   Speed: string;
 begin
-
   if Canceled then
   begin
-    FidHTTP.Disconnect;
+    AAbort := True;
     Exit;
   end;
 
-  if FDownloadSize <> 0 then
-    SetProgress(AWorkCount * 100 div FDownloadSize);
+  if AContentLength > 0 then
+    SetProgress(AReadCount * 100 div AContentLength);
 
-  ElapsedTime := SecondsBetween(Now,FStartDate);
-  if ElapsedTime>0 then
+  ElapsedTime := SecondsBetween(Now, FStartDate);
+  if ElapsedTime > 0 then
   begin
-    Speed := FormatFloat('0.00',AWorkCount/1024/ElapsedTime);
-    SetComment(Format(rstrSpeed,[Speed]));
+    Speed := FormatFloat('0.00', AReadCount / 1024 / ElapsedTime);
+    SetComment(Format(rstrSpeed, [Speed]));
   end;
-end;
-
-procedure TLibUpdateThread.HTTPWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
-begin
-  SetComment(rstrConnectingToServer);
-  FDownloadSize := AWorkCountMax;
-  FStartDate := Now;
-  SetProgress(0);
-end;
-
-procedure TLibUpdateThread.HTTPWorkEnd(ASender: TObject; AWorkMode: TWorkMode);
-begin
-  SetProgress(100);
-  SetComment(rstrReady);
 end;
 
 procedure TLibUpdateThread.Initialize;
 begin
   inherited Initialize;
-
-  FidHTTP := TidHTTP.Create(nil);
-  FidSocksInfo := TIdSocksInfo.Create;
-  FidSSLIOHandlerSocketOpenSSL := TIdSSLIOHandlerSocketOpenSSL.Create;
-
-  FidHTTP.OnWork := HTTPWork;
-  FidHTTP.OnWorkBegin := HTTPWorkBegin;
-  FidHTTP.OnWorkEnd := HTTPWorkEnd;
-  FidHTTP.HandleRedirects := True;
-  SetProxySettingsUpdate(FidHTTP, FidSocksInfo, FidSSLIOHandlerSocketOpenSSL);
+  FHTTPClient := CreateHTTPClientUpdate;
+  FHTTPClient.OnReceiveData := HTTPReceiveData;
 end;
 
 procedure TLibUpdateThread.Uninitialize;
 begin
-  FreeAndNil(FidSSLIOHandlerSocketOpenSSL);
-  FreeAndNil(FidSocksInfo);
-  FreeAndNil(FidHTTP);
-
+  FreeAndNil(FHTTPClient);
   inherited Uninitialize;
 end;
 
@@ -199,7 +166,10 @@ begin
       else
       begin
         Teletype(rstrDownloadingUpdates, tsInfo);
-        if not Settings.Updates.DownloadUpdate(i, FidHTTP) then
+        SetComment(rstrConnectingToServer);
+        FStartDate := Now;
+        SetProgress(0);
+        if not Settings.Updates.DownloadUpdate(i, FHTTPClient) then
         begin
           Teletype(rstrUpdateFailedDownload, tsInfo);
           Continue;

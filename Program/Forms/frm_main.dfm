@@ -2990,10 +2990,6 @@ object frmMain: TfrmMain
       OnClick = miCopyClBrdClick
     end
   end
-  object IdAntiFreeze1: TIdAntiFreeze
-    Left = 368
-    Top = 192
-  end
   object pmAuthor: TPopupMenu
     OwnerDraw = True
     OnPopup = pmAuthorPopup
