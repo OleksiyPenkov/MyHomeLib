@@ -83,7 +83,6 @@
     <DCC_DependencyCheckOutputName>MyhomeLib.exe</DCC_DependencyCheckOutputName>
     <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
     <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
-    <Custom_Styles>Windows10|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10.vsf;Windows10Dark|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10Dark.vsf</Custom_Styles>
     <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -135,8 +134,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>943</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.943;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>946</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.5.1.946;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.1;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>

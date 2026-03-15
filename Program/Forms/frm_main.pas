@@ -769,8 +769,6 @@ type
 
     procedure CreateCollectionMenu;
     procedure CreateScriptMenu;
-    procedure BuildThemeMenu;
-    procedure ThemeMenuClick(Sender: TObject);
     procedure SetColors;
     procedure CreateAlphabetToolbar;
 
@@ -1011,8 +1009,7 @@ uses
   frm_EditGroup,
   unit_SystemDatabase_Abstract,
   unit_MHLArchiveHelpers,
-  frm_DeleteCollection, unit_ImportOldUserData,
-  unit_ThemeManager;
+  frm_DeleteCollection, unit_ImportOldUserData;
 
 resourcestring
 rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перевірте налаштування колекції!';
@@ -2158,42 +2155,6 @@ begin
   end
 end;
 
-procedure TfrmMain.BuildThemeMenu;
-const
-  ThemeNames: array[0..2] of string = ('Системна', 'Світла', 'Темна');
-  ThemeModes: array[0..2] of TMHLThemeMode = (tmSystem, tmLight, tmDark);
-var
-  miTheme, mi: TMenuItem;
-  I: Integer;
-begin
-  miTheme := TMenuItem.Create(MainMenu);
-  miTheme.Caption := 'Тема';
-  miTheme.AutoHotkeys := maManual;
-  miTools.Add(miTheme);
-
-  for I := 0 to High(ThemeNames) do
-  begin
-    mi := TMenuItem.Create(miTheme);
-    mi.Caption := ThemeNames[I];
-    mi.RadioItem := True;
-    mi.GroupIndex := 99;
-    mi.Tag := I;
-    mi.Checked := Settings.ThemeMode = I;
-    mi.OnClick := ThemeMenuClick;
-    miTheme.Add(mi);
-  end;
-end;
-
-procedure TfrmMain.ThemeMenuClick(Sender: TObject);
-var
-  mi: TMenuItem;
-begin
-  mi := Sender as TMenuItem;
-  Settings.ThemeMode := mi.Tag;
-  mi.Checked := True;
-  TMHLThemeManager.ApplyTheme(TMHLThemeMode(mi.Tag));
-end;
-
 function TfrmMain.ShowNCWizard: Boolean;
 var
   frmNCWizard: TNewCollectionWizard;
@@ -2791,8 +2752,6 @@ begin
   LoadDownloadsList;
 
   SetFormState;
-
-  BuildThemeMenu;
 
   UpdateSplashScreen(rstrStarting);
 end;

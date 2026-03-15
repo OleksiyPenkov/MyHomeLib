@@ -372,42 +372,42 @@ begin
       );
 end;
 
-function BrowseCallbackProc(hwnd: HWND; uMsg: UINT; lParam: LPARAM; lpData: LPARAM): Integer; stdcall;
-begin
-  if (uMsg = BFFM_INITIALIZED) then
-    SendMessage(hwnd, BFFM_SETSELECTION, 1, lpData);
-  BrowseCallbackProc := 0;
-end;
-
 function GetFolderName(Handle: Integer; const Caption: string; var strFolder: string): Boolean;
 var
-  BrowseInfo: TBrowseInfo;
-  lpItemID: PItemIDList;
-
-  DisplayName: array [0 .. MAX_PATH] of Char;
-  TempPath : array[0..MAX_PATH] of Char;
+  Dialog: IFileOpenDialog;
+  Options: Cardinal;
+  InitFolder, ResultItem: IShellItem;
+  DisplayName: PWideChar;
+  OwnerWnd: HWND;
 begin
   Result := False;
 
-  FillChar(BrowseInfo, SizeOf(TBrowseInfo), #0);
-
-  if 0 <> Handle then
-    BrowseInfo.hwndOwner := Handle
+  if Handle <> 0 then
+    OwnerWnd := Handle
   else
-    BrowseInfo.hwndOwner := Application.Handle;
+    OwnerWnd := Application.Handle;
 
-  BrowseInfo.pszDisplayName := @DisplayName;
-  BrowseInfo.lpszTitle := PChar(Caption);
-  BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS or BIF_USENEWUI;
-  BrowseInfo.lpfn := @BrowseCallbackProc;
-  BrowseInfo.lParam := LPARAM(PChar(strFolder));
+  if not Succeeded(CoCreateInstance(CLSID_FileOpenDialog, nil, CLSCTX_INPROC_SERVER, IFileOpenDialog, Dialog)) then
+    Exit;
 
-  lpItemID := SHBrowseForFolder(BrowseInfo);
-  if Assigned(lpItemID) then
+  Dialog.SetTitle(PChar(Caption));
+  Dialog.GetOptions(Options);
+  Dialog.SetOptions(Options or FOS_PICKFOLDERS or FOS_FORCEFILESYSTEM);
+
+  if (strFolder <> '') and Succeeded(SHCreateItemFromParsingName(PChar(strFolder), nil, IShellItem, InitFolder)) then
+    Dialog.SetFolder(InitFolder);
+
+  if Succeeded(Dialog.Show(OwnerWnd)) then
   begin
-    Result := SHGetPathFromIDList(lpItemID, TempPath);
-    if Result then strFolder := StrPas(TempPath);
-    CoTaskMemFree(lpItemID);
+    if Succeeded(Dialog.GetResult(ResultItem)) then
+    begin
+      if Succeeded(ResultItem.GetDisplayName(SIGDN_FILESYSPATH, DisplayName)) then
+      begin
+        strFolder := DisplayName;
+        CoTaskMemFree(DisplayName);
+        Result := True;
+      end;
+    end;
   end;
 end;
 
