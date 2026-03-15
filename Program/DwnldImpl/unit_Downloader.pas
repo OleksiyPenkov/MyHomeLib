@@ -189,6 +189,8 @@ var
   Str: TStringList;
   archiver: TMHLZip;
 begin
+  Result := False;
+  archiver := nil;
   Path := ExtractFileDir(FFile);
   CreateFolders('', Path);
   FResponse.Position := 0;
@@ -207,6 +209,7 @@ begin
       else
       begin
         FResponse.SaveToFile(FFile);
+        Result := True;
         if IsArchiveExt(FFile) then
         begin
           // Test archive integrity only if it's an archive
