@@ -194,6 +194,18 @@ begin
     else
       FTargetFullFilePath  := Format('%s.%d%s',[copy(FTargetFullFilePath, 1, MaxPathLength), R.BookKey.BookID, R.FileExt]);
 
+    // Ensure unique filename to avoid overwriting books with identical names (#63)
+    if FileExists(FTargetFullFilePath) then
+    begin
+      var BaseName := ChangeFileExt(FTargetFullFilePath, '');
+      var Ext := ExtractFileExt(FTargetFullFilePath);
+      var Counter := 1;
+      repeat
+        FTargetFullFilePath := Format('%s (%d)%s', [BaseName, Counter, Ext]);
+        Inc(Counter);
+      until not FileExists(FTargetFullFilePath);
+    end;
+
     FFileOprecord.TargetFile := FTargetFullFilePath;
     FFileOprecord.SourceFile := R.GetBookFileName;
     FFileOprecord.FileName := FTargetFileName + R.FileExt;
@@ -234,9 +246,21 @@ end;
 procedure TExportToDeviceThread.ExportToZip;
 var
   archiver: TMHLZip;
+  ZipFile: string;
 begin
   try
-    archiver := TMHLZip.Create(FFileOprecord.TargetFile + ZIP_EXTENSION, False);
+    ZipFile := FFileOprecord.TargetFile + ZIP_EXTENSION;
+    if FileExists(ZipFile) then
+    begin
+      var BaseName := ChangeFileExt(FFileOprecord.TargetFile, '');
+      var Ext := ExtractFileExt(FFileOprecord.TargetFile);
+      var Counter := 1;
+      repeat
+        ZipFile := Format('%s (%d)%s', [BaseName, Counter, Ext]) + ZIP_EXTENSION;
+        Inc(Counter);
+      until not FileExists(ZipFile);
+    end;
+    archiver := TMHLZip.Create(ZipFile, False);
     FFileOprecord.Stream.Seek(0, soFromBeginning);
     archiver.AddFromStream(FFileOprecord.FileName, FFileOprecord.Stream);
   finally
