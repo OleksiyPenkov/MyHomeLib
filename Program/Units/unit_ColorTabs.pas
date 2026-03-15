@@ -1,7 +1,7 @@
 ﻿unit unit_ColorTabs;
 interface
 
-uses ComCtrls, StdCtrls, Classes, Graphics, Messages, Windows;
+uses ComCtrls, StdCtrls, Classes, Graphics, Messages, Windows, Vcl.Themes;
 
 type
   TTabSheet = class(ComCtrls.TTabSheet)
@@ -36,7 +36,9 @@ end;
 
 procedure TTabSheet.WMEraseBkGnd(var Msg: TWMEraseBkGnd);
 begin
-  if FColor = clBtnFace then
+  if StyleServices.Enabled and not StyleServices.IsSystemStyle then
+    inherited
+  else if FColor = clBtnFace then
     inherited
   else
   begin

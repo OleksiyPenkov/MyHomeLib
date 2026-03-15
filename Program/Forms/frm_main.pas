@@ -66,7 +66,8 @@ uses
   unit_treeController,
   unit_ColorTabs,
   System.Actions,
-  System.ImageList;
+  System.ImageList,
+  Vcl.Themes;
 
 type
   TfrmMain = class(TForm)
@@ -2752,6 +2753,9 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  if StyleServices.Enabled and not StyleServices.IsSystemStyle then
+    pgControl.OwnerDraw := False;
+
   FSystemData := SystemDB;
 
   ConnectTreeControllers;
@@ -6605,25 +6609,25 @@ var
   AText: string;
   APoint: TPoint;
 begin
+  // When VCL Style is active, OwnerDraw is disabled — this handler won't be called.
+  // This code only runs in classic (unstyled) mode.
   with (Control as TPageControl).Canvas do
   begin
     Brush.Color := clMenuBar;
     FillRect(Rect);
     AText := TPageControl(Control).Pages[TabIndex].Caption;
-    with Control.Canvas do
-    begin
-      APoint.x := (Rect.Right - Rect.Left) div 2 - TextWidth(AText) div 2;
-      APoint.y := (Rect.Bottom - Rect.Top) div 2 - TextHeight(AText) div 2;
-      TextRect(Rect, Rect.Left + APoint.x, Rect.Top + APoint.y, AText);
+    APoint.X := (Rect.Right - Rect.Left) div 2 - TextWidth(AText) div 2;
+    APoint.Y := (Rect.Bottom - Rect.Top) div 2 - TextHeight(AText) div 2;
+    TextRect(Rect, Rect.Left + APoint.X, Rect.Top + APoint.Y, AText);
 
-      if Active then
-      begin
-        Pen.Color := $00EFD3C6;
-        Pen.Width := 3;
-        MoveTo(Rect.Left + 3, Rect.Top + 4); LineTo(Rect.Right - 4, 4);
-      end;
+    if Active then
+    begin
+      Pen.Color := $00EFD3C6;
+      Pen.Width := 3;
+      MoveTo(Rect.Left + 3, Rect.Top + 4);
+      LineTo(Rect.Right - 4, 4);
     end;
-   end;
+  end;
 end;
 
 procedure TfrmMain.ShowHelpExecute(Sender: TObject);

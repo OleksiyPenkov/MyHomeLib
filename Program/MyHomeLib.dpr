@@ -147,7 +147,8 @@ uses
   unit_treeController in 'Units\unit_treeController.pas',
   unit_MHLHttpClient in 'Units\unit_MHLHttpClient.pas',
   Vcl.Themes,
-  Vcl.Styles;
+  Vcl.Styles,
+  unit_ThemeManager in 'Units\unit_ThemeManager.pas';
 
 {$R *.res}
 
@@ -169,6 +170,7 @@ begin
     // Важно! сначала создаем датамодули и главную форму, а потом - остальные формы!
     Application.CreateForm(TDMUser, DMUser);
     DMUser.Init;
+    TMHLThemeManager.ApplyTheme(tmSystem);
 
     Application.CreateForm(TfrmMain, frmMain);
     Application.CreateForm(TfrmGenreTree, frmGenreTree);
