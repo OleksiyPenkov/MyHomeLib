@@ -2,7 +2,7 @@
   *
   * MyHomeLib
   *
-  * Copyright (C) 2008-2023 Oleksiy Penkov aka Koreec (oleksiy.penkov@gmail.com)
+  * Copyright (C) 2008-2026 Oleksiy Penkov aka Koreec (oleksiy.penkov@gmail.com)
   *
   *  MIT License
   *

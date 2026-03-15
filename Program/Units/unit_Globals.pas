@@ -665,52 +665,62 @@ end;
 
 function Transliterate(const Input: string): string;
 var
-  S, conv: string;
+  S: string;
+  SB: TStringBuilder;
   f, o: Integer;
 begin
-  conv := '';
-  for f := 1 to Length(Input) do
-  begin
-    o := Ord(Input[f]);
-    if (o >= 1072) and (o <= 1104) then
-      S := TransL[o - 1072]
-    else if (o >= 1040) and (o <= 1071) then
-      S := TransU[o - 1040]
-    else if CharInSet(Input[f], lat) then
-      S := Input[f]
-    else
-      S := '_';
-    conv := conv + S;
+  SB := TStringBuilder.Create(Length(Input));
+  try
+    for f := 1 to Length(Input) do
+    begin
+      o := Ord(Input[f]);
+      if (o >= 1072) and (o <= 1104) then
+        S := TransL[o - 1072]
+      else if (o >= 1040) and (o <= 1071) then
+        S := TransU[o - 1040]
+      else if CharInSet(Input[f], lat) then
+        S := Input[f]
+      else
+        S := '_';
+      SB.Append(S);
+    end;
+    Result := SB.ToString;
+  finally
+    SB.Free;
   end;
-  Result := conv;
 end;
 
 function CheckSymbols(const Input: string; const Full: boolean = False): string;
 var
-  S, conv: string;
+  SB: TStringBuilder;
   f: Integer;
+  ch: Char;
+  IsDenied: Boolean;
 begin
-  conv := '';
-  for f := 1 to Length(Input) do
-  begin
-    if Full then
-      if CharInSet(Input[f], denied_full) then
-        S := ' '
+  SB := TStringBuilder.Create(Length(Input));
+  try
+    for f := 1 to Length(Input) do
+    begin
+      ch := Input[f];
+      if Full then
+        IsDenied := CharInSet(ch, denied_full)
       else
-        S := Input[f]
-    else
-      if CharInSet(Input[f], denied) then
-        S := ' '
-      else
-        S := Input[f];
-    conv := conv + S;
-  end;
+        IsDenied := CharInSet(ch, denied);
 
-  // фильтруем точки в конце имени
-  if Length(conv) > 0 then
-    while conv[Length(conv)] = '.' do
-      Delete(conv, Length(conv), 1);
-  Result := conv;
+      if IsDenied then
+        SB.Append(' ')
+      else
+        SB.Append(ch);
+    end;
+
+    // фильтруем точки в конце имени
+    while (SB.Length > 0) and (SB.Chars[SB.Length - 1] = '.') do
+      SB.Length := SB.Length - 1;
+
+    Result := SB.ToString;
+  finally
+    SB.Free;
+  end;
 end;
 
 function GenerateBookLocation(const FullName: string): string;

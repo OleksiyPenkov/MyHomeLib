@@ -76,6 +76,8 @@ var
   bol, TemplEnd: boolean;
   TemplatePart: string;
 begin
+  bol := True;
+
   if Template = '' then
   begin
     if TemplType <> TpPath then
@@ -109,14 +111,12 @@ begin
   while not(TemplEnd) do
   begin
     i := 1;
-    TemplatePart := '';
 
     // Разбор пути к файлу на составляющие
-    while (not(Template[k] = '\')) and (k <= Length(Template)) do
-    begin
-      TemplatePart := TemplatePart + Template[k];
+    var PartStart := k;
+    while (k <= Length(Template)) and (Template[k] <> '\') do
       Inc(k);
-    end;
+    TemplatePart := Copy(Template, PartStart, k - PartStart);
     Inc(k);
     // Если больше нет элементов пути, то итеррация крайняя
     if k > Length(Template) then
@@ -154,7 +154,7 @@ begin
         // Выделяем название элемента
         Inc(i);
         stack[StackPos].name := '';
-        while CharInSet(TemplatePart[i], ['a' .. 'z', 'A' .. 'Z']) do
+        while (i <= Length(TemplatePart)) and CharInSet(TemplatePart[i], ['a' .. 'z', 'A' .. 'Z']) do
         begin
           stack[StackPos].name := stack[StackPos].name + TemplatePart[i];
           Inc(i);
@@ -324,7 +324,10 @@ begin
   if R.AuthorCount > 0 then
   begin
     s := Trim(CheckSymbols(R.Authors[ Low(R.Authors)].FLastName, True));
-    MaskElements[5].value := s[1];
+    if s <> '' then
+      MaskElements[5].value := s[1]
+    else
+      MaskElements[5].value := '';
   end
   else
     MaskElements[5].value := '';
@@ -389,10 +392,24 @@ begin
         (MaskElements[i].value = '') then
         if (FBlocksMap[j].BegBlock <> 0) and (FBlocksMap[j].EndBlock <> 0) then
         begin
-          Delete(Result, FBlocksMap[j].BegBlock, FBlocksMap[j].EndBlock -
-            FBlocksMap[j].BegBlock + 1);
-          // Здесь ещё продумаю вариант удаления записей о вложенных элементах без валидации
-          ValidateTemplate(Result, TemplType);
+          var DeleteLen := FBlocksMap[j].EndBlock - FBlocksMap[j].BegBlock + 1;
+          var DeleteStart := FBlocksMap[j].BegBlock;
+          Delete(Result, DeleteStart, DeleteLen);
+          // Adjust positions of remaining blocks instead of re-parsing
+          for var k := 0 to ColElements - 1 do
+          begin
+            if (FBlocksMap[k].BegBlock >= DeleteStart) and
+               (FBlocksMap[k].EndBlock <= DeleteStart + DeleteLen - 1) then
+            begin
+              FBlocksMap[k].BegBlock := 0;
+              FBlocksMap[k].EndBlock := 0;
+            end
+            else if FBlocksMap[k].BegBlock > DeleteStart then
+            begin
+              Dec(FBlocksMap[k].BegBlock, DeleteLen);
+              Dec(FBlocksMap[k].EndBlock, DeleteLen);
+            end;
+          end;
         end;
 
   StrReplace('[', '', Result);
@@ -414,7 +431,7 @@ begin
     if (p1 > 0) and (p2 > 0) and (p1 < p2) then
     begin
       Delete(Result, p1, p2 - p1 + 1);
-      Trim(Result);
+      Result := Trim(Result);
     end;
   end;
 end;

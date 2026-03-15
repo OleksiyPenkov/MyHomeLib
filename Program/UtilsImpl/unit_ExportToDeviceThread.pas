@@ -206,15 +206,42 @@ begin
       FTargetFullFilePath  := Format('%s.%d%s',[copy(FTargetFullFilePath, 1, MaxPathLength), R.BookKey.BookID, R.FileExt]);
 
     // Ensure unique filename to avoid overwriting books with identical names (#63)
-    if FileExists(FTargetFullFilePath) then
+    // FileExists does not work for MTP shell paths; IFileOperation handles conflicts
+    if not FUseMTP then
     begin
-      var BaseName := ChangeFileExt(FTargetFullFilePath, '');
-      var Ext := ExtractFileExt(FTargetFullFilePath);
-      var Counter := 1;
-      repeat
-        FTargetFullFilePath := Format('%s (%d)%s', [BaseName, Counter, Ext]);
-        Inc(Counter);
-      until not FileExists(FTargetFullFilePath);
+      // Compute actual output path based on export mode
+      var ActualOutputPath: string;
+      case FExportMode of
+        emFB2Zip: ActualOutputPath := FTargetFullFilePath + ZIP_EXTENSION;
+        emLrf:    ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.lrf');
+        emEpub:   ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.epub');
+        emPDF:    ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.pdf');
+        emMobi:   ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.mobi');
+        emTxt:    ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.txt');
+      else
+        ActualOutputPath := FTargetFullFilePath;
+      end;
+
+      if FileExists(ActualOutputPath) then
+      begin
+        var BaseName := ChangeFileExt(FTargetFullFilePath, '');
+        var Ext := ExtractFileExt(FTargetFullFilePath);
+        var Counter := 1;
+        repeat
+          FTargetFullFilePath := Format('%s (%d)%s', [BaseName, Counter, Ext]);
+          case FExportMode of
+            emFB2Zip: ActualOutputPath := FTargetFullFilePath + ZIP_EXTENSION;
+            emLrf:    ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.lrf');
+            emEpub:   ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.epub');
+            emPDF:    ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.pdf');
+            emMobi:   ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.mobi');
+            emTxt:    ActualOutputPath := ChangeFileExt(FTargetFullFilePath, '.txt');
+          else
+            ActualOutputPath := FTargetFullFilePath;
+          end;
+          Inc(Counter);
+        until not FileExists(ActualOutputPath);
+      end;
     end;
 
     FFileOprecord.SourceFile := R.GetBookFileName;
@@ -291,17 +318,16 @@ end;
 
 function StreamToFile(const AFileName: string; AStream: TStream): boolean;
 var
-  Stream: TMemoryStream;
+  FileStream: TFileStream;
 begin
   Result := False;
+  FileStream := TFileStream.Create(AFileName, fmCreate);
   try
-    Stream := TMemoryStream.Create;
     AStream.Seek(0, soFromBeginning);
-    Stream.CopyFrom(AStream, AStream.Size);
-    Stream.SaveToFile(AFileName);
+    FileStream.CopyFrom(AStream, AStream.Size);
     Result := True;
   finally
-    FreeAndNil(Stream);
+    FileStream.Free;
   end;
 end;
 
@@ -329,7 +355,8 @@ begin
         Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
     end;
   except
-    // supress excerptions
+    on E: Exception do
+      FLastError := Format('CallExternalConverter exception: %s', [E.Message]);
   end;
 end;
 
@@ -347,7 +374,7 @@ begin
   try
 
     case FExportMode of
-         emFB2: ExportToFB2;
+         emFB2: if not ExportToFB2 then Exit;
 
       emFB2Zip: ExportToZip;
 
@@ -355,7 +382,8 @@ begin
     end;
     Result := True;
   except
-    // suppress excerptions
+    on E: Exception do
+      FLastError := Format('ProcessFileFromStream exception: %s', [E.Message]);
   end;
 end;
 
@@ -527,10 +555,10 @@ begin
             FProcessedFiles := FFileOprecord.SourceFile;
 
           if not FExtractOnly Then Res := SendFileToDevice;
-
-          if FFileOprecord.Stream <> nil then
-            FreeAndNil(FFileOprecord.Stream);
         end;
+
+        if FFileOprecord.Stream <> nil then
+          FreeAndNil(FFileOprecord.Stream);
 
         if not Res then
         begin
@@ -558,7 +586,10 @@ begin
     if FailedCount > 0 then
     begin
       LogFileName := Settings.SystemFileName[sfExportErrorLog];
-      ErrorLog.SaveToFile(LogFileName, TEncoding.UTF8);
+      if TFile.Exists(LogFileName) then
+        TFile.AppendAllText(LogFileName, ErrorLog.Text, TEncoding.UTF8)
+      else
+        ErrorLog.SaveToFile(LogFileName, TEncoding.UTF8);
       ShowMessage(Format(rstrExportErrors, [FailedCount, totalBooks, LogFileName]), MB_ICONWARNING or MB_OK);
     end;
   finally
