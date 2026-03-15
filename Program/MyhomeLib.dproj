@@ -99,6 +99,8 @@
     <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Base_Win64)'!=''">
+    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+    <DCC_ResourcePath>..\Components\MHLComponents;$(DCC_ResourcePath)</DCC_ResourcePath>
     <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
@@ -131,8 +133,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>861</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.5.0.861;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>873</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.5.0.873;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.5.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
@@ -145,9 +147,9 @@
     <VerInfo_Locale>1033</VerInfo_Locale>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-    <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=2.5.0.860;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=2.5.0;Comments=</VerInfo_Keys>
+    <VerInfo_Keys>CompanyName=;FileDescription=MyhomeLib;FileVersion=2.5.0.862;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.MyhomeLib;ProductName=MyhomeLib;ProductVersion=2.5.0;Comments=</VerInfo_Keys>
     <VerInfo_Release>0</VerInfo_Release>
-    <VerInfo_Build>860</VerInfo_Build>
+    <VerInfo_Build>862</VerInfo_Build>
     <VerInfo_Locale>1033</VerInfo_Locale>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
@@ -157,7 +159,7 @@
     <UWP_DelphiLogo150>Resources\Images\splashScreen9.png</UWP_DelphiLogo150>
     <VerInfo_MinorVer>5</VerInfo_MinorVer>
     <VerInfo_AutoIncVersion>true</VerInfo_AutoIncVersion>
-    <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+    <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_2)'!=''">
     <DCC_RemoteDebug>true</DCC_RemoteDebug>
@@ -188,7 +190,7 @@
     <BRCC_Language>russian</BRCC_Language>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
-    <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+    <AppDPIAwarenessMode>none</AppDPIAwarenessMode>
     <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
     <DCC_DcuOutput>Out\Units64</DCC_DcuOutput>
     <VerInfo_MajorVer>1</VerInfo_MajorVer>

@@ -706,6 +706,8 @@ var
   Where: string;
   SQLRows: string;
   SQLCount: string;
+  NeedBookJoin: Boolean;
+  NeedAuthorListJoin: Boolean;
 
   procedure SetParams(query: TSQLiteQuery; const Mode: TAuthorIteratorMode);
   begin
@@ -753,10 +755,8 @@ begin
 
     amFullFilter:
       begin
-        FromList := 'Author_List al ';
-        if FCollection.GetHideDeleted or FCollection.GetShowLocalOnly then
-          FromList := FromList + 'INNER JOIN Books b ON al.BookID = b.BookID ';
-        FromList := FromList + 'INNER JOIN Authors a ON a.AuthorID = al.AuthorID ';
+        NeedBookJoin := FCollection.GetHideDeleted or FCollection.GetShowLocalOnly;
+        NeedAuthorListJoin := NeedBookJoin;
 
         if FCollection.GetHideDeleted then
           AddToWhere(Where, ' b.IsDeleted = :IsDeleted ');
@@ -775,16 +775,26 @@ begin
         begin
           Assert(Length(FCollection.GetAuthorFilterType) = 1);
           Assert(TCharacter.IsUpper(FCollection.GetAuthorFilterType, 1));
-          // TODO -cSQL performance: не оптимизируется при использовании выражения
           AddToWhere(Where,
-            'a.SearchName LIKE :FilterType'  // начинается на заданную букву
+            'a.SearchName LIKE :FilterType'
           );
         end;
 
-        SQLRows := 'SELECT DISTINCT a.AuthorID FROM ' + FromList + Where;
-        SQLCount := 'SELECT COUNT(*) FROM (' + SQLRows + ') ROWS ';
-        SQLRows := 'SELECT DISTINCT a.AuthorID, a.LastName, a.FirstName, a.MiddleName FROM ' + FromList + Where + ' ORDER BY a.LastName, a.FirstName, a.MiddleName ';
-//        SQLRows := 'SELECT DISTINCT a.AuthorID, a.LastName, a.FirstName, a.MiddleName FROM ' + FromList + Where;
+        // Optimize: skip Author_List join when no book-level filters (#43)
+        if NeedAuthorListJoin then
+        begin
+          FromList := 'Author_List al INNER JOIN Books b ON al.BookID = b.BookID INNER JOIN Authors a ON a.AuthorID = al.AuthorID ';
+          SQLRows := 'SELECT DISTINCT a.AuthorID FROM ' + FromList + Where;
+          SQLCount := 'SELECT COUNT(*) FROM (' + SQLRows + ') ROWS ';
+          SQLRows := 'SELECT DISTINCT a.AuthorID, a.LastName, a.FirstName, a.MiddleName FROM ' + FromList + Where + ' ORDER BY a.LastName, a.FirstName, a.MiddleName ';
+        end
+        else
+        begin
+          FromList := 'Authors a ';
+          SQLRows := 'SELECT a.AuthorID FROM ' + FromList + Where;
+          SQLCount := 'SELECT COUNT(*) FROM (' + SQLRows + ') ROWS ';
+          SQLRows := 'SELECT a.AuthorID, a.LastName, a.FirstName, a.MiddleName FROM ' + FromList + Where + ' ORDER BY a.LastName, a.FirstName, a.MiddleName ';
+        end;
 
       end;
 

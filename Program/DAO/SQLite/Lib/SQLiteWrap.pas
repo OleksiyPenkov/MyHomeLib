@@ -266,16 +266,14 @@ begin
     raise ESQLiteException.CreateFmt(c_failopen, [FileName, s]);
   end;
 
-  //
-  // !!!!!!!! TEST ONLY !!!!!!!!
-  //
+  // journal_mode returns a result row, so use Open instead of ExecSQL
+  with NewQuery('PRAGMA journal_mode = WAL') do
+  try Open; finally Free; end;
   ExecSQL('PRAGMA synchronous = NORMAL');
-  ExecSQL('PRAGMA cache_size = 16000');
-  // Slow down:
-  //  ExecSQL('PRAGMA count_changes = 0');
-  //
-  // !!!!!!!! TEST ONLY !!!!!!!!
-  //
+  ExecSQL('PRAGMA cache_size = -65536');   // 64MB cache
+  with NewQuery('PRAGMA mmap_size = 268435456') do // 256MB mmap
+  try Open; finally Free; end;
+  ExecSQL('PRAGMA temp_store = MEMORY');
 
   RegisterSystemCollateAndFunc;
 end;
