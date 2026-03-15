@@ -49,6 +49,7 @@ type
     sfColumnsStore,
     sfDownloadsStore,
     sfDownloadErrorLog,
+    sfExportErrorLog,
     sfCollectionsStore,
     sfPresets,
     sfUpdateLog
@@ -1321,6 +1322,7 @@ begin
     sfColumnsStore: Result := WorkPath + COLUMNS_STORE_FILENAME;
     sfDownloadsStore: Result := WorkPath + DOWNLOADS_STORE_FILENAME;
     sfDownloadErrorLog: Result := WorkPath + DOWNLOAD_ERRORLOG_FILENAME;
+    sfExportErrorLog: Result := WorkPath + EXPORT_ERRORLOG_FILENAME;
     sfCollectionsStore: Result := WorkPath + COLLECTIONS_FILENAME;
     sfPresets: Result := WorkPath + PRESETS_FILENAME;
     sfUpdateLog: Result := WorkPath + UPDATE_LOGFILE;

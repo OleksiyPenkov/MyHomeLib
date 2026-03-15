@@ -105,10 +105,11 @@ resourcestring
   rstrCheckTemplateValidity = 'Перевірте правильність шаблону';
   rstrArchiveNotFound = 'Архів' + CR + 'не знайдено!';
   rstrFileNotFound = 'File "%s" not found';
-  rstrProcessRemainingFiles = 'Обробляти файли, що залишилися?';
+  rstrExportFileFailed = 'Не вдалось експортувати файл "%s".' + CR + CR + 'Обробляти файли, що залишилися?';
   rstrFilesProcessed = 'Записано файли: %u з %u';
   rstrCompleted = 'Завершення операції...';
   rstrRememberChoise = 'Запам''ятати вибір?';
+  rstrExportErrors = 'Під час експорту виникли помилки: %d з %d файлів не вдалось експортувати.' + CR + 'Деталі у файлі: %s';
 
 const
   MaxPathLength = 240;
@@ -417,45 +418,66 @@ var
   totalBooks: Integer;
   Res: Boolean;
   IsShowDialog: BOOL;
+  ErrorLog: TStringList;
+  LogFileName: string;
+  FailedCount: Integer;
 begin
   IsShowDialog := True;
-  FProgressEngine.BeginOperation(Length(FBookIdList), rstrFilesProcessed, rstrFilesProcessed);
+  FailedCount := 0;
+  ErrorLog := TStringList.Create;
   try
-    totalBooks := Length(FBookIdList);
-    for i := 0 to totalBooks - 1 do
-    begin
-      if Canceled then
-        Break;
-
-      Res := PrepareFile(FBookIdList[i].BookKey);
-      if Res then
+    FProgressEngine.BeginOperation(Length(FBookIdList), rstrFilesProcessed, rstrFilesProcessed);
+    try
+      totalBooks := Length(FBookIdList);
+      for i := 0 to totalBooks - 1 do
       begin
-        if i = 0 then
-          FProcessedFiles := FFileOprecord.SourceFile;
+        if Canceled then
+          Break;
 
-        if not FExtractOnly Then Res := SendFileToDevice;
-
-        if FFileOprecord.Stream <> nil then
-          FreeAndNil(FFileOprecord.Stream);
-      end;
-
-      if not Res and (i < totalBooks - 1) then
-      begin
-        if IsShowDialog then
+        Res := PrepareFile(FBookIdList[i].BookKey);
+        if Res then
         begin
-          Canceled := (ShowMessage(rstrProcessRemainingFiles, MB_ICONQUESTION or MB_YESNO) = IDNO);
-          if ShowMessage(rstrRememberChoise, MB_ICONQUESTION or MB_YESNO) = IDYES then
+          if i = 0 then
+            FProcessedFiles := FFileOprecord.SourceFile;
+
+          if not FExtractOnly Then Res := SendFileToDevice;
+
+          if FFileOprecord.Stream <> nil then
+            FreeAndNil(FFileOprecord.Stream);
+        end;
+
+        if not Res then
+        begin
+          Inc(FailedCount);
+          ErrorLog.Add(Format('%s  >>  %s', [DateTimeToStr(Now), FFileOprecord.FileName]));
+
+          if i < totalBooks - 1 then
           begin
-            IsShowDialog := False;
+            if IsShowDialog then
+            begin
+              Canceled := (ShowMessage(Format(rstrExportFileFailed, [FFileOprecord.FileName]), MB_ICONQUESTION or MB_YESNO) = IDNO);
+              if ShowMessage(rstrRememberChoise, MB_ICONQUESTION or MB_YESNO) = IDYES then
+                IsShowDialog := False;
+            end;
           end;
         end;
+
+        FProgressEngine.AddProgress;
       end;
 
-      FProgressEngine.AddProgress;
+    finally
+      FProgressEngine.EndOperation;
     end;
 
+    // Save error log and notify user (#52)
+    if FailedCount > 0 then
+    begin
+      LogFileName := Settings.SystemFileName[sfExportErrorLog];
+      ErrorLog.SaveToFile(LogFileName);
+      ShowMessage(Format(rstrExportErrors, [FailedCount, totalBooks, LogFileName]), MB_ICONWARNING or MB_OK);
+    end;
   finally
-    FProgressEngine.EndOperation;
+    ErrorLog.Free;
   end;
 end;
 
