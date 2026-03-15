@@ -2590,7 +2590,7 @@ object frmMain: TfrmMain
         Action = acBookAdd2Favorites
       end
       object miAddToGroup: TMenuItem
-        Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1075#1088#1091#1087#1087#1091
+        Caption = #1044#1086#1076#1072#1090#1080' '#1076#1086' '#1075#1088#1091#1087#1080
         OnClick = acBookAdd2GroupExecute
         object TMenuItem
         end
@@ -2602,7 +2602,7 @@ object frmMain: TfrmMain
         Caption = '-'
       end
       object miCopyToCollection: TMenuItem
-        Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1074' '#1082#1086#1083#1083#1077#1082#1094#1080#1102
+        Caption = #1050#1086#1087#1110#1102#1074#1072#1090#1080' '#1076#1086' '#1082#1086#1083#1077#1082#1094#1110#1111
         ImageIndex = 23
       end
       object N74: TMenuItem
@@ -2908,7 +2908,7 @@ object frmMain: TfrmMain
     end
     object miAddFavorites: TMenuItem
       Tag = 1
-      Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1074' '#1080#1079#1073#1088#1072#1085#1085#1086#1077
+      Caption = #1044#1086#1076#1072#1090#1080' '#1076#1086' '#1086#1073#1088#1072#1085#1086#1075#1086
       ImageIndex = 13
       ShortCut = 16454
       OnClick = AddBookToGroup
