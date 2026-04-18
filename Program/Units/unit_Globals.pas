@@ -1089,7 +1089,7 @@ begin
     end;
   end;
 
-  Assert(Assigned(Result));
+  Assert(Assigned(Result) or Settings.IgnoreAbsentArchives);
 end;
 
 // Get the descriptor file as a stream.
@@ -1113,15 +1113,21 @@ begin
 
     bfFbd:
       begin
-        try
-          bookFileName := GetBookFileName;
-          if not FileExists(bookFileName) then Exit;
+        bookFileName := GetBookFileName;
+        if not FileExists(bookFileName) then
+          raise EBookNotFound.CreateFmt(rstrFileNotFound, [bookFileName]);
 
-          archiveFileName := TPath.Combine(Settings.ReadPath, bookFileName);
-          archiver := TMHLZip.Create(archiveFileName, True);
+        archiveFileName := TPath.Combine(Settings.ReadPath, bookFileName);
+        archiver := TMHLZip.Create(archiveFileName, True);
+        try
           Result := TMemoryStream.Create;
-          archiver.Find('*' + FBD_EXTENSION);
-          archiver.ExtractToStream(archiver.LastName, Result);
+          try
+            archiver.Find('*' + FBD_EXTENSION);
+            archiver.ExtractToStream(archiver.LastName, Result);
+          except
+            FreeAndNil(Result);
+            raise;
+          end;
         finally
           FreeAndNil(archiver);
         end;

@@ -86,7 +86,7 @@ begin
     FDownloader.Stop;
     Terminate;
   except
-    // подавляем ETreminate
+    on EAbort do ; // swallow thread-termination abort; rethrow everything else
   end;
 end;
 

@@ -497,7 +497,7 @@ begin
     end;
 
     else
-      Assert(False);
+      raise Exception.CreateFmt('Unexpected TBookIteratorMode: %d', [Ord(Mode)]);
   end;
 
   if Mode in [bmByGenre, bmByAuthor, bmBySeries] then
@@ -799,7 +799,7 @@ begin
       end;
 
     else
-      Assert(False);
+      raise Exception.CreateFmt('Unexpected TAuthorIteratorMode: %d', [Ord(Mode)]);
   end;
 
   FCount := FCollection.FDatabase.NewQuery(SQLCount);
@@ -884,7 +884,7 @@ begin
     end;
 
     else
-      Assert(False);
+      raise Exception.CreateFmt('Unexpected TGenreIteratorMode: %d', [Ord(Mode)]);
   end;
 
   FCount := FCollection.FDatabase.NewQuery(SQLCount);
@@ -1024,7 +1024,7 @@ begin
     end;
 
     else
-      Assert(False);
+      raise Exception.CreateFmt('Unexpected TSeriesIteratorMode: %d', [Ord(Mode)]);
   end;
 
   FCount := FCollection.FDatabase.NewQuery(SQLCount);

@@ -238,7 +238,7 @@ begin
         end;
         ADatabase.Commit;
       except
-        ADatabase.Rollback;
+        try ADatabase.Rollback; except end; // preserve the original exception
         raise;
       end;
     finally
@@ -536,8 +536,7 @@ begin
       Match := (CollectionInfo.RootFolder = searchValue);
 
     else
-      Match := False;
-      Assert(False);
+      raise ENotSupportedException.CreateFmt('Property %d is not searchable', [PropID]);
     end;
 
     if Match and ((IgnoreID = INVALID_COLLECTION_ID) or (IgnoreID <> CollectionInfo.ID)) then
@@ -564,7 +563,7 @@ begin
     PROP_CONNECTIONSCRIPT: Result := 'ConnectionScript';
     PROP_DATAVERSION:      Result := 'DataVersion';
   else
-    Assert(False);
+    raise ENotSupportedException.CreateFmt('No column mapped for property %d', [PropID]);
   end;
 end;
 
@@ -582,10 +581,12 @@ begin
   vValue := Value;
 
   case PropID of
-    PROP_ID:         Assert(False); // DatabaseID
-    PROP_DATAFILE:   Assert(False); // DBFileName
-    PROP_CODE:       Assert(False); // Code
-    PROP_ROOTFOLDER: vValue := ExtractRelativePath(Settings.DataPath, vValue);
+    PROP_ID,
+    PROP_DATAFILE,
+    PROP_CODE:
+      raise ENotSupportedException.CreateFmt('Property %d is read-only', [PropID]);
+    PROP_ROOTFOLDER:
+      vValue := ExtractRelativePath(Settings.DataPath, vValue);
   end;
 
   FieldName := FieldByPropID(PropID);
@@ -786,8 +787,7 @@ begin
     Exit;
   end;
 
-  Assert(False);
-  Result := nil;
+  raise EDBError.CreateFmt('Collection %d not found', [CollectionID]);
 end;
 
 function TSystemData_SQLite.ActivateGroup(const ID: Integer): Boolean;
