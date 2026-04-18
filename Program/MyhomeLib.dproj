@@ -100,7 +100,7 @@
     <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Base_Win64)'!=''">
-    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.1\Lib\RX13\Win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+    <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.1\Lib\RX13\Win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
     <DCC_ResourcePath>..\Components\MHLComponents;$(DCC_ResourcePath)</DCC_ResourcePath>
     <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
     <BT_BuildType>Debug</BT_BuildType>
@@ -134,8 +134,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>1014</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.6.0.1014;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.6.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>1016</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.6.0.1016;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.6.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
@@ -148,9 +148,9 @@
     <VerInfo_Locale>1033</VerInfo_Locale>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
-    <VerInfo_Keys>CompanyName=;FileDescription=MyhomeLib;FileVersion=2.6.0.914;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.MyhomeLib;ProductName=MyhomeLib;ProductVersion=2.6.0;Comments=</VerInfo_Keys>
+    <VerInfo_Keys>CompanyName=;FileDescription=MyhomeLib;FileVersion=2.6.0.916;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.MyhomeLib;ProductName=MyhomeLib;ProductVersion=2.6.0;Comments=</VerInfo_Keys>
     <VerInfo_Release>0</VerInfo_Release>
-    <VerInfo_Build>914</VerInfo_Build>
+    <VerInfo_Build>916</VerInfo_Build>
     <VerInfo_Locale>1033</VerInfo_Locale>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
     <DCC_ExeOutput>Out\Bin64</DCC_ExeOutput>
