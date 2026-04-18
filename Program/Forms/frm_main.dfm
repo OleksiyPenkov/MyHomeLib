@@ -208,19 +208,40 @@ object frmMain: TfrmMain
       Left = 342
       Top = 2
       Action = acViewHideDeletedBooks
+      AllowAllUp = True
+      GroupIndex = 1
       ImageIndex = 12
+      SelectionColorStart = clHighlight
+      SelectionColorStop = clHighlight
+      SelectionFrameColor = clHighlight
+      UseToolbarVisualStyle = False
+      VisualStyle = vsGradient
     end
     object tbtnShowLocalOnly: TRzToolButton
       Left = 369
       Top = 2
       Action = acViewShowLocalOnly
+      AllowAllUp = True
+      GroupIndex = 2
       ImageIndex = 13
+      SelectionColorStart = clHighlight
+      SelectionColorStop = clHighlight
+      SelectionFrameColor = clHighlight
+      UseToolbarVisualStyle = False
+      VisualStyle = vsGradient
     end
     object tbtnShowCover: TRzToolButton
       Left = 396
       Top = 2
       Action = acShowBookInfoPanel
+      AllowAllUp = True
+      GroupIndex = 3
       ImageIndex = 14
+      SelectionColorStart = clHighlight
+      SelectionColorStop = clHighlight
+      SelectionFrameColor = clHighlight
+      UseToolbarVisualStyle = False
+      VisualStyle = vsGradient
     end
     object RzSep6: TRzSpacer
       Left = 423
