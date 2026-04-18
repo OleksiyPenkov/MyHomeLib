@@ -923,6 +923,7 @@ type
     procedure SetHeaderPopUp;
     procedure DownloadBooks(CurrentBookOnly: boolean = False);
     function CheckActiveDownloads: Boolean;
+    procedure PurgeDownloadsForCollection(const DatabaseID: Integer);
 
     function GetActiveView: TView;
     procedure StartLibUpdate;
@@ -1103,6 +1104,41 @@ begin
     end;
     Node := tvDownloadList.GetNext(Node);
   end;
+end;
+
+procedure TfrmMain.PurgeDownloadsForCollection(const DatabaseID: Integer);
+var
+  Node, Next: PVirtualNode;
+  Data: PDownloadData;
+  HasActive: Boolean;
+begin
+  HasActive := False;
+  Node := tvDownloadList.GetFirst;
+  while Assigned(Node) do
+  begin
+    Data := tvDownloadList.GetNodeData(Node);
+    if Assigned(Data) and (Data^.BookKey.DatabaseID = DatabaseID) and (Data^.State = dsRun) then
+    begin
+      HasActive := True;
+      Break;
+    end;
+    Node := tvDownloadList.GetNext(Node);
+  end;
+
+  if HasActive then
+    btnPauseDownloadClick(Self);
+
+  Node := tvDownloadList.GetFirst;
+  while Assigned(Node) do
+  begin
+    Next := tvDownloadList.GetNext(Node);
+    Data := tvDownloadList.GetNodeData(Node);
+    if Assigned(Data) and (Data^.BookKey.DatabaseID = DatabaseID) then
+      tvDownloadList.DeleteNode(Node);
+    Node := Next;
+  end;
+
+  lblDownloadCount.Caption := Format('(%d)', [tvDownloadList.ChildCount[nil]]);
 end;
 
 procedure TfrmMain.WMGetSysCommand(var Message: TMessage);
@@ -4606,9 +4642,7 @@ begin
   begin
     CollectionID := FCollection.CollectionID;
 
-    //
-    // TODO: необходимо закрыть коллекцию перед удалением и закрыть ее в менеджере закачек
-    //
+    PurgeDownloadsForCollection(CollectionID);
     CloseCollection;
     FSystemData.DeleteCollection(CollectionID, dcaDelete = deleteAction);
 
@@ -5175,16 +5209,18 @@ begin
 end;
 
 procedure TfrmMain.ShowBookInfoPanelExecute(Sender: TObject);
+var
+  Tree: TBookTree;
 begin
   Settings.ShowInfoPanel := not Settings.ShowInfoPanel;
-
-  //
-  // TODO: Принудительно обновим информацию о книге, т к если она не показывалась, то и не обновлялась
-  //
-  //if Settings.ShowInfoPanel then
-  //  tvBooksTreeChange(nil, nil);
-
   SetInfoPanelVisible(Settings.ShowInfoPanel);
+
+  if Settings.ShowInfoPanel and (ActiveView <> DownloadView) then
+  begin
+    GetActiveTree(Tree);
+    if Assigned(Tree) and Assigned(Tree.FocusedNode) then
+      tvBooksTreeChange(Tree, Tree.FocusedNode);
+  end;
 end;
 
 procedure TfrmMain.ShowBookCoverExecute(Sender: TObject);
