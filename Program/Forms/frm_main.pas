@@ -2704,8 +2704,7 @@ end;
 
 procedure TfrmMain.UpdateSplashScreen(const AStatus: string);
 begin
-  frmSplash.lblState.Caption := AStatus;
-  frmSplash.lblState.Update;
+  frmSplash.SetStatus(AStatus);
 end;
 
 procedure TfrmMain.LoadDownloadsList;
