@@ -53,6 +53,7 @@ object frmMain: TfrmMain
     AC410000AC410000AC410000AC410000AC410000AC410000AC410000AC41}
   Menu = MainMenu
   Position = poDesigned
+  OnAfterMonitorDpiChanged = FormAfterMonitorDpiChanged
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -62,7 +63,7 @@ object frmMain: TfrmMain
     Left = 3
     Top = 3
     Width = 786
-    Height = 36
+    Height = 44
     Margins.Left = 3
     Margins.Top = 3
     Margins.Right = 3
@@ -70,7 +71,7 @@ object frmMain: TfrmMain
     Align = alTop
     AutoStyle = False
     Images = dmImages.vilToolbar
-    RowHeight = 32
+    RowHeight = 40
     AutoSize = True
     BorderInner = fsNone
     BorderOuter = fsFlatRounded

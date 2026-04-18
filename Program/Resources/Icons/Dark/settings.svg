@@ -12,9 +12,9 @@
       <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.45"/>
     </filter>
   </defs>
-  <g filter="url(#shadow)" stroke="#9AACBB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <path d="M20 5 L22.5 5 L23.5 8 L26 9 L29 7.5 L31 9.5 L29.5 12.5 L31 15 L34 15.5 L34.5 18 L31.5 19.5 L31.5 22 L34.5 23.5 L34 26 L31 26.5 L29.5 29 L31 31.5 L29 33.5 L26 32 L23.5 33.5 L22.5 36.5 L19.5 36.5 L18.5 33.5 L16 32 L13 33.5 L11 31.5 L12.5 29 L11 26.5 L8 26 L7.5 23.5 L10.5 22 L10.5 19.5 L7.5 18 L8 15.5 L11 15 L12.5 12.5 L11 9.5 L13 7.5 L16 9 L18.5 8 L19.5 5 Z" fill="url(#body)"/>
-    <circle cx="21" cy="20.5" r="6" fill="url(#sec)"/>
-    <circle cx="21" cy="20.5" r="2.5" fill="#3CB4DC" stroke="#9AACBB" stroke-width="1"/>
+  <g filter="url(#shadow)" stroke="#9AACBB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30.87 18.28 L34.82 17.65 L34.82 22.35 L30.87 21.72 L28.90 26.47 L32.14 28.82 L28.82 32.14 L26.47 28.90 L21.72 30.87 L22.35 34.82 L17.65 34.82 L18.28 30.87 L13.53 28.90 L11.18 32.14 L7.86 28.82 L11.10 26.47 L9.13 21.72 L5.18 22.35 L5.18 17.65 L9.13 18.28 L11.10 13.53 L7.86 11.18 L11.18 7.86 L13.53 11.10 L18.28 9.13 L17.65 5.18 L22.35 5.18 L21.72 9.13 L26.47 11.10 L28.82 7.86 L32.14 11.18 L28.90 13.53 Z" fill="url(#body)"/>
+    <circle cx="20" cy="20" r="5.5" fill="url(#sec)"/>
+    <circle cx="20" cy="20" r="2.5" fill="#3CB4DC" stroke="#9AACBB" stroke-width="1"/>
   </g>
 </svg>

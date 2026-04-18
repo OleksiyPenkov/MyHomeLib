@@ -35,6 +35,7 @@ type
     destructor Destroy; override;
     procedure LoadIcons(ATheme: TIconTheme);
     procedure ApplyThemeIcons;
+    procedure ScaleForDPI(APPI: Integer);
     class function DetectIconTheme: TIconTheme; static;
     property CurrentTheme: TIconTheme read FCurrentTheme;
   end;
@@ -282,6 +283,21 @@ begin
   NewTheme := DetectIconTheme;
   if (not FThemeLoaded) or (NewTheme <> FCurrentTheme) then
     LoadIcons(NewTheme);
+end;
+
+
+procedure TdmImages.ScaleForDPI(APPI: Integer);
+
+  function Scale(ABase: Integer): Integer;
+  begin
+    Result := MulDiv(ABase, APPI, 96);
+  end;
+
+begin
+  vilToolbar.SetSize(Scale(32), Scale(32));
+  vilMenu.SetSize(Scale(24), Scale(24));
+  vilDownload.SetSize(Scale(24), Scale(24));
+  vilFileType.SetSize(Scale(24), Scale(24));
 end;
 
 end.

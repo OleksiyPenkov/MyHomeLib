@@ -506,6 +506,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
+    procedure FormAfterMonitorDpiChanged(Sender: TObject; OldDPI, NewDPI: Integer);
 
     //
     // Список авторов
@@ -2731,6 +2732,8 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSystemData := SystemDB;
 
+  dmImages.ScaleForDPI(Self.CurrentPPI);
+
   ConnectTreeControllers;
 
   InitFormFileds;
@@ -2767,6 +2770,11 @@ begin
     end
     else
       CanClose := False;
+end;
+
+procedure TfrmMain.FormAfterMonitorDpiChanged(Sender: TObject; OldDPI, NewDPI: Integer);
+begin
+  dmImages.ScaleForDPI(NewDPI);
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
