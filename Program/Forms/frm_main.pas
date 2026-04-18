@@ -1982,8 +1982,7 @@ var
       CT_EXTERNAL_ONLINE_FB: Result := 4;
       CT_EXTERNAL_ONLINE_NONFB: Result := 8;
     else
-      // Assert(False);
-      Result := 8; { TODO -oNickR -cUsability : нарисовать иконку }
+      Result := 8;
     end;
   end;
 
@@ -3323,9 +3322,6 @@ begin
 
   if not Assigned(Data) or (Data^.nodeType <> ntBookInfo) then
   begin
-    //
-    // TODO : Может стоит показывать какую-нибудь информацию и в этом случае?
-    //
     if Assigned(StoredBookKey) then
       StoredBookKey^.Clear;
     Exit;
@@ -5224,16 +5220,18 @@ begin
 end;
 
 procedure TfrmMain.ShowBookCoverExecute(Sender: TObject);
+var
+  Tree: TBookTree;
 begin
   Settings.ShowBookCover := not Settings.ShowBookCover;
-
-  //
-  // TODO: Принудительно обновим информацию о книге, т к если она не показывалась, то и не обновлялась
-  //
-  //if Settings.ShowInfoPanel and Settings.ShowBookCover then
-  //  tvBooksTreeChange(nil, nil);
-
   SetShowBookCover(Settings.ShowBookCover);
+
+  if Settings.ShowInfoPanel and Settings.ShowBookCover and (ActiveView <> DownloadView) then
+  begin
+    GetActiveTree(Tree);
+    if Assigned(Tree) and Assigned(Tree.FocusedNode) then
+      tvBooksTreeChange(Tree, Tree.FocusedNode);
+  end;
 end;
 
 procedure TfrmMain.ShowBookCoverUpdate(Sender: TObject);
@@ -5243,16 +5241,18 @@ begin
 end;
 
 procedure TfrmMain.ShowBookAnnotationExecute(Sender: TObject);
+var
+  Tree: TBookTree;
 begin
   Settings.ShowBookAnnotation := not Settings.ShowBookAnnotation;
-
-  //
-  // TODO: Принудительно обновим информацию о книге, т к если она не показывалась, то и не обновлялась
-  //
-  //if Settings.ShowInfoPanel and Settings.ShowBookAnnotation then
-  //  tvBooksTreeChange(nil, nil);
-
   SetShowBookAnnotation(Settings.ShowBookAnnotation);
+
+  if Settings.ShowInfoPanel and Settings.ShowBookAnnotation and (ActiveView <> DownloadView) then
+  begin
+    GetActiveTree(Tree);
+    if Assigned(Tree) and Assigned(Tree.FocusedNode) then
+      tvBooksTreeChange(Tree, Tree.FocusedNode);
+  end;
 end;
 
 procedure TfrmMain.ShowBookAnnotationUpdate(Sender: TObject);
