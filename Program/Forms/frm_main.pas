@@ -1846,7 +1846,7 @@ var
   ButtonPosA: Integer;
   ButtonPosS: Integer;
   Button: TToolButton;
-  //s0, s1, s2: TSize;
+  CellW, CellH, PadX, PadY: Integer;
 
   function CreateTextImage(ImageText: string): Integer;
   begin
@@ -1887,19 +1887,22 @@ begin
     ImageCanvas.Font := tbarAuthorsRus.Font;
     ImageCanvas.Font.Style := [fsBold];
 
-    (** )
-    s0.cx := ilAlphabetNormal.Width;
-    s0.cy := ilAlphabetNormal.Height;
-    s1 := ImageCanvas.TextExtent('AZ');
-    s2 := ImageCanvas.TextExtent('АЯ');
-    ilAlphabetNormal.Width := Max(s0.cx, Max(s1.cx, s2.cx));
-    ilAlphabetNormal.Height := Max(s0.cy, Max(s1.cy, s2.cy));
-    ( **)
+    CellW := Max(ImageCanvas.TextWidth('W'), ImageCanvas.TextWidth('Ш'));
+    CellH := ImageCanvas.TextHeight('Ш');
+    PadX := MulDiv(4, Self.CurrentPPI, 96);
+    PadY := MulDiv(2, Self.CurrentPPI, 96);
+    CellW := Max(CellW, CellH) + PadX;
+    CellH := CellH + PadY;
 
-    Image.Width := ilAlphabetNormal.Width;
-    Image.Height := ilAlphabetNormal.Height;
+    ilAlphabetNormal.Width  := CellW;
+    ilAlphabetNormal.Height := CellH;
+    ilAlphabetActive.Width  := CellW;
+    ilAlphabetActive.Height := CellH;
 
-    ImageRect := Bounds(0, 0, ilAlphabetNormal.Width, ilAlphabetNormal.Height);
+    Image.Width  := CellW;
+    Image.Height := CellH;
+
+    ImageRect := Bounds(0, 0, CellW, CellH);
 
     //
     //

@@ -107,34 +107,6 @@ object frmAbout: TfrmAbout
       Caption = 'eg, Evgeniy_V, albert'#13' AlbanSpy, kaznelson, Olega'
       ExplicitWidth = 137
     end
-    object RzLabel7: TLabel
-      AlignWithMargins = True
-      Left = 3
-      Top = 140
-      Width = 243
-      Height = 13
-      Align = alTop
-      Alignment = taCenter
-      Caption = 'Icon Set:'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'Tahoma'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitWidth = 50
-    end
-    object RzLabel8: TLabel
-      AlignWithMargins = True
-      Left = 3
-      Top = 159
-      Width = 243
-      Height = 13
-      Align = alTop
-      Alignment = taCenter
-      Caption = #1040#1083#1077#1082#1089#1077#1081' '#1053#1077#1093#1072#1081
-      ExplicitWidth = 76
-    end
     object Label1: TLabel
       AlignWithMargins = True
       Left = 3
