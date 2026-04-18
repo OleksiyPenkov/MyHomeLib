@@ -85,7 +85,6 @@ type
     procedure SetTImage(Value: TImage);
     function SaveFBD: Boolean;
     function CreateArchive(EditorMode: Boolean): boolean;
-    procedure GetFBDFileNames(out Description: string);
     procedure ResizeImage;
     function ExecAndWait(const FileName, Params: string; const WinState: Word): Boolean;
     procedure SetCoverSize(const Value: Integer);
@@ -236,30 +235,33 @@ begin
           for i := 0 to FFBD.Binary.Count - 1 do
           begin
             if FFBD.Binary.Items[i].Id = CoverID then
-            try
-              Output := TMemoryStream.Create;
-              Lines.Clear;
-              Input.Clear;
-              Lines.Text := FFBD.Binary.Items[i].Text;
-              FCoverData.Str := FFBD.Binary.Items[i].Text;
+            begin
+              Output := nil;
+              try
+                Output := TMemoryStream.Create;
+                Lines.Clear;
+                Input.Clear;
+                Lines.Text := FFBD.Binary.Items[i].Text;
+                FCoverData.Str := FFBD.Binary.Items[i].Text;
 
-              Lines.SaveToStream(Output);
+                Lines.SaveToStream(Output);
 
-              Output.Seek(0,soFromBeginning);
-              DecodeStream(Output, Input);
+                Output.Seek(0,soFromBeginning);
+                DecodeStream(Output, Input);
 
-              CreateImage(ExtractFileExt(CoverID), IMG, FCoverData.ImgType);
-              if Assigned(IMG) then
-              begin
-                Input.Seek(0,soFromBeginning);
-                IMG.LoadFromStream(Input);
-                FImage.Picture.Assign(IMG);
-                FImage.Invalidate;
+                CreateImage(ExtractFileExt(CoverID), IMG, FCoverData.ImgType);
+                if Assigned(IMG) then
+                begin
+                  Input.Seek(0,soFromBeginning);
+                  IMG.LoadFromStream(Input);
+                  FImage.Picture.Assign(IMG);
+                  FImage.Invalidate;
+                end;
+              finally
+                IMG.Free;
+                Output.Free;
               end;
-            finally
-              IMG.Free;
-              Output.Free;
-            end; // for
+            end;
           end;
         end;
       end;
@@ -453,7 +455,7 @@ var
   XML : TXMLDocument;
 
 begin
-  Result := False;
+  XML := nil;
   MS := TMemoryStream.Create;
   SL := TStringList.Create;
   try
@@ -527,7 +529,7 @@ var
   fbdFileName: string;
   archiver: TMHLZip;
 begin
-  Result := False;
+  archiver := nil;
 
   archiveFileName := TPath.Combine(FFolder, FArchiveFilename);
   bookFileName := TPath.Combine(FFolder, FBookFileName);
@@ -750,23 +752,6 @@ begin
      rmMax    : Max;
      rmHeight : Height;
      rmWidth  : Width;
-  end;
-end;
-
-procedure TFBDDocument.GetFBDFileNames(out Description: string);
-var
-  idxFile: Integer;
-  archiver: TMHLZip;
-begin
-  try
-    archiver := TMHLZip.Create(FArchiveFilename, True);
-    idxFile := archiver.GetIdxByExt('.fbd');
-    if idxFile >= 0 then
-      Description := archiver.LastName
-    else
-      Description := '';
-  finally
-    FreeAndNil(archiver);
   end;
 end;
 

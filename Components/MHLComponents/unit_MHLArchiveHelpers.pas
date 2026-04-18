@@ -136,10 +136,10 @@ begin
     try
       strStream.CopyFrom(binStream);
       S := strStream.DataString;
-      if HasUTF8BOM(strStream.DataString) then
+      if HasUTF8BOM(RawByteString(strStream.DataString)) then
       begin
         Delete(S, 1, 3);
-        Result := UTF8ToString(S);
+        Result := UTF8ToString(RawByteString(S));
       end
       else Result := S;
     finally

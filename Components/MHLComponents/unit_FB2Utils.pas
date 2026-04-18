@@ -99,7 +99,7 @@ begin
       begin
         if book.Binary[i].Id = coverID then
         begin
-          outStr := DecodeBase64(book.Binary[i].Text);
+          outStr := DecodeBase64(AnsiString(book.Binary[i].Text));
 
           Result := TMemoryStream.Create;
           try
@@ -122,7 +122,6 @@ end;
 function InternalCreateGraphic(StreamFormat: TStreamFormat): TGraphic;
 begin
   Assert(IsSupportedImageFormat(StreamFormat));
-  Result := nil;
 
   case StreamFormat of
     sfBitmap: Result := Graphics.TBitmap.Create;
@@ -134,6 +133,7 @@ begin
     fsIcon: Result := Graphics.TIcon.Create;
   else
     Assert(False);
+    Result := nil;
   end;
 end;
 

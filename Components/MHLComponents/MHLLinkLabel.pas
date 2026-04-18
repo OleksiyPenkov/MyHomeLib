@@ -211,7 +211,7 @@ end;
 
 procedure TMHLLinkLabel.CNCtlColorStatic(var Message: TWMCtlColorStatic);
 begin
-  if StyleServices.ThemesEnabled and Transparent then
+  if StyleServices.Enabled and Transparent then
   begin
     SetBkMode(Message.ChildDC, Windows.TRANSPARENT);
     StyleServices.DrawParentBackground(Handle, Message.ChildDC, nil, False);

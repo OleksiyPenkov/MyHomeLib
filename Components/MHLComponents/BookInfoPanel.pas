@@ -49,12 +49,10 @@ type
     FGenres: TMHLLinkLabel;
     FAnnotation: TMemo;
     FFb2Info: TListView;
-    FInfoButton: TButton;
 
     FOnAuthorLinkClicked: TSysLinkEvent;
     FOnGenreLinkClicked: TSysLinkEvent;
     FOnSeriesLinkClicked: TSysLinkEvent;
-    FOnAnnotationClicked: TNotifyEvent;
     FMenu: TPopupMenu;
 
     FInfoPriority: Boolean;
