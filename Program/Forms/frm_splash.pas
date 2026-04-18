@@ -17,6 +17,7 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   public
     procedure SetStatus(const AStatus: string);
   end;
@@ -71,11 +72,15 @@ begin
   Result := Round(Value * FScale);
 end;
 
+procedure TfrmSplash.WMSize(var Msg: TWMSize);
+begin
+  inherited;
+  if HandleAllocated then
+    Render;
+end;
+
 procedure TfrmSplash.FormCreate(Sender: TObject);
 begin
-  FScale := Screen.PixelsPerInch / 96;
-  ClientWidth  := S(480);
-  ClientHeight := S(280);
   FStatus := '';
 end;
 
@@ -110,6 +115,7 @@ var
   W, H: Integer;
   VersionText: string;
 begin
+  FScale := CurrentPPI / 96;
   W := Width;
   H := Height;
 
