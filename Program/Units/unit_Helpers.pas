@@ -69,6 +69,7 @@ function GetFileName(key: TMHLFileName; out FileName: string): Boolean;
 function GetFolderName(Handle: Integer; const Caption: string; var strFolder: string): Boolean;
 function GetFolderShellItem(Handle: HWND; const Caption: string; var strFolder: string; out ShellItem: IShellItem): Boolean;
 function ShellCopyFile(const SourceFile: string; const DestFolder: IShellItem; const DestName: string): Boolean;
+function ResolveOrCreateShellSubfolder(const Root: IShellItem; const RelPath: string): IShellItem;
 function IsShellPath(const Path: string): Boolean;
 
 function CreateImageFromResource(GraphicClass: TGraphicClass; const ResName: string; ResType: PChar = RT_RCDATA): TGraphic;
@@ -457,13 +458,63 @@ begin
 
   if Succeeded(CoCreateInstance(CLSID_FileOperation, nil, CLSCTX_INPROC_SERVER, IFileOperation, FileOp)) then
   begin
-    FileOp.SetOperationFlags(FOF_NOCONFIRMATION or FOF_NOERRORUI or FOF_SILENT);
+    // FOF_RENAMEONCOLLISION avoids silent overwrite-failures on MTP when a file
+    // with the same name already exists in the target folder (#65).
+    FileOp.SetOperationFlags(FOF_NOCONFIRMATION or FOF_NOERRORUI or FOF_SILENT or FOF_RENAMEONCOLLISION);
     if Succeeded(SHCreateItemFromParsingName(PChar(SourceFile), nil, IShellItem, SrcItem)) then
     begin
       if Succeeded(FileOp.CopyItem(SrcItem, DestFolder, PChar(DestName), nil)) then
         Result := Succeeded(FileOp.PerformOperations);
     end;
   end;
+end;
+
+// Walk RelPath ('Author\Series\') under Root, creating missing subfolders.
+// Works for both filesystem and MTP shell items. Returns nil on failure.
+function ResolveOrCreateShellSubfolder(const Root: IShellItem; const RelPath: string): IShellItem;
+var
+  Segments: TArray<string>;
+  Segment, Trimmed: string;
+  Current, Child: IShellItem;
+  FileOp: IFileOperation;
+begin
+  Result := nil;
+  if not Assigned(Root) then Exit;
+
+  Trimmed := Trim(RelPath);
+  if Trimmed <> '' then
+    Trimmed := ExcludeTrailingPathDelimiter(Trimmed);
+  if Trimmed = '' then
+  begin
+    Result := Root;
+    Exit;
+  end;
+
+  Segments := Trimmed.Split([PathDelim, '/']);
+  Current := Root;
+  for Segment in Segments do
+  begin
+    if Segment = '' then Continue;
+
+    if Succeeded(SHCreateItemFromRelativeName(Current, PChar(Segment), nil, IShellItem, Child)) then
+    begin
+      Current := Child;
+      Child := nil;
+      Continue;
+    end;
+
+    // Not found - create it
+    if Failed(CoCreateInstance(CLSID_FileOperation, nil, CLSCTX_INPROC_SERVER, IFileOperation, FileOp)) then Exit;
+    FileOp.SetOperationFlags(FOF_NOCONFIRMATION or FOF_NOERRORUI or FOF_SILENT);
+    if Failed(FileOp.NewItem(Current, FILE_ATTRIBUTE_DIRECTORY, PChar(Segment), nil, nil)) then Exit;
+    if Failed(FileOp.PerformOperations) then Exit;
+    FileOp := nil;
+
+    if Failed(SHCreateItemFromRelativeName(Current, PChar(Segment), nil, IShellItem, Child)) then Exit;
+    Current := Child;
+    Child := nil;
+  end;
+  Result := Current;
 end;
 
 function IsShellPath(const Path: string): Boolean;

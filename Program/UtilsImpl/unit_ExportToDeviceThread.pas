@@ -30,6 +30,7 @@ type
     TFileOprecord = record
       SourceFile: string;
       TargetFile: string;
+      TargetFolder: string; // relative folder (from folder template) under DeviceDir
       TempFile: string;
       FileName: string;
       Stream: TStream;
@@ -165,6 +166,7 @@ begin
     // если не задействован скрипт, создаем папки
     // если будет вызываться скрипт, то папки не нужны, все равно они не обрабатываются
     // промежуточный файл остается во временной папке
+    FTargetFolder := '';
     if not FExtractOnly Then
     begin
 
@@ -185,6 +187,8 @@ begin
       if not FUseMTP then
         CreateFolders(DeviceDir, FTargetFolder);
     end;
+
+    FFileOprecord.TargetFolder := FTargetFolder;
 
     //
     // Сформируем имя файла в соответствии с заданным темплейтом
@@ -332,6 +336,8 @@ begin
 end;
 
 function TExportToDeviceThread.CallExternalConverter: boolean;
+var
+  OutputPath: string;
 begin
   Result := False;
   try
@@ -340,6 +346,21 @@ begin
       StreamToFile(FFileOprecord.TempFile, FFileOprecord.Stream);
       FFileOprecord.SourceFile := FFileOprecord.TempFile;
     end;
+
+    // Compute the path the converter will actually produce.
+    case FExportMode of
+      emLrf:  OutputPath := ChangeFileExt(FFileOprecord.TargetFile, '.lrf');
+      emEpub: OutputPath := ChangeFileExt(FFileOprecord.TargetFile, '.epub');
+      emPDF:  OutputPath := ChangeFileExt(FFileOprecord.TargetFile, '.pdf');
+      emMobi: OutputPath := ChangeFileExt(FFileOprecord.TargetFile, '.mobi');
+    else
+      OutputPath := FFileOprecord.TargetFile;
+    end;
+
+    // Remove any stale output from a previous run so we don't mistake it for
+    // fresh converter output if the exe silently fails (#65).
+    if FileExists(OutputPath) then
+      DeleteFile(OutputPath);
 
     case FExportMode of
       emLrf:
@@ -353,6 +374,14 @@ begin
 
       emMobi:
         Result := fb2Mobi(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+    end;
+
+    // Converter process may exit 0 without producing output (e.g. locked target,
+    // CLI args mismatch, path encoding). Verify the file really was created.
+    if Result and not FileExists(OutputPath) then
+    begin
+      Result := False;
+      FLastError := Format('Converter exited OK but produced no output: %s', [OutputPath]);
     end;
   except
     on E: Exception do
@@ -390,6 +419,7 @@ end;
 function TExportToDeviceThread.SendFileToDevice: Boolean;
 var
   TempFile: string;
+  MTPTargetFolder: IShellItem;
 begin
   Result := False;
   FLastError := '';
@@ -399,6 +429,22 @@ begin
     FLastError := Format('Source not found: %s', [FFileOprecord.SourceFile]);
     ShowMessage(Format(rstrFileNotFound, [FFileOprecord.SourceFile]), MB_ICONERROR or MB_OK);
     Exit;
+  end;
+
+  // Resolve (and create) the author/series subfolder on MTP before copying (#65).
+  if FUseMTP then
+  begin
+    if not Assigned(FDeviceShellItem) then
+    begin
+      FLastError := Format('DeviceShellItem is nil, DeviceDir=%s', [FDeviceDir]);
+      Exit;
+    end;
+    MTPTargetFolder := ResolveOrCreateShellSubfolder(FDeviceShellItem, FFileOprecord.TargetFolder);
+    if not Assigned(MTPTargetFolder) then
+    begin
+      FLastError := Format('Failed to resolve/create MTP subfolder: %s', [FFileOprecord.TargetFolder]);
+      Exit;
+    end;
   end;
 
   if FBookFormat in [bfFb2, bfFb2Archive] then
@@ -411,7 +457,8 @@ begin
 
     if not Result then
     begin
-      FLastError := Format('ProcessFile failed, Mode=%d, Target=%s', [Ord(FExportMode), FFileOprecord.TargetFile]);
+      if FLastError = '' then
+        FLastError := Format('ProcessFile failed, Mode=%d, Target=%s', [Ord(FExportMode), FFileOprecord.TargetFile]);
       Exit;
     end;
 
@@ -436,16 +483,10 @@ begin
         Exit;
       end;
 
-      if not Assigned(FDeviceShellItem) then
-      begin
-        FLastError := Format('DeviceShellItem is nil, DeviceDir=%s', [FDeviceDir]);
-        Result := False;
-        Exit;
-      end;
-
-      Result := ShellCopyFile(TempFile, FDeviceShellItem, ExtractFileName(TempFile));
+      Result := ShellCopyFile(TempFile, MTPTargetFolder, ExtractFileName(TempFile));
       if not Result then
-        FLastError := Format('ShellCopyFile failed: %s -> %s', [TempFile, ExtractFileName(TempFile)]);
+        FLastError := Format('ShellCopyFile failed: %s -> %s\%s',
+          [TempFile, FFileOprecord.TargetFolder, ExtractFileName(TempFile)]);
       DeleteFile(TempFile);
     end;
   end
@@ -453,14 +494,10 @@ begin
   begin
     if FUseMTP then
     begin
-      if not Assigned(FDeviceShellItem) then
-      begin
-        FLastError := Format('DeviceShellItem is nil, DeviceDir=%s', [FDeviceDir]);
-        Exit;
-      end;
-      Result := ShellCopyFile(FFileOprecord.SourceFile, FDeviceShellItem, FFileOprecord.FileName);
+      Result := ShellCopyFile(FFileOprecord.SourceFile, MTPTargetFolder, FFileOprecord.FileName);
       if not Result then
-        FLastError := Format('ShellCopyFile failed: %s -> %s', [FFileOprecord.SourceFile, FFileOprecord.FileName]);
+        FLastError := Format('ShellCopyFile failed: %s -> %s\%s',
+          [FFileOprecord.SourceFile, FFileOprecord.TargetFolder, FFileOprecord.FileName]);
     end
     else
     begin
