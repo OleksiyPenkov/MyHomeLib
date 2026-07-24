@@ -1,0 +1,93 @@
+{
+  "sections": [
+    {
+      "title": "Вступ",
+      "topics": [
+        { "file": "index.html", "title": "Довідка MyHomeLib" },
+        { "file": "about.html", "title": "Про програму" },
+        { "file": "terms.html", "title": "Основні терміни" },
+        { "file": "faq.html", "title": "Часті запитання" },
+        { "file": "donate.html", "title": "Підтримати розробку" }
+      ]
+    },
+    {
+      "title": "Встановлення",
+      "topics": [
+        { "file": "install.html", "title": "Встановлення" },
+        { "file": "upgrade.html", "title": "Оновлення попередньої версії" },
+        { "file": "portable.html", "title": "Portable-версія" }
+      ]
+    },
+    {
+      "title": "Інтерфейс",
+      "topics": [
+        { "file": "interface.html", "title": "Інтерфейс програми" },
+        { "file": "main_window.html", "title": "Головне вікно" },
+        { "file": "browsing.html", "title": "Перегляд колекції: автори, серії, жанри" },
+        { "file": "toolbar.html", "title": "Панель інструментів" },
+        { "file": "hotkeys.html", "title": "Гарячі клавіші" },
+        { "file": "main_menu.html", "title": "Головне меню" },
+        { "file": "menu_book.html", "title": "Меню «Книга»" },
+        { "file": "menu_collection.html", "title": "Меню «Колекція»" },
+        { "file": "menu_tools.html", "title": "Меню «Інструменти»" },
+        { "file": "menu_view.html", "title": "Меню «Вигляд»" },
+        { "file": "context_menus.html", "title": "Контекстні меню" }
+      ]
+    },
+    {
+      "title": "Робота з колекціями",
+      "topics": [
+        { "file": "collections.html", "title": "Робота з колекціями" },
+        { "file": "coll_types.html", "title": "Типи колекцій" },
+        { "file": "new_collection.html", "title": "Створення колекції" },
+        { "file": "coll_params.html", "title": "Властивості колекції" },
+        { "file": "copy_books.html", "title": "Копіювання книг між колекціями" },
+        { "file": "delete_collection.html", "title": "Видалення колекції" },
+        { "file": "export_inpx.html", "title": "Експорт колекції у формат INPX" },
+        { "file": "update.html", "title": "Оновлення колекції" },
+        { "file": "sync_folders.html", "title": "Синхронізація тек і файлів" },
+        { "file": "genres.html", "title": "Списки жанрів" },
+        { "file": "maintenance.html", "title": "Обслуговування бази даних" }
+      ]
+    },
+    {
+      "title": "Робота з книгами",
+      "topics": [
+        { "file": "books.html", "title": "Робота з книгами" },
+        { "file": "add_books.html", "title": "Додавання книг до колекції" },
+        { "file": "import_fb2.html", "title": "Імпорт книг у форматі FB2" },
+        { "file": "import_nonfb2.html", "title": "Імпорт книг не-FB2 та FBD" },
+        { "file": "download.html", "title": "Завантаження книг" },
+        { "file": "reading.html", "title": "Читання книг" },
+        { "file": "selection.html", "title": "Виділення та позначення книг" },
+        { "file": "search.html", "title": "Пошук книг і фільтри" },
+        { "file": "groups.html", "title": "Групи та обране" },
+        { "file": "rating.html", "title": "Рейтинг і статус «Прочитано»" },
+        { "file": "export_device.html", "title": "Надсилання книг на пристрій" },
+        { "file": "export_html.html", "title": "Експорт списку книг" },
+        { "file": "delete.html", "title": "Видалення книг" },
+        { "file": "editing.html", "title": "Редагування описів книг" }
+      ]
+    },
+    {
+      "title": "Налаштування",
+      "topics": [
+        { "file": "settings.html", "title": "Налаштування програми" },
+        { "file": "set_interface.html", "title": "Інтерфейс" },
+        { "file": "set_readers.html", "title": "Типи файлів і програми для читання" },
+        { "file": "set_device.html", "title": "Пристрої та експорт" },
+        { "file": "set_internet.html", "title": "Інтернет і проксі" },
+        { "file": "set_scripts.html", "title": "Скрипти" },
+        { "file": "set_filesort.html", "title": "Сортування файлів" },
+        { "file": "set_other.html", "title": "Поведінка" }
+      ]
+    },
+    {
+      "title": "Додаток",
+      "topics": [
+        { "file": "scripts_examples.html", "title": "Приклади скриптів" },
+        { "file": "user_data.html", "title": "Експорт та імпорт даних користувача" }
+      ]
+    }
+  ]
+}
