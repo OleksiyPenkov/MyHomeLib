@@ -1063,6 +1063,7 @@ object frmSettings: TfrmSettings
     object tsProxy: TTabSheet
       Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080' '#1087#1088#1086#1082#1089#1080
       ImageIndex = 7
+      HelpContext = 145
       TabVisible = False
       DesignSize = (
         447
@@ -1424,6 +1425,7 @@ object frmSettings: TfrmSettings
     object tsBehavour: TTabSheet
       Caption = 'tsBehavior'
       ImageIndex = 5
+      HelpContext = 147
       TabVisible = False
       object Panel3: TPanel
         AlignWithMargins = True
@@ -1618,6 +1620,7 @@ object frmSettings: TfrmSettings
     object tsFileSort: TTabSheet
       Caption = 'tsFileSort'
       ImageIndex = 6
+      HelpContext = 148
       TabVisible = False
       object Panel4: TPanel
         AlignWithMargins = True

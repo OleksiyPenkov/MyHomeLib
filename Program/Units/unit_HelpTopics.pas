@@ -45,7 +45,7 @@ const
   // Кожен ID узятий з властивості HelpContext відповідної форми, вкладки
   // або пункту меню. 5001 та будь-який невідомий ID відкривають зміст.
   //
-  HelpTopics: array [0 .. 19] of THelpTopic = (
+  HelpTopics: array [0 .. 20] of THelpTopic = (
     (ContextID: 1;   FileName: 'index.html'),              // pgControl
     (ContextID: 2;   FileName: 'main_window.html'),        // frmMain
     (ContextID: 105; FileName: 'menu_book.html'),          // меню "Книга"
@@ -65,7 +65,8 @@ const
     (ContextID: 143; FileName: 'set_device.html'),         // tsDevices
     (ContextID: 144; FileName: 'settings.html'),           // frmSettings
     (ContextID: 145; FileName: 'set_internet.html'),       // tsProxy
-    (ContextID: 147; FileName: 'set_other.html')           // tsBehavour
+    (ContextID: 147; FileName: 'set_other.html'),          // tsBehavour
+    (ContextID: 148; FileName: 'set_filesort.html')        // tsFileSort
   );
 
 function HelpTopicFile(ContextID: Integer): string;
