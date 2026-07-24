@@ -170,6 +170,7 @@ type
     procedure CopyBookToGroup(const BookKey: TBookKey; SourceGroupID: Integer; TargetGroupID: Integer; MoveBook: Boolean);
     procedure DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
     procedure CleanCollectionBooks(const DatabaseID: Integer);
+    function RemapCollectionBookIDs(const DatabaseID: Integer; const RemoveMissing: Boolean = False): Integer;
 
     //
     // Пользовательские данные
@@ -305,10 +306,45 @@ begin
 end;
 
 procedure TSystemData_SQLite.TBookIteratorImpl.PrepareData(const GroupID: Integer; const DatabaseID: Integer);
+const
+  SQL_DATABASES = 'SELECT DISTINCT DatabaseID FROM BookGroups WHERE GroupID = ? ';
 var
   sqlCount: string;
   sqlRows: string;
+  dbIDs: TList<Integer>;
+  query: TSQLiteQuery;
+  i: Integer;
 begin
+  //
+  // Перед построением списка приводим BookID к текущей нумерации коллекции:
+  // после полного переимпорта сохранённые в группе BookID указывают на чужие книги.
+  //
+  dbIDs := TList<Integer>.Create;
+  try
+    if DatabaseID <> INVALID_COLLECTION_ID then
+      dbIDs.Add(DatabaseID)
+    else
+    begin
+      query := FUser.FDatabase.NewQuery(SQL_DATABASES);
+      try
+        query.SetParam(0, GroupID);
+        query.Open;
+        while not query.Eof do
+        begin
+          dbIDs.Add(query.FieldAsInt(0));
+          query.Next;
+        end;
+      finally
+        FreeAndNil(query);
+      end;
+    end;
+
+    for i := 0 to dbIDs.Count - 1 do
+      FUser.RemapCollectionBookIDs(dbIDs[i]);
+  finally
+    FreeAndNil(dbIDs);
+  end;
+
   sqlCount := 'SELECT COUNT(*) FROM BookGroups bg INNER JOIN Books b ON bg.BookID = b.BookID AND bg.DatabaseID = b.DatabaseID ' +
     ' WHERE bg.GroupID = ? ';
   sqlRows := 'SELECT b.BookID, b.DatabaseID FROM BookGroups bg INNER JOIN Books b ON bg.BookID = b.BookID AND bg.DatabaseID = b.DatabaseID ' +
@@ -1485,6 +1521,122 @@ begin
     query.ExecSQL;
   finally
     FreeAndNil(query);
+  end;
+end;
+
+//
+// Книги в группах хранятся по (BookID, DatabaseID), но BookID в коллекции - это
+// AUTOINCREMENT: при полном переимпорте коллекции он переприсваивается, и сохранённые
+// в группах BookID начинают указывать на совершенно другие книги. В списке группы при
+// этом видно закэшированное (правильное) название, а любая операция над книгой
+// (экспорт, чтение, скачивание) обращается к коллекции по устаревшему BookID
+// и получает чужую книгу.
+//
+// Сверяем по LibID - он при переимпорте не меняется - и приводим BookID к текущей
+// нумерации коллекции.
+//
+function TSystemData_SQLite.RemapCollectionBookIDs(const DatabaseID: Integer; const RemoveMissing: Boolean): Integer;
+const
+  SQL_SELECT_BOOKS = 'SELECT BookID, LibID FROM Books WHERE DatabaseID = ? ';
+  SQL_MOVE_GROUPS  = 'UPDATE OR IGNORE BookGroups SET BookID = ? WHERE BookID = ? AND DatabaseID = ? ';
+  SQL_DROP_GROUPS  = 'DELETE FROM BookGroups WHERE BookID = ? AND DatabaseID = ? ';
+  SQL_MOVE_BOOK    = 'UPDATE OR IGNORE Books SET BookID = ? WHERE BookID = ? AND DatabaseID = ? ';
+  SQL_DROP_BOOK    = 'DELETE FROM Books WHERE BookID = ? AND DatabaseID = ? ';
+type
+  TRemapItem = record
+    OldID: Integer;
+    NewID: Integer; // 0 - книги больше нет в коллекции
+  end;
+var
+  collection: IBookCollection;
+  query: TSQLiteQuery;
+  items: TList<TRemapItem>;
+  item: TRemapItem;
+  libID: string;
+  i: Integer;
+begin
+  Result := 0;
+
+  //
+  // Коллекция может быть недоступна (файл удалён, съёмный диск отключён) -
+  // в этом случае сверять не с чем, оставляем всё как есть.
+  //
+  collection := nil;
+  try
+    collection := GetCollection(DatabaseID, False);
+  except
+    Exit;
+  end;
+  if not Assigned(collection) then
+    Exit;
+
+  items := TList<TRemapItem>.Create;
+  try
+    //
+    // Сначала соберём список изменений: менять таблицу, пока по ней открыт курсор, нельзя
+    //
+    query := FDatabase.NewQuery(SQL_SELECT_BOOKS);
+    try
+      query.SetParam(0, DatabaseID);
+      query.Open;
+      while not query.Eof do
+      begin
+        libID := query.FieldAsString(1);
+        //
+        // Без LibID (локальные коллекции) сверить книгу не с чем - не трогаем её,
+        // иначе можно удалить нормальные записи.
+        //
+        if (libID <> '') and (libID <> '0') then
+        begin
+          item.OldID := query.FieldAsInt(0);
+          item.NewID := collection.ResolveBookID(libID, item.OldID);
+
+          if item.NewID > 0 then
+          begin
+            if item.NewID <> item.OldID then
+              items.Add(item);
+          end
+          else if RemoveMissing then
+            items.Add(item);
+        end;
+
+        query.Next;
+      end;
+    finally
+      FreeAndNil(query);
+    end;
+
+    for i := 0 to items.Count - 1 do
+    begin
+      item := items[i];
+
+      if item.NewID > 0 then
+      begin
+        //
+        // Переносим членство в группах на актуальный BookID.
+        // OR IGNORE - та же книга уже может присутствовать в этой группе под новым
+        // BookID (например, была добавлена повторно после переимпорта);
+        // такие строки не переносятся, а удаляются следующим запросом.
+        //
+        FDatabase.ExecSQL(SQL_MOVE_GROUPS, [item.NewID, item.OldID, DatabaseID]);
+        FDatabase.ExecSQL(SQL_DROP_GROUPS, [item.OldID, DatabaseID]);
+
+        FDatabase.ExecSQL(SQL_MOVE_BOOK, [item.NewID, item.OldID, DatabaseID]);
+        FDatabase.ExecSQL(SQL_DROP_BOOK, [item.OldID, DatabaseID]);
+      end
+      else
+      begin
+        //
+        // Книги больше нет в коллекции (RemoveMissing)
+        //
+        FDatabase.ExecSQL(SQL_DROP_GROUPS, [item.OldID, DatabaseID]);
+        FDatabase.ExecSQL(SQL_DROP_BOOK, [item.OldID, DatabaseID]);
+      end;
+
+      Inc(Result);
+    end;
+  finally
+    FreeAndNil(items);
   end;
 end;
 

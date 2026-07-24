@@ -200,10 +200,6 @@ begin
             // clear most tables in a collection
             Teletype(Format(rstrRemovingOldCollection, [updateInfo.Name]), tsInfo);
             Collection.TruncateTablesBeforeImport;
-
-            // Remove stale favorites entries for this collection from the system DB
-            // (old BookIDs won't match after re-import)
-            FSystemData.CleanCollectionBooks(updateInfo.CollectionID);
           end; //if FULL
 
           //  импортирум данные
@@ -226,6 +222,16 @@ begin
         Collection.EndBulkOperation(False);
         raise;
       end;
+
+      //
+      // При полном переимпорте BookID в коллекции переприсваиваются, и сохранённые
+      // в группах BookID начинают указывать на чужие книги. Приводим их к новой
+      // нумерации по LibID (при полном переимпорте заодно убираем книги, которых
+      // в коллекции больше нет).
+      // Делается только после коммита коллекции: системная БД - отдельный файл,
+      // её изменения не откатятся вместе с импортом.
+      //
+      FSystemData.RemapCollectionBookIDs(updateInfo.CollectionID, updateInfo.Full);
 
       Teletype(rstrReady, tsInfo);
     end; //for .. with

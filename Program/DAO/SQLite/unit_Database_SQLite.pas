@@ -175,6 +175,7 @@ type
     //
     function InsertBook(BookRecord: TBookRecord; const CheckFileName: Boolean; const FullCheck: Boolean): Integer;
     procedure GetBookRecord(const BookKey: TBookKey; out BookRecord: TBookRecord; const LoadMemos: Boolean); override;
+    function ResolveBookID(const LibID: string; const CurrentBookID: Integer): Integer; override;
     procedure UpdateBook(BookRecord: TBookRecord);
     procedure DeleteBook(const BookKey: TBookKey);
 
@@ -1799,6 +1800,55 @@ begin
     SetBookAuthors(BookRecord.BookKey.BookID, BookRecord.Authors, False);
 
     Result := BookRecord.BookKey.BookID;
+  end;
+end;
+
+//
+// Проверить/восстановить BookID книги по стабильному LibID.
+// BookID - это AUTOINCREMENT, он переприсваивается при полном переимпорте коллекции,
+// поэтому сохранённые снаружи BookID (например, в группах) устаревают. LibID стабилен.
+//
+function TBookCollection_SQLite.ResolveBookID(const LibID: string; const CurrentBookID: Integer): Integer;
+const
+  SQL_CHECK = 'SELECT 1 FROM Books WHERE BookID = ? AND LibID = ? ';
+  SQL_FIND  = 'SELECT BookID FROM Books WHERE LibID = ? ';
+var
+  query: TSQLiteQuery;
+begin
+  Result := CurrentBookID;
+
+  // Для локальных коллекций LibID может быть пустым - сверять не с чем
+  if (LibID = '') or (LibID = '0') then
+    Exit;
+
+  //
+  // Сначала проверяем текущий BookID: если он всё ещё указывает на книгу с этим
+  // LibID, ничего искать не нужно. Это и быстрый путь, и защита от подмены книги,
+  // если LibID в коллекции окажется неуникальным.
+  //
+  query := FDatabase.NewQuery(SQL_CHECK);
+  try
+    query.SetParam(0, CurrentBookID);
+    query.SetParam(1, LibID);
+    query.Open;
+    if not query.Eof then
+      Exit;
+  finally
+    FreeAndNil(query);
+  end;
+
+  //
+  // BookID устарел - ищем книгу по LibID
+  //
+  Result := 0;
+  query := FDatabase.NewQuery(SQL_FIND);
+  try
+    query.SetParam(0, LibID);
+    query.Open;
+    if not query.Eof then
+      Result := query.FieldAsInt(0);
+  finally
+    FreeAndNil(query);
   end;
 end;
 

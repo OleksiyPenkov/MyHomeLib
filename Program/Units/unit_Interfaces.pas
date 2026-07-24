@@ -138,6 +138,13 @@ type
     procedure CopyBookToGroup(const BookKey: TBookKey; SourceGroupID: Integer; TargetGroupID: Integer; MoveBook: Boolean);
     procedure DeleteFromGroup(const BookKey: TBookKey; GroupID: Integer);
     procedure CleanCollectionBooks(const DatabaseID: Integer);
+    //
+    // Привести BookID книг в группах к текущей нумерации коллекции (сверка по LibID).
+    // Вызывается после переимпорта коллекции и при построении списка группы.
+    // Если RemoveMissing = True, записи, которых больше нет в коллекции, удаляются.
+    // Возвращает количество исправленных записей.
+    //
+    function RemapCollectionBookIDs(const DatabaseID: Integer; const RemoveMissing: Boolean = False): Integer;
 
     //
     // Пользовательские данные
@@ -185,6 +192,13 @@ type
     //
     function InsertBook(BookRecord: TBookRecord; const CheckFileName: Boolean; const FullCheck: Boolean): Integer; // превратить в процедуру
     procedure GetBookRecord(const BookKey: TBookKey; out BookRecord: TBookRecord; const LoadMemos: Boolean);
+    //
+    // Проверить/восстановить BookID книги по стабильному LibID:
+    // BookID переприсваивается при полном переимпорте коллекции, LibID - нет.
+    // Возвращает CurrentBookID, если он всё ещё указывает на книгу с этим LibID,
+    // иначе - актуальный BookID (0, если книги в коллекции нет).
+    //
+    function ResolveBookID(const LibID: string; const CurrentBookID: Integer): Integer;
     procedure UpdateBook(BookRecord: TBookRecord);
     procedure DeleteBook(const BookKey: TBookKey);
     procedure AddBookToGroup(const BookKey: TBookKey; const GroupID: Integer);
