@@ -1,4 +1,4 @@
-(* *****************************************************************************
+﻿(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -356,8 +356,11 @@ begin
     MaskElements[8].value := '';
 
   MaskElements[9].templ := 'fc';
-  if CurrentSelectedAuthor <> '' then
-    MaskElements[9].value := CurrentSelectedAuthor
+  // Підпис може бути заглушкою ('...'), яку CleanFileName зводить до порожнього
+  // рядка - тоді відкочуємось до першого автора книги
+  s := Trim(CleanFileName(CurrentSelectedAuthor));
+  if s <> '' then
+    MaskElements[9].value := s
   else
   if R.AuthorCount > 0 then
     MaskElements[9].value := Trim(CleanFileName(R.Authors[0].GetFullName))

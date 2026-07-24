@@ -669,7 +669,9 @@ begin
     FDoCheckUpdate := iniFile.ReadBool(SYSTEM_SECTION, 'CheckUpdates', True);
     FCheckExternalLibUpdate := iniFile.ReadBool(SYSTEM_SECTION, 'CheckLibrusecUpdates', True);
     FPromptDevicePath := iniFile.ReadBool(SYSTEM_SECTION, 'PromptDevicePath', True);
-    FFolderTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FolderTemplate', '%f\%s');
+    // %fc (обраний автор), а не %f (перший автор книги) - інакше книги
+    // у співавторстві розкладаються по чужих папках (#59)
+    FFolderTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FolderTemplate', '%fc\%s');
     FFileNameTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FileNameTemplate', '[%n - ]%t');
     FRemoveSquareBrackets := iniFile.ReadBool(SYSTEM_SECTION, 'RemoveSquareBrackets', True);
 

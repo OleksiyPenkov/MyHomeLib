@@ -11,6 +11,7 @@ inherited ExportToDeviceProgressForm: TExportToDeviceProgressForm
     Width = 350
   end
   inherited btnCancel: TButton
+    Left = 265
     Top = 52
     Caption = #1042#1110#1076#1084#1110#1085#1072
     ExplicitLeft = 265

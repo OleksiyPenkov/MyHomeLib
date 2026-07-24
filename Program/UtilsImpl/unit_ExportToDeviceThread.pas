@@ -63,6 +63,7 @@ type
     FMarshalStream: IStream;
     FDeviceShellItem: IShellItem;
     FLastError: string;
+    FConverterExitCode: Cardinal;
 
     FMaxTempPathLength: Integer;
 
@@ -79,6 +80,7 @@ type
   strict private
     function PrepareFile(const BookKey: TBookKey): Boolean;
     function SendFileToDevice: Boolean;
+    procedure RemoveEmptyTargetFolders;
 
   protected
     procedure Initialize; override;
@@ -96,6 +98,12 @@ type
     property ExportMode: TExportMode read FExportMode write FExportMode;
     property ExtractOnly: boolean write FExtractOnly;
   end;
+
+//
+// Повний шлях до зовнішнього конвертера, потрібного для режиму Mode.
+// Повертає '', якщо режим обробляється власними засобами (fb2/fb2.zip/txt).
+//
+function GetConverterPath(const AppPath: string; Mode: TExportMode): string;
 
 implementation
 
@@ -123,6 +131,18 @@ resourcestring
 
 const
   MaxPathLength = 240;
+
+function GetConverterPath(const AppPath: string; Mode: TExportMode): string;
+begin
+  case Mode of
+    emLrf:  Result := AppPath + 'converters\fb2lrf\fb2lrf_c.exe';
+    emEpub: Result := AppPath + 'converters\fb2epub\fb2epub.exe';
+    emPDF:  Result := AppPath + 'converters\fb2pdf\fb2pdf.cmd';
+    emMobi: Result := AppPath + 'converters\fb2mobi\fb2mobi.exe';
+  else
+    Result := '';
+  end;
+end;
 
   { TExportToDeviceThread }
 
@@ -338,13 +358,17 @@ end;
 function TExportToDeviceThread.CallExternalConverter: boolean;
 var
   OutputPath: string;
+  TempFileCreated: Boolean;
 begin
   Result := False;
+  TempFileCreated := False;
+  FConverterExitCode := 0;
   try
     if FFileOprecord.Stream <> nil then
     begin
       StreamToFile(FFileOprecord.TempFile, FFileOprecord.Stream);
       FFileOprecord.SourceFile := FFileOprecord.TempFile;
+      TempFileCreated := True;
     end;
 
     // Compute the path the converter will actually produce.
@@ -381,12 +405,24 @@ begin
     if Result and not FileExists(OutputPath) then
     begin
       Result := False;
-      FLastError := Format('Converter exited OK but produced no output: %s', [OutputPath]);
+      if FConverterExitCode <> 0 then
+        FLastError := Format('Converter failed with exit code %d and produced no output: %s',
+          [FConverterExitCode, OutputPath])
+      else
+        FLastError := Format('Converter exited OK but produced no output: %s', [OutputPath]);
+
+      // fb2pdf.cmd - обгортка над Java; без встановленої JRE вона одразу виходить з кодом 1
+      if FExportMode = emPDF then
+        FLastError := FLastError + ' (fb2pdf requires an installed Java runtime)';
     end;
   except
     on E: Exception do
       FLastError := Format('CallExternalConverter exception: %s', [E.Message]);
   end;
+
+  // Проміжний файл потрібен лише конвертеру - не залишаємо його у $tmp (#59)
+  if TempFileCreated and FileExists(FFileOprecord.TempFile) then
+    DeleteFile(FFileOprecord.TempFile);
 end;
 
 function TExportToDeviceThread.ExportToFB2: boolean;
@@ -413,6 +449,37 @@ begin
   except
     on E: Exception do
       FLastError := Format('ProcessFileFromStream exception: %s', [E.Message]);
+  end;
+end;
+
+//
+// Папки за шаблоном створюються ще до конвертації, тож після невдалого
+// експорту на пристрої залишаються порожні каталоги (#59). Прибираємо їх,
+// піднімаючись до DeviceDir; RemoveDir не чіпає непорожні папки, тому
+// каталоги з уже записаними книгами вціліють.
+//
+procedure TExportToDeviceThread.RemoveEmptyTargetFolders;
+var
+  Root: string;
+  Current: string;
+begin
+  if FUseMTP or FExtractOnly or (FFileOprecord.TargetFolder = '') then
+    Exit;
+
+  try
+    Root := ExcludeTrailingPathDelimiter(FDeviceDir);
+    Current := ExcludeTrailingPathDelimiter(TPath.Combine(FDeviceDir, FFileOprecord.TargetFolder));
+
+    while (Length(Current) > Length(Root)) and
+          SameText(Copy(Current, 1, Length(Root)), Root) and
+          DirectoryExists(Current) do
+    begin
+      if not RemoveDir(Current) then
+        Break;
+      Current := ExcludeTrailingPathDelimiter(ExtractFilePath(Current));
+    end;
+  except
+    // прибирання не має зривати експорт
   end;
 end;
 
@@ -513,7 +580,7 @@ var
   params: string;
 begin
   params := Format('-i "%s" -o "%s"', [InpFile, ChangeFileExt(OutFile, '.lrf')]);
-  Result := ExecAndWait(FAppPath + 'converters\fb2lrf\fb2lrf_c.exe', params, SW_HIDE);
+  Result := ExecAndWait(GetConverterPath(FAppPath, emLrf), params, SW_HIDE, FConverterExitCode);
 end;
 
 function TExportToDeviceThread.fb2EPUB(const InpFile: string; const OutFile: string): Boolean;
@@ -521,7 +588,7 @@ var
   params: string;
 begin
   params := Format('"%s" "%s"', [InpFile, ChangeFileExt(OutFile, '.epub')]);
-  Result := ExecAndWait(FAppPath + 'converters\fb2epub\fb2epub.exe', params, SW_HIDE);
+  Result := ExecAndWait(GetConverterPath(FAppPath, emEpub), params, SW_HIDE, FConverterExitCode);
 end;
 
 function TExportToDeviceThread.fb2PDF(const InpFile: string; const OutFile: string): Boolean;
@@ -529,7 +596,7 @@ var
   params: string;
 begin
   params := Format('"%s" "%s"', [InpFile, ChangeFileExt(OutFile, '.pdf')]);
-  Result := ExecAndWait(FAppPath + 'converters\fb2pdf\fb2pdf.cmd', params, SW_HIDE);
+  Result := ExecAndWait(GetConverterPath(FAppPath, emPDF), params, SW_HIDE, FConverterExitCode);
 end;
 
 function TExportToDeviceThread.fb2Mobi(const InpFile: string; const OutFile: string): Boolean;
@@ -537,7 +604,7 @@ var
   params: string;
 begin
   params := Format('"%s" "%s" -nc -cl -us -nt', [InpFile, ChangeFileExt(OutFile, '.mobi')]);
-  Result := ExecAndWait(FAppPath + 'converters\fb2mobi\fb2mobi.exe', params, SW_HIDE);
+  Result := ExecAndWait(GetConverterPath(FAppPath, emMobi), params, SW_HIDE, FConverterExitCode);
 end;
 
 procedure TExportToDeviceThread.Initialize;
@@ -601,6 +668,7 @@ begin
         begin
           Inc(FailedCount);
           ErrorLog.Add(Format('%s  >>  %s  |  %s', [DateTimeToStr(Now), FFileOprecord.FileName, FLastError]));
+          RemoveEmptyTargetFolders;
 
           if i < totalBooks - 1 then
           begin

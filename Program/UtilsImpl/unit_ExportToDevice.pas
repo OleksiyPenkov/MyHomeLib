@@ -1,4 +1,4 @@
-(* *****************************************************************************
+﻿(* *****************************************************************************
   *
   * MyHomeLib
   *
@@ -37,6 +37,10 @@ implementation
 
 uses
   ActiveX,
+  SysUtils,
+  dm_user,
+  unit_Consts,
+  unit_Errors,
   unit_ExportToDeviceThread,
   frm_ExportToDeviceProgressForm,
   unit_DownloadBooksThread,
@@ -45,6 +49,10 @@ uses
 resourcestring
   rstrSendToDevice = 'Надсилання на пристрій';
   rstrDownloadingBooks = 'Скачування книг';
+  rstrConverterNotFound = 'Конвертер для обраного формату не встановлено:' + CRLF +
+    '%s' + CRLF + CRLF +
+    'Розпакуйте файли конвертера у цю папку або оберіть інший формат запису ' +
+    'на пристрій у налаштуваннях.';
 
 procedure ExportToDevice(
   const DeviceDir: string;
@@ -59,7 +67,22 @@ var
   worker: TExportToDeviceThread;
   frmProgress: TExportToDeviceProgressForm;
   MarshalStream: IStream;
+  ConverterPath: string;
 begin
+  //
+  // Зовнішні конвертери не входять до складу програми. Якщо потрібного немає,
+  // експорт мовчки нічого б не записав (#59), тому перевіряємо це заздалегідь.
+  //
+  if not ExtractOnly then
+  begin
+    ConverterPath := GetConverterPath(Settings.AppPath, Mode);
+    if (ConverterPath <> '') and not FileExists(ConverterPath) then
+    begin
+      MHLShowError(rstrConverterNotFound, [ConverterPath]);
+      Exit;
+    end;
+  end;
+
   worker := TExportToDeviceThread.Create;
   try
     worker.DeviceDir := DeviceDir;

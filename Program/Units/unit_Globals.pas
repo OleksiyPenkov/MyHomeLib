@@ -387,7 +387,11 @@ type
   procedure DebugOut(const DebugMessage: string; const Args: array of const ); overload;
 
   function GetSpecialPath(CSIDL: word): string;
-  function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean;
+  function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean; overload;
+  // Той самий запуск, але повертає й код завершення процесу: зовнішні конвертери
+  // сигналізують про помилку саме ним (напр. fb2pdf.cmd -> 1, якщо немає Java)
+  function ExecAndWait(const FileName, Params: string; const WinState: word;
+    out ExitCode: Cardinal): Boolean; overload;
 
   function CleanExtension(const Ext: string): string;
   function c_GetTempPath: String;
@@ -1284,10 +1288,19 @@ end;
 
 function ExecAndWait(const FileName, Params: string; const WinState: word): Boolean;
 var
+  ExitCode: Cardinal;
+begin
+  Result := ExecAndWait(FileName, Params, WinState, ExitCode);
+end;
+
+function ExecAndWait(const FileName, Params: string; const WinState: word;
+  out ExitCode: Cardinal): Boolean;
+var
   StartInfo: TStartupInfo;
   ProcInfo: TProcessInformation;
   CmdLine: string;
 begin
+  ExitCode := 0;
   CmdLine := '' + FileName + ' ' + Params;
   FillChar(StartInfo, Sizeof(StartInfo), #0);
   with StartInfo do
@@ -1313,6 +1326,9 @@ begin
   if Result then
   begin
     WaitForSingleObject(ProcInfo.hProcess, INFINITE);
+    // Запуск вдався - це ще не успіх: конвертер міг завершитись з помилкою
+    if not GetExitCodeProcess(ProcInfo.hProcess, ExitCode) then
+      ExitCode := 0;
     { Free the Handles }
     CloseHandle(ProcInfo.hProcess);
     CloseHandle(ProcInfo.hThread);
