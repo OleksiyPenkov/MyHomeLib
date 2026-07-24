@@ -23,13 +23,19 @@ function navFor(current) {
   return out.join('\n');
 }
 
-function template(title) {
+function pageTitle(title, file) {
+  // The index page's own title *is* "Довідка MyHomeLib" — appending the
+  // suffix would double it up ("Довідка MyHomeLib — Довідка MyHomeLib").
+  return file === 'index.html' ? title : `${title} — Довідка MyHomeLib`;
+}
+
+function template(title, file) {
   return `<!DOCTYPE html>
 <html lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title)} — Довідка MyHomeLib</title>
+<title>${esc(pageTitle(title, file))}</title>
 <link rel="stylesheet" href="help.css">
 </head>
 <body>
@@ -56,7 +62,7 @@ for (const section of spec.sections) {
   for (const t of section.topics) {
     const p = path.join(HELP, t.file);
     if (!fs.existsSync(p)) {
-      fs.writeFileSync(p, template(t.title), 'utf8');
+      fs.writeFileSync(p, template(t.title, t.file), 'utf8');
       created++;
     }
     const html = fs.readFileSync(p, 'utf8');

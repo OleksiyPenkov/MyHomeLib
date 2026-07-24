@@ -61,7 +61,10 @@ for (const t of topics) {
   if (!html.includes('<!-- BODY:BEGIN -->') || !html.includes('<!-- BODY:END -->'))
     fail(`${t.file}: missing BODY markers`);
 
-  const expectedTitle = `<title>${t.title} — Довідка MyHomeLib</title>`;
+  // The index page's own title *is* "Довідка MyHomeLib" — appending the
+  // suffix would double it up ("Довідка MyHomeLib — Довідка MyHomeLib").
+  const expectedTitleText = t.file === 'index.html' ? t.title : `${t.title} — Довідка MyHomeLib`;
+  const expectedTitle = `<title>${expectedTitleText}</title>`;
   if (!html.includes(expectedTitle)) fail(`${t.file}: <title> should be ${expectedTitle}`);
 
   const body = html.split('<!-- BODY:BEGIN -->')[1]?.split('<!-- BODY:END -->')[0] ?? '';
@@ -116,6 +119,35 @@ if (fs.existsSync(MAP_UNIT)) {
     if (id === 5001) continue;
     if (!ids.has(id)) fail(`HelpContext ${id} appears in a DFM but is not in unit_HelpTopics.pas`);
   }
+}
+
+// --- 6. nothing but declared topics and help.css anywhere under Help/ -----
+// The help ships with no images at all, so Program/Help must contain only
+// the .html files listed in topics.json plus help.css — no subdirectories
+// (e.g. an img/ folder) and no other stray files, at any depth.
+function walkAll(dir, base, out = []) {
+  if (!fs.existsSync(dir)) return out;
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, e.name);
+    const rel = path.relative(base, p).split(path.sep).join('/');
+    if (e.isDirectory()) {
+      out.push({ rel, isDir: true });
+      walkAll(p, base, out);
+    } else {
+      out.push({ rel, isDir: false });
+    }
+  }
+  return out;
+}
+
+for (const entry of walkAll(HELP, HELP)) {
+  if (entry.isDir) {
+    fail(`stray directory in Program/Help: ${entry.rel}`);
+    continue;
+  }
+  if (entry.rel === 'help.css') continue;
+  if (declared.has(entry.rel)) continue;
+  fail(`stray file in Program/Help: ${entry.rel}`);
 }
 
 // --- report ---------------------------------------------------------------
