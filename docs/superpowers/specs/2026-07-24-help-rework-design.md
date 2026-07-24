@@ -45,9 +45,10 @@ Source of truth is `Program/Help/`, tracked in git.
 Program/Help/
   index.html          TOC / welcome page
   help.css            single stylesheet; light + dark via prefers-color-scheme
-  img/                surviving icon clips from the old CHM
   <topic>.html        one file per topic
 ```
+
+(No `img/` directory — see **Screenshots** below.)
 
 Every topic page has the same structure: a `<nav>` sidebar carrying the full
 table of contents with the current entry marked, and a `<main>` content column.
@@ -211,22 +212,20 @@ Terminology is fixed once in `terms.html` and used consistently: колекці�
 
 ## Screenshots
 
-The old CHM's images fall into two groups:
+The intent was to carry over any image that still matches the current UI. All
+25 images in the old CHM were inspected; **none survive**, so the new Help
+ships with no images at all and `Program/Help/img/` is not created.
 
-- **Full-window shots** — `clip0001.png` (192 KB), `clip0039.png`,
-  `int_settings.jpg`, `set_readers.jpg`, `scripts_settings.jpg`, and the other
-  large clips. These show the 2011 Russian UI and are **dropped**.
-- **Icon-sized clips** — the 500–1500 byte `clip00NN.png` files, which are
-  toolbar buttons and tree icons. These are **kept where they still match the
-  current icon set**.
+| Group | Files | Why dropped |
+|---|---|---|
+| Full-window shots | `clip0001.png` (808×663), `clip0039.png` (768×570), `int_settings.jpg`, `set_readers.jpg`, `scripts_settings.jpg` | 2011 Russian UI, entirely superseded |
+| Menu / dialog fragments | `clip0022`, `clip0023`, `clip0028`, `clip0029`, `clip0033`, `clip0034`, `clip0038`, `clip0040` | Russian menu text baked into the pixels; menu contents have also changed |
+| 32×32 icon clips | `clip0002`–`clip0006`, `clip0008`–`clip0010`, `clip0013`, `clip0015`–`clip0018`, `clip0035`, `clip0036` | Pre-modernization raster icon style; the current set (`Program/Resources/Icons/Light|Dark/png/*_32.png`, 46 flat line-art icons) shares no artwork with them |
 
-Every candidate icon clip is inspected visually against the current
-`Program/Resources/Icons/` before being carried over. A clip that no longer
-matches is dropped rather than shipped stale. Kept clips move to
-`Program/Help/img/`.
-
-No placeholders are left for the dropped full-window shots; the prose is
-written to stand alone without them.
+Prose is therefore written to stand alone. Where a topic would benefit from an
+illustration, it describes the control by its exact caption and location
+instead. Adding screenshots later is a separate piece of work and does not
+block this one.
 
 ## Build and installer
 
@@ -263,8 +262,7 @@ duplicated.
 
 1. `Program/MHL.groupproj` builds clean, Release/Win32.
 2. A link checker over `Program/Help/`: every `href` and `src` resolves to a
-   file that exists; no `.htm` references survive; no references to dropped
-   images.
+   file that exists; no `.htm` references survive; no `<img>` tags at all.
 3. Every entry in the context-ID table resolves to a file that exists, and
    every topic file is reachable from the sidebar TOC.
 4. Every page declares `charset=utf-8` and is actually UTF-8 encoded.
