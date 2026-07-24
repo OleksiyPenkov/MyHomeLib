@@ -72,6 +72,7 @@ uses
   frm_ImportProgressForm in 'ImportImpl\frm_ImportProgressForm.pas' {ImportProgressForm},
   unit_ImportFBDThread in 'ImportImpl\unit_ImportFBDThread.pas',
   unit_Helpers in 'Units\unit_Helpers.pas',
+  unit_HelpTopics in 'Units\unit_HelpTopics.pas',
   frm_ImportProgressFormEx in 'ImportImpl\frm_ImportProgressFormEx.pas' {ImportProgressFormEx},
   unit_ImportFB2ThreadBase in 'ImportImpl\unit_ImportFB2ThreadBase.pas',
   unit_ImportInpxThread in 'ImportImpl\unit_ImportInpxThread.pas',

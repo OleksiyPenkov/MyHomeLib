@@ -84,7 +84,9 @@ for (const t of topics) {
 if (!fs.existsSync(path.join(HELP, 'help.css'))) fail('missing Program/Help/help.css');
 
 // --- 5. Pascal context map (skipped until the unit exists) ---------------
-if (fs.existsSync(MAP_UNIT)) {
+if (!fs.existsSync(MAP_UNIT)) {
+  fail('missing Program/Units/unit_HelpTopics.pas');
+} else {
   const pas = fs.readFileSync(MAP_UNIT, 'utf8');
   const entries = [...pas.matchAll(/\(ContextID:\s*(\d+);\s*FileName:\s*'([^']+)'\)/g)]
     .map((m) => ({ id: Number(m[1]), file: m[2] }));

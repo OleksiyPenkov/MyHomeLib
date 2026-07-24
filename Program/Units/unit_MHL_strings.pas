@@ -29,6 +29,8 @@ resourcestring
 
   rstrReadyMessage = 'Готово';
 
+  rstrHelpFileNotFound = 'Файл довідки не знайдено:'#13#10'%s';
+
   //
   // Названия коллекций по-умолчанию
   //

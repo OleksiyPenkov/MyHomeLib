@@ -97,7 +97,7 @@ const
   GENRES_NONFB2_FILENAME = 'genres_nonfb2'  + GENRELIST_EXTENSION;
   SERVER_ERRORLOG_FILENAME = 'server_error.html';
   IMPORT_ERRORLOG_FILENAME = 'import_errors.log';
-  APP_HELP_FILENAME = 'MyHomeLib.chm';
+  APP_HELP_FILENAME = 'Help\index.html';
   VERINFO_FILENAME = 'version.info';
   STRUCTUREINFO_FILENAME = 'structure.info';
   PROGRAM_VERINFO_FILENAME = 'last_version.info';
