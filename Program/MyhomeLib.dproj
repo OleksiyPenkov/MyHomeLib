@@ -134,8 +134,8 @@
     <DCC_DcuOutput>Out\Units</DCC_DcuOutput>
     <DCC_ExeOutput>Out\Bin</DCC_ExeOutput>
     <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
-    <VerInfo_Build>1050</VerInfo_Build>
-    <VerInfo_Keys>CompanyName=;FileVersion=2.6.0.1050;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.6.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
+    <VerInfo_Build>1051</VerInfo_Build>
+    <VerInfo_Keys>CompanyName=;FileVersion=2.6.0.1051;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProductVersion=2.6.0;Comments=;ProgramID=com.embarcadero.MyhomeLib;FileDescription=MyhomeLib;ProductName=MyhomeLib</VerInfo_Keys>
     <BT_BuildType>Debug</BT_BuildType>
     <VerInfo_Private>false</VerInfo_Private>
     <VerInfo_Special>false</VerInfo_Special>
@@ -477,6 +477,9 @@
   </ItemGroup>
   <Import Condition="Exists('$(BDS)\Bin\CodeGear.Delphi.Targets')" Project="$(BDS)\Bin\CodeGear.Delphi.Targets" />
   <Import Condition="Exists('$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj')" Project="$(APPDATA)\Embarcadero\$(BDSAPPDATABASEDIR)\$(PRODUCTVERSION)\UserTools.proj" />
+  <!-- Keep this PropertyGroup AFTER the CodeGear.Delphi.Targets import above:
+       $(OUTPUTDIR) and $(PROJECTDIR) are undefined until that import runs, so
+       a PostBuildEvent placed earlier expands them to empty strings. -->
   <PropertyGroup>
     <PostBuildEvent>call "$(PROJECTDIR)\copy_help.cmd" "$(OUTPUTDIR)."</PostBuildEvent>
   </PropertyGroup>
