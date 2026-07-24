@@ -111,7 +111,12 @@ if exist "%BIN_DIR%\AlReader" (
 )
 
 :: Converters
-for %%C in (fb2lrf fb2epub fb2pdf fb2mobi) do (
+:: Only fb2lrf is redistributed. fb2mobi/fb2epub/fb2pdf are third-party
+:: downloads (fb2mobi bundles Amazon's kindlegen, fb2pdf needs a JRE) and are
+:: NOT bundled - users install them into converters\<name>\ themselves. They
+:: are often present in the build output for local testing, so do not stage
+:: them here or they end up in the installer.
+for %%C in (fb2lrf) do (
     if exist "%BIN_DIR%\converters\%%C" (
         robocopy "%BIN_DIR%\converters\%%C" "%COMMON_DIR%\converters\%%C" /s /e /njh /njs /ndl /nc /ns /np >nul
     )
