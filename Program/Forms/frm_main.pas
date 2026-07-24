@@ -972,6 +972,7 @@ uses
   IOUtils,
   Character,
   Generics.Collections,
+  unit_HelpTopics,
   Math,
   fictionbook_21,
   unit_FB2Utils,
@@ -6391,12 +6392,10 @@ end;
 
 function TfrmMain.OnHelpHandler(Command: Word; Data: NativeInt; var CallHelp: Boolean): Boolean;
 begin
-  if Data = 1 then
-    HtmlHelp(Application.Handle, PChar(Settings.SystemFileName[sfAppHelp]), HH_DISPLAY_TOC, 0)
-  else
-    HtmlHelp(Application.Handle, PChar(Settings.SystemFileName[sfAppHelp]), HH_HELP_CONTEXT, Data);
+  ShowHelpTopic(Data);
 
   CallHelp := False;
+  Result := True;
 end;
 
 procedure TfrmMain.ShowCollectionSettingsExecute(Sender: TObject);
@@ -6625,7 +6624,7 @@ end;
 
 procedure TfrmMain.ShowHelpExecute(Sender: TObject);
 begin
-  HtmlHelp(Application.Handle, PChar(Settings.SystemFileName[sfAppHelp]), HH_DISPLAY_TOC, 0);
+  ShowHelpTopic(1);
 end;
 
 procedure TfrmMain.ImportNonFB2Execute(Sender: TObject);

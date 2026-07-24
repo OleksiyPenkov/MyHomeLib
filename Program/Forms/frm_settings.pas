@@ -257,6 +257,7 @@ implementation
 uses
   StrUtils,
   Character,
+  unit_HelpTopics,
   unit_Globals,
   unit_Readers,
   unit_Scripts,
@@ -548,7 +549,7 @@ end;
 
 procedure TfrmSettings.ShowHelpClick(Sender: TObject);
 begin
-  HtmlHelp(Application.Handle, PChar(Settings.SystemFileName[sfAppHelp]), HH_HELP_CONTEXT, pcSetPages.ActivePage.HelpContext);
+  ShowHelpTopic(pcSetPages.ActivePage.HelpContext);
   frmSettings.FocusControl(btnOk);
 end;
 
