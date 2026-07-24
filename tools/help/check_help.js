@@ -27,8 +27,17 @@ function walk(dir, out = []) {
   return out;
 }
 
-// --- 1. every topic in topics.json exists on disk -------------------------
+// --- 0. topics.json parsed a sane number of topics ------------------------
+// A near-zero count almost certainly means the TOC got wiped or misparsed
+// rather than someone legitimately trimming the topic list, so this is a
+// floor, not an exact match against the current count (54).
 const topics = listTopics();
+if (topics.length < 40) {
+  console.error(`check_help: topics.json parsed only ${topics.length} topics (expected around 54)`);
+  process.exit(1);
+}
+
+// --- 1. every topic in topics.json exists on disk -------------------------
 const declared = new Set(topics.map((t) => t.file));
 for (const t of topics) {
   if (!fs.existsSync(path.join(HELP, t.file))) fail(`missing topic file: ${t.file}`);
@@ -71,8 +80,8 @@ for (const t of topics) {
   if (body.trim() === '' || body.includes('Розділ у роботі'))
     fail(`${t.file}: body not written yet`);
 
-  // internal links resolve
-  for (const m of html.matchAll(/href="([^"#:]+)(#[^"]*)?"/g)) {
+  // internal links resolve (external URLs and mailto: links are skipped below)
+  for (const m of html.matchAll(/href="([^"#]+)(#[^"]*)?"/g)) {
     const target = m[1];
     if (target.startsWith('http') || target.startsWith('mailto:')) continue;
     if (target.endsWith('.htm')) fail(`${t.file}: legacy .htm link: ${target}`);

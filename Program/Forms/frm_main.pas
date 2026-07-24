@@ -6392,7 +6392,7 @@ end;
 
 function TfrmMain.OnHelpHandler(Command: Word; Data: NativeInt; var CallHelp: Boolean): Boolean;
 begin
-  ShowHelpTopic(Data);
+  ShowHelpTopic(Integer(Data));
 
   CallHelp := False;
   Result := True;
