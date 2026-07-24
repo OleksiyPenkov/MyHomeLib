@@ -96,8 +96,9 @@ if not exist "%COMMON_DIR%" mkdir "%COMMON_DIR%"
 copy /y "%BIN_DIR%\genres_fb2.glst"    "%COMMON_DIR%\" >nul
 copy /y "%BIN_DIR%\genres_nonfb2.glst" "%COMMON_DIR%\" >nul
 
-:: Help, URL, License
-copy /y "%BIN_DIR%\MyHomeLib.chm" "%COMMON_DIR%\" >nul
+:: Help (staged from source, not from the build output), URL, License
+call "%ROOT_DIR%\Program\copy_help.cmd" "%COMMON_DIR%"
+if errorlevel 1 exit /b 1
 copy /y "%BIN_DIR%\MyHomeLib.url" "%COMMON_DIR%\" >nul
 copy /y "%BIN_DIR%\License.txt"   "%COMMON_DIR%\" >nul
 

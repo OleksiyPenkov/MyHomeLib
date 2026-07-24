@@ -41,7 +41,7 @@ Name: "{userappdata}\{#MyAppName}"; Permissions: everyone-modify
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}
-Name: {group}\Довідка {#MyAppName}; Filename: {app}\{#MyAppName}.chm; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: {#MyAppName} Help
+Name: {group}\Довідка {#MyAppName}; Filename: {app}\Help\index.html; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: {#MyAppName} Help
 Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}; Tasks: desktopicon
 Name: {group}\{#MyAppName} website; Filename: {app}\{#MyAppName}.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
 Name: {group}\{cm:UninstallProgram, My Home Library}; Filename: {uninstallexe}
@@ -56,6 +56,9 @@ Name: {app}; Type: files
 [Run]
 Filename: {app}\{#AppExeName}; WorkingDir: {app}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
 
+[InstallDelete]
+Type: files; Name: {app}\MyHomeLib.chm
+
 [Files]
 Source: {#FullSourcePath}; DestDir: {app}; DestName: {#AppExeName}; Flags: replacesameversion
 
@@ -69,7 +72,7 @@ Source: Common\converters\fb2mobi\*; DestDir: {app}\converters\fb2mobi\; Flags: 
 Source: Common\genres_nonfb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\genres_fb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\collections.ini; DestDir: {userappdata}\MyHomeLib; Flags: onlyifdoesntexist
-Source: Common\MyHomeLib.chm; DestDir: {app}; Flags: replacesameversion
+Source: Common\Help\*; DestDir: {app}\Help; Flags: recursesubdirs
 Source: Common\MyHomeLib.url; DestDir: {app}; Flags: replacesameversion
 Source: Common\License.txt; DestDir: {app}; Flags: replacesameversion
 
