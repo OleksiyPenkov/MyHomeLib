@@ -72,6 +72,10 @@ comparing results with the MyHomeLib app itself:
       filter.
 - [ ] `search_books(limit=5000)` returns 200 books and `"clamped":true`.
 - [ ] `search_books(offset=…)` pages without repeating or skipping books.
+- [ ] `list_genres` returns the same genre tree the app's genre panel shows.
+- [ ] A genre code from `list_genres` used in `search_books(genre=…)` returns
+      books of that genre.
+- [ ] `list_series(filter=…)` finds a series you know exists.
 - [ ] No output other than JSON-RPC lines ever appears on stdout, even during
       `DMUser` bootstrap (verified by the automated test suite in `tests/`,
       which fails loudly on any stray line).
@@ -100,6 +104,50 @@ so `include_deleted: false` (the default) excludes deleted books and
 `include_deleted: true` includes them, matching the tool's documented
 meaning. Do not "simplify" this back to a direct assignment.
 
+### `search_books` genre-filter pitfall
+
+`TBookSearchCriteria.Genre` is not a value to compare against a column — it is
+spliced verbatim into a `WHERE` clause by
+`TBookCollection_SQLite.PrepareSearchData`
+(`' FROM Genre_List g JOIN Books b ON b.BookID = g.BookID WHERE (' +
+SearchCriteria.Genre + ')'`). `frm_main.pas` builds this string as
+`Format('(g.GenreCode = "%s")', [Genre.GenreCode])`, not as a bare code. A
+bare code — which is exactly what `list_genres`'s `code` field is, and what
+`search_books`'s `genre` argument is documented as taking — is invalid SQL on
+its own; passing one straight through (as an earlier version of this tool
+did) produced `near ".3": syntax error` for a real code like `0.3.3`.
+`search_books` now builds the same `g.GenreCode = "..."` condition itself
+from the caller's bare code, and doubles any embedded `"` first (SQLite's
+escape for a literal quote inside a double-quoted string) so a caller-supplied
+genre string cannot break out of the literal and inject arbitrary SQL into
+this `WHERE` clause.
+
+## `list_genres`, `list_series`, `list_authors`
+
+`list_genres` returns the entire genre tree for a collection, unpaged — genre
+lists are small and fixed, and the `code` field is exactly what
+`search_books(genre=…)` needs and has no other way to discover.
+
+`list_series` and `list_authors` take an optional `filter` (case-insensitive
+substring match, applied in Delphi over the iterator — the `smAll`/`amAll`
+iterator modes take no free-text filter of their own) and a `limit`
+(default 100, hard max 500, clamped rather than rejected, reporting
+`"clamped":true` when it fires).
+
+Both loops check `Taken < Limit` before calling `Iterator.Next`, rather than
+folding the check into the same expression as `Next` (e.g.
+`Iterator.Next(X) and (Taken < Limit)`). Pascal's short-circuit `and` still
+evaluates `Next` first since it is the left operand, so on the iteration
+where `Taken` reaches `Limit`, that form would fetch and discard one more
+record from the iterator before the condition as a whole came back `False`.
+Checking `Limit` first means `Next` is only ever called when a record taken
+from it can still be used.
+
+`list_authors` renders names with `ComposeAuthorFullName`, not
+`TAuthorData.GetFullName` — see that function's comment in
+`unit_MCP_Tools_Library.pas` for why (a blank `LastName` would otherwise raise
+`EAssertionFailed` carrying a build-machine path straight to the client).
+
 ## Automated tests
 
 ```
@@ -120,8 +168,8 @@ database existing on the machine running the tests, the same as
 validation (`RequireInt` rejecting a non-integer `collection_id`) and
 `CollectionOrFail`'s not-found path respectively; both still go through
 `Guarded(...)` and so also depend on a real system database, even though
-neither ever reaches a real collection. **All sixteen cases still require
-`sqlite3.dll` to be resolvable next to the exe**, regardless of which tool
+neither ever reaches a real collection. **All cases in this suite still
+require `sqlite3.dll` to be resolvable next to the exe**, regardless of which tool
 (if any) is called — see the load-time dependency note above — since the
 process cannot start at all without it. `list_collections` is covered by the
 manual checklist above because it needs a real, populated collection list to
@@ -150,3 +198,23 @@ collection 1, which has three real matches — `book_id` 1 and 111931 (both
 false`). `14` (no `include_deleted`) expects only `book_id` 487024,
 `total_count: 1`; `15` (`include_deleted: true`) expects all three,
 `total_count: 3`. Depend on the same collection-1 stability as `10`–`13`.
+
+`16_list_genres_and_search_genre_round_trip.jsonl` calls `list_genres` on
+collection 1 (asserting the full, real 317-entry tree byte-for-byte — the
+tool has no `limit`/`filter` by design, see above) and then `search_books`
+with `genre: "0.3.3"` (a real code taken from that tree), proving the whole
+point of `list_genres`: that its codes actually work as `search_books` input.
+This is also the case that caught the genre-filter pitfall documented above —
+without that fix, the `search_books` call in this file fails with a SQL
+syntax error instead of returning a book. `17_list_series_filter_found.jsonl`
+and `18_list_authors_filter_found.jsonl` prove `filter` finds real rows in
+collection 1 (`"Гарри Поттер"` for series, `"Аббасзаде"` for the same author
+`10`–`15` use). `19_list_authors_limit_clamped.jsonl` reuses the
+single-match `"Аббасзаде"` filter with `limit: 5000` — clamping is decided
+from the requested limit alone (`ArgIntClamped` compares it against `Max`
+before any row is fetched), so `"clamped":true` shows up even though the
+actual result set here is one row, keeping this fixture small on purpose.
+`20_list_series_collection_not_found.jsonl` exercises `CollectionOrFail`'s
+not-found path through `list_series`, standing in for all three new tools
+(they all call `CollectionOrFail` first, identically to `get_book` and
+`search_books`). Depend on the same collection-1 stability as `10`–`15`.

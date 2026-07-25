@@ -336,6 +336,7 @@ var
   Limit, Offset, Skipped, Taken, MinRate: Integer;
   Clamped, ClampedAny: Boolean;
   Total: Integer;
+  GenreCode: string;
 begin
   Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
 
@@ -343,7 +344,22 @@ begin
   Criteria.Title      := ArgStr(Args, 'title');
   Criteria.FullName   := ArgStr(Args, 'author');
   Criteria.Series     := ArgStr(Args, 'series');
-  Criteria.Genre      := ArgStr(Args, 'genre');
+  // TBookSearchCriteria.Genre is not a value to compare -- PrepareSearchData
+  // splices it verbatim into a WHERE clause (' WHERE (' + SearchCriteria.Genre
+  // + ')'), matching how frm_main.pas builds it from its genre-tree picker:
+  // Format('(g.GenreCode = "%s")', [Genre.GenreCode]). A bare code (what
+  // list_genres' "code" field is and what this tool's schema documents the
+  // argument as) is not valid SQL on its own -- confirmed against a real
+  // collection, where passing "0.3.3" straight through as SearchBooks did
+  // before this fix produced 'near ".3": syntax error'. Build the same
+  // condition shape frm_main does, and double up any embedded '"' first
+  // (SQLite's escape for a literal quote inside a double-quoted string) so a
+  // caller-supplied genre string can't break out of the literal and inject
+  // arbitrary SQL into this WHERE clause.
+  GenreCode := ArgStr(Args, 'genre');
+  if GenreCode <> '' then
+    Criteria.Genre := Format('g.GenreCode = "%s"',
+      [StringReplace(GenreCode, '"', '""', [rfReplaceAll])]);
   Criteria.Lang       := ArgStr(Args, 'lang');
   Criteria.KeyWord    := ArgStr(Args, 'keyword');
   Criteria.Annotation := ArgStr(Args, 'annotation');
@@ -412,6 +428,169 @@ begin
     Result.AddPair('clamped', TJSONBool.Create(True));
 end;
 
+// Whole genre tree, unpaged: genre lists are small and fixed for a given
+// collection, and the codes returned here are exactly what a caller needs to
+// build a search_books(genre=...) call -- there is no other way to discover
+// them, so truncating this list would make that argument unusable.
+function ListGenres(const Args: TJSONObject): TJSONObject;
+var
+  Collection: IBookCollection;
+  Iterator: IGenreIterator;
+  Genre: TGenreData;
+  Arr: TJSONArray;
+  Entry: TJSONObject;
+begin
+  Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
+
+  // Same leak-safe accumulator shape as ListCollections/SearchBooks: Arr (and,
+  // per entry, Entry) must not leak if anything raises mid-loop.
+  Arr := TJSONArray.Create;
+  try
+    Iterator := Collection.GetGenreIterator(gmAll, nil);
+    while Iterator.Next(Genre) do
+    begin
+      Entry := TJSONObject.Create;
+      try
+        Entry.AddPair('code', Genre.GenreCode);
+        Entry.AddPair('parent_code', Genre.ParentCode);
+        Entry.AddPair('alias', Genre.GenreAlias);
+      except
+        Entry.Free;
+        raise;
+      end;
+      Arr.AddElement(Entry);
+    end;
+  except
+    Arr.Free;
+    raise;
+  end;
+
+  Result := TJSONObject.Create;
+  Result.AddPair('genres', Arr);
+end;
+
+// Series list with an optional case-insensitive substring filter, applied in
+// Delphi over the iterator -- GetSeriesIterator's smAll mode takes no
+// free-text filter of its own (smFullFilter instead reads alpha/local/deleted
+// state off the collection object, not a caller-supplied string, and is not
+// used here).
+//
+// Loop shape note: the limit is checked with `while Taken < Limit do` before
+// calling Iterator.Next, rather than folding both into one `Next(...) and
+// (Taken < Limit)` condition. With the latter, Pascal's short-circuit `and`
+// still evaluates Next(...) first (it is the left operand), so on the
+// iteration where Taken reaches Limit, Next would already have fetched and
+// discarded one more record before the condition as a whole came back False.
+// Checking Limit first means Next is called only when a record taken from it
+// can actually still be used.
+function ListSeries(const Args: TJSONObject): TJSONObject;
+var
+  Collection: IBookCollection;
+  Iterator: ISeriesIterator;
+  Series: TSeriesData;
+  Arr: TJSONArray;
+  Entry: TJSONObject;
+  Filter: string;
+  Limit, Taken: Integer;
+  Clamped: Boolean;
+begin
+  Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
+  Filter := ArgStr(Args, 'filter').ToLower;
+  Limit := ArgIntClamped(Args, 'limit', 100, 1, 500, Clamped);
+
+  Arr := TJSONArray.Create;
+  try
+    Taken := 0;
+    Iterator := Collection.GetSeriesIterator(smAll);
+    while Taken < Limit do
+    begin
+      if not Iterator.Next(Series) then
+        Break;
+
+      if (Filter <> '') and (not Series.SeriesTitle.ToLower.Contains(Filter)) then
+        Continue;
+
+      Entry := TJSONObject.Create;
+      try
+        Entry.AddPair('series_id', TJSONNumber.Create(Series.SeriesID));
+        Entry.AddPair('title', Series.SeriesTitle);
+      except
+        Entry.Free;
+        raise;
+      end;
+      Arr.AddElement(Entry);
+      Inc(Taken);
+    end;
+  except
+    Arr.Free;
+    raise;
+  end;
+
+  Result := TJSONObject.Create;
+  Result.AddPair('series', Arr);
+  if Clamped then
+    Result.AddPair('clamped', TJSONBool.Create(True));
+end;
+
+// Author list with the same optional substring-filter/limit shape as
+// ListSeries (same loop-order reasoning applies). Uses ComposeAuthorFullName,
+// not TAuthorData.GetFullName -- GetFullName asserts LastName <> '', and
+// assertions are enabled in this build, so a blank-last-name row (a real
+// possibility in hand-edited or badly-imported metadata) would otherwise
+// raise EAssertionFailed carrying a build-machine source path straight out to
+// the client, uncaught by anything between here and the transport.
+function ListAuthors(const Args: TJSONObject): TJSONObject;
+var
+  Collection: IBookCollection;
+  Iterator: IAuthorIterator;
+  Author: TAuthorData;
+  Arr: TJSONArray;
+  Entry: TJSONObject;
+  Filter: string;
+  FullName: string;
+  Limit, Taken: Integer;
+  Clamped: Boolean;
+begin
+  Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
+  Filter := ArgStr(Args, 'filter').ToLower;
+  Limit := ArgIntClamped(Args, 'limit', 100, 1, 500, Clamped);
+
+  Arr := TJSONArray.Create;
+  try
+    Taken := 0;
+    Iterator := Collection.GetAuthorIterator(amAll, nil);
+    while Taken < Limit do
+    begin
+      if not Iterator.Next(Author) then
+        Break;
+
+      FullName := ComposeAuthorFullName(Author);
+      if (Filter <> '') and (not FullName.ToLower.Contains(Filter)) then
+        Continue;
+
+      Entry := TJSONObject.Create;
+      try
+        Entry.AddPair('author_id', TJSONNumber.Create(Author.AuthorID));
+        Entry.AddPair('full_name', FullName);
+        Entry.AddPair('last_name', Author.LastName);
+      except
+        Entry.Free;
+        raise;
+      end;
+      Arr.AddElement(Entry);
+      Inc(Taken);
+    end;
+  except
+    Arr.Free;
+    raise;
+  end;
+
+  Result := TJSONObject.Create;
+  Result.AddPair('authors', Arr);
+  if Clamped then
+    Result.AddPair('clamped', TJSONBool.Create(True));
+end;
+
 procedure RegisterLibraryTools(Server: TMcpServer);
 begin
   Server.RegisterTool(
@@ -449,6 +628,37 @@ begin
       '"offset":{"type":"integer"}},' +
       '"required":["collection_id"]}') as TJSONObject,
     Guarded(SearchBooks));
+
+  Server.RegisterTool(
+    'list_genres',
+    'Дерево жанрів колекції. Коди жанрів потрібні для search_books.',
+    TJSONObject.ParseJSONValue(
+      '{"type":"object","properties":{' +
+      '"collection_id":{"type":"integer"}},' +
+      '"required":["collection_id"]}') as TJSONObject,
+    Guarded(ListGenres));
+
+  Server.RegisterTool(
+    'list_series',
+    'Перелік серій у колекції.',
+    TJSONObject.ParseJSONValue(
+      '{"type":"object","properties":{' +
+      '"collection_id":{"type":"integer"},' +
+      '"filter":{"type":"string","description":"Підрядок назви серії"},' +
+      '"limit":{"type":"integer","description":"Типово 100, максимум 500"}},' +
+      '"required":["collection_id"]}') as TJSONObject,
+    Guarded(ListSeries));
+
+  Server.RegisterTool(
+    'list_authors',
+    'Перелік авторів у колекції.',
+    TJSONObject.ParseJSONValue(
+      '{"type":"object","properties":{' +
+      '"collection_id":{"type":"integer"},' +
+      '"filter":{"type":"string","description":"Підрядок імені автора"},' +
+      '"limit":{"type":"integer","description":"Типово 100, максимум 500"}},' +
+      '"required":["collection_id"]}') as TJSONObject,
+    Guarded(ListAuthors));
 end;
 
 end.

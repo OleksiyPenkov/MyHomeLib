@@ -1,0 +1,5 @@
+> {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"test","version":"1"}}}
+< {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":"myhomelib","version":"1.0.0"}}}
+> {"jsonrpc":"2.0","method":"notifications/initialized"}
+> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_authors","arguments":{"collection_id":1,"filter":"Аббасзаде","limit":5000}}}
+< {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"authors\":[{\"author_id\":1,\"full_name\":\"\\u0410\\u0431\\u0431\\u0430\\u0441\\u0437\\u0430\\u0434\\u0435 \\u0413\\u0443\\u0441\\u0435\\u0439\\u043D\",\"last_name\":\"\\u0410\\u0431\\u0431\\u0430\\u0441\\u0437\\u0430\\u0434\\u0435\"}],\"clamped\":true}"}]}}
