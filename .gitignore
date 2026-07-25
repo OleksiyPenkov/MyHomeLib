@@ -8,3 +8,4 @@ __history
 /Installer/x86
 /Installer/x64
 .superpowers/
+.claude/
