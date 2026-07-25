@@ -780,6 +780,8 @@ type
     procedure SetColors;
     procedure CreateAlphabetToolbar;
 
+    procedure RefreshBookInfo(const Tree: TBookTree);
+    procedure RefreshActiveBookInfo;
     function FrameControl(AControl: TWinControl): Boolean;
     procedure FrameTree(ATree: TVirtualStringTree); overload;
     procedure FrameTree(ATree: TBookTree); overload;
@@ -928,8 +930,6 @@ type
     procedure FillAllBooksTree;
     function CheckLibUpdates(Auto: Boolean): Boolean;
     procedure SetInfoPanelHeight(Height: Integer);
-    procedure FixInfoSplitter(ASplitter: TMHLSplitter; APanel: TInfoPanel);
-    procedure FixInfoSplitters;
     procedure SetInfoPanelVisible(State: Boolean);
     procedure SetShowBookCover(State: Boolean);
     procedure SetShowBookAnnotation(State: Boolean);
@@ -1788,6 +1788,9 @@ begin
     FInvisible := False;
     FindLastBook(FCollection.GetProperty(PROP_LAST_AUTHOR_BOOK), tvBooksA);
     FindLastBook(FCollection.GetProperty(PROP_LAST_SERIES_BOOK), tvBooksS);
+
+    // Every tree above was filled while FInvisible suppressed the handler.
+    RefreshActiveBookInfo;
 
   finally
     Screen.Cursor := SavedCursor;
@@ -2885,8 +2888,6 @@ begin
   SetFormState;
 
   UpdateSplashScreen(rstrStarting);
-
-  FixInfoSplitters;
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -4184,24 +4185,6 @@ begin
   end;
 end;
 
-procedure TfrmMain.FixInfoSplitter(ASplitter: TMHLSplitter; APanel: TInfoPanel);
-begin
-  // Repairs the order if it has already flipped: putting the splitter back
-  // above the panel makes its bottom edge the smaller one again, which is what
-  // the alBottom sort keys off.
-  if ASplitter.Visible and APanel.Visible and (ASplitter.Top > APanel.Top) then
-    ASplitter.Top := APanel.Top - APanel.Margins.Top - ASplitter.Height;
-end;
-
-procedure TfrmMain.FixInfoSplitters;
-begin
-  FixInfoSplitter(AuthorBookInfoSplitter, ipnlAuthors);
-  FixInfoSplitter(SerieBookInfoSplitter, ipnlSeries);
-  FixInfoSplitter(GenreBookInfoSplitter, ipnlGenres);
-  FixInfoSplitter(SearchBookInfoSplitter, ipnlSearch);
-  FixInfoSplitter(GroupBookInfoSplitter, ipnlFavorites);
-end;
-
 procedure TfrmMain.SetInfoPanelVisible(State: Boolean);
 begin
   ipnlAuthors.Visible := State;
@@ -4262,6 +4245,26 @@ begin
     Tree.FullCollapse(nil)
   else
     Tree.FullExpand(nil);
+end;
+
+//
+// Fills the info panel from whatever book the tree has focused. Only for the
+// view on screen: the handler parses the book's FB2 for the cover and the
+// annotation, which is not worth doing for four hidden tabs on startup.
+//
+procedure TfrmMain.RefreshBookInfo(const Tree: TBookTree);
+begin
+  if FInvisible or not Assigned(Tree) or not Assigned(Tree.FocusedNode) then
+    Exit;
+
+  if (ActiveView <> DownloadView) and (Tree = GetViewTree(ActiveView)) then
+    tvBooksTreeChange(Tree, Tree.FocusedNode);
+end;
+
+procedure TfrmMain.RefreshActiveBookInfo;
+begin
+  if ActiveView <> DownloadView then
+    RefreshBookInfo(GetViewTree(ActiveView));
 end;
 
 function TfrmMain.GetViewTree(view: TView): TBookTree;
@@ -4567,6 +4570,11 @@ begin
       3: lblTotalBooksFL.Caption := Format('(%d)', [i]);
       4: lblBooksTotalF.Caption := Format('(%d)', [i]);
     end;
+
+    // The book above was focused inside BeginUpdate/EndUpdate, where the tree
+    // swallows OnChange - so the info panel would keep showing nothing until
+    // the user clicked a book.
+    RefreshBookInfo(Tree);
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -6739,7 +6747,9 @@ begin
 
   SetHeaderPopUp;
 
-  /// tvBooksTreeChange(nil, nil);
+  // The tab being shown was filled while another one was active, so its panel
+  // has never been filled for the book it has focused.
+  RefreshActiveBookInfo;
 
   ///btnSwitchTreeMode.ImageIndex := TreeIcons[ord(Settings.TreeModes[pgControl.ActivePageIndex])];
   ///btnSwitchTreeMode.Hint := TreeHints[ord(Settings.TreeModes[pgControl.ActivePageIndex])];

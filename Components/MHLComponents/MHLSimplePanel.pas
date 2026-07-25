@@ -19,13 +19,17 @@ unit MHLSimplePanel;
 interface
 
 uses
-  Winapi.Windows, System.Types, SysUtils, Classes, Controls, ExtCtrls, Graphics;
+  Winapi.Windows, System.Types, SysUtils, Classes, Controls, ExtCtrls, Graphics,
+  MHLSplitter;
 
 type
   TMHLSimplePanel = class(TCustomPanel)
   private
     FFramedControl: TControl;
+    FEnforcingOrder: Boolean;
+
     procedure SetFramedControl(const Value: TControl);
+    procedure EnforceSplitterOrder;
   protected
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -148,9 +152,80 @@ begin
     FFramedControl := nil;
 end;
 
+//
+// Keeps every splitter on the correct side of the control it resizes.
+//
+// The VCL orders same-aligned siblings by their trailing edge (for alBottom:
+// Top + Height, bottom-most first) and places them in that order. Nothing keeps
+// a splitter's edge on the right side of its ResizeControl, so any operation
+// that moves their bounds out of step - a drag, which sets Top and Height with
+// alignment disabled, or a height assignment from an OnResize handler - can
+// swap the two. The state is self-perpetuating: once the splitter sorts last it
+// is parked at the far edge of the panel, below the control it is supposed to
+// resize, and stays there. Re-asserting the order here means every realign
+// starts from a sane state instead of the layout depending on the order the
+// bounds happened to change in.
+//
+procedure TMHLSimplePanel.EnforceSplitterOrder;
+var
+  I: Integer;
+  Splitter: TMHLSplitter;
+  Target: TControl;
+begin
+  for I := 0 to ControlCount - 1 do
+  begin
+    if not (Controls[I] is TMHLSplitter) then
+      Continue;
+
+    Splitter := TMHLSplitter(Controls[I]);
+    Target := Splitter.ResizeControl;
+
+    if (Target = nil) or (Target.Parent <> Self) or not Target.Visible or
+       not Splitter.Visible or (Target.Align <> Splitter.Align) then
+      Continue;
+
+    // Only the ordering matters - the align pass right after this computes the
+    // exact position, so it is enough to put the splitter clear of the target.
+    case Splitter.Align of
+      alBottom:
+        if Splitter.Margins.ControlTop + Splitter.Margins.ControlHeight >=
+           Target.Margins.ControlTop + Target.Margins.ControlHeight then
+          Splitter.Top := Target.Margins.ControlTop - Splitter.Margins.ControlHeight +
+            (Splitter.Top - Splitter.Margins.ControlTop);
+
+      alTop:
+        if Splitter.Margins.ControlTop <= Target.Margins.ControlTop then
+          Splitter.Top := Target.Margins.ControlTop + Target.Margins.ControlHeight +
+            (Splitter.Top - Splitter.Margins.ControlTop);
+
+      alRight:
+        if Splitter.Margins.ControlLeft + Splitter.Margins.ControlWidth >=
+           Target.Margins.ControlLeft + Target.Margins.ControlWidth then
+          Splitter.Left := Target.Margins.ControlLeft - Splitter.Margins.ControlWidth +
+            (Splitter.Left - Splitter.Margins.ControlLeft);
+
+      alLeft:
+        if Splitter.Margins.ControlLeft <= Target.Margins.ControlLeft then
+          Splitter.Left := Target.Margins.ControlLeft + Target.Margins.ControlWidth +
+            (Splitter.Left - Splitter.Margins.ControlLeft);
+    end;
+  end;
+end;
+
 procedure TMHLSimplePanel.AlignControls(AControl: TControl; var Rect: TRect);
 begin
+  if not FEnforcingOrder then
+  begin
+    FEnforcingOrder := True;
+    try
+      EnforceSplitterOrder;
+    finally
+      FEnforcingOrder := False;
+    end;
+  end;
+
   inherited;
+
   // The child moves whenever the panel is realigned - a splitter drag resizes
   // it without resizing the panel - so the old frame has to be repainted.
   if Assigned(FFramedControl) then
