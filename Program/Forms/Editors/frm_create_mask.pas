@@ -131,7 +131,6 @@ const
 function TfrmCreateMask.GetTestData: TBookRecord;
 var
   R: TBookRecord;
-  code: Integer;
 begin
   CurrentSelectedAuthor := '';
   if CheckBox2.Checked then

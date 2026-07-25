@@ -353,7 +353,6 @@ end;
 
 function TfrmAddnonfb2.CheckEmptyFields(Data: PFileData): Boolean;
 begin
-  Result := False;
   try
     if not Assigned(Data) then
       raise EInvalidOp.Create(rstrFileNotSelected);
@@ -662,7 +661,7 @@ begin
   Data^.FullPath := flFiles.LastDir;
   Data^.Folder := Path;
   Data^.Ext := Ext;
-  Data^.Date := F.Time;
+  Data^.Date := F.TimeStamp;
   Include(CurrentNode.States, vsInitialized);
 end;
 
@@ -703,7 +702,6 @@ begin
         end
         else
           A := B;
-        B := Tree.GetNext(B);
       end;
     end;
 

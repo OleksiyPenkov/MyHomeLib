@@ -867,7 +867,7 @@ begin
 
   for ch in EditControl.Text do
   begin
-    if IsNumber(ch) then
+    if ch.IsNumber then
       strValue := strValue + ch;
   end;
   nValue := StrToIntDef(strValue, 0);

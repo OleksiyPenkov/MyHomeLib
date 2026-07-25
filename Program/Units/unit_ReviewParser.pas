@@ -71,7 +71,7 @@ var
   idxEndAllBookReviews: Integer;
   name: string;
   review: string;
-  BEG_PREFIX, BLOCK_PREFIX, BLOCK_END, END_ALL, ANNOTATION_START, ANNOTATION_END: string;
+  BLOCK_PREFIX, BLOCK_END, END_ALL, ANNOTATION_START, ANNOTATION_END: string;
 
 //  SL: TStringList;
 begin
@@ -91,11 +91,9 @@ begin
     ANNOTATION_START := '<h2>Аннотация</h2>';
     ANNOTATION_END := '<h3>';
 
-    BEG_PREFIX := 'Впечатления';
     BLOCK_PREFIX := '/polka/show/';
     BLOCK_END := '<hr>';
     END_ALL := '/stat/r/';
-    idxReviewBlockStart := Pos(BEG_PREFIX, page);
   end
   else begin
     ANNOTATION_START := '<h2>Аннотация</h2>';
@@ -175,7 +173,9 @@ begin
       responseList.LoadFromStream(outputStream);
 
       if responseList.Count > 0 then
-        Result := UTF8Decode(responseList.Text);
+        // Сторінка приходить у UTF-8, але завантажується у список як ANSI,
+        // тож повертаємо байти назад і декодуємо їх явно.
+        Result := UTF8ToString(RawByteString(AnsiString(responseList.Text)));
     finally
       outputStream.Free;
     end;

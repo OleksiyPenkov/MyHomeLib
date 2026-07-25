@@ -128,7 +128,8 @@ begin
     enUTF8: Result := TEncoding.UTF8;
     en1251: Result := TEncoding.ANSI;
     enUnicode: Result := TEncoding.Unicode;
-    enUnknown: Result := TEncoding.ASCII;
+  else
+    Result := TEncoding.ASCII;
   end;
 end;
 
@@ -136,10 +137,11 @@ function TFb2ToText.GetEncoding(const S: string):TEncoding;
 begin
   if Pos('windows-1251', AnsiLowerCase(S)) <> 0 then
     Result := TEncoding.ANSI
-  else if Pos('utf-8', AnsiLowerCase(S)) <> 0 then
-    Result := TEncoding.UTF8
   else if Pos('unicode', AnsiLowerCase(S)) <> 0 then
-    Result := TEncoding.Unicode;
+    Result := TEncoding.Unicode
+  else
+    // utf-8 або невідоме кодування: за замовчуванням XML вважається UTF-8
+    Result := TEncoding.UTF8;
 end;
 
 function TFb2ToText.ProceedString(const FS: string; const TagStart: string; const TagEnd: string): string;

@@ -584,7 +584,6 @@ var
   SourceFile: TFileStream;
   DestFile: TFileStream;
 begin
-  Result := False;
   SourceFile := TFileStream.Create(SourceFileName, fmOpenRead or fmShareDenyNone);
   try
     DestFile := TFileStream.Create(DestFileName, fmCreate or fmShareDenyRead);

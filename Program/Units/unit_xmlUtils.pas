@@ -117,7 +117,7 @@ end;
 
 class function TMSXMLHelper.newDocument: IXMLDOMDocument;
 begin
-  Result := msxmldom.CreateDOMDocument;
+  Result := msxmldom.MSXMLDOMDocumentFactory.CreateDOMDocument;
   Result.async := False;
 end;
 

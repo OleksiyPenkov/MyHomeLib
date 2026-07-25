@@ -3997,9 +3997,10 @@ begin
   if Filter = '' then
     Exit;
 
-  RealFilter := Character.ToUpper(Copy(Filter, 1, 1));
+  RealFilter := Char.ToUpper(Copy(Filter, 1, 1));
 
-  if not Character.IsLetter(RealFilter, 1) then
+  // Увага: індекс у TCharHelper відлічується від нуля, на відміну від рядків Delphi
+  if not Char.IsLetter(RealFilter, 0) then
     RealFilter := ALPHA_FILTER_ALL; //ALPHA_FILTER_NON_ALPHA;
 
   for barIndex := 0 to High(ToolBars) do
@@ -4027,7 +4028,7 @@ begin
   FLastLetterA := Button;
   FLastLetterA.Down := True;
 
-  Result := Character.ToUpper(Button.Caption);
+  Result := Char.ToUpper(Button.Caption);
 
   FCollection.SetAuthorFilterType(Result);
 
@@ -4079,7 +4080,7 @@ begin
   FLastLetterS := Button;
   FLastLetterS.Down := True;
 
-  Result := Character.ToUpper(Button.Caption);
+  Result := Char.ToUpper(Button.Caption);
 
   FCollection.SetSeriesFilterType(Result);
 

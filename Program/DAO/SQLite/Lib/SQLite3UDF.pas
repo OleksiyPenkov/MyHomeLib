@@ -57,7 +57,7 @@ var
   s: string;
 begin
   s := SQLite3_Value_text16(Args^);
-  SQLite3_Result_Text16(pCtx, PWideChar(TCharacter.ToUpper(s)), -1, SQLITE_TRANSIENT);
+  SQLite3_Result_Text16(pCtx, PWideChar(Char.ToUpper(s)), -1, SQLITE_TRANSIENT);
 end;
 
 procedure SystemLowerString(pCtx: TSQLite3Context; nArgs: Integer; Args: TSQLite3Value); cdecl;
@@ -65,7 +65,7 @@ var
   s: string;
 begin
   s := SQLite3_Value_text16(Args^);
-  SQLite3_Result_Text16(pCtx, PWideChar(TCharacter.ToLower(s)), -1, SQLITE_TRANSIENT);
+  SQLite3_Result_Text16(pCtx, PWideChar(Char.ToLower(s)), -1, SQLITE_TRANSIENT);
 end;
 
 end.

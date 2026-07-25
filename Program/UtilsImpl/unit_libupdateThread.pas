@@ -348,7 +348,6 @@ function TManualUpdateThread.IsValidUpdateArchive: Boolean;
 var
   Zip: TMHLZip;
 begin
-  Result := False;
   try
     Zip := TMHLZip.Create(FFileName, True);
     try

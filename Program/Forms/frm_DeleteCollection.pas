@@ -82,7 +82,7 @@ var
 begin
   Result := dcaCancel;
 
-  if (Win32MajorVersion >= 6) and UseLatestCommonDialogs and ThemeServices.ThemesEnabled then
+  if (Win32MajorVersion >= 6) and UseLatestCommonDialogs and StyleServices.Enabled then
   begin
     vistaDlg := TTaskDialog.Create(Application);
     try

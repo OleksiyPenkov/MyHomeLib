@@ -55,9 +55,7 @@ type
     procedure ShowState(const State: string);
     procedure ShowProgress(Position: Integer);
     procedure ShowCurrentItem;
-    procedure ResetState;
     procedure SetQueueControlsEnabled(Enabled: Boolean);
-    procedure SetDownloadRunning(Running: Boolean);
     function AskIgnoreErrors: Integer;
 
     //
@@ -200,33 +198,12 @@ begin
   );
 end;
 
-procedure TDownloadManagerThread.ResetState;
-begin
-  Synchronize(
-    procedure
-    begin
-      FView.ResetDownloadState;
-      FView.SetDownloadRunning(False);
-    end
-  );
-end;
-
 procedure TDownloadManagerThread.SetQueueControlsEnabled(Enabled: Boolean);
 begin
   Synchronize(
     procedure
     begin
       FView.SetQueueControlsEnabled(Enabled);
-    end
-  );
-end;
-
-procedure TDownloadManagerThread.SetDownloadRunning(Running: Boolean);
-begin
-  Synchronize(
-    procedure
-    begin
-      FView.SetDownloadRunning(Running);
     end
   );
 end;

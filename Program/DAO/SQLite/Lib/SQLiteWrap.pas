@@ -552,6 +552,7 @@ function TSQLiteQuery.GetParamIndex(const ParamName: string): Integer;
 var
   i: Integer;
 begin
+  Result := -1;
   i := SQLite3_bind_parameter_index(FStmt, PUTF8Char(UTF8String(ParamName)));
   if i > 0 then
     Result := i - 1
@@ -835,11 +836,10 @@ end;
 
 initialization
   SQLite3_Initialize;
-  {$IFDEF  WIN32}
-    GetLocaleFormatSettings(LOCALE_SYSTEM_DEFAULT, SQLite_FormatSettings);
-  {$ELSE}
-    GetLocaleFormatSettings($0800, SQLite_FormatSettings);
-  {$ENDIF}
+  // $0800 = LOCALE_SYSTEM_DEFAULT; Winapi.Windows не підключений у Win64-гілці uses
+  {$WARN SYMBOL_PLATFORM OFF}
+  SQLite_FormatSettings := TFormatSettings.Create($0800);
+  {$WARN SYMBOL_PLATFORM DEFAULT}
 
   SQLite_FormatSettings.ShortDateFormat := DATE_FORMAT;
   SQLite_FormatSettings.LongDateFormat := DATE_FORMAT;

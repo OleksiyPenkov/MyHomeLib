@@ -30,7 +30,7 @@ type
 
     procedure WorkFunction; override;
     procedure ProcessFileList; override;
-    procedure ProcessFileListArchive; override;
+    procedure ProcessFileListArchive;
     procedure SortFilesZip(var R: TBookRecord);
   public
     constructor Create(const CollectionID: Integer;  const ArchiveFormat: TArchiveFormat);
@@ -236,7 +236,7 @@ end;
 
 procedure TImportFB2Thread.SortFilesZip(var R: TBookRecord);
 var
-  FileName, NewFileName, NewFolder, ext: string;
+  FileName, NewFileName, NewFolder: string;
   archiveFileName: string;
   archiver: TMHLZip;
 begin

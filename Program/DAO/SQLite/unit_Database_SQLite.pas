@@ -242,7 +242,6 @@ type
 
     procedure InternalLoadGenres;
     procedure InternalUpdateField(const BookID: Integer; const UpdateSQL: string; const NewValue: string);
-    procedure GetAuthor(AuthorID: Integer; var Author: TAuthorData);
     function GetSeriesTitle(SeriesID: Integer): string;
     function InsertAuthorIfMissing(const Author: TAuthorData): Integer;
     function IsFileNameConflict(const BookRecord: TBookRecord; const IncludeFolder: Boolean): Boolean;
@@ -775,7 +774,8 @@ begin
         else if (FCollection.GetAuthorFilterType <> '') and (FCollection.GetAuthorFilterType <> ALPHA_FILTER_ALL) then
         begin
           Assert(Length(FCollection.GetAuthorFilterType) = 1);
-          Assert(TCharacter.IsUpper(FCollection.GetAuthorFilterType, 1));
+          // Увага: індекс у TCharHelper відлічується від нуля
+          Assert(Char.IsUpper(FCollection.GetAuthorFilterType, 0));
           AddToWhere(Where,
             'a.SearchName LIKE :FilterType'
           );
@@ -1011,7 +1011,8 @@ begin
         else if FCollection.GetSeriesFilterType <> ALPHA_FILTER_ALL then
         begin
           Assert(Length(FCollection.GetSeriesFilterType) = 1);
-          Assert(TCharacter.IsUpper(FCollection.GetSeriesFilterType, 1));
+          // Увага: індекс у TCharHelper відлічується від нуля
+          Assert(Char.IsUpper(FCollection.GetSeriesFilterType, 0));
           // TODO -cSQL performance: не оптимизируется при использовании выражения
           AddToWhere(Where,
             's.SearchSeriesTitle LIKE :FilterType'   // начинается на заданную букву
@@ -1070,7 +1071,7 @@ procedure fullAuthorNameEx(pCtx: TSQLite3Context; nArgs: Integer; Args: TSQLite3
 var
   FullName: string;
 begin
-  FullName := TCharacter.ToUpper(CreateFullAuthorName(pCtx, nArgs, Args));
+  FullName := Char.ToUpper(CreateFullAuthorName(pCtx, nArgs, Args));
   SQLite3_Result_Text16(pCtx, PWideChar(FullName), -1, SQLITE_TRANSIENT);
 end;
 
@@ -1528,31 +1529,6 @@ begin
   else
     Result := FSystemData.GetAnnotation(BookKey);
 
-end;
-
-procedure TBookCollection_SQLite.GetAuthor(AuthorID: Integer; var Author: TAuthorData);
-const
-  SQL = 'SELECT LastName, FirstName, MiddleName FROM Authors WHERE AuthorID = ?';
-var
-  query: TSQLiteQuery;
-begin
-  query := FDatabase.NewQuery(SQL);
-  try
-    query.SetParam(0, AuthorID);
-    query.Open;
-
-    if not query.Eof then
-    begin
-      Author.AuthorID := AuthorID;
-      Author.LastName := query.FieldAsString(0);
-      Author.FirstName := query.FieldAsString(1);
-      Author.MiddleName := query.FieldAsString(2);
-    end
-    else
-      Author.Clear;
-  finally
-    FreeAndNil(query);
-  end;
 end;
 
 // Insert an Author if the name combination doesn't exist
@@ -2147,7 +2123,7 @@ var
   query: TSQLiteQuery;
 begin
   if BookKey.DatabaseID <> CollectionID then
-    NewCode := FSystemData.GetCollection(BookKey.DatabaseID).SetReview(BookKey, Review)
+    Result := FSystemData.GetCollection(BookKey.DatabaseID).SetReview(BookKey, Review)
   else
   begin
     NewReview := Trim(Review);
@@ -2422,7 +2398,6 @@ var
   TableName: string;
   StringList: TStringList;
   StructureDDL: string;
-  BookCollection: IBookCollection;
 
 begin
   for TableName in TABLE_NAMES do

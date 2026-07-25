@@ -220,7 +220,7 @@ end;
 
 class function TArrayUtils.Join<T>(const Values: array of T; const itemDelimeter: string; const Converter: TConversion<T>): string;
 var
-  i, L, R: Integer;
+  L, R: Integer;
 begin
   if Length(Values) = 0 then
     Exit;

@@ -174,7 +174,6 @@ var
   FTargetFileName: string;
   FTargetFullFilePath: string;
   FTempFileName: string;
-  Stream: TStream;
 begin
   Result := False;
   try
@@ -344,7 +343,6 @@ function StreamToFile(const AFileName: string; AStream: TStream): boolean;
 var
   FileStream: TFileStream;
 begin
-  Result := False;
   FileStream := TFileStream.Create(AFileName, fmCreate);
   try
     AStream.Seek(0, soFromBeginning);
