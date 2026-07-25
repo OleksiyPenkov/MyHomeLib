@@ -20,6 +20,13 @@ uses
 //
 // Note: unlike MyHomeLib.dpr, this does NOT call FirstHinstanceRunning —
 // several server instances may run alongside the running app.
+//
+// DMUser is deliberately NOT created here. unit_MCP_Tools_Library boots it
+// lazily, on the first tool call, via EnsureLibraryInitialized -- so a
+// missing system database surfaces as a normal tool error (system_db_missing)
+// instead of TDMUser.Init silently creating a brand-new one. That is also why
+// every tool registration below is wrapped in Guarded(...): it is the one
+// path by which DMUser gets initialized.
 
 var
   Server: TMcpServer;
@@ -27,14 +34,14 @@ var
 begin
   Application.Initialize;
 
-  DMUser := TDMUser.Create(nil);
+  Server := TMcpServer.Create;
   try
-    DMUser.Init;
-
-    Server := TMcpServer.Create;
-    try
-      // echo_args is a temporary diagnostic tool from Task 3, removed in Task 10.
-      Server.RegisterTool('echo_args', 'Test helper', TJSONObject.Create,
+    // echo_args is a temporary diagnostic tool from Task 3, removed in
+    // Task 10. It never touches DMUser itself, but it is still wrapped in
+    // Guarded(...) so "every registration is wrapped" stays mechanically
+    // true rather than merely true by convention.
+    Server.RegisterTool('echo_args', 'Test helper', TJSONObject.Create,
+      Guarded(
         function(const Args: TJSONObject): TJSONObject
         var
           Limit: Integer;
@@ -44,14 +51,13 @@ begin
           Result := TJSONObject.Create;
           Result.AddPair('limit', TJSONNumber.Create(Limit));
           Result.AddPair('clamped', TJSONBool.Create(Clamped));
-        end);
+        end));
 
-      RegisterLibraryTools(Server);
-      Server.Run;
-    finally
-      Server.Free;
-    end;
+    RegisterLibraryTools(Server);
+    Server.Run;
   finally
-    DMUser.Free;
+    Server.Free;
+    if Assigned(DMUser) then
+      FreeAndNil(DMUser);
   end;
 end.

@@ -21,22 +21,37 @@ Add to your client's `.mcp.json` (paths below assume the Win64 build; swap in
 }
 ```
 
-The server takes no arguments and no environment configuration. It boots
-`DMUser`, opens the same system database the installed app uses, and serves
-JSON-RPC requests over stdin/stdout until stdin closes.
+The server takes no arguments and no environment configuration. `DMUser` is
+booted lazily, on the first tool call, against the same system database the
+installed app uses, and the server serves JSON-RPC requests over
+stdin/stdout until stdin closes.
 
-`sqlite3.dll` (matching the build's bitness) must sit next to the exe or
-otherwise be resolvable by the loader — it is not produced by the group
-project build and is only staged by the Inno Setup installer. When running
-from a raw `Program\OUT\...` build output (rather than an installed copy),
-copy `sqlite3.dll` there manually before invoking the server.
+`sqlite3.dll` (matching the build's bitness) must be resolvable next to the
+exe **at process launch**, not just when a tool queries the database. The
+DAO layer imports it via plain `external 'sqlite3.dll' name '...'`
+declarations (`Program\DAO\SQLite\Lib\SQLite3.pas`), which the Windows loader
+resolves before any Pascal code runs — confirmed by inspecting the built
+exe's PE import table, where `sqlite3.dll` sits in the ordinary
+load-time Import Directory, not in the Delay Import Descriptor table VCL
+uses for a handful of its own optional dependencies. Without it, the process
+fails to start at all (`STATUS_DLL_NOT_FOUND`), before it ever reads stdin.
+This DLL is not produced by the group project build and is only staged by
+the Inno Setup installer. When running from a raw `Program\OUT\...` build
+output (rather than an installed copy), copy `sqlite3.dll` there manually
+before invoking the server.
 
 ## Read-only guarantee
 
-The server never issues an SQL write. Every registered tool wraps its handler
-in `Guarded(...)`, which turns SQLite lock contention (the running app writing
-while the server is querying) into the domain error `collection_busy` instead
-of an opaque internal failure.
+The server never issues an SQL write, including at startup. `DMUser` is only
+initialized lazily, on first tool use, and only after confirming the system
+database file already exists — if it does not, the tool call fails with
+`system_db_missing` naming the path it looked for, rather than falling
+through to `TDMUser.Init`'s behavior of creating a brand-new system database
+(DDL plus two `INSERT`s) when the file is absent. Every registered tool wraps
+its handler in `Guarded(...)`, which is both what triggers this lazy
+initialization and what turns SQLite lock contention (the running app
+writing while the server is querying) into the domain error
+`collection_busy` instead of an opaque internal failure.
 
 ## Manual verification checklist
 
@@ -62,6 +77,17 @@ node Utils/MHLMcpServer/tests/run_tests.js Program/OUT/Bin64/MHLMcpServer.exe
 ```
 
 These cover the JSON-RPC envelope, the MCP handshake and the JSON argument
-helpers. They do not touch `DMUser` or real collection data — `list_collections`
-and later data-reading tools are covered by the manual checklist above because
-they require a real system database to be meaningful.
+helpers. Six of the eight cases (`01_ping`, `02_initialize`,
+`03_unknown_method`, `04_unknown_tool`, `05_non_object_line`,
+`06_non_object_params`, `07_non_object_arguments` — everything that never
+reaches a tool handler) never touch `DMUser` or the real system database.
+`05_clamping.jsonl` calls the diagnostic `echo_args` tool, and every
+registered tool — `echo_args` included — is wrapped in `Guarded(...)`, which
+is what lazily boots `DMUser`; so that one case does depend on a real system
+database existing on the machine running the tests, the same as
+`list_collections` does. **All eight cases still require `sqlite3.dll` to be
+resolvable next to the exe**, regardless of which tool (if any) is called —
+see the load-time dependency note above — since the process cannot start at
+all without it. `list_collections` and later data-reading tools are covered
+by the manual checklist above because they need a real, populated collection
+list to be meaningful, not just any system database.
