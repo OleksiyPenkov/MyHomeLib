@@ -99,7 +99,7 @@ object frmAddnonfb2: TfrmAddnonfb2
         Width = 732
         Height = 85
         Align = alBottom
-        Caption = #1054#1087#1094#1080#1080
+        Caption = #1055#1072#1088#1072#1084#1077#1090#1088#1080
         TabOrder = 1
         object Label1: TLabel
           Left = 219
@@ -150,7 +150,7 @@ object frmAddnonfb2: TfrmAddnonfb2
           Top = 16
           Width = 135
           Height = 18
-          Caption = #1050#1086#1085#1074#1077#1088#1090#1091#1074#1072#1090#1080' '#1091' FB'
+          Caption = #1050#1086#1085#1074#1077#1088#1090#1091#1074#1072#1090#1080' '#1091' FBD'
           Checked = True
           State = cbChecked
           TabOrder = 4
@@ -367,7 +367,7 @@ object frmAddnonfb2: TfrmAddnonfb2
         Top = 99
         Width = 174
         Height = 245
-        Caption = #1054#1073#1083#1086#1078#1082#1072
+        Caption = #1054#1073#1082#1083#1072#1076#1080#1085#1082#1072
         TabOrder = 2
         DesignSize = (
           174
@@ -378,7 +378,7 @@ object frmAddnonfb2: TfrmAddnonfb2
           Top = 18
           Width = 164
           Height = 187
-          Hint = #1054#1073#1083#1086#1078#1082#1072
+          Hint = #1054#1073#1082#1083#1072#1076#1080#1085#1082#1072
           Align = alTop
           Center = True
           ParentShowHint = False
@@ -391,7 +391,7 @@ object frmAddnonfb2: TfrmAddnonfb2
           Top = 214
           Width = 79
           Height = 26
-          Hint = #1042#1089#1090#1072#1074#1080#1090#1100' '#1080#1079' '#1073#1091#1092#1077#1088#1072
+          Hint = #1042#1089#1090#1072#1074#1080#1090#1080' '#1079' '#1073#1091#1092#1077#1088#1072
           Anchors = [akLeft, akBottom]
           Caption = #1047' '#1073#1091#1092#1077#1088#1072
           ImageIndex = 0
@@ -405,7 +405,7 @@ object frmAddnonfb2: TfrmAddnonfb2
           Top = 214
           Width = 80
           Height = 26
-          Hint = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1080#1079' '#1092#1072#1081#1083#1072
+          Hint = #1047#1072#1074#1072#1085#1090#1072#1078#1080#1090#1080' '#1079' '#1092#1072#1081#1083#1091
           Anchors = [akLeft, akBottom]
           Caption = #1047' '#1092#1072#1081#1083#1091
           ImageIndex = 1

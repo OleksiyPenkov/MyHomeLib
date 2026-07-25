@@ -62,7 +62,7 @@ object frmBookDetails: TfrmBookDetails
         Top = 3
         Width = 214
         Height = 233
-        Hint = #1054#1073#1083#1086#1078#1082#1072
+        Hint = #1054#1073#1082#1083#1072#1076#1080#1085#1082#1072
         Align = alLeft
         Center = True
         IncrementalDisplay = True
@@ -266,8 +266,8 @@ object frmBookDetails: TfrmBookDetails
     Left = 136
     Top = 120
     object acCopyValue: TAction
-      Caption = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100
-      Hint = #1050#1086#1087#1080#1088#1086#1074#1072#1090#1100' '#1079#1085#1072#1095#1077#1085#1080#1077' '#1074' '#1073#1091#1092#1092#1077#1088' '#1086#1073#1084#1077#1085#1072
+      Caption = #1050#1086#1087#1110#1102#1074#1072#1090#1080
+      Hint = #1050#1086#1087#1110#1102#1074#1072#1090#1080' '#1079#1085#1072#1095#1077#1085#1085#1103' '#1074' '#1073#1091#1092#1077#1088' '#1086#1073#1084#1110#1085#1091
       ShortCut = 16451
       OnExecute = acCopyValueExecute
       OnUpdate = acCopyValueUpdate

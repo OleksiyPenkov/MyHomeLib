@@ -157,7 +157,7 @@ object frmConvertToFBD: TfrmConvertToFBD
         Top = 18
         Width = 188
         Height = 312
-        Hint = #1054#1073#1083#1086#1078#1082#1072
+        Hint = #1054#1073#1082#1083#1072#1076#1080#1085#1082#1072
         Align = alTop
         Center = True
         ParentShowHint = False
@@ -170,7 +170,7 @@ object frmConvertToFBD: TfrmConvertToFBD
         Top = 336
         Width = 90
         Height = 25
-        Hint = #1042#1089#1090#1072#1074#1080#1090#1100' '#1080#1079' '#1073#1091#1092#1077#1088#1072
+        Hint = #1042#1089#1090#1072#1074#1080#1090#1080' '#1079' '#1073#1091#1092#1077#1088#1072
         Caption = #1047' '#1073#1091#1092#1077#1088#1072
         ImageIndex = 0
         Images = ilButtonImages
@@ -184,7 +184,7 @@ object frmConvertToFBD: TfrmConvertToFBD
         Top = 336
         Width = 90
         Height = 25
-        Hint = #1047#1072#1075#1088#1091#1079#1080#1090#1100' '#1080#1079' '#1092#1072#1081#1083#1072
+        Hint = #1047#1072#1074#1072#1085#1090#1072#1078#1080#1090#1080' '#1079' '#1092#1072#1081#1083#1091
         Caption = #1047' '#1092#1072#1081#1083#1091
         ImageIndex = 1
         Images = ilButtonImages

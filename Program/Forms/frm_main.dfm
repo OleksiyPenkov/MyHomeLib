@@ -318,7 +318,7 @@ object frmMain: TfrmMain
             Top = 3
             Width = 23
             Height = 25
-            Hint = #1054#1095#1080#1089#1090#1080#1090#1100
+            Hint = #1054#1095#1080#1089#1090#1080#1090#1080
             Anchors = [akTop, akRight]
             Flat = True
             Glyph.Data = {
@@ -746,7 +746,7 @@ object frmMain: TfrmMain
             Top = 3
             Width = 23
             Height = 25
-            Hint = #1054#1095#1080#1089#1090#1080#1090#1100
+            Hint = #1054#1095#1080#1089#1090#1080#1090#1080
             Anchors = [akTop, akRight]
             Flat = True
             Glyph.Data = {
@@ -1550,7 +1550,7 @@ object frmMain: TfrmMain
           TabOrder = 0
           object ctpOther: TCategoryPanel
             Top = 491
-            Caption = #1056#1072#1079#1085#1086#1077
+            Caption = #1056#1110#1079#1085#1077
             TabOrder = 0
             ExplicitWidth = 185
             object Label30: TLabel
@@ -1595,12 +1595,12 @@ object frmMain: TfrmMain
               TabOrder = 0
               OnKeyDown = PresetFieldKeyDown
               Items.Strings = (
-                #1089#1077#1075#1086#1076#1085#1103
-                #1079#1072' 3 '#1076#1085#1103
-                #1079#1072' '#1085#1077#1076#1077#1083#1102
-                #1079#1072' 2 '#1085#1077#1076#1077#1083#1080
-                #1079#1072' '#1084#1077#1089#1103#1094
-                #1079#1072' 3 '#1084#1077#1089#1103#1094#1072)
+                #1089#1100#1086#1075#1086#1076#1085#1110
+                #1079#1072' 3 '#1076#1085#1110
+                #1079#1072' '#1090#1080#1078#1076#1077#1085#1100
+                #1079#1072' 2 '#1090#1080#1078#1085#1110
+                #1079#1072' '#1084#1110#1089#1103#1094#1100
+                #1079#1072' 3 '#1084#1110#1089#1103#1094#1110)
             end
             object cbLang: TComboBox
               Left = 55
@@ -1922,8 +1922,8 @@ object frmMain: TfrmMain
             Top = 2
             Width = 75
             Height = 25
-            Hint = #1054#1095#1080#1089#1090#1080#1090#1100' '#1074#1089#1077' '#1087#1086#1083#1103
-            Caption = #1054#1095#1080#1089#1090#1080#1090#1100
+            Hint = #1054#1095#1080#1089#1090#1080#1090#1080' '#1074#1089#1110' '#1087#1086#1083#1103
+            Caption = #1054#1095#1080#1089#1090#1080#1090#1080
             TabOrder = 1
             OnClick = btnClearFilterEditsClick
           end
@@ -2317,7 +2317,7 @@ object frmMain: TfrmMain
           Tag = 21
           Left = 98
           Top = 0
-          Hint = #1042#1074#1077#1088#1093
+          Hint = #1042#1075#1086#1088#1091
           Caption = 'Up'
           ImageIndex = 4
           OnClick = MoveDwnldListNodes
@@ -2347,7 +2347,7 @@ object frmMain: TfrmMain
         object BtnDelete: TRzToolButton
           Left = 196
           Top = 0
-          Hint = #1059#1076#1072#1083#1080#1090#1100
+          Hint = #1042#1080#1076#1072#1083#1080#1090#1080
           Caption = 'Delete'
           ImageIndex = 7
           OnClick = btnDeleteDownloadClick
@@ -2363,7 +2363,7 @@ object frmMain: TfrmMain
         object tbtnClear: TRzToolButton
           Left = 256
           Top = 0
-          Caption = #1054#1095#1080#1089#1090#1080#1090#1100
+          Caption = #1054#1095#1080#1089#1090#1080#1090#1080
           ImageIndex = 9
           OnClick = btnClearDownloadClick
         end
@@ -2810,7 +2810,7 @@ object frmMain: TfrmMain
     object miView: TMenuItem
       Caption = #1042#1080#1075#1083#1103#1076
       object N75: TMenuItem
-        Caption = #1055#1072#1085#1077#1083#1080
+        Caption = #1055#1072#1085#1077#1083#1110
         object miShowMainToolbar: TMenuItem
           Action = acShowMainToolbar
         end
@@ -2880,7 +2880,7 @@ object frmMain: TfrmMain
         Action = acToolsClearReadFolder
       end
       object mmiScripts: TMenuItem
-        Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1100' '#1089#1082#1088#1080#1087#1090
+        Caption = #1047#1072#1087#1091#1089#1090#1080#1090#1080' '#1089#1082#1088#1080#1087#1090
         ImageIndex = 29
       end
       object N49: TMenuItem
@@ -3836,7 +3836,7 @@ object frmMain: TfrmMain
     end
     object acShowBookAnnotation: TAction
       Category = #1042#1080#1076
-      Caption = #1055#1086#1082#1072#1079#1091#1074#1072#1090#1080' '#1072#1085#1086#1090#1072#1094'i'#1102
+      Caption = #1055#1086#1082#1072#1079#1091#1074#1072#1090#1080' '#1072#1085#1086#1090#1072#1094#1110#1102
       OnExecute = ShowBookAnnotationExecute
       OnUpdate = ShowBookAnnotationUpdate
     end
@@ -3958,7 +3958,7 @@ object frmMain: TfrmMain
     object acDeletePreset: TAction
       Category = #1055#1086#1080#1089#1082
       Caption = #1042#1080#1076#1072#1083#1080#1090#1080
-      Hint = #1059#1076#1072#1083#1080#1090#1100' '#1087#1088#1077#1089#1077#1090
+      Hint = #1042#1080#1076#1072#1083#1080#1090#1080' '#1087#1088#1077#1089#1077#1090
       OnExecute = DeleteSearchPreset
       OnUpdate = DeletePresetUpdate
     end
@@ -4203,7 +4203,7 @@ object frmMain: TfrmMain
     end
     object acCollectionRepair: TAction
       Category = #1050#1086#1083#1083#1077#1082#1094#1080#1103
-      Caption = #1042#1080#1087#1088#1072#1074#1080#1090#1080' '#1087#1086#1084#1080#1083#1082#1080
+      Caption = #1055#1077#1088#1077#1074#1110#1088#1080#1090#1080' '#1073#1072#1079#1091
       OnExecute = RepairDataBaseExecute
     end
     object acCollectionCompact: TAction

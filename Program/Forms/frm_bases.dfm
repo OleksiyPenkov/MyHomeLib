@@ -125,7 +125,7 @@ object frmBases: TfrmBases
       end
     end
     object tsConnectionInfo: TTabSheet
-      Caption = #1055#1086#1076#1082#1083#1102#1095#1077#1085#1080#1077
+      Caption = #1055#1110#1076#1082#1083#1102#1095#1077#1085#1085#1103
       object lblUser: TLabel
         Left = 10
         Top = 37

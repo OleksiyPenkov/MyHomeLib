@@ -148,7 +148,7 @@ object dlgDeleteCollection: TdlgDeleteCollection
       Height = 25
       Anchors = [akTop, akRight]
       Cancel = True
-      Caption = #1054#1090#1084#1077#1085#1072
+      Caption = #1042#1110#1076#1084#1110#1085#1072
       ModalResult = 2
       TabOrder = 1
       ExplicitLeft = 336
