@@ -12,17 +12,24 @@ MyHomeLib is a Delphi VCL desktop application for managing a home e-book library
 
 ## Build
 
-Build the full project group (components package + main app):
+Always build through the group project (components package + icon DLL + main app):
 ```
 cmd.exe //c "set BDS=C:\Program Files (x86)\Embarcadero\Studio\37.0&& set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\37.0&& C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Program\MHL.groupproj /t:Build /p:Config=Release /p:Platform=Win32 /nologo /v:minimal" 2>&1
 ```
 
-Build only the main app (when components haven't changed):
-```
-cmd.exe //c "set BDS=C:\Program Files (x86)\Embarcadero\Studio\37.0&& set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\37.0&& C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Program\MyhomeLib.dproj /t:Build /p:Config=Release /p:Platform=Win32 /nologo /v:minimal" 2>&1
-```
+Swap `/p:Platform=Win64` for the x64 build.
 
-Build output: `Program/OUT/BIN/` (executables), `Program/OUT/Units/` (DCUs).
+**Never run msbuild on `Program\MyhomeLib.dproj` directly.** It re-serialises the
+file and moves the `CodeGear.Delphi.Targets` import above the config property
+groups, after which *every* build — group build included — fails with
+`F2613 Unit 'SysUtils' not found`. Recovering means moving the two `<Import>`
+lines and the `PostBuildEvent` group back below the config groups by hand. The
+group project does not rewrite the file, so use it even when only the app
+changed.
+
+Build output: `Program/OUT/BIN/` + `Program/OUT/Bin64/` (executables),
+`Program/OUT/Units/` (DCUs). The post-build event stages the help folder and
+`Resources\Icons\<platform>\MHLIcons.dll` next to the exe.
 
 ## Architecture
 
