@@ -8,10 +8,11 @@
       <feDropShadow dx="1" dy="1.5" stdDeviation="1.2" flood-color="#0a1a2e" flood-opacity="0.3"/>
     </filter>
   </defs>
-  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <polygon points="20,7 23.5,14 31,15 25.5,20.5 27,28 20,24 13,28 14.5,20.5 9,15 16.5,14" fill="url(#body)"/>
-    <!-- Minus badge -->
-    <circle cx="31" cy="30" r="6" fill="#E05555" stroke="#19375F" stroke-width="1.2"/>
-    <line x1="28.5" y1="30" x2="33.5" y2="30" stroke="#fff" stroke-width="1.5"/>
+  <!-- Star and badge geometry is deliberately identical to add-to-favorites: the
+       same toolbar button swaps between the two, so any offset reads as a jump. -->
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="17,6 19.94,13.96 28.41,14.29 21.76,19.55 24.05,27.71 17,23 9.95,27.71 12.24,19.55 5.59,14.29 14.06,13.96" fill="url(#body)"/>
+    <circle cx="24" cy="24" r="5" fill="#E05555" stroke="#19375F" stroke-width="1.2"/>
+    <line x1="21.75" y1="24" x2="26.25" y2="24" stroke="#fff" stroke-width="1.6"/>
   </g>
 </svg>

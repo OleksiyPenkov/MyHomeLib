@@ -70,16 +70,17 @@ const
     'select-all',         // 7
     'collapse-expand',    // 8
     '',                   // 9 (unused)
-    'tree-table-mode',    // 10
-    '',                   // 11 (separator)
+    'tree-table-mode',    // 10 — btnSwitchTreeMode, table state (TreeIcons[0])
+    'tree-mode',          // 11 — btnSwitchTreeMode, tree state  (TreeIcons[1])
     'hide-deleted',       // 12
     'local-only',         // 13
     'info-panel',         // 14
     'add-to-favorites',   // 15
-    '',                   // 16 (unused)
+    'remove-from-group',  // 16 — BtnFav_add swaps to this on the Groups tab
     'settings',           // 17
     '',                   // 18 (separator)
-    '', '', '', '', '',   // 19-23 (unused)
+    '', '', '', '',       // 19-22 (unused)
+    'delete',             // 23 — tbtnDownloadList_Add swaps to this on the Downloads tab
     '', '',               // 24-25 (unused)
     'help',               // 26
     ''                    // 27 (separator)

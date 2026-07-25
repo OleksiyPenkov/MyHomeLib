@@ -15,11 +15,14 @@ const TOOLBAR_ICONS = {
   7: 'select-all',
   8: 'collapse-expand',
   10: 'tree-table-mode',
+  11: 'tree-mode',
   12: 'hide-deleted',
   13: 'local-only',
   14: 'info-panel',
   15: 'add-to-favorites',
+  16: 'remove-from-group',
   17: 'settings',
+  23: 'delete',
   26: 'help'
 };
 

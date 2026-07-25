@@ -13,11 +13,14 @@ LIGHT_TOOLBAR_COLLECTION_SELECT RCDATA "Light\png\collection-select_32.png"
 LIGHT_TOOLBAR_SELECT_ALL RCDATA "Light\png\select-all_32.png"
 LIGHT_TOOLBAR_COLLAPSE_EXPAND RCDATA "Light\png\collapse-expand_32.png"
 LIGHT_TOOLBAR_TREE_TABLE_MODE RCDATA "Light\png\tree-table-mode_32.png"
+LIGHT_TOOLBAR_TREE_MODE RCDATA "Light\png\tree-mode_32.png"
 LIGHT_TOOLBAR_HIDE_DELETED RCDATA "Light\png\hide-deleted_32.png"
 LIGHT_TOOLBAR_LOCAL_ONLY RCDATA "Light\png\local-only_32.png"
 LIGHT_TOOLBAR_INFO_PANEL RCDATA "Light\png\info-panel_32.png"
 LIGHT_TOOLBAR_ADD_TO_FAVORITES RCDATA "Light\png\add-to-favorites_32.png"
+LIGHT_TOOLBAR_REMOVE_FROM_GROUP RCDATA "Light\png\remove-from-group_32.png"
 LIGHT_TOOLBAR_SETTINGS RCDATA "Light\png\settings_32.png"
+LIGHT_TOOLBAR_DELETE RCDATA "Light\png\delete_32.png"
 LIGHT_TOOLBAR_HELP RCDATA "Light\png\help_32.png"
 
 // Menu (24px)
@@ -44,16 +47,6 @@ LIGHT_MENU_DESELECT_ALL RCDATA "Light\png\deselect-all_24.png"
 LIGHT_MENU_EXIT RCDATA "Light\png\exit_24.png"
 LIGHT_MENU_GO_TO_AUTHOR RCDATA "Light\png\go-to-author_24.png"
 
-// FileType (24px)
-LIGHT_FILETYPE_FILETYPE_FB2 RCDATA "Light\png\filetype-fb2_24.png"
-LIGHT_FILETYPE_FILETYPE_FB2ZIP RCDATA "Light\png\filetype-fb2zip_24.png"
-LIGHT_FILETYPE_FILETYPE_LRF RCDATA "Light\png\filetype-lrf_24.png"
-LIGHT_FILETYPE_FILETYPE_TXT RCDATA "Light\png\filetype-txt_24.png"
-LIGHT_FILETYPE_FILETYPE_EPUB RCDATA "Light\png\filetype-epub_24.png"
-LIGHT_FILETYPE_FILETYPE_PDF RCDATA "Light\png\filetype-pdf_24.png"
-LIGHT_FILETYPE_FILETYPE_MOBI RCDATA "Light\png\filetype-mobi_24.png"
-LIGHT_FILETYPE_SCRIPT RCDATA "Light\png\script_24.png"
-
 // Download (24px)
 LIGHT_DOWNLOAD_PLAY RCDATA "Light\png\play_24.png"
 LIGHT_DOWNLOAD_STOP RCDATA "Light\png\stop_24.png"
@@ -77,11 +70,14 @@ DARK_TOOLBAR_COLLECTION_SELECT RCDATA "Dark\png\collection-select_32.png"
 DARK_TOOLBAR_SELECT_ALL RCDATA "Dark\png\select-all_32.png"
 DARK_TOOLBAR_COLLAPSE_EXPAND RCDATA "Dark\png\collapse-expand_32.png"
 DARK_TOOLBAR_TREE_TABLE_MODE RCDATA "Dark\png\tree-table-mode_32.png"
+DARK_TOOLBAR_TREE_MODE RCDATA "Dark\png\tree-mode_32.png"
 DARK_TOOLBAR_HIDE_DELETED RCDATA "Dark\png\hide-deleted_32.png"
 DARK_TOOLBAR_LOCAL_ONLY RCDATA "Dark\png\local-only_32.png"
 DARK_TOOLBAR_INFO_PANEL RCDATA "Dark\png\info-panel_32.png"
 DARK_TOOLBAR_ADD_TO_FAVORITES RCDATA "Dark\png\add-to-favorites_32.png"
+DARK_TOOLBAR_REMOVE_FROM_GROUP RCDATA "Dark\png\remove-from-group_32.png"
 DARK_TOOLBAR_SETTINGS RCDATA "Dark\png\settings_32.png"
+DARK_TOOLBAR_DELETE RCDATA "Dark\png\delete_32.png"
 DARK_TOOLBAR_HELP RCDATA "Dark\png\help_32.png"
 
 // Menu (24px)
@@ -107,16 +103,6 @@ DARK_MENU_COPY_TO_CLIPBOARD RCDATA "Dark\png\copy-to-clipboard_24.png"
 DARK_MENU_DESELECT_ALL RCDATA "Dark\png\deselect-all_24.png"
 DARK_MENU_EXIT RCDATA "Dark\png\exit_24.png"
 DARK_MENU_GO_TO_AUTHOR RCDATA "Dark\png\go-to-author_24.png"
-
-// FileType (24px)
-DARK_FILETYPE_FILETYPE_FB2 RCDATA "Dark\png\filetype-fb2_24.png"
-DARK_FILETYPE_FILETYPE_FB2ZIP RCDATA "Dark\png\filetype-fb2zip_24.png"
-DARK_FILETYPE_FILETYPE_LRF RCDATA "Dark\png\filetype-lrf_24.png"
-DARK_FILETYPE_FILETYPE_TXT RCDATA "Dark\png\filetype-txt_24.png"
-DARK_FILETYPE_FILETYPE_EPUB RCDATA "Dark\png\filetype-epub_24.png"
-DARK_FILETYPE_FILETYPE_PDF RCDATA "Dark\png\filetype-pdf_24.png"
-DARK_FILETYPE_FILETYPE_MOBI RCDATA "Dark\png\filetype-mobi_24.png"
-DARK_FILETYPE_SCRIPT RCDATA "Dark\png\script_24.png"
 
 // Download (24px)
 DARK_DOWNLOAD_PLAY RCDATA "Dark\png\play_24.png"
