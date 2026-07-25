@@ -153,6 +153,7 @@ function TMcpServer.HandleToolsCall(const Params: TJSONObject): TJSONObject;
 var
   Tool: TMcpTool;
   ToolName: string;
+  ArgsValue: TJSONValue;
   Args, Payload, ErrObj: TJSONObject;
   Content: TJSONArray;
   Block: TJSONObject;
@@ -163,10 +164,18 @@ begin
     raise EArgumentException.Create('Missing params');
 
   ToolName := Params.GetValue<string>('name', '');
+
+  Args := nil;
+  ArgsValue := Params.GetValue('arguments'); // may be absent
+  if Assigned(ArgsValue) then
+  begin
+    if not (ArgsValue is TJSONObject) then
+      raise EArgumentException.Create('Invalid arguments: expected an object');
+    Args := TJSONObject(ArgsValue);
+  end;
+
   if not FindTool(ToolName, Tool) then
     raise EArgumentException.CreateFmt('Unknown tool: %s', [ToolName]);
-
-  Args := Params.GetValue('arguments') as TJSONObject; // may be nil
 
   IsError := False;
   Payload := nil;
@@ -240,17 +249,26 @@ procedure TMcpServer.DispatchRequest(const Request: TJSONObject);
 var
   Method: string;
   Id: TJSONValue;
+  ParamsValue: TJSONValue;
   Params: TJSONObject;
 begin
   Method := Request.GetValue<string>('method', '');
   Id := Request.GetValue('id'); // nil for notifications
-  Params := Request.GetValue('params') as TJSONObject;
 
   // Notifications never get a response.
   if not Assigned(Id) then
     Exit;
 
   try
+    Params := nil;
+    ParamsValue := Request.GetValue('params');
+    if Assigned(ParamsValue) then
+    begin
+      if not (ParamsValue is TJSONObject) then
+        raise EArgumentException.Create('Invalid params: expected an object');
+      Params := TJSONObject(ParamsValue);
+    end;
+
     if Method = 'initialize' then
       SendResult(Id, HandleInitialize(Params))
     else if Method = 'ping' then
@@ -272,6 +290,7 @@ end;
 procedure TMcpServer.Run;
 var
   Line: string;
+  Value: TJSONValue;
   Request: TJSONObject;
 begin
   while FTransport.ReadMessage(Line) do
@@ -279,9 +298,20 @@ begin
     if Trim(Line) = '' then
       Continue;
 
-    Request := TJSONObject.ParseJSONValue(Line) as TJSONObject;
-    if not Assigned(Request) then
+    Value := TJSONObject.ParseJSONValue(Line);
+    if not Assigned(Value) then
       Continue;
+
+    if not (Value is TJSONObject) then
+    begin
+      // Valid JSON but not a request envelope (e.g. a top-level array or
+      // scalar). There is no id to answer with, so this is discarded the
+      // same way an unparseable line is above.
+      Value.Free;
+      Continue;
+    end;
+
+    Request := TJSONObject(Value);
     try
       DispatchRequest(Request);
     finally
