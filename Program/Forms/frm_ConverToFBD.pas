@@ -38,6 +38,16 @@ uses
   unit_Events, System.ImageList;
 
 type
+  //
+  // Результат обробки однієї книги у пакетному режимі
+  //
+  TAutoModeResult = (
+    amrConverted,  // FBD створено
+    amrSkipped,    // книга не потребує перетворення (вже FBD)
+    amrLocked,     // файл зайнятий іншим процесом - книгу не чіпали
+    amrFailed      // помилка запису; книга лишилась недоторканою
+  );
+
   TfrmConvertToFBD = class(TForm)
     RzPanel1: TPanel;
     pnButtons: TPanel;
@@ -84,6 +94,7 @@ type
 
     FBusy: Boolean;
     FTerminated: Boolean;
+    FLastSaveLocked: Boolean;
 
     // Events:
     FOnReadBook: TBookEvent;
@@ -93,13 +104,18 @@ type
 
     procedure PrepareForm;
     function FillFBDData: Boolean;
-    procedure SaveFBD;
+    function SaveFBD: Boolean;
     procedure EnableButtons(State: Boolean);
 
     procedure InternalSelectBook(MoveForward: Boolean);
 
+    function ConvertCurrentBook: TAutoModeResult;
+
   public
-    // TODO: RESTORE procedure AutoMode;
+    //
+    // Пакетне створення FBD для всіх книг активного дерева.
+    //
+    procedure AutoMode;
 
     property OnGetBook: TGetBookEvent read FOnGetBook write FOnGetBook;
     property OnReadBook: TBookEvent read FOnReadBook write FOnReadBook;
@@ -121,8 +137,17 @@ uses
   Clipbrd,
   unit_MHLHelpers,
   unit_Helpers,
+  unit_Errors,
+  unit_FileMutex,
   unit_Consts,
   unit_MHL_strings;
+
+resourcestring
+  rstrAutoFBDReport = 'Пакетне створення FBD завершено.' + CRLF +
+                      'Перетворено: %d' + CRLF +
+                      'Пропущено: %d' + CRLF +
+                      'Зайнято іншим процесом: %d' + CRLF +
+                      'Помилок: %d';
 
 {$R *.dfm}
 
@@ -183,9 +208,12 @@ begin
   if FBusy then
     Exit;
 
-  SaveFBD;
-
-  ModalResult := mrOk;
+  //
+  // Форму закриваємо лише коли книга справді збережена, інакше користувач
+  // втратив би введені дані разом із повідомленням про помилку.
+  //
+  if SaveFBD then
+    ModalResult := mrOk;
 end;
 
 procedure TfrmConvertToFBD.btnCancelClick(Sender: TObject);
@@ -288,24 +316,49 @@ begin
   Result := True;
 end;
 
-procedure TfrmConvertToFBD.SaveFBD;
+//
+// Запис FBD у файл книги.
+//
+// Файл переписується лише під міжпроцесним м'ютексом: поки він наш, жоден інший
+// екземпляр MyHomeLib не візьметься за цю саму книгу. Якщо файл зайнятий, нічого
+// не робимо - краще пропустити книгу, ніж зіпсувати її.
+//
+function TfrmConvertToFBD.SaveFBD: Boolean;
 var
- SavedCursor: TCursor;
+  SavedCursor: TCursor;
+  Lock: TFileMutex;
 begin
+  Result := False;
+
   EnableButtons(False);
   FBusy := True;
   SavedCursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
   try
-    if FillFBDData then
-    begin
-      FBD.ProgramUsed := GetProgramUsed(Application.ExeName);
-      FBD.Save(FEditorMode);
-      if not FEditorMode then
+    if not FillFBDData then
+      Exit;
+
+    Lock := TFileMutex.Create(FBD.ArchiveFileName);
+    try
+      if not Lock.TryAcquire then
       begin
-        Assert(Assigned(FOnChangeBook2Zip));
-        FOnChangeBook2Zip(FBookRecord);
+        FLastSaveLocked := True;
+        Exit;
       end;
+
+      FBD.ProgramUsed := GetProgramUsed(Application.ExeName);
+      Result := FBD.Save(FEditorMode);
+    finally
+      FreeAndNil(Lock);
+    end;
+
+    //
+    // Ім'я у базі змінюємо лише після того, як архів справді створено.
+    //
+    if Result and not FEditorMode then
+    begin
+      Assert(Assigned(FOnChangeBook2Zip));
+      FOnChangeBook2Zip(FBookRecord);
     end;
   finally
     Screen.Cursor := SavedCursor;
@@ -321,30 +374,89 @@ begin
   btnSave.Enabled     := State;
 end;
 
-(*
+//
+// Обробка книги, що зараз завантажена у форму.
+//
+function TfrmConvertToFBD.ConvertCurrentBook: TAutoModeResult;
+begin
+  //
+  // Книга вже має опис - у пакетному режимі її не чіпаємо: перезапис
+  // існуючого FBD не додає нічого, зате це зайва операція над файлом.
+  //
+  if FEditorMode then
+    Exit(amrSkipped);
 
-TODO: RESTORE
+  FLastSaveLocked := False;
+  if SaveFBD then
+    Result := amrConverted
+  else if FLastSaveLocked then
+    Result := amrLocked
+  else
+    Result := amrFailed;
+end;
 
+//
+// Пакетний режим.
+//
+// Проходимо дерево книг тією ж навігацією, що і кнопки "вперед/назад", доки не
+// повернемось до книги, з якої почали. Кожна книга обробляється незалежно:
+// зайняті та проблемні пропускаються, а не зупиняють весь прохід.
+//
 procedure TfrmConvertToFBD.AutoMode;
 var
   FirstBookKey: TBookKey;
-  BookRecord: TBookRecord;
+  Converted, Skipped, Locked, Failed: Integer;
 begin
-  Assert(False, 'Not implemented yet');
-  // TODO - add normal logic with a mutex that never corrupts a book file!
-  FTerminated := False;
-  PrepareForm;
-  Show;
-  btnNextClick(Self);
-  OnGetBook(BookRecord);
-  FirstBookKey := BookRecord.BookKey;
-  repeat
-    btnNextClick(Self);
-    OnGetBook(BookRecord);
-  until (FirstBookKey.IsSameAs(BookRecord.BookKey)) or FTerminated;
-  Close;
-end;
+  Assert(Assigned(FOnGetBook));
+  Assert(Assigned(FOnSelectBook));
 
-*)
+  FTerminated := False;
+  Converted := 0;
+  Skipped := 0;
+  Locked := 0;
+  Failed := 0;
+
+  FBD.ReportErrors := False;
+  Show;
+  try
+    FOnGetBook(FBookRecord);
+    FirstBookKey := FBookRecord.BookKey;
+
+    repeat
+      //
+      // Беремо тільки книги без опису. Усе інше - fb2, архіви, вже готові FBD -
+      // перетворення не потребує, а форма таких книг і не вміє показувати.
+      //
+      if FBookRecord.GetBookFormat = bfRaw then
+      begin
+        PrepareForm;
+        case ConvertCurrentBook of
+          amrConverted: Inc(Converted);
+          amrSkipped:   Inc(Skipped);
+          amrLocked:    Inc(Locked);
+          amrFailed:    Inc(Failed);
+        end;
+      end
+      else
+        Inc(Skipped);
+
+      //
+      // Без прокачки черги повідомлень кнопка "Скасувати" не отримала б кліку
+      // і пакетний режим неможливо було б зупинити.
+      //
+      Application.ProcessMessages;
+      if FTerminated then
+        Break;
+
+      FOnSelectBook(True);
+      FOnGetBook(FBookRecord);
+    until FBookRecord.BookKey.IsSameAs(FirstBookKey);
+  finally
+    FBD.ReportErrors := True;
+    Close;
+  end;
+
+  MHLShowInfo(Format(rstrAutoFBDReport, [Converted, Skipped, Locked, Failed]));
+end;
 
 end.

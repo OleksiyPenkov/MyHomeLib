@@ -53,7 +53,6 @@ type
 
     procedure DoSetProgress2;
     procedure SetProgress2(Current, Total: integer);
-    //procedure SetCancelledOperation;
 
   protected
     procedure WorkFunction; override;
@@ -70,8 +69,7 @@ implementation
 uses
   Windows,
   SysUtils,
-  dm_user,
-  frm_main;
+  dm_user;
 
 resourcestring
 rstrDownloaded = 'Завантажено файли: %u з %u';
@@ -145,13 +143,6 @@ begin
   if Assigned(FOnSetComment2) then
     FOnSetComment2(FCurrentComment, FTotalComment);
 end;
-
-{
-procedure TDownloadBooksThread.SetCancelledOperation;
-begin
-  frmMain.FCancelled := True;
-end;
-}
 
 procedure TDownloadBooksThread.SetComment2(const Current, Total: string);
 begin

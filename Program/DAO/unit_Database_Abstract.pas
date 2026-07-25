@@ -46,6 +46,19 @@ type
     function CollectionDisplayName: string;
     function CollectionURL: string;
 
+    //
+    // Базова адреса бібліотеки: власний URL колекції, а якщо його немає -
+    // загальний URL з налаштувань.
+    //
+    function CollectionBaseURL: string;
+
+    //
+    // Формат посилань Librusec/Flibusta. Обв'язка бібліотеки з іншою схемою
+    // адрес має перекрити ці методи.
+    //
+    function GetViewURL(const LibID: string): string; virtual;
+    function GetEditURL(const LibID: string): string; virtual;
+
     function GetProperty(const PropID: TPropertyID): Variant; virtual; abstract;
 
     //
@@ -111,6 +124,7 @@ implementation
 
 uses
   SysUtils,
+  dm_user,
   unit_Errors,
   unit_Consts;
 
@@ -433,6 +447,23 @@ function TBookCollection.CollectionURL: string;
 begin
   Assert(INVALID_COLLECTION_ID <> FCollectionInfo.ID);
   Result := FCollectionInfo.URL;
+end;
+
+function TBookCollection.CollectionBaseURL: string;
+begin
+  Result := CollectionURL;
+  if Result = '' then
+    Result := Settings.InpxURL;
+end;
+
+function TBookCollection.GetViewURL(const LibID: string): string;
+begin
+  Result := Format('%sb/%s/', [CollectionBaseURL, LibID]);
+end;
+
+function TBookCollection.GetEditURL(const LibID: string): string;
+begin
+  Result := Format('%sb/%s/edit', [CollectionBaseURL, LibID]);
 end;
 
 end.

@@ -4126,11 +4126,6 @@ object frmMain: TfrmMain
       Caption = #1057#1072#1081#1090' '#1087#1088#1086#1075#1088#1072#1084#1080
       OnExecute = GoSiteExecute
     end
-    object acHelpSupportForum: TAction
-      Category = #1055#1086#1084#1086#1097#1100
-      Caption = #1060#1086#1088#1091#1084' '#1087#1110#1076#1090#1088#1080#1084#1082#1080
-      OnExecute = GoForumExecute
-    end
     object acHelpAbout: TAction
       Category = #1055#1086#1084#1086#1097#1100
       Caption = #1055#1088#1086' '#1087#1088#1086#1075#1088#1072#1084#1091

@@ -50,6 +50,7 @@ uses
   jpeg,
   DB,
   unit_DownloadManagerThread,
+  unit_DownloadView,
   unit_Messages,
   files_list,
   ActiveX,
@@ -72,7 +73,7 @@ uses
   dm_Images;
 
 type
-  TfrmMain = class(TForm)
+  TfrmMain = class(TForm, IDownloadView)
     MainMenu: TMainMenu;
     miBook: TMenuItem;
     miQuitApp: TMenuItem;
@@ -432,7 +433,6 @@ type
     acHelpHelp: TAction;
     acHelpCheckUpdates: TAction;
     acHelpProgramSite: TAction;
-    acHelpSupportForum: TAction;
     acHelpAbout: TAction;
     N60: TMenuItem;
     N61: TMenuItem;
@@ -630,7 +630,6 @@ type
     //
     procedure ShowHelpExecute(Sender: TObject);
     procedure CheckUpdatesExecute(Sender: TObject);
-    procedure GoForumExecute(Sender: TObject);
     procedure GoSiteExecute(Sender: TObject);
     procedure ShowAboutExecute(Sender: TObject);
 
@@ -734,6 +733,13 @@ type
 
   private
     FDMThread: TDownloadManagerThread;
+
+    //
+    // Вузол черги, який зараз завантажується. Курсор належить формі, а не
+    // потоку: тільки форма знає, коли вузол зникає з дерева.
+    //
+    FDownloadNode: PVirtualNode;
+
     FCurrentBookOnly: Boolean;
     FInvisible: Boolean;
     FTimerDone: Boolean;
@@ -924,6 +930,24 @@ type
     procedure DownloadBooks(CurrentBookOnly: boolean = False);
     function CheckActiveDownloads: Boolean;
     procedure PurgeDownloadsForCollection(const DatabaseID: Integer);
+    procedure UpdateDownloadCount;
+
+    //
+    // IDownloadView - єдиний шлях, яким потік завантаження торкається інтерфейсу.
+    // Усі методи виконуються в головному потоці (потік викликає їх через Synchronize).
+    //
+    function SelectNextDownload(out Item: TDownloadItem): Boolean;
+    procedure CompleteCurrentDownload(Success: Boolean);
+    procedure CancelCurrentDownload;
+    function IsMainFormVisible: Boolean;
+    procedure ShowDownloadInfo(const Author, Title: string);
+    procedure ShowDownloadState(const State: string);
+    procedure ShowDownloadProgress(Position: Integer);
+    procedure ResetDownloadState;
+    procedure SetTrayHint(const Hint: string);
+    procedure SetDownloadRunning(Running: Boolean);
+    procedure SetQueueControlsEnabled(Enabled: Boolean);
+    function AskIgnoreDownloadErrors: Integer;
 
     function GetActiveView: TView;
     procedure StartLibUpdate;
@@ -1007,7 +1031,6 @@ uses
   unit_SearchUtils,
   unit_WriteFb2Info,
   frm_ConverToFBD,
-  frm_EditAuthorEx,
   unit_Lib_Updates,
   frm_EditGroup,
   unit_SystemDatabase_Abstract,
@@ -1022,6 +1045,10 @@ rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перев�
    rstrUpdateConnectionError = 'Не вдалося з''єднатися із сервером оновлень:' + CRLF + '%s';
    rstrVersionInfo = '%s' + CRLF + 'На сервері: %d, локальна: %d';
    rstrNotFromDownloadsError = 'Операція недоступна зі списку завантажень.';
+   rstrAutoFBDConfirmation = 'Створити FBD для всіх книг у списку?' + CRLF +
+                             'Книги, файли яких зайняті, буде пропущено.';
+   rstrDownloadDone = 'Готово';
+   rstrIgnoreDownloadErrors = 'Ігнорувати помилки завантаження?';
    rstrNotForExtension = 'Операція недоступна для файлів із розширенням %s';
    rstrUnableDeleteBuiltinGroupError = 'Не можна видалити вбудовану групу!';
    rstrCheckingUpdates = 'Перевірка оновлень...';
@@ -1135,11 +1162,15 @@ begin
     Next := tvDownloadList.GetNext(Node);
     Data := tvDownloadList.GetNodeData(Node);
     if Assigned(Data) and (Data^.BookKey.DatabaseID = DatabaseID) then
+    begin
+      if Node = FDownloadNode then
+        FDownloadNode := nil;
       tvDownloadList.DeleteNode(Node);
+    end;
     Node := Next;
   end;
 
-  lblDownloadCount.Caption := Format('(%d)', [tvDownloadList.ChildCount[nil]]);
+  UpdateDownloadCount;
 end;
 
 procedure TfrmMain.WMGetSysCommand(var Message: TMessage);
@@ -2530,39 +2561,46 @@ end;
 
 
 procedure TfrmMain.tbtnAutoFBDClick(Sender: TObject);
-//var
-//  Tree: TBookTree;
-//  Node: PVirtualNode;
-//  Data: PBookRecord;
+var
+  Tree: TBookTree;
+  Node: PVirtualNode;
+  Data: PBookRecord;
+  frmConvert: TfrmConvertToFBD;
 begin
-  //
-  // Очень стремный метод. Режим редактирования\создания FBD для формы не ставиться, форма ничего не проверяет...
-  //
   if (ActiveView = DownloadView) then
   begin
     MHLShowWarning(rstrNotFromDownloadsError);
     Exit;
   end;
 
-  Assert(False, 'Not implemented yet');
+  //
+  // Пакетний режим стартує з поточної книги і обходить усе дерево по колу.
+  //
+  GetActiveTree(Tree);
+  Node := Tree.GetFirstSelected;
+  Data := Tree.GetNodeData(Node);
+  if not Assigned(Data) or (Data^.nodeType <> ntBookInfo) then
+    Exit;
 
-  (*
-
-  TODO : RESTORE
+  if MHLShowWarning(rstrAutoFBDConfirmation, mbYesNo) <> mrYes then
+    Exit;
 
   OnSetControlsStateHandler(False);
   try
-    GetActiveTree(Tree);
-    Node := Tree.GetFirstSelected;
-    Data := Tree.GetNodeData(Node);
-    if not Assigned(Data) or (Data^.nodeType <> ntBookInfo) then
-      Exit;
+    frmConvert := TfrmConvertToFBD.Create(Application);
+    try
+      frmConvert.OnGetBook := OnGetBookHandler;
+      frmConvert.OnReadBook := OnReadBookHandler;
+      frmConvert.OnSelectBook := OnSelectBookHandler;
+      frmConvert.OnChangeBook2Zip := OnChangeBook2ZipHandler;
 
-    frmConvertToFBD.AutoMode;
+      frmConvert.AutoMode;
+    finally
+      frmConvert.Free;
+    end;
   finally
     OnSetControlsStateHandler(True);
   end;
-  *)
 end;
 
 procedure TfrmMain.tbtnWizardClick(Sender: TObject);
@@ -2752,7 +2790,7 @@ begin
   if FileExists(Settings.SystemFileName[sfDownloadsStore]) then
   begin
     tvDownloadList.LoadFromFile(Settings.SystemFileName[sfDownloadsStore]);
-    lblDownloadCount.Caption := Format('(%d)', [tvDownloadList.ChildCount[nil]]);
+    UpdateDownloadCount;
   end;
 
   if Settings.AutoStartDwnld then
@@ -3499,8 +3537,9 @@ end;
 procedure TfrmMain.btnClearDownloadClick(Sender: TObject);
 begin
   btnPauseDownloadClick(Sender);
+  FDownloadNode := nil;
   tvDownloadList.Clear;
-  lblDownloadCount.Caption := '(0)';
+  UpdateDownloadCount;
 end;
 
 procedure TfrmMain.btnClearEdSeriesClick(Sender: TObject);
@@ -4794,7 +4833,7 @@ begin
     BookNode := Tree.GetNext(BookNode);
   end;
 
-  lblDownloadCount.Caption := Format('(%d)', [tvDownloadList.ChildCount[nil]]);
+  UpdateDownloadCount;
 
   if Settings.AutoStartDwnld then
     btnStartDownloadClick(Sender);
@@ -4847,8 +4886,7 @@ begin
     if MHLShowWarning(Format(rstrGoToLibrarySite, [BookCollection.CollectionURL]), mbYesNo) = mrYes then
     begin
       BookCollection.GetBookRecord(BookKey, BookRecord, False);
-      { TODO -oNickR -cLibDesc : этот URL должен формироваться обвязкой библиотеки, т к его формат может меняться }
-      URL := Format('%sb/%s/edit', [BookCollection.CollectionURL, BookRecord.LibID]);
+      URL := BookCollection.GetEditURL(BookRecord.LibID);
       SimpleShellExecute(Handle, URL);
     end;
     Result := True;
@@ -6053,11 +6091,7 @@ begin
       //if IsOnline and ReviewEditable then         - логика нарушена
       if not IsPrivate then
       begin
-        { TODO -oNickR -cLibDesc : этот URL должен формироваться обвязкой библиотеки, т к его формат может меняться }
-        if FCollection.CollectionURL = '' then
-          URL := Format('%sb/%s/', [Settings.InpxURL, Data^.LibID])
-        else
-          URL := Format('%sb/%s/', [FCollection.CollectionURL, Data^.LibID]);
+        URL := FCollection.GetViewURL(Data^.LibID);
 
         frmBookDetails.AllowOnlineReview(URL);
       end;
@@ -6146,11 +6180,6 @@ begin
   finally
     Tree.EndUpdate;
   end;
-end;
-
-procedure TfrmMain.GoForumExecute(Sender: TObject);
-begin
-  SimpleShellExecute(Handle, PROGRAM_HOMEPAGE);
 end;
 
 procedure TfrmMain.GoSiteExecute(Sender: TObject);
@@ -6849,9 +6878,18 @@ begin
   btnPauseDownload.Enabled := True;
   btnStartDownload.Enabled := False;
 
-  // There is a memory leak caused by overwriting the variable without freeing the previous instance
-  // Need to redesign the manager before resolving the leak
-  FDMThread := TDownloadManagerThread.Create(False)
+  //
+  // Попередній менеджер уже зупинений (кнопка "Пауза" або порожня черга),
+  // але сам об'єкт лишався жити. Звільняємо його перед запуском нового.
+  //
+  if Assigned(FDMThread) then
+  begin
+    FDMThread.TerminateNow;
+    FDMThread.WaitFor;
+    FreeAndNil(FDMThread);
+  end;
+
+  FDMThread := TDownloadManagerThread.Create(Self);
 end;
 
 procedure TfrmMain.btnPauseDownloadClick(Sender: TObject);
@@ -6878,8 +6916,190 @@ begin
   begin
     Data := tvDownloadList.GetNodeData(List[i]);
     if Data.State <> dsRun then
+    begin
+      if List[i] = FDownloadNode then
+        FDownloadNode := nil;
       tvDownloadList.DeleteNode(List[i]);
+    end;
   end;
+  UpdateDownloadCount;
+end;
+
+// - - - - - - - - - - - - - - IDownloadView - - - - - - - - - - - - - - - - - -
+//
+// Реалізація для потоку завантажень. Викликається виключно з головного потоку.
+//
+
+procedure TfrmMain.UpdateDownloadCount;
+begin
+  lblDownloadCount.Caption := Format('(%d)', [tvDownloadList.ChildCount[nil]]);
+end;
+
+//
+// Наступна книга черги: рухаємось від поточного вузла, а дійшовши до кінця -
+// повертаємось на початок і пропускаємо помилкові. Якщо помилковими виявились
+// усі, черга починається спочатку - помилки завантажуються повторно.
+//
+function TfrmMain.SelectNextDownload(out Item: TDownloadItem): Boolean;
+var
+  Data: PDownloadData;
+  ErrorCount: Integer;
+begin
+  Result := False;
+  Item := Default(TDownloadItem);
+
+  if Assigned(FDownloadNode) then
+    FDownloadNode := tvDownloadList.GetNext(FDownloadNode);
+
+  if not Assigned(FDownloadNode) then
+  begin
+    ErrorCount := 0;
+    FDownloadNode := tvDownloadList.GetFirst;
+    Data := tvDownloadList.GetNodeData(FDownloadNode);
+    while Assigned(Data) and Assigned(FDownloadNode) and (Data^.State = dsError) do
+    begin
+      FDownloadNode := tvDownloadList.GetNext(FDownloadNode);
+      Data := tvDownloadList.GetNodeData(FDownloadNode);
+      Inc(ErrorCount);
+    end;
+
+    if (ErrorCount > 0) and not Assigned(FDownloadNode) then
+      FDownloadNode := tvDownloadList.GetFirst;
+  end;
+
+  while Assigned(FDownloadNode) do
+  begin
+    Data := tvDownloadList.GetNodeData(FDownloadNode);
+    if not Assigned(Data) then
+      Break;
+
+    if Data^.State <> dsOk then
+    begin
+      Data^.State := dsRun;
+      tvDownloadList.RepaintNode(FDownloadNode);
+
+      Item.BookKey := Data^.BookKey;
+      Item.Author := Data^.Author;
+      Item.Title := Data^.Title;
+      Exit(True);
+    end;
+
+    FDownloadNode := tvDownloadList.GetNext(FDownloadNode);
+  end;
+end;
+
+procedure TfrmMain.CompleteCurrentDownload(Success: Boolean);
+var
+  Data: PDownloadData;
+  Node: PVirtualNode;
+begin
+  if not Assigned(FDownloadNode) then
+    Exit;
+
+  Data := tvDownloadList.GetNodeData(FDownloadNode);
+  if not Assigned(Data) then
+    Exit;
+
+  if Success then
+  begin
+    Data^.State := dsOk;
+
+    //
+    // Вузол міг зникнути з дерева, поки книга качалась (наприклад, разом з
+    // видаленою колекцією), тому спершу переконуємось, що він ще на місці.
+    //
+    Node := tvDownloadList.GetFirst;
+    while Assigned(Node) do
+    begin
+      if Node = FDownloadNode then
+      begin
+        tvDownloadList.DeleteNode(FDownloadNode);
+        Break;
+      end;
+      Node := tvDownloadList.GetNext(Node);
+    end;
+
+    FDownloadNode := nil;
+  end
+  else
+  begin
+    Data^.State := dsError;
+    tvDownloadList.RepaintNode(FDownloadNode);
+  end;
+
+  UpdateDownloadCount;
+end;
+
+procedure TfrmMain.CancelCurrentDownload;
+var
+  Data: PDownloadData;
+begin
+  if not Assigned(FDownloadNode) then
+    Exit;
+
+  Data := tvDownloadList.GetNodeData(FDownloadNode);
+  if not Assigned(Data) then
+    Exit;
+
+  Data^.State := dsError;
+  tvDownloadList.RepaintNode(FDownloadNode);
+end;
+
+function TfrmMain.IsMainFormVisible: Boolean;
+begin
+  Result := Visible;
+end;
+
+procedure TfrmMain.ShowDownloadInfo(const Author, Title: string);
+begin
+  lblDnldAuthor.Caption := Author;
+  lblDnldTitle.Caption := Title;
+  pbDownloadProgress.Visible := True;
+end;
+
+procedure TfrmMain.ShowDownloadState(const State: string);
+begin
+  lblDownloadState.Caption := State;
+end;
+
+procedure TfrmMain.ShowDownloadProgress(Position: Integer);
+begin
+  pbDownloadProgress.Position := Position;
+end;
+
+procedure TfrmMain.ResetDownloadState;
+begin
+  pbDownloadProgress.Position := 0;
+  pbDownloadProgress.Visible := False;
+  lblDownloadState.Caption := rstrDownloadDone;
+  lblDnldAuthor.Caption := '';
+  lblDnldTitle.Caption := '';
+end;
+
+procedure TfrmMain.SetTrayHint(const Hint: string);
+begin
+  TrayIcon.Hint := Hint;
+end;
+
+procedure TfrmMain.SetDownloadRunning(Running: Boolean);
+begin
+  btnPauseDownload.Enabled := Running;
+  btnStartDownload.Enabled := not Running;
+end;
+
+procedure TfrmMain.SetQueueControlsEnabled(Enabled: Boolean);
+begin
+  BtnFirstRecord.Enabled := Enabled;
+  BtnDwnldUp.Enabled := Enabled;
+  BtnDwnldDown.Enabled := Enabled;
+  BtnLastRecord.Enabled := Enabled;
+  BtnSave.Enabled := Enabled;
+  mi_dwnl_Delete.Enabled := Enabled;
+end;
+
+function TfrmMain.AskIgnoreDownloadErrors: Integer;
+begin
+  Result := Application.MessageBox(PWideChar(rstrIgnoreDownloadErrors), '', MB_YESNOCANCEL);
 end;
 
 procedure TfrmMain.DeleteSearchPreset(Sender: TObject);

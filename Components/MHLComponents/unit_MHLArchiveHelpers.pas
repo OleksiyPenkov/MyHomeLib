@@ -38,6 +38,7 @@ type
       FHeader: TZipHeader;
       function GetLastSize: Integer;
       function GetLastName: string;
+      function GetFileName(Index: Integer): string;
     function GetFileCount: Integer;
 
 
@@ -62,6 +63,7 @@ type
       procedure RenameFile(const OldFileName, NewFileName: string);
 
       property LastName: string read GetLastName;
+      property FileNames[Index: Integer]: string read GetFileName;
       property FileCount: Integer read GetFileCount;
       property LastSize: Integer read GetLastSize;
   end;
@@ -226,6 +228,11 @@ end;
 function TMHLZip.GetLastName: string;
 begin
   Result := FZip.FileNames[FLastID];
+end;
+
+function TMHLZip.GetFileName(Index: Integer): string;
+begin
+  Result := FZip.FileNames[Index];
 end;
 
 function TMHLZip.GetLastSize: Integer;

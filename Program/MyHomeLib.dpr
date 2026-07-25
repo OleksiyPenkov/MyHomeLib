@@ -121,7 +121,6 @@ uses
   unit_Downloader in 'DwnldImpl\unit_Downloader.pas',
   frame_NCWDownload in 'Wizards\NewCollection\frame_NCWDownload.pas' {frameNCWDownload: TFrame},
   unit_Templater in 'Units\unit_Templater.pas',
-  frm_EditAuthorEx in 'Forms\Editors\frm_EditAuthorEx.pas' {frmEditAuthorDataEx},
   unit_TemplaterInternal in 'Units\unit_TemplaterInternal.pas',
   unit_SearchPresets in 'Units\unit_SearchPresets.pas',
   unit_UserData in 'Units\unit_UserData.pas',
@@ -147,6 +146,8 @@ uses
   unit_SystemDatabase_Abstract in 'DAO\unit_SystemDatabase_Abstract.pas',
   unit_treeController in 'Units\unit_treeController.pas',
   unit_MHLHttpClient in 'Units\unit_MHLHttpClient.pas',
+  unit_FileMutex in 'Units\unit_FileMutex.pas',
+  unit_DownloadView in 'DwnldImpl\unit_DownloadView.pas',
   dm_Images in 'DataModules\dm_Images.pas' {dmImages: TDataModule};
 
 {$R *.res}

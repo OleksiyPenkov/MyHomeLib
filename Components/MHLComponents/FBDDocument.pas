@@ -33,7 +33,8 @@ uses
   fbd_xml,
   ExtCtrls,
   StdCtrls,
-  FBDAuthorTable;
+  FBDAuthorTable,
+  unit_MHLArchiveHelpers;
 
 type
   TCoverImageType = (itPng, itJPG);
@@ -69,6 +70,7 @@ type
     FCoverHeight: integer;
 
     FResizeMode: TResizeMode;
+    FReportErrors: Boolean;
 
     function GetCustomInfo: IXMLCustominfoList;
     function GetDocumentInfo: IXMLDocumentinfo;
@@ -85,6 +87,7 @@ type
     procedure SetTImage(Value: TImage);
     function SaveFBD: Boolean;
     function CreateArchive(EditorMode: Boolean): boolean;
+    procedure CopyArchiveContent(const SourceArchive: string; Target: TMHLZip);
     procedure ResizeImage;
     function ExecAndWait(const FileName, Params: string; const WinState: Word): Boolean;
     procedure SetCoverSize(const Value: Integer);
@@ -98,7 +101,12 @@ type
 
     procedure New(Folder, Filename, Ext: string);
     function Load(Folder, Filename, Ext: string; NoCover: Boolean = False): Boolean;
-    procedure Save(EditorMode: Boolean);
+    function Save(EditorMode: Boolean): Boolean;
+
+    //
+    // Пакетний режим сам звітує про помилки, тому діалог можна вимкнути.
+    //
+    property ReportErrors: Boolean read FReportErrors write FReportErrors;
 
     property Title: IXMLTitleInfoType read GetTitleInfo write SetTitleInfo;
     property Document: IXMLDocumentinfo read GetDocumentInfo write SetDocumentInfo;
@@ -106,6 +114,11 @@ type
     property Custom: IXMLCustominfoList read GetCustomInfo write SetCustomInfo;
     property Cover: TCover read FCoverData write FCoverData;
     property ProgramUsed: string read FProgramUsed write FProgramUsed;
+
+    //
+    // Повне ім'я цільового архіву. Визначене після New/Load.
+    //
+    property ArchiveFileName: string read FArchiveFilename;
 
     procedure SetCustom(const Field: string; const Value: string);
     function GetCustom(const Field: string): string;
@@ -144,11 +157,12 @@ uses
   pngimage,
   jpeg,
   IOUtils,
-  unit_MHLArchiveHelpers;
+  System.Zip;
 
 const
   FBD_EXTENSION = '.fbd';
   ZIP_EXTENSION = '.zip';
+  TEMP_EXTENSION = '.mhltmp';
   DEFAULT_PROGRAM_USED = 'MyHomeLib';
 
 { TFBDDocument }
@@ -199,6 +213,7 @@ begin
   inherited;
   FResizeMode := rmMax;
   FProgramUsed := DEFAULT_PROGRAM_USED;
+  FReportErrors := True;
 end;
 
 function TFBDDocument.Load(Folder, Filename, Ext: string; NoCover: boolean = False):boolean;
@@ -437,10 +452,9 @@ begin
   end;
 end;
 
-procedure TFBDDocument.Save(EditorMode: boolean);
+function TFBDDocument.Save(EditorMode: boolean): Boolean;
 begin
-  if SaveFBD then
-    CreateArchive(EditorMode);
+  Result := SaveFBD and CreateArchive(EditorMode);
 end;
 
 function TFBDDocument.SaveFBD : boolean;
@@ -522,48 +536,106 @@ begin
   end;
 end;
 
+//
+// Переносить у новий архів усі записи старого, крім старого опису FBD
+// (він щойно перезаписаний і додається окремо).
+//
+procedure TFBDDocument.CopyArchiveContent(const SourceArchive: string; Target: TMHLZip);
+var
+  source: TMHLZip;
+  entry: TMemoryStream;
+  entryName: string;
+  i: Integer;
+begin
+  if not FileExists(SourceArchive) then
+    Exit;
+
+  source := TMHLZip.Create(SourceArchive, True);
+  try
+    for i := 0 to source.FileCount - 1 do
+    begin
+      entryName := source.FileNames[i];
+      if AnsiLowerCase(ExtractFileExt(entryName)) = FBD_EXTENSION then
+        Continue;
+
+      entry := source.ExtractToStream(i);
+      try
+
+        entry.Seek(0, soFromBeginning);
+        Target.AddFromStream(entryName, entry);
+      finally
+        FreeAndNil(entry);
+      end;
+    end;
+  finally
+    FreeAndNil(source);
+  end;
+end;
+
+//
+// Архів завжди збирається у тимчасовому файлі та перевіряється вже закритим.
+// Оригінальні файли книги видаляються лише після того, як перевірений архів
+// став на місце цільового. Будь-яка помилка на шляху лишає книгу недоторканою.
+//
 function TFBDDocument.CreateArchive(EditorMode: boolean):boolean;
 var
   archiveFileName: string;
+  tempFileName: string;
   bookFileName: string;
   fbdFileName: string;
   archiver: TMHLZip;
 begin
-  archiver := nil;
+  Result := False;
 
   archiveFileName := TPath.Combine(FFolder, FArchiveFilename);
   bookFileName := TPath.Combine(FFolder, FBookFileName);
   fbdFileName := TPath.Combine(FFolder, FFBDFileName);
+  tempFileName := archiveFileName + TEMP_EXTENSION;
 
   try
-    archiver := TMHLZip.Create(archiveFileName, False);
+    SysUtils.DeleteFile(tempFileName);
 
-    if EditorMode then
-    begin
+    archiver := TMHLZip.Create(tempFileName, False);
+    try
       archiver.AddFiles(fbdFileName);
-      Result := archiver.Test(archiveFileName);
 
-      if Result then
-        SysUtils.DeleteFile(fbdFileName);
-    end
-    else
-    begin
-      archiver.AddFiles(fbdFileName);
-      archiver.AddFiles(bookFileName);
-      Result := archiver.Test(archiveFileName);
-//
-      if Result then
-      begin
-        SysUtils.DeleteFile(fbdFileName);
-        SysUtils.DeleteFile(bookFileName);
-      end;
+      if EditorMode then
+        //
+        // Книга вже лежить у цільовому архіві - переносимо її як є,
+        // інакше перезапис опису знищив би сам файл книги.
+        //
+        CopyArchiveContent(archiveFileName, archiver)
+      else
+        archiver.AddFiles(bookFileName);
+    finally
+      //
+      // Центральний каталог zip дописується лише при закритті, тому перевіряти
+      // архів можна тільки після знищення archiver.
+      //
+      FreeAndNil(archiver);
     end;
-  finally
-    FreeAndNil(archiver);
+
+    if TZipFile.IsValid(tempFileName) then
+    begin
+      SysUtils.DeleteFile(archiveFileName);
+      Result := RenameFile(tempFileName, archiveFileName);
+    end;
+  except
+    Result := False;
   end;
 
-  if not Result then
-    MessageDlg(rstrErrorCreatingFBD, mtError, [mbOK], 0);
+  if Result then
+  begin
+    SysUtils.DeleteFile(fbdFileName);
+    if not EditorMode then
+      SysUtils.DeleteFile(bookFileName);
+  end
+  else
+  begin
+    SysUtils.DeleteFile(tempFileName);
+    if FReportErrors then
+      MessageDlg(rstrErrorCreatingFBD, mtError, [mbOK], 0);
+  end;
 end;
 
 {--------------------  Списки авторов ----------------------------------------}

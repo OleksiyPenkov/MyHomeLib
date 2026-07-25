@@ -237,6 +237,13 @@ type
     function CollectionDisplayName: string;
     function CollectionURL: string;
 
+    //
+    // Посилання на книгу на сайті бібліотеки. Формат залежить від обв'язки
+    // конкретної бібліотеки, тому його формує сама колекція, а не UI.
+    //
+    function GetViewURL(const LibID: string): string;
+    function GetEditURL(const LibID: string): string;
+
     procedure SetProperty(const PropID: TPropertyID; const Value: Variant);
     function GetProperty(const PropID: TPropertyID): Variant;
     procedure UpdateProperies;
