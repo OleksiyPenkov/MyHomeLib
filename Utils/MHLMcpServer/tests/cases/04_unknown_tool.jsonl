@@ -1,0 +1,2 @@
+> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"no_such_tool","arguments":{}}}
+< {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Unknown tool: no_such_tool"}}
