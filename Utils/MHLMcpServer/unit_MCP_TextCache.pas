@@ -25,19 +25,26 @@ const
 // away from the real machine-wide cache.
 function CacheDir: string;
 
-// Caps the cache directory at CACHE_CAP_BYTES, deleting whole .txt/.json
-// pairs oldest-last-accessed-first. Also prunes any half-written pair (a
+// Caps the cache directory at CapBytes (defaulting to CACHE_CAP_BYTES),
+// deleting whole .txt/.json pairs oldest-last-accessed-first until the
+// directory is back under the cap. Also prunes any half-written pair (a
 // .txt or .json with no matching sibling) unconditionally -- such a file can
 // never serve as a cache hit (see EnsureCached below), so it is pure dead
 // weight, and it is safe to remove any time EvictCache runs: the only
 // caller is the server's own startup, once, before any request is served,
 // so there is no other writer that could be racing an in-progress pair.
 //
+// CapBytes is a parameter (not baked in as CACHE_CAP_BYTES everywhere)
+// solely so --cache-selftest can drive the real size-threshold and
+// sort-and-delete logic with a throwaway few-KB cap instead of needing to
+// write ~200 MB of fixture data; every production call site still calls
+// EvictCache with no argument and gets exactly CACHE_CAP_BYTES.
+//
 // Deliberately NOT called from EnsureCached/ReadCachedSlice -- eviction is a
 // filesystem-only, database-free sweep meant to run exactly once per process
 // lifetime (see the server's startup sequence in MHLMcpServer.dpr), not on
 // every request.
-procedure EvictCache;
+procedure EvictCache(const CapBytes: Int64 = CACHE_CAP_BYTES);
 
 // Returns the cached extraction for (CollectionID, BookID, SourceSize,
 // SourceStamp), reading it from disk if both the .txt and .json sidecar
@@ -378,7 +385,7 @@ type
     LastAccess: TDateTime;
   end;
 
-procedure EvictCache;
+procedure EvictCache(const CapBytes: Int64);
 var
   Dir, TxtPath, JsonPath: string;
   Pairs: TArray<TCachePairInfo>;
@@ -421,7 +428,7 @@ begin
       TFile.Delete(JsonPath);
   end;
 
-  if TotalSize <= CACHE_CAP_BYTES then
+  if TotalSize <= CapBytes then
     Exit;
 
   // Simple ascending insertion sort by LastAccess -- the cache directory is
@@ -440,7 +447,7 @@ begin
   end;
 
   I := 0;
-  while (TotalSize > CACHE_CAP_BYTES) and (I < PairCount) do
+  while (TotalSize > CapBytes) and (I < PairCount) do
   begin
     TFile.Delete(TPath.Combine(Dir, Pairs[I].Key + '.txt'));
     TFile.Delete(TPath.Combine(Dir, Pairs[I].Key + '.json'));

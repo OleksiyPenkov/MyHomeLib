@@ -113,8 +113,12 @@ var
   CallCount: Integer;
   Text1, Text3, Text4, Text6, S5, S7Text: string;
   Sections1: TFb2Sections;
-  Stamp1, Stamp2, Stamp3, Stamp4, Stamp5, Stamp6, Stamp7: TDateTime;
+  Stamp1, Stamp2, Stamp3, Stamp4, Stamp5, Stamp6, Stamp7, Stamp9: TDateTime;
   OrphanTxtPath: string;
+
+  K: Integer;
+  Txt9, Json9: array[0..4] of string;
+  PairBytes9, Total9, CapBig9, Cap3Of9: Int64;
 
   // Rebuilds the on-disk path for a key exactly the way
   // unit_MCP_TextCache.CacheKey does (the format is fixed by the task spec),
@@ -430,7 +434,74 @@ begin
         TFile.Exists(TxtPathForTest(7, 700, 11, Stamp7)) and
         TFile.Exists(JsonPathForTest(7, 700, 11, Stamp7)));
 
-      // ---- Scenario 8 (bonus, beyond the brief's required list): EvictCache
+      // ---- Scenario 8: the real size-cap / oldest-last-accessed-first
+      // eviction path, driven with a throwaway few-KB cap instead of the
+      // production 200 MB constant (EvictCache's CapBytes parameter exists
+      // for exactly this reason -- the parameterless call site at server
+      // startup still gets CACHE_CAP_BYTES unchanged). Five pairs, each
+      // holding a unique short marker so a corrupted/cross-contaminated read
+      // after eviction would actually be detectable, not masked by every
+      // entry having identical content. Last-access times are set EXPLICITLY
+      // here rather than relied upon from real read/write timing, so the
+      // ordering assertion is deterministic and not a race against either
+      // wall-clock granularity or the OS's own last-access-tracking policy
+      // (see the report for this machine's measured behaviour). ----
+      Stamp9 := EncodeDateTime(2026, 9, 9, 0, 0, 0, 0);
+      for K := 0 to 4 do
+      begin
+        EnsureCached(9000 + K, 1, 1, Stamp9,
+          function: TFb2Extraction
+          begin
+            Result.Text := Format('ENTRY%d-', [K]) + StringOfChar('Q', 1020);
+            SetLength(Result.Sections, 0);
+            Result.Structured := False;
+          end);
+        Txt9[K] := TxtPathForTest(9000 + K, 1, 1, Stamp9);
+        Json9[K] := JsonPathForTest(9000 + K, 1, 1, Stamp9);
+      end;
+
+      // K=0 is stamped oldest, K=4 newest -- strictly increasing, minutes
+      // apart, so there is no possible ambiguity in access-time ordering.
+      for K := 0 to 4 do
+      begin
+        TFile.SetLastAccessTime(Txt9[K], IncMinute(Stamp9, K));
+        TFile.SetLastAccessTime(Json9[K], IncMinute(Stamp9, K));
+      end;
+
+      PairBytes9 := TFile.GetSize(Txt9[0]) + TFile.GetSize(Json9[0]);
+      Total9 := 0;
+      for K := 0 to 4 do
+        Inc(Total9, TFile.GetSize(Txt9[K]) + TFile.GetSize(Json9[K]));
+
+      CapBig9 := Total9 + 1024;       // comfortably above the real total
+      Cap3Of9 := 3 * PairBytes9;      // room for exactly the 3 newest pairs
+
+      EvictCache(CapBig9);
+      AddCheck('below the injected cap, EvictCache deletes nothing',
+        TFile.Exists(Txt9[0]) and TFile.Exists(Json9[0]) and
+        TFile.Exists(Txt9[1]) and TFile.Exists(Json9[1]) and
+        TFile.Exists(Txt9[2]) and TFile.Exists(Json9[2]) and
+        TFile.Exists(Txt9[3]) and TFile.Exists(Json9[3]) and
+        TFile.Exists(Txt9[4]) and TFile.Exists(Json9[4]));
+
+      EvictCache(Cap3Of9);
+      AddCheck('over the injected cap, the two oldest-last-accessed pairs are deleted',
+        (not TFile.Exists(Txt9[0])) and (not TFile.Exists(Json9[0])) and
+        (not TFile.Exists(Txt9[1])) and (not TFile.Exists(Json9[1])));
+      AddCheck('eviction stops once under the cap -- the newest pairs survive',
+        TFile.Exists(Txt9[2]) and TFile.Exists(Json9[2]) and
+        TFile.Exists(Txt9[3]) and TFile.Exists(Json9[3]) and
+        TFile.Exists(Txt9[4]) and TFile.Exists(Json9[4]));
+      AddCheck('an evicted pair is removed atomically -- never a lone .txt or .json left behind',
+        (TFile.Exists(Txt9[0]) = TFile.Exists(Json9[0])) and
+        (TFile.Exists(Txt9[1]) = TFile.Exists(Json9[1])));
+      CheckSafe('a surviving entry still reads back its own exact content after eviction',
+        function: Boolean
+        begin
+          Result := ReadCachedSlice(9004, 1, 1, Stamp9, 0, 7) = 'ENTRY4-';
+        end);
+
+      // ---- Scenario 9 (bonus, beyond the brief's required list): EvictCache
       // prunes a true orphan -- a .txt with no matching .json -- that was
       // never created through EnsureCached and so never self-heals. ----
       OrphanTxtPath := TPath.Combine(TempDir, '9999_9999_1_20260101000000.txt');
