@@ -38,7 +38,6 @@
         <SanitizedProjectName>MHLMcpServer</SanitizedProjectName>
         <DCC_DependencyCheckOutputName>MHLMcpServer.exe</DCC_DependencyCheckOutputName>
         <DCC_UnitSearchPath>..\..\Program\Units;..\..\Program\DAO;..\..\Program\DAO\SQLite;..\..\Program\DAO\SQLite\Lib;..\..\Program\DataModules;..\..\Program\UtilsImpl;..\..\Components\MHLComponents;..\..\Components\MHLComponents\Units;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_DcuOutput>..\..\Program\OUT\Units</DCC_DcuOutput>
         <DCC_Namespace>System;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -46,9 +45,11 @@
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_ExeOutput>..\..\Program\OUT\BIN</DCC_ExeOutput>
+        <DCC_DcuOutput>..\..\Program\OUT\Units</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
         <DCC_ExeOutput>..\..\Program\OUT\Bin64</DCC_ExeOutput>
+        <DCC_DcuOutput>..\..\Program\OUT\Units64</DCC_DcuOutput>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
         <DCC_Define>RELEASE;$(DCC_Define)</DCC_Define>
