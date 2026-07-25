@@ -12,12 +12,16 @@ uses
 procedure RegisterLibraryTools(Server: TMcpServer);
 function CollectionOrFail(const CollectionID: Integer): IBookCollection;
 function Guarded(Handler: TMcpToolHandler): TMcpToolHandler;
+function BookToJson(const Book: TBookRecord; Full: Boolean): TJSONObject;
+function AuthorsToJson(const Authors: TBookAuthors): TJSONArray;
+function GenresToJson(const Genres: TBookGenres): TJSONArray;
 
 implementation
 
 uses
   dm_user,
   unit_Settings,
+  unit_MCP_Json,
   SQLiteWrap;
 
 var
@@ -136,6 +140,92 @@ begin
   Result.AddPair('collections', Arr);
 end;
 
+function AuthorsToJson(const Authors: TBookAuthors): TJSONArray;
+var
+  I: Integer;
+  Entry: TJSONObject;
+begin
+  Result := TJSONArray.Create;
+  for I := 0 to High(Authors) do
+  begin
+    Entry := TJSONObject.Create;
+    Entry.AddPair('author_id', TJSONNumber.Create(Authors[I].AuthorID));
+    Entry.AddPair('last_name', Authors[I].LastName);
+    Entry.AddPair('first_name', Authors[I].FirstName);
+    Entry.AddPair('middle_name', Authors[I].MiddleName);
+    Entry.AddPair('full_name', Authors[I].GetFullName);
+    Result.AddElement(Entry);
+  end;
+end;
+
+function GenresToJson(const Genres: TBookGenres): TJSONArray;
+var
+  I: Integer;
+  Entry: TJSONObject;
+begin
+  Result := TJSONArray.Create;
+  for I := 0 to High(Genres) do
+  begin
+    Entry := TJSONObject.Create;
+    Entry.AddPair('code', Genres[I].GenreCode);
+    Entry.AddPair('alias', Genres[I].GenreAlias);
+    Result.AddElement(Entry);
+  end;
+end;
+
+function BookToJson(const Book: TBookRecord; Full: Boolean): TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.AddPair('book_id', TJSONNumber.Create(Book.BookKey.BookID));
+  Result.AddPair('title', Book.Title);
+  Result.AddPair('authors', AuthorsToJson(Book.Authors));
+  Result.AddPair('genres', GenresToJson(Book.Genres));
+  Result.AddPair('series', Book.Series);
+  Result.AddPair('seq_number', TJSONNumber.Create(Book.SeqNumber));
+  Result.AddPair('lang', Book.Lang);
+  Result.AddPair('ext', Book.FileExt);
+  Result.AddPair('size', TJSONNumber.Create(Book.Size));
+  Result.AddPair('has_text',
+    TJSONBool.Create(Book.GetBookFormat in [bfFb2, bfFb2Archive]));
+
+  if Full then
+  begin
+    Result.AddPair('lib_rate', TJSONNumber.Create(Book.LibRate));
+    Result.AddPair('rate', TJSONNumber.Create(Book.Rate));
+    Result.AddPair('progress', TJSONNumber.Create(Book.Progress));
+    Result.AddPair('keywords', Book.KeyWords);
+    Result.AddPair('folder', Book.Folder);
+    Result.AddPair('file_name', Book.FileName);
+    Result.AddPair('annotation', Book.Annotation);
+    Result.AddPair('review', Book.Review);
+    Result.AddPair('is_local', TJSONBool.Create(bpIsLocal in Book.BookProps));
+    Result.AddPair('is_deleted', TJSONBool.Create(bpIsDeleted in Book.BookProps));
+    Result.AddPair('has_review', TJSONBool.Create(bpHasReview in Book.BookProps));
+  end;
+end;
+
+function GetBook(const Args: TJSONObject): TJSONObject;
+var
+  Collection: IBookCollection;
+  BookKey: TBookKey;
+  Book: TBookRecord;
+begin
+  Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
+
+  BookKey.BookID := RequireInt(Args, 'book_id');
+  BookKey.DatabaseID := RequireInt(Args, 'collection_id');
+
+  try
+    Collection.GetBookRecord(BookKey, Book, True);
+  except
+    on E: Exception do
+      raise EMcpToolError.Create('book_not_found',
+        Format('Book %d not found: %s', [BookKey.BookID, E.Message]));
+  end;
+
+  Result := BookToJson(Book, True);
+end;
+
 procedure RegisterLibraryTools(Server: TMcpServer);
 begin
   Server.RegisterTool(
@@ -143,6 +233,16 @@ begin
     'Список усіх зареєстрованих колекцій MyHomeLib.',
     TJSONObject.ParseJSONValue('{"type":"object","properties":{}}') as TJSONObject,
     Guarded(ListCollections));
+
+  Server.RegisterTool(
+    'get_book',
+    'Повні відомості про книгу за її ідентифікатором.',
+    TJSONObject.ParseJSONValue(
+      '{"type":"object","properties":{' +
+      '"collection_id":{"type":"integer","description":"ID колекції"},' +
+      '"book_id":{"type":"integer","description":"ID книги"}},' +
+      '"required":["collection_id","book_id"]}') as TJSONObject,
+    Guarded(GetBook));
 end;
 
 end.

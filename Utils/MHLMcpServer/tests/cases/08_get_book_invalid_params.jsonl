@@ -1,0 +1,2 @@
+> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_book","arguments":{"collection_id":"abc","book_id":1}}}
+< {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_params\",\"message\":\"Argument collection_id must be an integer\"}"}],"isError":true}}

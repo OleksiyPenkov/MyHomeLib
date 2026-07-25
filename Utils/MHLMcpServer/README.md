@@ -66,6 +66,8 @@ comparing results with the MyHomeLib app itself:
       server does not depend on the app being open.
 - [ ] Opening the app and triggering an import while the server is mid-query
       surfaces `collection_busy` rather than crashing the server or hanging.
+- [ ] `get_book` returns a book whose title, authors, series and annotation
+      match the app's book details pane.
 - [ ] No output other than JSON-RPC lines ever appears on stdout, even during
       `DMUser` bootstrap (verified by the automated test suite in `tests/`,
       which fails loudly on any stray line).
@@ -77,7 +79,7 @@ node Utils/MHLMcpServer/tests/run_tests.js Program/OUT/Bin64/MHLMcpServer.exe
 ```
 
 These cover the JSON-RPC envelope, the MCP handshake and the JSON argument
-helpers. Six of the eight cases (`01_ping`, `02_initialize`,
+helpers. Six of the ten cases (`01_ping`, `02_initialize`,
 `03_unknown_method`, `04_unknown_tool`, `05_non_object_line`,
 `06_non_object_params`, `07_non_object_arguments` — everything that never
 reaches a tool handler) never touch `DMUser` or the real system database.
@@ -85,9 +87,15 @@ reaches a tool handler) never touch `DMUser` or the real system database.
 registered tool — `echo_args` included — is wrapped in `Guarded(...)`, which
 is what lazily boots `DMUser`; so that one case does depend on a real system
 database existing on the machine running the tests, the same as
-`list_collections` does. **All eight cases still require `sqlite3.dll` to be
-resolvable next to the exe**, regardless of which tool (if any) is called —
-see the load-time dependency note above — since the process cannot start at
-all without it. `list_collections` and later data-reading tools are covered
-by the manual checklist above because they need a real, populated collection
+`list_collections` does. `08_get_book_invalid_params.jsonl` and
+`09_get_book_collection_not_found.jsonl` exercise `get_book`'s argument
+validation (`RequireInt` rejecting a non-integer `collection_id`) and
+`CollectionOrFail`'s not-found path respectively; both still go through
+`Guarded(...)` and so also depend on a real system database, even though
+neither ever reaches a real collection. **All ten cases still require
+`sqlite3.dll` to be resolvable next to the exe**, regardless of which tool
+(if any) is called — see the load-time dependency note above — since the
+process cannot start at all without it. `list_collections` and later
+data-reading tools are covered by the manual checklist above because they
+need a real, populated collection
 list to be meaningful, not just any system database.
