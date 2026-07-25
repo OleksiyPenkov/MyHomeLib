@@ -147,7 +147,7 @@ git commit -m "+ Expose zip member sizes and INPX filename constants"
 - Consumes: nothing from Task 1.
 - Produces: unit `unit_ProgressBarEx` exporting `TProgressBar = class(Vcl.ComCtrls.TProgressBar)` with a published `ShowPercent: Boolean` property defaulting to `True`. Tasks 4 add this unit to three more `uses` clauses.
 
-- [ ] **Step 1: Create the interposer unit**
+- [x] **Step 1: Create the interposer unit**
 
 Create `Program/Units/unit_ProgressBarEx.pas`. **Save it with a UTF-8 BOM.**
 
@@ -411,7 +411,7 @@ end;
 end.
 ```
 
-- [ ] **Step 2: Register the unit in the `.dpr`**
+- [x] **Step 2: Register the unit in the `.dpr`**
 
 In `Program/MyHomeLib.dpr`, immediately after the `unit_ProgressEngine` line (line 136):
 
@@ -421,7 +421,7 @@ In `Program/MyHomeLib.dpr`, immediately after the `unit_ProgressEngine` line (li
   unit_MHLGenerics in 'Units\unit_MHLGenerics.pas',
 ```
 
-- [ ] **Step 3: Register the unit in the `.dproj`**
+- [x] **Step 3: Register the unit in the `.dproj`**
 
 In `Program/MyhomeLib.dproj`, immediately after line 205:
 
@@ -432,7 +432,7 @@ In `Program/MyhomeLib.dproj`, immediately after line 205:
 
 Hand-edit only. Do not let msbuild touch this file directly.
 
-- [ ] **Step 4: Wire it into the shared import progress form**
+- [x] **Step 4: Wire it into the shared import progress form**
 
 In `Program/ImportImpl/frm_ImportProgressForm.pas`, the `uses` clause is currently:
 
@@ -453,12 +453,12 @@ uses
 
 Order matters: the interposer must shadow `ComCtrls.TProgressBar`. This one edit covers `TImportProgressFormEx`, `TExportProgressForm`, `TSyncOnLineProgressForm` and `TExportToDeviceProgressForm`, which all inherit the `ProgressBar` field from this form.
 
-- [ ] **Step 5: Build Win64**
+- [x] **Step 5: Build Win64**
 
 Run the Win64 build command.
 Expected: build succeeds. If you get `E2010 Incompatible types: 'TProgressBar' and 'TProgressBar'` anywhere, a unit is referring to the wrong one — check `uses` ordering in the file named by the error.
 
-- [ ] **Step 6: Build Win32**
+- [x] **Step 6: Build Win32**
 
 Run the Win32 build command.
 Expected: build succeeds.
@@ -473,7 +473,7 @@ Expected:
 - The number stays legible as the filled region passes under it.
 - No flicker.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add Program/Units/unit_ProgressBarEx.pas Program/MyHomeLib.dpr Program/MyhomeLib.dproj Program/ImportImpl/frm_ImportProgressForm.pas
@@ -494,7 +494,7 @@ git commit -m "+ Draw the percentage inside determinate progress bars"
 
 **Background — what is broken.** `TWorker.OpenProgress` (`unit_WorkerThread.pas:132`) opens every worker with `FProgressEngine.BeginOperation(0, '', '')`. `Total = 0` makes the engine push `pbstMarquee`, and `Position` is invisible on a marquee bar. FB2/FBD import later calls `BeginOperation(FFiles.Count, ...)` and the engine flips back to `pbstNormal`; the INPX path bypasses the engine entirely and never does. Separately, `numFiles` is `Zip.FileCount` (**all** members, including `collection.info`, `structure.info`, `version.info`), `i` is skipped for `extra.inp`, and progress only ticks every 100 *successfully inserted* books. Finally `TMHLZip.FindNext` has no extension check — it just does `Inc(FLastID)` — so the loop walks past the last `.inp` and feeds `version.info` into `ParseData`, producing spurious `rstrErrorInpStructure` entries.
 
-- [ ] **Step 1: Add the entry record and new locals**
+- [x] **Step 1: Add the entry record and new locals**
 
 In `unit_ImportInpxThread.pas`, replace the `Import` declaration header and `var` block (lines 375-392) with:
 
@@ -530,7 +530,7 @@ begin
 
 `numFiles` is gone — it was the broken denominator and nothing else uses it.
 
-- [ ] **Step 2: Replace the archive walk with the pre-pass**
+- [x] **Step 2: Replace the archive walk with the pre-pass**
 
 Replace lines 415-418 — currently:
 
@@ -592,7 +592,7 @@ with:
       CurrentFile := InpEntries[i].Name;
 ```
 
-- [ ] **Step 3: Extract from the entry name instead of `Zip.LastName`**
+- [x] **Step 3: Extract from the entry name instead of `Zip.LastName`**
 
 Replace line 428 — currently `Zip.ExtractToStream(Zip.LastName, inpStream);` — with:
 
@@ -602,7 +602,7 @@ Replace line 428 — currently `Zip.ExtractToStream(Zip.LastName, inpStream);` �
 
 `Zip.LastName` tracked the `Find`/`FindNext` cursor, which no longer exists.
 
-- [ ] **Step 4: Move the progress block out of the per-book `try` and fix its arithmetic**
+- [x] **Step 4: Move the progress block out of the per-book `try` and fix its arithmetic**
 
 The old progress block sits *inside* the `try` that wraps one book (lines 470-477), gated on `filesProcessed`:
 
@@ -657,7 +657,7 @@ The percentage must stay in `Int64`: a full Flibusta INPX carries on the order o
 
 `BookList.Count = 0` cannot divide by zero — the `for j` loop body does not execute at all in that case.
 
-- [ ] **Step 5: Close the member loop by advancing the byte counter**
+- [x] **Step 5: Close the member loop by advancing the byte counter**
 
 Replace lines 488-496 — currently:
 
@@ -690,7 +690,7 @@ Everything from `Teletype(Format(rstrAddedBooks, ...))` at line 498 onward — i
 
 Re-indent the `for i` loop body consistently (the old `repeat` body was indented inconsistently — two of its blocks sat at six spaces and the rest at eight).
 
-- [ ] **Step 6: Build Win64, then Win32**
+- [x] **Step 6: Build Win64, then Win32**
 
 Run both build commands.
 Expected: both succeed. Watch for `H2077 Value assigned to 'numFiles' never used` — if it appears, a reference to `numFiles` was missed.
@@ -708,7 +708,7 @@ Run `Program\OUT\Bin64\MyHomeLib.exe`.
 4. **Cancel** an import midway.
    Expected: it stops promptly (cancel is still checked every 100 lines) and the collection is rolled back as before.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add Program/ImportImpl/unit_ImportInpxThread.pas
@@ -730,7 +730,7 @@ git commit -m "* Drive INPX import progress from real .inp byte weights"
 - Consumes: `unit_ProgressBarEx` from Task 2; the working INPX percentage from Task 3.
 - Produces: `TframeNCWProgress.SetProgressHint(Style: TProgressBarStyle; State: TProgressBarState)`.
 
-- [ ] **Step 1: Wire the download progress form**
+- [x] **Step 1: Wire the download progress form**
 
 In `Program/DwnldImpl/frm_DownloadProgressForm.pas`, add `unit_ProgressBarEx` as the last entry of the `uses` clause:
 
@@ -752,7 +752,7 @@ uses
   unit_ProgressBarEx;
 ```
 
-- [ ] **Step 2: Wire the wizard download frame**
+- [x] **Step 2: Wire the wizard download frame**
 
 In `Program/Wizards/NewCollection/frame_NCWDownload.pas`:
 
@@ -774,7 +774,7 @@ uses
   unit_ProgressBarEx;
 ```
 
-- [ ] **Step 3: Wire the wizard progress frame and give it a hint handler**
+- [x] **Step 3: Wire the wizard progress frame and give it a hint handler**
 
 In `Program/Wizards/NewCollection/frame_NCWProgress.pas`, change the `uses` clause (lines 17-20) to:
 
@@ -803,7 +803,7 @@ begin
 end;
 ```
 
-- [ ] **Step 4: Hook the hint in the wizard**
+- [x] **Step 4: Hook the hint in the wizard**
 
 In `Program/Wizards/NewCollection/frm_NewCollectionWizard.pas`, the worker wiring at lines 433-438 is currently:
 
@@ -824,7 +824,7 @@ Add the missing hint hook:
 
 Until now the wizard never hooked `OnProgressHint`, so its `Bar` kept the designer default `pbstNormal` and rendered the old skewed percentage. With Task 3 in place the bar reaches 100% and would then sit frozen through the "оновлення БД" tail; this hook makes it go marquee instead.
 
-- [ ] **Step 5: Build Win64, then Win32**
+- [x] **Step 5: Build Win64, then Win32**
 
 Run both build commands.
 Expected: both succeed.
@@ -841,7 +841,7 @@ Run `Program\OUT\Bin64\MyHomeLib.exe`.
    Expected: the download phase shows a climbing number with the Kb/s comment, then the import phase climbs `0%` → `100%`, then marquee.
 4. Re-run the FB2 import check from Task 2 Step 7 to confirm nothing regressed on the shared form.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add Program/DwnldImpl/frm_DownloadProgressForm.pas Program/Wizards/NewCollection/frame_NCWDownload.pas Program/Wizards/NewCollection/frame_NCWProgress.pas Program/Wizards/NewCollection/frm_NewCollectionWizard.pas
