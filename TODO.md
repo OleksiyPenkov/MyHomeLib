@@ -1,9 +1,3 @@
 # MyHomeLib — TODO
 
-| # | Task | Size | Status |
-|---|------|------|--------|
-| B7 | ~~Decouple `TDownloadManagerThread` / `TDownloadBooksThread` from `frmMain`~~ — done in code: `IDownloadView` (`DwnldImpl/unit_DownloadView.pas`) now owns queue navigation, status, tray and button state; the thread reaches the UI only through `Synchronize`. **Awaiting verification in the running app** (download start/pause/resume, error retry, tray mode). | 🔴 XL | 🔴 Open |
-| F1 | ~~Restore batch `AutoMode` FBD-creation~~ — done in code: `TFBDDocument.CreateArchive` builds into a temp file, validates it closed, and only then replaces the target; `TFileMutex` gives cross-process exclusion per book file; `AutoMode` skips locked/unsuitable books and can be cancelled. **Awaiting verification in the running app** (single convert, FBD edit, batch run, cancel). | 🟠 L | 🔴 Open |
-| F6f | ~~URL format for "Edit at library site" / "View at library site" is hardcoded~~ — done in code: `GetEditURL(LibID)` / `GetViewURL(LibID)` added to `IBookCollection`, implemented as virtual methods on `TBookCollection`. **Awaiting verification in the running app.** Note: the download URL (`frm_main.pas`, `Add2DownloadListExecute`) still builds `%sb/%s/get` from `Settings.InpxURL` and was left as is. | 🟡 M | 🔴 Open |
-| D1 | Screenshots for the HTML help. All 25 images from the old 2011 CHM were dropped (Russian UI, pre-modernization icons); `Program/Help/` currently ships text-only. Capture current 2.6.0 shots for `main_window`, `browsing`, `new_collection`, `search`, `set_readers`, `set_device` and wire them in. | 🟡 M | 🔴 Open |
-| R1 | ~~Dead UI code found during the help audit~~ — done in code: `frm_EditAuthorEx.pas/.dfm` deleted, `acHelpSupportForum` and its orphaned `GoForumExecute` handler removed. **Awaiting verification in the running app.** | 🟡 M | 🔴 Open |
+No open items.
