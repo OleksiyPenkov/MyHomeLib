@@ -79,6 +79,54 @@ comparing results with the MyHomeLib app itself:
 - [ ] No output other than JSON-RPC lines ever appears on stdout, even during
       `DMUser` bootstrap (verified by the automated test suite in `tests/`,
       which fails loudly on any stray line).
+- [ ] `get_book_toc` on a structured FB2 lists chapters matching the book's
+      actual chapters (open the same file in the app or a text editor and
+      compare titles/order).
+- [ ] An offset from `get_book_toc` passed to `get_book_text` returns that
+      chapter's opening text — the round trip that justifies returning
+      offsets from the TOC at all.
+- [ ] `get_book_text` with an `offset` past `total_length` returns
+      `invalid_offset` rather than an empty slice or a crash.
+- [ ] `get_book_text` on a non-FB2 book returns `unsupported_format`. (A
+      library that is 100% FB2, e.g. a Lib.rus.ec/Flibusta dump, will have no
+      such book to test with — that is expected, not a gap; skip this item
+      with a note rather than forcing a non-FB2 book into the collection.)
+- [ ] `search_in_book` finds a phrase you know is in the book, and its
+      `offset` re-read via `get_book_text` shows the phrase at the very start
+      of what comes back.
+- [ ] A book whose archive (`.zip`) is missing or renamed returns
+      `file_missing`, not a crash or an opaque internal error.
+- [ ] The second `get_book_text` (or `get_book_toc`/`search_in_book`) call on
+      the same book is noticeably faster than the first — the extraction
+      itself is skipped and the cached `.txt`/`.json` pair under
+      `%LOCALAPPDATA%\MyHomeLib\McpCache` is read instead. Confirm the pair's
+      `LastWriteTime` does NOT change between the two calls (no rewrite on a
+      hit) while its access time does.
+- [ ] Every field in every tool's response — not just the ones called out
+      above — matches what the app itself shows for the same book/collection.
+      Spot-check at least one field per tool against the app's UI; the
+      per-tool bullets above are examples, not the full extent of what should
+      be compared.
+
+## Diagnostic CLI modes
+
+Both of these run before `Application.Initialize`/`DMUser` and write their
+single JSON result through `TMcpTransport` (never raw `Writeln`) to keep the
+"only the transport writes to stdout" rule mechanically true even in these
+modes. Neither touches the database or the real machine-wide cache.
+
+- **`MHLMcpServer.exe --extract <file.fb2>`** — runs `ExtractFb2` on a local
+  FB2 file and prints `{"text":…,"sections":[…],"structured":…,
+  "total_length":…}` as one JSON line. Useful for checking what the extractor
+  produces for a specific file without going through a collection at all —
+  e.g. `MHLMcpServer.exe --extract C:\some\book.fb2`. Exits non-zero with a
+  message on stderr if extraction fails.
+- **`MHLMcpServer.exe --cache-selftest`** — exercises
+  `EnsureCached`/`ReadCachedSlice`/`EvictCache` end to end against a throwaway
+  temp directory (never the real `%LOCALAPPDATA%\MyHomeLib\McpCache`) and
+  prints a pass/fail line per scenario. This is what `tests/cache_tests.js`
+  drives; run it directly for a quick sanity check of the cache logic in
+  isolation.
 
 ### `search_books` date-filter pitfall
 
@@ -182,22 +230,84 @@ from it can still be used.
 `unit_MCP_Tools_Library.pas` for why (a blank `LastName` would otherwise raise
 `EAssertionFailed` carrying a build-machine path straight to the client).
 
+## `get_book_toc`, `get_book_text`, `search_in_book`
+
+These three are the only tools that read a book's actual text rather than its
+catalogue metadata, and they only work for FB2 books (`ext` `.fb2`, whether
+loose or inside a `.zip`) — anything else fails with `unsupported_format`.
+All three share one preamble (`LoadBookForText` in
+`unit_MCP_Tools_Text.pas`): resolve the collection and book, reject non-FB2,
+resolve the book's real file via `TBookRecord.GetBookFileName` (**not**
+`GetBookContainer`, which returns a directory for a loose `.fb2` and would
+fail `FileExists` for every non-archived book), then hand that file's size
+and timestamp to the on-disk text cache (`unit_MCP_TextCache.pas`) as the key
+for `EnsureCached`. The first call for a given book pays for the FB2 parse;
+every later call for the same book (as long as its underlying file's size and
+mtime are unchanged) reads the cached `.txt`/`.json` pair instead.
+
+`get_book_toc` returns the section hierarchy as a flat, pre-order list —
+`{"sections":[{"title":…,"level":…,"offset":…,"length":…}],"structured":…,
+"total_length":…}`. This is **not** a partition of the text: FB2 sections
+nest, so a parent's `[offset, offset+length)` span strictly contains every
+one of its descendants' spans, and `level` (0 = top-level) is what encodes
+that nesting in the flat list. A client must pick the one section it wants,
+never concatenate every entry — doing so would double-count every nested
+section once for itself and again for each ancestor. An empty `sections`
+array is a normal, successful result for an unstructured book (no
+`<section>` markup, or recovered via the tag-stripping fallback) — it is not
+an error.
+
+`get_book_text` returns a slice of the book's plain text starting at
+`offset` (default `0`) for `length` code units (default `8000`, hard max
+`50000`, clamped rather than rejected — `"clamped":true` when it fires). An
+`offset` past `total_length` is the one thing this tool does NOT clamp: it
+fails with `invalid_offset`, because silently clamping it would return an
+empty slice that looks indistinguishable from "the book ends exactly here".
+`offset`/`length` count **UTF-16 code units**, matching `get_book_toc`'s
+`offset`/`length` fields exactly — feeding a TOC offset straight into
+`get_book_text` lands on that section's own opening text, which is the round
+trip the whole tool pair exists for.
+
+`search_in_book` does a case-insensitive substring scan of the whole cached
+text for `query`, returning up to `max_hits` (default 10, max 50) hits, each
+`{"offset":…,"passage":…}` — `offset` is the 0-based position of the match
+itself (so it, too, can be fed straight into `get_book_text`), `passage` is
+`query` padded by `context_chars` (default 200, max 2000) on each side and
+clamped to the text's own bounds. `total_hits` counts every match in the
+book, even past `max_hits`, so a caller can tell there were more than it got
+back.
+
 ## Automated tests
 
 ```
 node Utils/MHLMcpServer/tests/run_tests.js Program/OUT/Bin64/MHLMcpServer.exe
+node Utils/MHLMcpServer/tests/extract_tests.js Program/OUT/Bin64/MHLMcpServer.exe
+node Utils/MHLMcpServer/tests/cache_tests.js Program/OUT/Bin64/MHLMcpServer.exe
 ```
 
-These cover the JSON-RPC envelope, the MCP handshake and the JSON argument
-helpers. Six of the ten cases (`01_ping`, `02_initialize`,
+(Swap in `Program/OUT/BIN/MHLMcpServer.exe` to run the same three suites
+against the Win32 build.)
+
+`run_tests.js` covers the JSON-RPC envelope, the MCP handshake and the JSON
+argument helpers, one case per `.jsonl` file under `tests/cases/`.
+`extract_tests.js` drives `--extract` against the fixtures under
+`tests/fixtures/` to cover the FB2 extractor in isolation (structured
+sections, encoding detection, malformed-file fallback). `cache_tests.js`
+drives `--cache-selftest` to cover the on-disk text cache in isolation
+(hit/miss keying, surrogate-boundary trimming, eviction). Neither of the
+latter two touches a real collection or `DMUser` at all.
+
+Six of `run_tests.js`'s cases (`01_ping`, `02_initialize`,
 `03_unknown_method`, `04_unknown_tool`, `05_non_object_line`,
 `06_non_object_params`, `07_non_object_arguments` — everything that never
 reaches a tool handler) never touch `DMUser` or the real system database.
-`05_clamping.jsonl` calls the diagnostic `echo_args` tool, and every
-registered tool — `echo_args` included — is wrapped in `Guarded(...)`, which
-is what lazily boots `DMUser`; so that one case does depend on a real system
-database existing on the machine running the tests, the same as
-`list_collections` does. `08_get_book_invalid_params.jsonl` and
+`05_tool_error.jsonl` calls `get_book_text` with a nonexistent
+`collection_id: -1`, exercising the domain-error path (`collection_not_found`)
+without needing a real collection; every registered tool is wrapped in
+`Guarded(...)`, which is what lazily boots `DMUser`, so this case still
+depends on a real system database existing on the machine running the tests,
+the same as `list_collections` does — even though it never reaches a real
+collection. `08_get_book_invalid_params.jsonl` and
 `09_get_book_collection_not_found.jsonl` exercise `get_book`'s argument
 validation (`RequireInt` rejecting a non-integer `collection_id`) and
 `CollectionOrFail`'s not-found path respectively; both still go through
@@ -263,3 +373,38 @@ one field on this one query shape; it is not a general injection-free proof
 of the server, and the README section above says plainly which other fields
 (`title`, `author`, `series`, `lang`, `keyword`, `annotation`,
 `min_lib_rate`) still splice caller input into SQL unescaped.
+
+`22_get_book_toc.jsonl` through `26_search_in_book_round_trip.jsonl` cover
+the three text tools, all captured byte-for-byte from an actual run against
+`book_id: 487024` in collection 1 (`Сборник "Белка"`, a real multi-story FB2
+anthology — `total_length: 198707`, 11 flat top-level sections) or
+`book_id: 4` (a much shorter FB2, `total_length: 13846`, chosen for the
+clamping/invalid-offset cases specifically so the fixture stays small rather
+than embedding a whole ~14–200K-character book where only the response shape
+matters). `22_get_book_toc.jsonl` asserts `get_book_toc`'s full section list
+for book 487024 byte-for-byte, including `level` on every entry.
+`23_get_book_text_toc_round_trip.jsonl` feeds section 2's own `offset`
+(`101182`, the "Гудок парохода" chapter) into `get_book_text` and asserts the
+returned text opens with that chapter's title and first sentence — the round
+trip the whole `get_book_toc`/`get_book_text` pair exists to support.
+`24_get_book_text_clamped.jsonl` requests `length: 999999` on book 4 at
+`offset: 13800` (near the very end, so the returned slice stays a few dozen
+characters instead of the whole book) and asserts `"clamped":true`.
+`25_get_book_text_invalid_offset.jsonl` requests `offset: 99999` against
+book 4's `total_length: 13846` and asserts `isError:true` with
+`"code":"invalid_offset"`. `26_search_in_book_round_trip.jsonl` searches book
+487024 for the phrase `"Баку такой мягкой зимы"`, asserts the single real
+hit's `offset` and padded `passage`, then feeds that same `offset` into a
+second `get_book_text` call and asserts the phrase appears at the very start
+of what comes back.
+
+There is no automated case for `get_book_text`'s `unsupported_format` path:
+the only collection registered on the machine these tests were captured on
+is `Lib.rus.ec Local [FB2]` — a collection that is, by name and by a sampled
+scan of roughly 8,800 of its 439,393 books spread across the whole ID range,
+100% FB2. `unsupported_format` is covered by unit-level reasoning instead
+(`Book.GetBookFormat in [bfFb2, bfFb2Archive]` in `LoadBookForText`) and
+belongs on the manual checklist above for whoever next runs this against a
+mixed-format collection. Likewise there is no automated case for
+`file_missing` on a text tool (it needs a real archive to go missing/get
+renamed underneath a real collection) — see the manual checklist.

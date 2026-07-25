@@ -70,13 +70,20 @@ end;
 // error instead of an opaque internal one. SQLiteWrap exposes no read-only
 // or busy-timeout open mode, so a write by the running app surfaces here as
 // "database is locked".
+//
+// EnsureLibraryInitialized is called INSIDE the try/except, not before it:
+// TDMUser.Init itself opens the system database, so an ESQLiteException it
+// raises (the system DB exists but the running app holds a lock at that
+// exact moment) must go through the same collection_busy mapping as every
+// other SQLite exception a handler can raise -- not surface as a raw
+// JSON-RPC -32603 just because it happened one call earlier than the rest.
 function Guarded(Handler: TMcpToolHandler): TMcpToolHandler;
 begin
   Result :=
     function(const Args: TJSONObject): TJSONObject
     begin
-      EnsureLibraryInitialized;
       try
+        EnsureLibraryInitialized;
         Result := Handler(Args);
       except
         on E: ESQLiteException do

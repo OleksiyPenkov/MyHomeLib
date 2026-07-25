@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "myhomelib": {
+      "command": "D:\\DelphiProjects\\MyHomeLib-mcp\\Program\\OUT\\Bin64\\MHLMcpServer.exe",
+      "args": []
+    }
+  }
+}
