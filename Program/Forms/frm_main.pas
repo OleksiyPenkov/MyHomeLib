@@ -70,7 +70,8 @@ uses
   System.ImageList,
   Vcl.Themes,
   RzPanel, RzButton, RzStatus, RzTabs,
-  dm_Images;
+  dm_Images, VirtualTrees.BaseAncestorVCL, VirtualTrees.BaseTree,
+  VirtualTrees.AncestorVCL;
 
 type
   TfrmMain = class(TForm, IDownloadView)
@@ -779,6 +780,11 @@ type
     procedure SetColors;
     procedure CreateAlphabetToolbar;
 
+    function FrameControl(AControl: TWinControl): Boolean;
+    procedure FrameTree(ATree: TVirtualStringTree); overload;
+    procedure FrameTree(ATree: TBookTree); overload;
+    procedure FrameTrees;
+
     // Handlers:
     procedure OnReadBookHandler(const BookRecord: TBookRecord);
     procedure OnSelectBookHandler(MoveForward: Boolean);
@@ -908,6 +914,7 @@ type
     FSearchCriteria: TBookSearchCriteria;
 
     FSystemData: ISystemData;
+    FInSetInfoPanelHeight: Boolean;
 
     function AuthorBookFilter: TFilterValue;
     function SeriesBookFilter: TFilterValue;
@@ -921,6 +928,8 @@ type
     procedure FillAllBooksTree;
     function CheckLibUpdates(Auto: Boolean): Boolean;
     procedure SetInfoPanelHeight(Height: Integer);
+    procedure FixInfoSplitter(ASplitter: TMHLSplitter; APanel: TInfoPanel);
+    procedure FixInfoSplitters;
     procedure SetInfoPanelVisible(State: Boolean);
     procedure SetShowBookCover(State: Boolean);
     procedure SetShowBookAnnotation(State: Boolean);
@@ -1291,6 +1300,47 @@ begin
   finally
     Columns.Free;
   end;
+end;
+
+//
+// The trees only know how to draw a square border, so the border is turned off
+// and the hosting panel paints a rounded frame in the gap left by the tree's
+// margins. Nothing is reparented: the control tree in frm_main.dfm, splitters
+// included, stays exactly as designed.
+//
+function TfrmMain.FrameControl(AControl: TWinControl): Boolean;
+begin
+  Result := AControl.Parent is TMHLSimplePanel;
+  if Result then
+    TMHLSimplePanel(AControl.Parent).FramedControl := AControl;
+end;
+
+procedure TfrmMain.FrameTree(ATree: TVirtualStringTree);
+begin
+  // Only drop the tree's own border if the panel takes over the drawing.
+  if FrameControl(ATree) then
+    ATree.BorderStyle := bsNone;
+end;
+
+procedure TfrmMain.FrameTree(ATree: TBookTree);
+begin
+  if FrameControl(ATree) then
+    ATree.BorderStyle := bsNone;
+end;
+
+procedure TfrmMain.FrameTrees;
+begin
+  FrameTree(tvAuthors);
+  FrameTree(tvSeries);
+  FrameTree(tvGenres);
+  FrameTree(tvGroups);
+
+  FrameTree(tvBooksA);
+  FrameTree(tvBooksS);
+  FrameTree(tvBooksG);
+  FrameTree(tvBooksSR);
+  FrameTree(tvBooksF);
+  FrameTree(tvDownloadList);
 end;
 
 procedure TfrmMain.SetColors;
@@ -2808,6 +2858,8 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FSystemData := SystemDB;
 
+  FrameTrees;
+
   dmImages.ScaleForDPI(Self.CurrentPPI);
 
   ConnectTreeControllers;
@@ -2833,6 +2885,8 @@ begin
   SetFormState;
 
   UpdateSplashScreen(rstrStarting);
+
+  FixInfoSplitters;
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -4108,11 +4162,44 @@ end;
 
 procedure TfrmMain.SetInfoPanelHeight(Height: Integer);
 begin
-  ipnlAuthors.Height := Height;
-  ipnlSeries.Height := Height;
-  ipnlGenres.Height := Height;
-  ipnlSearch.Height := Height;
-  ipnlFavorites.Height := Height;
+  //
+  // Every panel's OnResize calls back in here, so without the guard each
+  // assignment below re-enters and changes the panels' bounds while their
+  // parent is still inside AlignControls. That leaves the splitter's bottom
+  // edge below the info panel's, and since the VCL orders alBottom siblings by
+  // that edge, the splitter gets parked at the bottom of the view for good.
+  //
+  if FInSetInfoPanelHeight then
+    Exit;
+
+  FInSetInfoPanelHeight := True;
+  try
+    ipnlAuthors.Height := Height;
+    ipnlSeries.Height := Height;
+    ipnlGenres.Height := Height;
+    ipnlSearch.Height := Height;
+    ipnlFavorites.Height := Height;
+  finally
+    FInSetInfoPanelHeight := False;
+  end;
+end;
+
+procedure TfrmMain.FixInfoSplitter(ASplitter: TMHLSplitter; APanel: TInfoPanel);
+begin
+  // Repairs the order if it has already flipped: putting the splitter back
+  // above the panel makes its bottom edge the smaller one again, which is what
+  // the alBottom sort keys off.
+  if ASplitter.Visible and APanel.Visible and (ASplitter.Top > APanel.Top) then
+    ASplitter.Top := APanel.Top - APanel.Margins.Top - ASplitter.Height;
+end;
+
+procedure TfrmMain.FixInfoSplitters;
+begin
+  FixInfoSplitter(AuthorBookInfoSplitter, ipnlAuthors);
+  FixInfoSplitter(SerieBookInfoSplitter, ipnlSeries);
+  FixInfoSplitter(GenreBookInfoSplitter, ipnlGenres);
+  FixInfoSplitter(SearchBookInfoSplitter, ipnlSearch);
+  FixInfoSplitter(GroupBookInfoSplitter, ipnlFavorites);
 end;
 
 procedure TfrmMain.SetInfoPanelVisible(State: Boolean);

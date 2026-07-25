@@ -21,6 +21,7 @@ interface
 uses
   Winapi.Windows,
   Controls,
+  Forms,
   Graphics,
   Classes,
   StdCtrls,
@@ -122,6 +123,13 @@ resourcestring
   rsrtFiledLabel = 'Поле';
   rsrtValueLabel = 'Значення';
 
+const
+  PanelPadding = 10;  // inset of the content from the panel's rounded border
+  CoverGap = 12;      // gap between the cover and the info column
+  RowSpacing = 5;     // leading added to the text height of an info row
+  AnnotationGap = 8;  // gap between the last info row and the annotation
+  LabelColumn = 70;   // width of the "Серія:"/"Жанр(и):" caption column
+
 function GetCoverWidth(Height: Integer): Integer;
 begin
   Result := Height * 2 div 3;
@@ -150,11 +158,15 @@ begin
   BorderOuter := fsFlatRounded;
   BorderInner := fsNone;
 
+  // Keep the aligned children off the rounded border. TRzPanel ignores Padding
+  // (it adjusts the client rect for its own border), so the inset has to come
+  // from the children's Margins, which TWinControl.AlignControls always honours.
   FCover := TImage.Create(Self);
   FCover.Parent := Self;
   FCover.SetBounds(0, 0, GetCoverWidth(200), 200);
   FCover.Align := alLeft;
   FCover.AlignWithMargins := True;
+  FCover.Margins.SetBounds(PanelPadding, PanelPadding, 0, PanelPadding);
   FCover.Center := True;
   FCover.Proportional := True;
   FCover.Stretch := True;
@@ -163,7 +175,10 @@ begin
   FInfoPanel.Parent := Self;
   FInfoPanel.SetBounds(200, 0, 300, 200);
   FInfoPanel.Align := alClient;
+  FInfoPanel.AlignWithMargins := True;
+  FInfoPanel.Margins.SetBounds(CoverGap, PanelPadding, PanelPadding, PanelPadding);
   FInfoPanel.BorderOuter := fsNone;
+  FInfoPanel.ParentColor := True;
 
   FTitle := TLabel.Create(FInfoPanel);
   FTitle.Parent := FInfoPanel;
@@ -201,6 +216,10 @@ begin
   FAnnotation := TMemo.Create(FInfoPanel);
   FAnnotation.Parent := FInfoPanel;
   FAnnotation.Anchors := [akLeft, akTop, akRight, akBottom];
+  // No sunken frame inside the panel's own rounded border, and follow the
+  // panel's background so the annotation reads as part of the panel.
+  FAnnotation.BorderStyle := bsNone;
+  FAnnotation.ParentColor := True;
   FAnnotation.ReadOnly := True;
   FAnnotation.TextHint := rstrNoAnnotationHint;
   FAnnotation.ScrollBars := ssVertical;
@@ -212,7 +231,8 @@ begin
   with FFb2Info do
   begin
     Parent := FInfoPanel;
-    AlignWithMargins := True;
+    BorderStyle := bsNone;
+    ParentColor := True;
     with Columns.Add do begin
       Caption := rsrtFiledLabel;
       Width := 175;
@@ -292,7 +312,7 @@ end;
 
 procedure TInfoPanel.LayoutControls;
 var
-  RowH, LblW, W, H, Y: Integer;
+  RowH, Gap, LblW, W, H, Y: Integer;
 begin
   if not Assigned(FInfoPanel) then
     Exit;
@@ -310,8 +330,14 @@ begin
   FGenreLabel.Font.Height := FInfoPanel.Font.Height;
   FGenreLabel.Font.Name := FInfoPanel.Font.Name;
 
-  RowH := MulDiv(20, CurrentPPI, 96);
-  LblW := MulDiv(70, CurrentPPI, 96);
+  // Row height follows the current font: ShortFontSize is user-configurable, so
+  // a fixed 20px row makes the text collide once the font grows. Bold is the
+  // tallest face used in a row, so measure with it.
+  Canvas.Font := FInfoPanel.Font;
+  Canvas.Font.Style := [fsBold];
+  RowH := Canvas.TextHeight('Wg') + MulDiv(RowSpacing, CurrentPPI, 96);
+  Gap := MulDiv(AnnotationGap, CurrentPPI, 96);
+  LblW := MulDiv(LabelColumn, CurrentPPI, 96);
 
   Y := 0;
   FTitle.SetBounds(0, Y, W, RowH);
@@ -323,9 +349,12 @@ begin
   Inc(Y, RowH);
   FGenreLabel.SetBounds(0, Y, LblW, RowH);
   FGenres.SetBounds(LblW, Y, W - LblW, RowH);
-  Inc(Y, RowH);
-  FAnnotation.SetBounds(0, Y, W, H - Y);
-  FFb2Info.SetBounds(0, Y, W, H - Y);
+  Inc(Y, RowH + Gap);
+  if H > Y then
+  begin
+    FAnnotation.SetBounds(0, Y, W, H - Y);
+    FFb2Info.SetBounds(0, Y, W, H - Y);
+  end;
 end;
 
 procedure TInfoPanel.ChangeScale(M, D: Integer; isDpiChange: Boolean);

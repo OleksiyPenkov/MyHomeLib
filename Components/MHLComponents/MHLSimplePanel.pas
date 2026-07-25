@@ -6,7 +6,7 @@
   *
   * Author(s)           Nick Rymanov     nrymanov@gmail.com
   * Created
-  * Description         Простая панель без бордера и заголовка. Исключительно для упрощения жизни :)
+  * Description         пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ :)
   *
   * $Id: MHLSimplePanel.pas 785 2010-09-17 09:06:06Z nrymanov@gmail.com $
   *
@@ -19,13 +19,28 @@ unit MHLSimplePanel;
 interface
 
 uses
-  SysUtils, Classes, Controls, ExtCtrls;
+  Winapi.Windows, System.Types, SysUtils, Classes, Controls, ExtCtrls, Graphics;
 
 type
   TMHLSimplePanel = class(TCustomPanel)
+  private
+    FFramedControl: TControl;
+    procedure SetFramedControl(const Value: TControl);
+  protected
+    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     property DockManager;
+
+    //
+    // Draws a flat rounded frame around the given child, in the gap its
+    // Margins leave free. Lets a borderless child (a tree, say) get the same
+    // frame TRzPanel paints with BorderOuter = fsFlatRounded, without wrapping
+    // it in another window.
+    //
+    property FramedControl: TControl read FFramedControl write SetFramedControl;
 
   published
     property Align;
@@ -113,6 +128,53 @@ begin
   inherited;
   ControlStyle := ControlStyle - [csSetCaption];
   BevelOuter := bvNone;
+end;
+
+procedure TMHLSimplePanel.SetFramedControl(const Value: TControl);
+begin
+  if FFramedControl <> Value then
+  begin
+    FFramedControl := Value;
+    if Value <> nil then
+      Value.FreeNotification(Self);
+    Invalidate;
+  end;
+end;
+
+procedure TMHLSimplePanel.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FFramedControl) then
+    FFramedControl := nil;
+end;
+
+procedure TMHLSimplePanel.AlignControls(AControl: TControl; var Rect: TRect);
+begin
+  inherited;
+  // The child moves whenever the panel is realigned - a splitter drag resizes
+  // it without resizing the panel - so the old frame has to be repainted.
+  if Assigned(FFramedControl) then
+    Invalidate;
+end;
+
+procedure TMHLSimplePanel.Paint;
+const
+  FrameRadius = 6;
+var
+  R: TRect;
+begin
+  inherited;
+
+  if not Assigned(FFramedControl) or not FFramedControl.Visible then
+    Exit;
+
+  R := FFramedControl.BoundsRect;
+  InflateRect(R, 1, 1);
+
+  Canvas.Brush.Style := bsClear;
+  Canvas.Pen.Color := clBtnShadow;
+  Canvas.Pen.Style := psSolid;
+  Canvas.RoundRect(R.Left, R.Top, R.Right, R.Bottom, FrameRadius, FrameRadius);
 end;
 
 end.
