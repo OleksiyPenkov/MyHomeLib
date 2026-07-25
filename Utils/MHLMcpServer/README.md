@@ -14,12 +14,22 @@ Add to your client's `.mcp.json` (paths below assume the Win64 build; swap in
 {
   "mcpServers": {
     "myhomelib": {
-      "command": "D:\\DelphiProjects\\MyHomeLib\\Program\\OUT\\Bin64\\MHLMcpServer.exe",
+      "command": "D:\\DelphiProjects\\MyHomeLib-mcp\\Program\\OUT\\Bin64\\MHLMcpServer.exe",
       "args": []
     }
   }
 }
 ```
+
+**The `command` path must point at the exe built from *this* checkout** —
+not a copy elsewhere, and not another clone/worktree of this repo that may
+be on a different branch or may not have `Utils\MHLMcpServer` built at all.
+`Program\OUT\Bin64\` (or `Program\OUT\BIN\` for Win32) only exists once you
+have built `Program\MHL.groupproj` yourself; adjust the drive/path above to
+wherever your own checkout lives. The exe also needs a resolvable
+`sqlite3.dll` sitting right beside it — see the load-time dependency note
+below — so double-check that file is present at the same path before
+registering the server.
 
 The server takes no arguments and no environment configuration. `DMUser` is
 booted lazily, on the first tool call, against the same system database the
@@ -277,6 +287,37 @@ clamped to the text's own bounds. `total_hits` counts every match in the
 book, even past `max_hits`, so a caller can tell there were more than it got
 back.
 
+### Error codes these three tools can return
+
+- `unsupported_format` — the book's format is not `bfFb2`/`bfFb2Archive`.
+- `file_missing` — the resolved book file does not exist on disk. Two
+  distinct routes land here: a plain `FileExists` check right after
+  resolving `GetBookFileName`, and (inside the cache-miss extraction
+  closure) `TBookRecord.GetBookStream` either raising `EBookNotFound` or —
+  the case that used to slip through uncaught — returning `nil` with **no**
+  exception at all. `GetBookStream` (`Program\Units\unit_Globals.pas`) only
+  raises when `Settings.IgnoreAbsentArchives` is `False`, and that setting
+  **defaults to `True`** (`Program\Units\unit_Settings.pas`), so under the
+  default a missing/renamed archive returns `nil` silently. Both routes are
+  now checked and both map to `file_missing`.
+- `book_has_no_text` — extraction itself succeeded (the DOM parsed cleanly)
+  but the book genuinely has no text, e.g. picture-only or an empty body.
+  This is deliberately **not** `extraction_failed` — a textless book is not
+  a corrupt one, and a caller needs to be able to tell the two apart.
+- `extraction_failed` — nothing usable could be recovered at all (both the
+  DOM walk and the tag-stripping fallback failed). `unit_MCP_Fb2Extract.pas`
+  distinguishes the two via a structural `TFb2ExtractErrorKind` field on
+  `EFb2ExtractError` (`eekNoText` vs. `eekExtractionFailed`), set explicitly
+  at each raise site — not by pattern-matching the exception's message text,
+  which is free to change for clarity without that match silently breaking.
+- `invalid_offset` (`get_book_text` only) — `offset` is past `total_length`.
+- `book_not_found` — the book ID does not exist in the collection. The
+  underlying lookup can raise an assertion carrying a build-machine source
+  path (`unit_Database_SQLite.pas`) for a sufficiently invalid ID; that
+  detail goes to stderr only (`LogToStderr`), never into the client-facing
+  message, the same discipline `unit_MCP_Tools_Library.pas`'s `GetBook`
+  already follows.
+
 ## Automated tests
 
 ```
@@ -374,8 +415,8 @@ of the server, and the README section above says plainly which other fields
 (`title`, `author`, `series`, `lang`, `keyword`, `annotation`,
 `min_lib_rate`) still splice caller input into SQL unescaped.
 
-`22_get_book_toc.jsonl` through `26_search_in_book_round_trip.jsonl` cover
-the three text tools, all captured byte-for-byte from an actual run against
+`22_get_book_toc.jsonl` through `27_get_book_toc_book_not_found_no_path_leak.jsonl`
+cover the three text tools, all captured byte-for-byte from an actual run against
 `book_id: 487024` in collection 1 (`Сборник "Белка"`, a real multi-story FB2
 anthology — `total_length: 198707`, 11 flat top-level sections) or
 `book_id: 4` (a much shorter FB2, `total_length: 13846`, chosen for the
@@ -396,7 +437,13 @@ book 4's `total_length: 13846` and asserts `isError:true` with
 487024 for the phrase `"Баку такой мягкой зимы"`, asserts the single real
 hit's `offset` and padded `passage`, then feeds that same `offset` into a
 second `get_book_text` call and asserts the phrase appears at the very start
-of what comes back.
+of what comes back. `27_get_book_toc_book_not_found_no_path_leak.jsonl`
+requests a nonexistent `book_id: 999999999` and asserts the response is
+exactly `{"code":"book_not_found","message":"Book 999999999 not found"}` —
+no build-machine path, no assertion text; a fixed point release regressed
+this (interpolating the caught exception's own message, which for an
+invalid ID reaches an `Assert` deep in `unit_Database_SQLite.pas` carrying
+its source path) and this case pins the sanitized shape going forward.
 
 There is no automated case for `get_book_text`'s `unsupported_format` path:
 the only collection registered on the machine these tests were captured on

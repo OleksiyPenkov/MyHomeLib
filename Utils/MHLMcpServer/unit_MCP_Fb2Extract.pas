@@ -7,7 +7,24 @@ uses
   System.SysUtils;
 
 type
-  EFb2ExtractError = class(Exception);
+  // Distinguishes the two cases Task 10 must map to different MCP error
+  // codes: eekNoText for a book that extracted cleanly but genuinely has no
+  // text (picture-only, empty body -- not corrupt, just textless), and
+  // eekExtractionFailed for everything else (both the DOM walk and the
+  // tag-stripping fallback raised; nothing at all could be recovered, or a
+  // nil stream was handed in). Set explicitly at each raise site below
+  // rather than left for a caller to infer from message text, which is
+  // fragile -- message text is free to change for clarity without silently
+  // breaking a substring match on the consuming side.
+  TFb2ExtractErrorKind = (eekExtractionFailed, eekNoText);
+
+  EFb2ExtractError = class(Exception)
+  private
+    FKind: TFb2ExtractErrorKind;
+  public
+    constructor Create(const AKind: TFb2ExtractErrorKind; const AMessage: string); reintroduce;
+    property Kind: TFb2ExtractErrorKind read FKind;
+  end;
 
   // A section as found by one pre-order DOM/text walk. Sections form a
   // HIERARCHY, not a flat partition of Text: FB2 sections nest (<section>
@@ -45,9 +62,14 @@ type
 // space so a Sections[i].Offset always indexes correctly into Text. Falls
 // back to a tag-stripping scan (Structured=False, Sections empty) when the
 // DOM parse fails -- malformed FB2 is common in real libraries. Raises
-// EFb2ExtractError only when no usable text could be produced at all (either
-// because both the DOM walk and the fallback scan raised, or because the
-// book genuinely has no text, e.g. a picture-only file).
+// EFb2ExtractError (Kind = eekExtractionFailed) only when no usable text
+// could be produced at all because both the DOM walk and the fallback scan
+// raised, or Stream itself is nil (a defensive check for a caller that fails
+// to resolve a book's stream but calls in anyway -- TBookRecord.GetBookStream
+// can return nil without raising at all when Settings.IgnoreAbsentArchives is
+// True, which is its default). Raises EFb2ExtractError (Kind = eekNoText)
+// when extraction itself succeeded but the book genuinely has no text, e.g.
+// a picture-only file.
 function ExtractFb2(Stream: TStream): TFb2Extraction;
 
 implementation
@@ -563,6 +585,12 @@ begin
   end;
 end;
 
+constructor EFb2ExtractError.Create(const AKind: TFb2ExtractErrorKind; const AMessage: string);
+begin
+  inherited Create(AMessage);
+  FKind := AKind;
+end;
+
 function ExtractFb2(Stream: TStream): TFb2Extraction;
 var
   Doc: IXMLDocument;
@@ -570,6 +598,17 @@ var
 begin
   Result.Structured := False;
   SetLength(Result.Sections, 0);
+
+  // Defensive: a nil Stream must never reach Stream.Position below (an
+  // access violation, not a catchable EFb2ExtractError). The one real
+  // caller this guards today is Task 10's LoadBookForText, which now checks
+  // for nil itself right after GetBookStream and never calls in with nil --
+  // but that check living correctly at one call site today is no guarantee
+  // it will at every call site tomorrow, and an AV here would otherwise
+  // reach an MCP client as a raw, unmapped JSON-RPC -32603.
+  if not Assigned(Stream) then
+    raise EFb2ExtractError.Create(eekExtractionFailed,
+      'FB2 extraction failed: no stream provided (nil)');
 
   try
     Doc := TXMLDocument.Create(nil);
@@ -597,22 +636,23 @@ begin
         SetLength(Result.Sections, 0);
       except
         on Inner: Exception do
-          raise EFb2ExtractError.CreateFmt(
-            'FB2 extraction failed: %s / %s', [E.Message, Inner.Message]);
+          raise EFb2ExtractError.Create(eekExtractionFailed,
+            Format('FB2 extraction failed: %s / %s', [E.Message, Inner.Message]));
       end;
     end;
   end;
 
   // Distinguish a genuinely empty book (DOM or fallback ran fine, there is
   // just no text -- e.g. a picture-only file) from an actual extraction
-  // failure, so Task 10 can tell the two apart from the exception message.
+  // failure via Kind, not message text -- so Task 10 can switch on it
+  // directly instead of matching a substring that is free to change.
   if Result.Text.Trim = '' then
   begin
     if Result.Structured then
-      raise EFb2ExtractError.Create(
+      raise EFb2ExtractError.Create(eekNoText,
         'FB2 book has no extractable text (likely picture-only or an empty body)')
     else
-      raise EFb2ExtractError.Create(
+      raise EFb2ExtractError.Create(eekExtractionFailed,
         'FB2 extraction failed: no text could be recovered from this file');
   end;
 end;

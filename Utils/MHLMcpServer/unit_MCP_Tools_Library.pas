@@ -16,6 +16,13 @@ function BookToJson(const Book: TBookRecord; Full: Boolean): TJSONObject;
 function AuthorsToJson(const Authors: TBookAuthors): TJSONArray;
 function GenresToJson(const Genres: TBookGenres): TJSONArray;
 
+// Exported (not just used internally by this unit) so any other tool unit --
+// unit_MCP_Tools_Text.pas included -- can log a caught exception's full
+// detail to stderr while still returning a sanitized, path-free message to
+// the client, the same discipline CollectionOrFail/GetBook already follow
+// below.
+procedure LogToStderr(const Msg: string);
+
 implementation
 
 uses

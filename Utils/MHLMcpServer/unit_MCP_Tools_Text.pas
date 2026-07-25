@@ -24,9 +24,15 @@ uses
 
 // Shared preamble for get_book_toc/get_book_text/search_in_book: resolves the
 // collection and book, rejects anything that is not FB2, and ensures the text
-// cache holds an extraction for it -- returning the book record too, since
-// get_book_text and search_in_book both need GetBookFileName a second time
-// (to recompute SourceSize/SourceStamp for ReadCachedSlice).
+// cache holds an extraction for it. SourceSize/SourceStamp -- the same values
+// EnsureCached was keyed on -- are handed back via out params so get_book_text
+// and search_in_book don't have to re-resolve Book.GetBookFileName and
+// re-stat it a second time to call ReadCachedSlice; the TBookRecord result
+// itself is no longer needed by any caller now that those two values are
+// returned directly, but the function keeps returning it (harmlessly
+// discardable via a bare statement call, as get_book_toc already does) rather
+// than reshaping this into a procedure for a difference that is now purely
+// cosmetic.
 //
 // GetBookFileName, NOT GetBookContainer, is what resolves to a real file for
 // both FB2 shapes: the .fb2 itself for bfFb2, the containing .zip for
@@ -34,17 +40,22 @@ uses
 // loose .fb2 is a DIRECTORY -- FileExists on it would fail for every
 // non-archived book in the library.
 function LoadBookForText(const Args: TJSONObject;
-  out CollectionID, BookID: Integer; out Cached: TCachedBook): TBookRecord;
+  out CollectionID, BookID: Integer; out Cached: TCachedBook;
+  out SourceSize: Int64; out SourceStamp: TDateTime): TBookRecord;
 var
   Collection: IBookCollection;
   BookKey: TBookKey;
   Book: TBookRecord;
   SourcePath: string;
-  SourceSize: Int64;
-  SourceStamp: TDateTime;
+  // Anonymous methods cannot capture a var/out parameter (E2555) -- these
+  // ordinary locals mirror CollectionID/BookID (out params of this very
+  // function) purely so the EnsureCached closure below can log them.
+  LocalCollectionID, LocalBookID: Integer;
 begin
   CollectionID := RequireInt(Args, 'collection_id');
   BookID := RequireInt(Args, 'book_id');
+  LocalCollectionID := CollectionID;
+  LocalBookID := BookID;
 
   Collection := CollectionOrFail(CollectionID);
 
@@ -54,8 +65,17 @@ begin
     Collection.GetBookRecord(BookKey, Book, False);
   except
     on E: Exception do
+    begin
+      // E.Message here can be an EAssertionFailed carrying a build-machine
+      // source path (confirmed live: a nonexistent book_id reached an
+      // Assert deep in unit_Database_SQLite.pas) -- never interpolate it
+      // into the client-facing message. Full detail goes to stderr only,
+      // matching CollectionOrFail/GetBook's own pattern in
+      // unit_MCP_Tools_Library.pas.
+      LogToStderr(Format('LoadBookForText.GetBookRecord(%d): %s', [BookID, E.Message]));
       raise EMcpToolError.Create('book_not_found',
-        Format('Book %d not found: %s', [BookID, E.Message]));
+        Format('Book %d not found', [BookID]));
+    end;
   end;
 
   if not (Book.GetBookFormat in [bfFb2, bfFb2Archive]) then
@@ -75,18 +95,44 @@ begin
     var
       Stream: TStream;
     begin
+      Stream := nil;
       try
-        Stream := Book.GetBookStream;
-      except
-        on E: EBookNotFound do
-          raise EMcpToolError.Create('file_missing', E.Message);
-      end;
-      try
+        try
+          Stream := Book.GetBookStream;
+        except
+          on E: EBookNotFound do
+          begin
+            LogToStderr(Format('LoadBookForText.GetBookStream(%d/%d): %s',
+              [LocalCollectionID, LocalBookID, E.Message]));
+            raise EMcpToolError.Create('file_missing',
+              Format('Book file not found: %s', [SourcePath]));
+          end;
+        end;
+
+        // GetBookStream can also return nil WITHOUT raising at all: when
+        // Settings.IgnoreAbsentArchives is True -- its DEFAULT
+        // (unit_Settings.pas) -- a missing/renamed archive is swallowed
+        // inside GetBookStream itself (unit_Globals.pas) and Result stays
+        // nil. Every book in the one registered collection is
+        // bfFb2Archive, so this is a live path: without this check,
+        // ExtractFb2(nil) below would have reached an access violation
+        // instead of a mapped file_missing (ExtractFb2 itself now also
+        // guards against a nil Stream defensively, but the check belongs
+        // here too so the message can name the resolved path).
+        if not Assigned(Stream) then
+          raise EMcpToolError.Create('file_missing',
+            Format('Book file not found: %s', [SourcePath]));
+
         try
           Result := ExtractFb2(Stream);
         except
           on E: EFb2ExtractError do
-            raise EMcpToolError.Create('extraction_failed', E.Message);
+          begin
+            if E.Kind = eekNoText then
+              raise EMcpToolError.Create('book_has_no_text', E.Message)
+            else
+              raise EMcpToolError.Create('extraction_failed', E.Message);
+          end;
         end;
       finally
         Stream.Free;
@@ -105,12 +151,15 @@ function GetBookToc(const Args: TJSONObject): TJSONObject;
 var
   CollectionID, BookID, I: Integer;
   Cached: TCachedBook;
+  SourceSize: Int64;
+  SourceStamp: TDateTime;
   Arr: TJSONArray;
   Entry: TJSONObject;
 begin
-  // Book record itself is not needed here -- only Cached matters -- so the
-  // function result is discarded rather than bound to an unused local.
-  LoadBookForText(Args, CollectionID, BookID, Cached);
+  // Neither the book record nor SourceSize/SourceStamp is needed here --
+  // only Cached matters -- so the function result is discarded rather than
+  // bound to an unused local.
+  LoadBookForText(Args, CollectionID, BookID, Cached, SourceSize, SourceStamp);
 
   // Same leak-safe accumulator shape used throughout unit_MCP_Tools_Library:
   // Arr (and, per entry, Entry) must not leak if anything raises mid-loop.
@@ -155,16 +204,15 @@ function GetBookText(const Args: TJSONObject): TJSONObject;
 var
   CollectionID, BookID, Offset, Count: Integer;
   Cached: TCachedBook;
-  Book: TBookRecord;
   SourceSize: Int64;
   SourceStamp: TDateTime;
   Slice: string;
   ClampedOffset, ClampedCount: Boolean;
 begin
-  Book := LoadBookForText(Args, CollectionID, BookID, Cached);
-
-  SourceSize := TFile.GetSize(Book.GetBookFileName);
-  SourceStamp := TFile.GetLastWriteTime(Book.GetBookFileName);
+  // SourceSize/SourceStamp come straight back from LoadBookForText -- the
+  // same values it just keyed EnsureCached on -- rather than re-resolving
+  // Book.GetBookFileName and re-statting it a second time here.
+  LoadBookForText(Args, CollectionID, BookID, Cached, SourceSize, SourceStamp);
 
   Offset := ArgIntClamped(Args, 'offset', 0, 0, MaxInt, ClampedOffset);
   Count := ArgIntClamped(Args, 'length', 8000, 1, 50000, ClampedCount);
@@ -215,7 +263,6 @@ function SearchInBook(const Args: TJSONObject): TJSONObject;
 var
   CollectionID, BookID, MaxHits, ContextChars, QueryLen: Integer;
   Cached: TCachedBook;
-  Book: TBookRecord;
   SourceSize: Int64;
   SourceStamp: TDateTime;
   FullText, LowerText, Query, LowerQuery, Passage: string;
@@ -224,14 +271,17 @@ var
   SearchFrom, FoundPos, MatchOffset, TotalHits, PassageStart, PassageLen: Integer;
   ClampedHits, ClampedContext: Boolean;
 begin
-  Book := LoadBookForText(Args, CollectionID, BookID, Cached);
-
-  SourceSize := TFile.GetSize(Book.GetBookFileName);
-  SourceStamp := TFile.GetLastWriteTime(Book.GetBookFileName);
-
+  // Validated BEFORE LoadBookForText, which pays for a full FB2 extraction
+  // and cache population on a miss -- a blank/missing query is a pure
+  // argument error and must not pay that cost first.
   Query := ArgStr(Args, 'query');
   if Query = '' then
     raise EMcpToolError.Create('invalid_params', 'Missing required argument: query');
+
+  // SourceSize/SourceStamp come straight back from LoadBookForText -- the
+  // same values it just keyed EnsureCached on -- rather than re-resolving
+  // Book.GetBookFileName and re-statting it a second time here.
+  LoadBookForText(Args, CollectionID, BookID, Cached, SourceSize, SourceStamp);
 
   MaxHits := ArgIntClamped(Args, 'max_hits', 10, 1, 50, ClampedHits);
   ContextChars := ArgIntClamped(Args, 'context_chars', 200, 0, 2000, ClampedContext);

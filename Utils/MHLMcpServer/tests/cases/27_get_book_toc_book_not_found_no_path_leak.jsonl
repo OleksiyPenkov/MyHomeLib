@@ -1,0 +1,2 @@
+> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_book_toc","arguments":{"collection_id":1,"book_id":999999999}}}
+< {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"{\"code\":\"book_not_found\",\"message\":\"Book 999999999 not found\"}"}],"isError":true}}
