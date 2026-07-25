@@ -81,10 +81,14 @@ Source: Common\collections.ini; DestDir: {userappdata}\MyHomeLib; Flags: onlyifd
 Source: Common\Help\*; DestDir: {app}\Help; Flags: recursesubdirs
 Source: Common\MyHomeLib.url; DestDir: {app}; Flags: replacesameversion
 Source: Common\License.txt; DestDir: {app}; Flags: replacesameversion
+Source: Common\License_uk.txt; DestDir: {app}; Flags: replacesameversion
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}
 
 [Languages]
-Name: English; MessagesFile: compiler:Default.isl
-Name: Ukrainian; MessagesFile: compiler:Languages\Ukrainian.isl
+; LicenseFile here overrides the [Setup] default, so each language shows the
+; licence in its own language. Both files are UTF-8 with a BOM -- Inno 6 reads
+; a BOM-less text file as the system ANSI codepage and mangles non-ASCII.
+Name: English; MessagesFile: compiler:Default.isl; LicenseFile: Common\License.txt
+Name: Ukrainian; MessagesFile: compiler:Languages\Ukrainian.isl; LicenseFile: Common\License_uk.txt

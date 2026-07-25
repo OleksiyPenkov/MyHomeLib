@@ -96,11 +96,16 @@ if not exist "%COMMON_DIR%" mkdir "%COMMON_DIR%"
 copy /y "%BIN_DIR%\genres_fb2.glst"    "%COMMON_DIR%\" >nul
 copy /y "%BIN_DIR%\genres_nonfb2.glst" "%COMMON_DIR%\" >nul
 
-:: Help (staged from source, not from the build output), URL, License
+:: Help and licences (staged from source, not from the build output), URL
 call "%ROOT_DIR%\Program\copy_help.cmd" "%COMMON_DIR%"
 if errorlevel 1 exit /b 1
 copy /y "%BIN_DIR%\MyHomeLib.url" "%COMMON_DIR%\" >nul
-copy /y "%BIN_DIR%\License.txt"   "%COMMON_DIR%\" >nul
+:: Licences live in Licenses\ under version control. They must NOT come from
+:: the build output: that copy is untracked and was stale CP1251 for years,
+:: which is what mangled the licence page in the wizard. Inno 6 needs UTF-8
+:: with a BOM, so keep these files in that encoding.
+copy /y "%SCRIPT_DIR%Licenses\License.txt"    "%COMMON_DIR%\" >nul
+copy /y "%SCRIPT_DIR%Licenses\License_uk.txt" "%COMMON_DIR%\" >nul
 
 :: Default collections config
 copy /y "%BIN_DIR%\collections.ini" "%COMMON_DIR%\" >nul
