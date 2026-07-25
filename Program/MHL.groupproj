@@ -12,6 +12,9 @@
         <Projects Include="MyhomeLib.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="..\Utils\MHLMcpServer\MHLMcpServer.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -47,14 +50,23 @@
     <Target Name="MyhomeLib:Make">
         <MSBuild Projects="MyhomeLib.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MHLMcpServer">
+        <MSBuild Projects="..\Utils\MHLMcpServer\MHLMcpServer.dproj"/>
+    </Target>
+    <Target Name="MHLMcpServer:Clean">
+        <MSBuild Projects="..\Utils\MHLMcpServer\MHLMcpServer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MHLMcpServer:Make">
+        <MSBuild Projects="..\Utils\MHLMcpServer\MHLMcpServer.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="MHLComponents;MHLIcons;MyhomeLib"/>
+        <CallTarget Targets="MHLComponents;MHLIcons;MyhomeLib;MHLMcpServer"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MHLComponents:Clean;MHLIcons:Clean;MyhomeLib:Clean"/>
+        <CallTarget Targets="MHLComponents:Clean;MHLIcons:Clean;MyhomeLib:Clean;MHLMcpServer:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MHLComponents:Make;MHLIcons:Make;MyhomeLib:Make"/>
+        <CallTarget Targets="MHLComponents:Make;MHLIcons:Make;MyhomeLib:Make;MHLMcpServer:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
