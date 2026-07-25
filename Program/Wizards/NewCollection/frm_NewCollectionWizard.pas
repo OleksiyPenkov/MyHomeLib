@@ -431,6 +431,7 @@ begin
   // подключить и запустить импортер
   //
   FWorker.OnOpenProgress := FProgressPage.OpenProgress;
+  FWorker.OnProgressHint := FProgressPage.SetProgressHint;
   FWorker.OnProgress := FProgressPage.ShowProgress;
   FWorker.OnCloseProgress := FProgressPage.CloseProgress;
   FWorker.OnTeletype := FProgressPage.ShowTeletype;

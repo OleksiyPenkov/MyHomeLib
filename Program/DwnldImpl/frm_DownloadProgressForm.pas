@@ -32,7 +32,8 @@ uses
   unit_Globals,
   frm_BaseProgressForm,
   unit_WorkerThread,
-  unit_DownloadBooksThread;
+  unit_DownloadBooksThread,
+  unit_ProgressBarEx;
 
 type
   TDownloadProgressForm = class(TProgressFormBase)

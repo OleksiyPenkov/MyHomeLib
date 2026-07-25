@@ -27,7 +27,8 @@ uses
   StdCtrls,
   ExtCtrls,
   ComCtrls,
-  System.Net.HttpClient;
+  System.Net.HttpClient,
+  unit_ProgressBarEx;
 
 type
   TframeNCWDownload = class(TInteriorPageBase)

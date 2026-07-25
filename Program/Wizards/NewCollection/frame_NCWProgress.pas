@@ -17,7 +17,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, frame_WizardPageBase, frame_InteriorPageBase, StdCtrls, ExtCtrls, ComCtrls,
-  unit_WorkerThread, unit_NCWParams, unit_Globals;
+  unit_WorkerThread, unit_NCWParams, unit_Globals, unit_ProgressBarEx;
 
 const
   PM_WORKERDONE = WM_USER + 0;
@@ -39,6 +39,7 @@ type
     procedure Initialize(PParams: PNCWParams); override;
 
     procedure OpenProgress;
+    procedure SetProgressHint(Style: TProgressBarStyle; State: TProgressBarState);
     procedure ShowProgress(Percent: Integer);
     procedure ShowTeletype(const Msg: string; Severity: TTeletypeSeverity);
     procedure SetComment(const Comment: string);
@@ -88,6 +89,12 @@ end;
 procedure TframeNCWProgress.OpenProgress;
 begin
   Bar.Position := 0;
+end;
+
+procedure TframeNCWProgress.SetProgressHint(Style: TProgressBarStyle; State: TProgressBarState);
+begin
+  Bar.Style := Style;
+  Bar.State := State;
 end;
 
 procedure TframeNCWProgress.SetComment(const Comment: string);
