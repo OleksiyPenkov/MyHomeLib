@@ -67,6 +67,7 @@
         </DelphiCompile>
         <DCCReference Include="unit_MCP_Transport.pas"/>
         <DCCReference Include="unit_MCP_Protocol.pas"/>
+        <DCCReference Include="unit_MCP_Json.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

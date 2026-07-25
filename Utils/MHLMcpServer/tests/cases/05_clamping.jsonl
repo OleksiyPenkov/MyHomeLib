@@ -1,0 +1,4 @@
+> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"echo_args","arguments":{"limit":5000}}}
+< {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"{\"limit\":200,\"clamped\":true}"}]}}
+> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"echo_args","arguments":{}}}
+< {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"limit\":25,\"clamped\":false}"}]}}
