@@ -249,9 +249,6 @@ type
     procedure SaveSettings;
   end;
 
-var
-  frmSettings: TfrmSettings;
-
 implementation
 
 uses
@@ -550,7 +547,7 @@ end;
 procedure TfrmSettings.ShowHelpClick(Sender: TObject);
 begin
   ShowHelpTopic(pcSetPages.ActivePage.HelpContext);
-  frmSettings.FocusControl(btnOk);
+  FocusControl(btnOk);
 end;
 
 procedure TfrmSettings.SaveSettingsClick(Sender: TObject);
