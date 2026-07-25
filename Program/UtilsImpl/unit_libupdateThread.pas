@@ -33,8 +33,12 @@ type
 
   TCollectionUpdateThreadBase = class(TImportInpxThreadBase)
   protected
-    procedure UpdateCollection(const AFileName: string; ACollectionID: Integer;
-      AFull: Boolean; const ADisplayName: string);
+    //
+    // Повертає False, якщо користувач скасував операцію: зміни відкочено,
+    // колекція лишилась такою, якою була.
+    //
+    function UpdateCollection(const AFileName: string; ACollectionID: Integer;
+      AFull: Boolean; const ADisplayName: string): Boolean;
   end;
 
   TLibUpdateThread = class(TCollectionUpdateThreadBase)
@@ -122,12 +126,14 @@ rstrDownloadProgress = 'Завантажено: %u%% із %u байт';
 // Оновлення однієї колекції з одного файлу списків.
 // Файл AFileName не видаляється — про нього дбає викликач.
 //
-procedure TCollectionUpdateThreadBase.UpdateCollection(const AFileName: string;
-  ACollectionID: Integer; AFull: Boolean; const ADisplayName: string);
+function TCollectionUpdateThreadBase.UpdateCollection(const AFileName: string;
+  ACollectionID: Integer; AFull: Boolean; const ADisplayName: string): Boolean;
 var
   Collection: IBookCollection;
   UserDataBackup: TUserData;
 begin
+  Result := False;
+
   //Truncate won't work with TBookCollection.Create(DBFileName, False)
   Collection := FSystemData.GetCollection(ACollectionID);
   Collection.BeginBulkOperation;
@@ -185,6 +191,7 @@ begin
   // её изменения не откатятся вместе с импортом.
   //
   FSystemData.RemapCollectionBookIDs(ACollectionID, AFull);
+  Result := True;
 end;
 
 { TLibUpdateThread }
@@ -270,15 +277,22 @@ begin
         end;
       end;
 
+      InpxFileName := TPath.Combine(Settings.UpdatePath, updateInfo.UpdateFile);
+
       if Canceled then
       begin
-        DeleteFile(TPath.Combine(Settings.WorkPath, Settings.Updates.Items[i].UpdateFile));
+        DeleteFile(InpxFileName);
         Teletype(rstrCancelledByUser, tsInfo);
         Exit;
       end;
 
-      InpxFileName := TPath.Combine(Settings.UpdatePath, updateInfo.UpdateFile);
-      UpdateCollection(InpxFileName, updateInfo.CollectionID, updateInfo.Full, updateInfo.Name);
+      //
+      // Скасування під час імпорту: зміни вже відкочено, файли оновлень
+      // лишаємо на місці, щоб можна було повторити спробу.
+      //
+      if not UpdateCollection(InpxFileName, updateInfo.CollectionID, updateInfo.Full, updateInfo.Name) then
+        Exit;
+
       Teletype(rstrReady, tsInfo);
     end; //for .. with
 
@@ -286,8 +300,9 @@ begin
     for i := 0 to Settings.Updates.Count - 1 do
     begin
       updateInfo := Settings.Updates[i];
-      if FileExists(Settings.UpdatePath + updateInfo.UpdateFile) then
-         DeleteFile(Settings.UpdatePath + updateInfo.UpdateFile);
+      InpxFileName := TPath.Combine(Settings.UpdatePath, updateInfo.UpdateFile);
+      if FileExists(InpxFileName) then
+         DeleteFile(InpxFileName);
     end;
 
     SetComment(rstrReady);
@@ -299,9 +314,12 @@ begin
       GetLogger.Log('TLibUpdateThread.WorkFunction ERROR', E.Message);
 {$ENDIF}
       //
-      // TODO -cBug: вообще говоря, значение i здесь неопределено
+      // InpxFileName - файл, на якому впала обробка; до першої ітерації циклу
+      // він порожній. Раніше тут використовувався лічильник i, невизначений
+      // за межами циклу, та ще й з іншою текою.
       //
-      DeleteFile(Settings.WorkPath + Settings.Updates.Items[i].UpdateFile);
+      if (InpxFileName <> '') and FileExists(InpxFileName) then
+        DeleteFile(InpxFileName);
     end;
   end;
 end;
@@ -315,6 +333,11 @@ begin
   FFileName := AFileName;
   FFull := AFull;
   FGenresType := AGenresType;
+  //
+  // Файл вибрав користувач, він може бути з будь-якого джерела: не дозволяємо
+  // його collection.info перезаписати URL і скрипт підключення колекції.
+  //
+  FKeepCollectionProps := True;
 end;
 
 //
@@ -354,8 +377,8 @@ begin
 
   try
     Teletype(Format(rstrManualCollectionUpdate, [FDisplayName, FFileName]), tsInfo);
-    UpdateCollection(FFileName, FCollectionID, FFull, FDisplayName);
-    Teletype(rstrUpdateComplete, tsInfo);
+    if UpdateCollection(FFileName, FCollectionID, FFull, FDisplayName) then
+      Teletype(rstrUpdateComplete, tsInfo);
     SetComment(rstrReady);
   except
     on E: Exception do

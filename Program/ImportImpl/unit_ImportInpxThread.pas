@@ -63,6 +63,12 @@ type
 
     FFields: array of TFields;
     FUseStoredFolder: Boolean;
+    //
+    // False (типово) - collection.info з архіву застосовується до колекції.
+    // True - властивості колекції не чіпаються: файл може бути чужий, і його
+    // URL зі скриптом підключення затерли б налаштування користувача.
+    //
+    FKeepCollectionProps: Boolean;
 
   protected
     procedure GetFields(const StructureInfo: string);
@@ -495,7 +501,7 @@ begin
     //
     // Прочитать и установить свойства коллекции
     //
-    if Zip.Find(COLLECTIONINFO_FILENAME) then
+    if not FKeepCollectionProps and Zip.Find(COLLECTIONINFO_FILENAME) then
     begin
       strCollection := Zip.ExtractToString(Zip.LastName);
       header.ParseString(strCollection);
