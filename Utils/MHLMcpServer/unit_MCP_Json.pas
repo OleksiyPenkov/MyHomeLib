@@ -60,7 +60,13 @@ begin
   if (not Assigned(Args)) or (Args.GetValue(Name) = nil) then
     raise EMcpToolError.Create('invalid_params',
       Format('Missing required argument: %s', [Name]));
-  Result := Args.GetValue<Integer>(Name);
+  try
+    Result := Args.GetValue<Integer>(Name);
+  except
+    on E: EJSONException do
+      raise EMcpToolError.Create('invalid_params',
+        Format('Argument %s must be an integer', [Name]));
+  end;
 end;
 
 end.
