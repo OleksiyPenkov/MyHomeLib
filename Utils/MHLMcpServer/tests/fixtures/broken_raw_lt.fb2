@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+ <description><title-info><book-title>RawLt</book-title></title-info></description>
+ <body><section><p>Price is 5 < 6 dollars, short break.</p><p>Second paragraph survives after resync.</p></section></body>
+</FictionBook>

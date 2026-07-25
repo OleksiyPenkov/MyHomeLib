@@ -100,8 +100,24 @@ begin
   // so it is handled before Application.Initialize / DMUser ever come into
   // play. Any failure here is reported to stderr, never stdout -- the
   // transport already owns stdout for the (unused, in this mode) JSON line.
-  if (ParamCount = 2) and (ParamStr(1) = '--extract') then
+  //
+  // Checked on ParamStr(1) alone, not on ParamCount = 2: an unquoted path
+  // containing spaces is split by the OS into several ParamStr entries, and
+  // falling through to server mode in that case would silently start a
+  // JSON-RPC server that blocks forever reading stdin, with no indication
+  // that --extract was even recognised. There is no reliable way to
+  // reconstruct one path from several already-split arguments, so this
+  // fails fast with a clear message instead of guessing.
+  if (ParamCount >= 1) and (ParamStr(1) = '--extract') then
   begin
+    if ParamCount <> 2 then
+    begin
+      Writeln(ErrOutput,
+        Format('--extract requires exactly one file path argument (got %d). ' +
+          'If the path contains spaces, quote it.', [ParamCount - 1]));
+      Halt(1);
+    end;
+
     try
       RunExtractMode(ParamStr(2));
     except
