@@ -12,12 +12,19 @@ MyHomeLib is a Delphi VCL desktop application for managing a home e-book library
 
 ## Build
 
+**Win64 is the primary target.** Build it first and treat it as the build that
+has to pass; Win32 is still shipped, so build both before calling work done.
+
 Always build through the group project (components package + icon DLL + main app):
 ```
-cmd.exe //c "set BDS=C:\Program Files (x86)\Embarcadero\Studio\37.0&& set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\37.0&& C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Program\MHL.groupproj /t:Build /p:Config=Release /p:Platform=Win32 /nologo /v:minimal" 2>&1
+cmd.exe //c "set BDS=C:\Program Files (x86)\Embarcadero\Studio\37.0&& set BDSCOMMONDIR=C:\Users\Public\Documents\Embarcadero\Studio\37.0&& C:\Windows\Microsoft.NET\Framework\v4.0.30319\msbuild.exe Program\MHL.groupproj /t:Build /p:Config=Release /p:Platform=Win64 /nologo /v:minimal" 2>&1
 ```
 
-Swap `/p:Platform=Win64` for the x64 build.
+Swap `/p:Platform=Win32` for the 32-bit build.
+
+The post-build event calls `robocopy`, so `C:\Windows\System32` must be on
+`PATH`. Some shells start without it — prepend it or the build fails at
+`copy_help.cmd` with `'robocopy' is not recognized`.
 
 **Never run msbuild on `Program\MyhomeLib.dproj` directly.** It re-serialises the
 file and moves the `CodeGear.Delphi.Targets` import above the config property
