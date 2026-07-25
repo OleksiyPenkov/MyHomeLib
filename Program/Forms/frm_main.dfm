@@ -2695,6 +2695,12 @@ object frmMain: TfrmMain
       object N38: TMenuItem
         Caption = '-'
       end
+      object miUpdateFromFile: TMenuItem
+        Action = acCollectionUpdateFromFile
+      end
+      object N83: TMenuItem
+        Caption = '-'
+      end
       object N39: TMenuItem
         Caption = #1030#1084#1087#1086#1088#1090
         object miFb2Import: TMenuItem
@@ -2875,9 +2881,6 @@ object frmMain: TfrmMain
       end
       object miUpdate: TMenuItem
         Action = acToolsUpdateOnlineCollections
-      end
-      object miUpdateFromFile: TMenuItem
-        Action = acToolsUpdateFromFile
       end
       object N34: TMenuItem
         Action = acToolsClearReadFolder
@@ -4052,6 +4055,12 @@ object frmMain: TfrmMain
       Caption = #1057#1090#1072#1090#1080#1089#1090#1080#1082#1072
       OnExecute = ShowCollectionStatisticsExecute
     end
+    object acCollectionUpdateFromFile: TAction
+      Category = #1050#1086#1083#1083#1077#1082#1094#1080#1103
+      Caption = #1054#1085#1086#1074#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102' '#1079' '#1092#1072#1081#1083#1091'...'
+      OnExecute = UpdateCollectionFromFileExecute
+      OnUpdate = UpdateCollectionFromFileUpdate
+    end
     object acCollectionDelete: TAction
       Category = #1050#1086#1083#1083#1077#1082#1094#1080#1103
       Caption = #1042#1080#1076#1072#1083#1080#1090#1080
@@ -4095,12 +4104,6 @@ object frmMain: TfrmMain
       Category = #1030#1085#1089#1090#1088#1091#1084#1077#1085#1090#1080
       Caption = #1054#1085#1086#1074#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1111
       OnExecute = UpdateOnlineCollectionExecute
-    end
-    object acToolsUpdateFromFile: TAction
-      Category = #1030#1085#1089#1090#1088#1091#1084#1077#1085#1090#1080
-      Caption = #1054#1085#1086#1074#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102' '#1079' '#1092#1072#1081#1083#1091'...'
-      OnExecute = UpdateCollectionFromFileExecute
-      OnUpdate = UpdateCollectionFromFileUpdate
     end
     object acToolsClearReadFolder: TAction
       Category = #1030#1085#1089#1090#1088#1091#1084#1077#1085#1090#1080

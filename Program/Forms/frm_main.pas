@@ -429,7 +429,8 @@ type
     acViewShowLocalOnly: TAction;
     acToolsQuickSearch: TAction;
     acToolsUpdateOnlineCollections: TAction;
-    acToolsUpdateFromFile: TAction;
+    acCollectionUpdateFromFile: TAction;
+    N83: TMenuItem;
     acToolsClearReadFolder: TAction;
     acToolsRunScript: TAction;
     acToolsSettings: TAction;
