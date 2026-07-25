@@ -11,6 +11,11 @@ uses
 type
   TIconTheme = (itLight, itDark);
 
+  /// Raised when Icons\MHLIcons.dll cannot be loaded. Worth a dedicated class:
+  /// a missing resource DLL leaves every image collection empty, which used to
+  /// fail silently and shipped that way in 2.6.0 pre1.
+  EIconResourceMissing = class(Exception);
+
   TdmImages = class(TDataModule)
     ToolbarImageCollection: TImageCollection;
     vilToolbar: TVirtualImageList;
@@ -24,6 +29,7 @@ type
     FCurrentTheme: TIconTheme;
     FThemeLoaded: Boolean;
     FResModule: HMODULE;
+    FLoadErrorReported: Boolean;
     procedure LoadResFile;
     procedure FreeResFile;
     function SanitizeName(const AName: string): string;
@@ -172,11 +178,22 @@ end;
 procedure TdmImages.LoadResFile;
 var
   ResPath: string;
+  LastError: Cardinal;
 begin
   if FResModule <> 0 then
     Exit;
   ResPath := ExtractFilePath(Application.ExeName) + CIconResFile;
   FResModule := LoadLibraryEx(PChar(ResPath), 0, LOAD_LIBRARY_AS_DATAFILE);
+  if FResModule = 0 then
+  begin
+    LastError := GetLastError;
+    raise EIconResourceMissing.CreateFmt(
+      'Не вдалося завантажити ресурс піктограм:'#13#10'%s'#13#10#13#10 +
+      'Помилка Windows %d: %s'#13#10#13#10 +
+      'Програма працюватиме без піктограм. Перевстановіть MyHomeLib або ' +
+      'скопіюйте теку Icons поруч із MyHomeLib.exe.',
+      [ResPath, LastError, SysErrorMessage(LastError)]);
+  end;
 end;
 
 
@@ -251,10 +268,8 @@ procedure TdmImages.LoadIcons(ATheme: TIconTheme);
 var
   ThemePrefix: string;
 begin
+  // Raises EIconResourceMissing if the DLL is absent, so FResModule is valid here.
   LoadResFile;
-
-  if FResModule = 0 then
-    Exit;
 
   FCurrentTheme := ATheme;
 
@@ -282,7 +297,23 @@ var
 begin
   NewTheme := DetectIconTheme;
   if (not FThemeLoaded) or (NewTheme <> FCurrentTheme) then
-    LoadIcons(NewTheme);
+  begin
+    try
+      LoadIcons(NewTheme);
+    except
+      on E: EIconResourceMissing do
+      begin
+        // Missing icons must not stop the application, but they must not pass
+        // unnoticed either. Report once so theme re-checks stay quiet.
+        if not FLoadErrorReported then
+        begin
+          FLoadErrorReported := True;
+          Application.MessageBox(PChar(E.Message), 'MyHomeLib',
+            MB_ICONWARNING or MB_OK);
+        end;
+      end;
+    end;
+  end;
 end;
 
 

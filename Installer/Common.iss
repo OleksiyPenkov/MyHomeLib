@@ -64,6 +64,12 @@ Source: {#FullSourcePath}; DestDir: {app}; DestName: {#AppExeName}; Flags: repla
 
 Source: {#LibFolder + 'sqlite3.dll'}; DestDir: {app}; Flags: replacesameversion
 
+; Icon resource DLL, loaded at runtime by dm_Images from {app}\Icons.
+; Taken from the build output so it always matches the exe being packaged.
+; Deliberately no skipifsourcedoesntexist: if this is missing the app installs
+; with no icons at all, so the installer build must fail instead.
+Source: {#SourceFolder + 'Icons\MHLIcons.dll'}; DestDir: {app}\Icons; Flags: replacesameversion
+
 Source: Common\AlReader\*; DestDir: {app}\AlReader; Flags: recursesubdirs
 Source: Common\converters\fb2lrf\*; DestDir: {app}\converters\fb2lrf\; Flags: skipifsourcedoesntexist
 Source: Common\converters\fb2pdf\*; DestDir: {app}\converters\fb2pdf\; Flags: skipifsourcedoesntexist

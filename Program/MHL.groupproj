@@ -6,6 +6,9 @@
         <Projects Include="..\Components\MHLComponents\MHLComponents.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Resources\Icons\MHLIcons.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="MyhomeLib.dproj">
             <Dependencies/>
         </Projects>
@@ -26,6 +29,15 @@
     <Target Name="MHLComponents:Make">
         <MSBuild Projects="..\Components\MHLComponents\MHLComponents.dproj" Targets="Make"/>
     </Target>
+    <Target Name="MHLIcons">
+        <MSBuild Projects="Resources\Icons\MHLIcons.dproj"/>
+    </Target>
+    <Target Name="MHLIcons:Clean">
+        <MSBuild Projects="Resources\Icons\MHLIcons.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="MHLIcons:Make">
+        <MSBuild Projects="Resources\Icons\MHLIcons.dproj" Targets="Make"/>
+    </Target>
     <Target Name="MyhomeLib">
         <MSBuild Projects="MyhomeLib.dproj"/>
     </Target>
@@ -36,13 +48,13 @@
         <MSBuild Projects="MyhomeLib.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="MHLComponents;MyhomeLib"/>
+        <CallTarget Targets="MHLComponents;MHLIcons;MyhomeLib"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="MHLComponents:Clean;MyhomeLib:Clean"/>
+        <CallTarget Targets="MHLComponents:Clean;MHLIcons:Clean;MyhomeLib:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="MHLComponents:Make;MyhomeLib:Make"/>
+        <CallTarget Targets="MHLComponents:Make;MHLIcons:Make;MyhomeLib:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
