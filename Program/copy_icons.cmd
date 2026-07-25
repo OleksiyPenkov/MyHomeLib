@@ -3,24 +3,37 @@ setlocal
 :: ============================================================================
 :: Copies the icon resource DLL into <destination>\Icons.
 ::
-:: Usage: copy_icons.cmd <destination-folder>
+:: Usage: copy_icons.cmd <destination-folder> <platform>
+::
+:: <platform> is Win32 or Win64 and picks the matching build: the icon project
+:: builds into Resources\Icons\<platform>, so an x64 build no longer overwrites
+:: the x86 DLL. dm_Images loads the file with LOAD_LIBRARY_AS_DATAFILE, so the
+:: bitness does not stop the resources from being read - keeping the builds
+:: apart is what stops each platform from rewriting the other one's binary.
 ::
 :: dm_Images loads it at runtime from <exe folder>\Icons\MHLIcons.dll. Without
 :: it every image collection silently ends up empty and the whole UI runs with
 :: no icons, so treat a missing source as a build failure rather than a warning.
 :: ============================================================================
 
-set "SRC=%~dp0Resources\Icons\MHLIcons.dll"
 set "DEST=%~1"
+set "PLATFORM=%~2"
 
 if "%DEST%"=="" (
     echo ERROR: destination folder not specified.
     exit /b 1
 )
 
+if "%PLATFORM%"=="" (
+    echo ERROR: platform not specified ^(Win32 or Win64^).
+    exit /b 1
+)
+
+set "SRC=%~dp0Resources\Icons\%PLATFORM%\MHLIcons.dll"
+
 if not exist "%SRC%" (
     echo ERROR: icon resource not found at "%SRC%".
-    echo        Build Program\Resources\Icons\MHLIcons.dproj first.
+    echo        Build Program\Resources\Icons\MHLIcons.dproj for %PLATFORM% first.
     exit /b 1
 )
 

@@ -28,8 +28,8 @@
     <PropertyGroup Condition="'$(Base)'!=''">
         <SanitizedProjectName>MHLIcons</SanitizedProjectName>
         <DCC_DependencyCheckOutputName>MHLIcons.dll</DCC_DependencyCheckOutputName>
-        <DCC_ExeOutput>.</DCC_ExeOutput>
-        <DCC_DcuOutput>.\dcu</DCC_DcuOutput>
+        <DCC_ExeOutput>.\$(Platform)</DCC_ExeOutput>
+        <DCC_DcuOutput>.\dcu\$(Platform)</DCC_DcuOutput>
         <DCC_Namespace>System;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>

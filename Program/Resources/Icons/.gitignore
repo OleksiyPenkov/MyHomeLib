@@ -1,3 +1,10 @@
 node_modules/
 package.json
 package-lock.json
+
+# Build output of MHLIcons.dproj - one folder per platform, produced by the
+# group build and staged next to the exe by copy_icons.cmd.
+Win32/
+Win64/
+dcu/
+MHLIcons.dll
