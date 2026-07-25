@@ -69,6 +69,7 @@
         <DCCReference Include="unit_MCP_Protocol.pas"/>
         <DCCReference Include="unit_MCP_Json.pas"/>
         <DCCReference Include="unit_MCP_Tools_Library.pas"/>
+        <DCCReference Include="unit_MCP_Fb2Extract.pas"/>
         <DCCReference Include="..\..\Program\DataModules\dm_user.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

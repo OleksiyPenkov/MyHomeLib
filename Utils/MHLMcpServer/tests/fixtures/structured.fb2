@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+ <description><title-info><book-title>Structured</book-title></title-info></description>
+ <body>
+  <section><title><p>Chapter One</p></title><p>Alpha text.</p></section>
+  <section><title><p>Chapter Two</p></title><p>Beta text.</p></section>
+ </body>
+</FictionBook>
