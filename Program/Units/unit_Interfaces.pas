@@ -250,7 +250,7 @@ type
     procedure EndBulkOperation(Commit: Boolean = True);
 
     procedure CompactDatabase;
-    procedure RepairDatabase;
+    function CheckDatabase: string;
 
     function GetTopGenreAlias(const FB2Code: string): string;
     procedure ReloadGenres(const FileName: string);

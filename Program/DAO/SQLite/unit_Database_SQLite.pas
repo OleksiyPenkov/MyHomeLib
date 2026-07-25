@@ -221,7 +221,7 @@ type
     procedure EndBulkOperation(Commit: Boolean = True);
 
     procedure CompactDatabase;
-    procedure RepairDatabase;
+    function CheckDatabase: string;
     procedure ReloadGenres(const FileName: string);
     procedure GetStatistics(out AuthorsCount: Integer; out BooksCount: Integer; out SeriesCount: Integer);
 
@@ -2352,9 +2352,32 @@ begin
   FDatabase.CompactDatabase;
 end;
 
-procedure TBookCollection_SQLite.RepairDatabase;
+function TBookCollection_SQLite.CheckDatabase: string;
+var
+  query: TSQLiteQuery;
+  Lines: TStringList;
 begin
-  // Not supported for SQLite, skip
+  //
+  // SQLite не має автоматичного відновлення. PRAGMA integrity_check повертає
+  // рядок 'ok' для справної бази або список знайдених проблем.
+  //
+  Lines := TStringList.Create;
+  try
+    query := FDatabase.NewQuery('PRAGMA integrity_check;');
+    try
+      query.Open;
+      while not query.Eof do
+      begin
+        Lines.Add(query.FieldAsString(0));
+        query.Next;
+      end;
+    finally
+      query.Free;
+    end;
+    Result := Trim(Lines.Text);
+  finally
+    Lines.Free;
+  end;
 end;
 
 procedure TBookCollection_SQLite.ReloadGenres(const FileName: string);

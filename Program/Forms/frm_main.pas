@@ -6433,8 +6433,12 @@ begin
       Data := Tree.GetNodeData(Node);
       if Assigned(Data) and (Data^.nodeType = ntBookInfo) then
       begin
-        // заглушка
-        NewProgress := IfThen(Data^.Progress = 0, 100, 0);
+        //
+        // Перемикач за ознакою "прочитано повністю": книга з будь-яким
+        // проміжним прогресом стає прочитаною (100%), уже прочитана —
+        // непрочитаною (0%). Так поточний прогрес читання не втрачається.
+        //
+        NewProgress := IfThen(Data^.Progress = 100, 0, 100);
 
         FCollection.SetProgress(Data^.BookKey, NewProgress);
         UpdateNodes(
@@ -6463,9 +6467,15 @@ begin
 end;
 
 procedure TfrmMain.RepairDataBaseExecute(Sender: TObject);
+var
+  CheckResult: string;
 begin
   Assert(Assigned(FCollection));
-  FCollection.RepairDatabase;
+  CheckResult := FCollection.CheckDatabase;
+  if SameText(CheckResult, 'ok') then
+    MHLShowInfo(rstrDatabaseCheckOk)
+  else
+    MHLShowError(Format(rstrDatabaseCheckFailed, [CheckResult]));
 end;
 
 procedure TfrmMain.ChangeSettingsExecute(Sender: TObject);
