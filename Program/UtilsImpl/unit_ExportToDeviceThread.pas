@@ -358,6 +358,7 @@ end;
 function TExportToDeviceThread.CallExternalConverter: boolean;
 var
   OutputPath: string;
+  ConverterExe: string;
   TempFileCreated: Boolean;
 begin
   Result := False;
@@ -405,11 +406,15 @@ begin
     if Result and not FileExists(OutputPath) then
     begin
       Result := False;
+      // Називаємо конвертер явно - інакше з повідомлення не зрозуміло, який саме
+      // з чотирьох зовнішніх конвертерів впав (#59)
+      ConverterExe := GetConverterPath(FAppPath, FExportMode);
       if FConverterExitCode <> 0 then
-        FLastError := Format('Converter failed with exit code %d and produced no output: %s',
-          [FConverterExitCode, OutputPath])
+        FLastError := Format('Converter "%s" failed with exit code %d and produced no output: %s',
+          [ConverterExe, FConverterExitCode, OutputPath])
       else
-        FLastError := Format('Converter exited OK but produced no output: %s', [OutputPath]);
+        FLastError := Format('Converter "%s" exited OK but produced no output: %s',
+          [ConverterExe, OutputPath]);
 
       // fb2pdf.cmd - обгортка над Java; без встановленої JRE вона одразу виходить з кодом 1
       if FExportMode = emPDF then
