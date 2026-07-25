@@ -26,6 +26,7 @@ procedure LogToStderr(const Msg: string);
 implementation
 
 uses
+  System.Character,
   dm_user,
   unit_Settings,
   unit_MCP_Json,
@@ -333,6 +334,109 @@ begin
   Result := BookToJson(Book, True);
 end;
 
+// Builds a `<field> LIKE <literal>` fragment for one of search_books' free-text
+// arguments (title/author/series/lang/keyword/annotation) that matches Value
+// as a literal, case-insensitive substring -- regardless of what characters
+// Value contains -- instead of letting unit_SearchUtils.PrepareQuery/
+// AddToFilter interpret it.
+//
+// Why a plain quoted literal is not safe here: PrepareSearchData
+// (Program\DAO\SQLite\unit_Database_SQLite.pas) runs every one of these
+// fields through PrepareQuery(Value, UP=True) then AddToFilter with a
+// hard-coded column name. PrepareQuery wraps a "plain" value as `LIKE
+// "%value%"`, but the moment Value already contains '%', '=', '"' or the word
+// LIKE, it assumes the caller wrote a hand-crafted condition and passes
+// Value through nearly verbatim (no escaping of embedded quotes at all) --
+// so a title containing a '"' defeats the wrapping outright, and a value
+// shaped like `x' OR '1'='1` sails through unescaped into the WHERE clause.
+// AddToFilter then makes it worse independent of PrepareQuery: it splices in
+// the column name by blindly text-searching the *final* value for
+// space-bounded ' LIKE ', ' =', ' <>', ' <', ' >' tokens -- so even a
+// correctly-quoted literal would be at risk if the caller's own text
+// happens to contain one of those substrings (e.g. an annotation containing
+// "x < y"), because AddToFilter cannot tell "inside the literal" from "the
+// real operator" and would splice the column name into the middle of it.
+//
+// The fix used here is the one Task 7 established for `genre`, taken
+// further: build the whole condition ourselves so PrepareQuery has nothing
+// left to reinterpret (our own literal 'LIKE' keyword makes PrepareQuery
+// skip its wrapping/escaping branches and pass the string through close to
+// verbatim), and render Value's *escaped* text as SQLite CHAR(code, code,
+// ...) calls -- decimal Unicode code points joined by commas -- instead of
+// a quoted string. A CHAR()-built value contains none of the caller's
+// original characters anywhere in the spliced SQL text (only digits,
+// commas, parentheses and our own fixed keywords), so AddToFilter's blind
+// token search can never mistake part of the literal for a second operator,
+// and there is no quote character of any kind for the value to break out
+// through. This is a stronger guarantee than escaping quotes the way the
+// `genre` fix does, because `genre` only ever fills in one bare `=`
+// comparison, never arbitrary free text that could itself contain
+// operator-shaped substrings.
+//
+// Chunked into groups of 100 code points per CHAR() call, concatenated with
+// `||`: SQLite's SQLITE_MAX_FUNCTION_ARG defaults to 127, so a single
+// CHAR() call would reject any search value longer than ~125 characters
+// after escaping -- a real limit for `annotation` searches in particular.
+//
+// Case: the column side of this comparison (b.SearchTitle etc.) is
+// precomputed by a custom MHL_UPPER SQLite UDF backed by
+// `Char.ToUpper` (System.Character's TCharHelper.ToUpper, see
+// Program\DAO\SQLite\Lib\SQLite3UDF.pas), not Delphi's AnsiUpperCase. Since
+// this function encodes Value's exact character codes into the SQL text,
+// PrepareQuery's own UP=True uppercasing step (which only touches the
+// "LIKE CHAR(...)" text, not the numbers' represented characters) cannot
+// perform the case-folding that step normally does -- so Value must be
+// uppercased with the *same* function before it is escaped/encoded, or this
+// would silently become a case-SENSITIVE match against an always-uppercase
+// column.
+//
+// Wildcard escaping: '%' and '_' are LIKE metacharacters regardless of how
+// the pattern string was built, so a literal search must escape them (and
+// the escape character itself, backslash, in case Value already contains
+// one) and declare ESCAPE '\' -- otherwise a title containing a literal '%'
+// or '_' would be (mis)interpreted as a wildcard instead of matched
+// literally.
+function LiteralLikeCondition(const Value: string): string;
+const
+  ChunkSize = 100;
+  SQ = ''''; // a single apostrophe as a string value
+var
+  Escaped: string;
+  Codes, Terms: string;
+  ChunkStart, ChunkEnd, I: Integer;
+begin
+  Escaped := Char.ToUpper(Value);
+  Escaped := StringReplace(Escaped, '\', '\\', [rfReplaceAll]);
+  Escaped := StringReplace(Escaped, '%', '\%', [rfReplaceAll]);
+  Escaped := StringReplace(Escaped, '_', '\_', [rfReplaceAll]);
+  Escaped := '%' + Escaped + '%';
+
+  Terms := '';
+  ChunkStart := 1;
+  while ChunkStart <= Length(Escaped) do
+  begin
+    ChunkEnd := ChunkStart + ChunkSize - 1;
+    if ChunkEnd > Length(Escaped) then
+      ChunkEnd := Length(Escaped);
+
+    Codes := '';
+    for I := ChunkStart to ChunkEnd do
+    begin
+      if Codes <> '' then
+        Codes := Codes + ',';
+      Codes := Codes + IntToStr(Ord(Escaped[I]));
+    end;
+
+    if Terms <> '' then
+      Terms := Terms + '||';
+    Terms := Terms + 'CHAR(' + Codes + ')';
+
+    ChunkStart := ChunkEnd + 1;
+  end;
+
+  Result := 'LIKE ' + Terms + ' ESCAPE ' + SQ + '\' + SQ;
+end;
+
 // Full-text-ish search across a single collection. LoadMemos is False --
 // summary rows (BookToJson Full=False) never surface annotation or review,
 // so there is no point paying for the extra SQLite reads. RecordCount is
@@ -350,14 +454,26 @@ var
   Limit, Offset, Skipped, Taken, MinRate: Integer;
   Clamped, ClampedAny: Boolean;
   Total: Integer;
-  GenreCode: string;
+  GenreCode, TitleArg, AuthorArg, SeriesArg, LangArg, KeywordArg, AnnotationArg: string;
 begin
   Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
 
   Criteria := Default(TBookSearchCriteria);
-  Criteria.Title      := ArgStr(Args, 'title');
-  Criteria.FullName   := ArgStr(Args, 'author');
-  Criteria.Series     := ArgStr(Args, 'series');
+  // Title/author/series/lang/keyword/annotation all go through
+  // LiteralLikeCondition (see its comment above) rather than a direct
+  // ArgStr(...) assignment -- PrepareSearchData would otherwise hand the
+  // caller's raw text to PrepareQuery/AddToFilter, which splice it into the
+  // WHERE clause with no escaping at all (see that function's comment for
+  // the full argument).
+  TitleArg := ArgStr(Args, 'title');
+  if TitleArg <> '' then
+    Criteria.Title := LiteralLikeCondition(TitleArg);
+  AuthorArg := ArgStr(Args, 'author');
+  if AuthorArg <> '' then
+    Criteria.FullName := LiteralLikeCondition(AuthorArg);
+  SeriesArg := ArgStr(Args, 'series');
+  if SeriesArg <> '' then
+    Criteria.Series := LiteralLikeCondition(SeriesArg);
   // TBookSearchCriteria.Genre is not a value to compare -- PrepareSearchData
   // splices it verbatim into a WHERE clause (' WHERE (' + SearchCriteria.Genre
   // + ')'), matching how frm_main.pas builds it from its genre-tree picker:
@@ -387,9 +503,15 @@ begin
   if GenreCode <> '' then
     Criteria.Genre := Format('g.GenreCode = ''%s''',
       [StringReplace(GenreCode, '''', '''''', [rfReplaceAll])]);
-  Criteria.Lang       := ArgStr(Args, 'lang');
-  Criteria.KeyWord    := ArgStr(Args, 'keyword');
-  Criteria.Annotation := ArgStr(Args, 'annotation');
+  LangArg := ArgStr(Args, 'lang');
+  if LangArg <> '' then
+    Criteria.Lang := LiteralLikeCondition(LangArg);
+  KeywordArg := ArgStr(Args, 'keyword');
+  if KeywordArg <> '' then
+    Criteria.KeyWord := LiteralLikeCondition(KeywordArg);
+  AnnotationArg := ArgStr(Args, 'annotation');
+  if AnnotationArg <> '' then
+    Criteria.Annotation := LiteralLikeCondition(AnnotationArg);
   // TBookSearchCriteria.Deleted is inverted relative to this tool's
   // include_deleted argument: PrepareSearchData only adds a filter when
   // Deleted is True, and that filter is `b.IsDeleted = 0` -- i.e. Deleted
@@ -410,9 +532,39 @@ begin
   // rows for every query.
   Criteria.DateIdx := -1;
 
+  // min_lib_rate is documented (and named) as a *minimum* rating, but
+  // `Criteria.LibRate := IntToStr(MinRate)` (the previous code) went through
+  // PrepareQuery(S, UP=False, ConverToFull=False), which wraps a plain
+  // number as `="N"` -- an EXACT match, silently turning "4 and up" into
+  // "exactly 4". Criteria.LibRate is spliced by AddToFilter the same
+  // untrusted-text way every other field here is, but MinRate itself is
+  // always our own IntToStr of a parsed Integer, never caller text, so no
+  // literal-escaping is needed for this one -- only the operator needs
+  // fixing. '>= N' (no '=' immediately after a space, so AddToFilter's
+  // ' =' token does not fire; its ' >' token does, splicing in the column
+  // name as `b.LibRate >= N`) gives the documented "at least" semantics.
   MinRate := ArgInt(Args, 'min_lib_rate', 0);
   if MinRate > 0 then
-    Criteria.LibRate := IntToStr(MinRate);
+    Criteria.LibRate := Format('>= %d', [MinRate]);
+
+  // PrepareSearchData raises a plain Exception (message
+  // rstrCheckFilterParams, "Перевірте параметри фільтра") whenever it built
+  // no WHERE clause at all, and that exception is not an EMcpToolError, so
+  // it would otherwise fall through Guarded/HandleToolsCall uncaught and
+  // surface to the client as a raw JSON-RPC -32603 carrying the DAO's own
+  // message text. That happens whenever every one of the fields above is
+  // blank AND include_deleted=true (Criteria.Deleted=False skips the one
+  // filter -- b.IsDeleted = 0 -- that a call with every other field left at
+  // its default would otherwise always pick up). Detect the same condition
+  // here first and fail with a stable, machine-readable domain error
+  // instead of letting that raw text leak through.
+  if (Criteria.Title = '') and (Criteria.FullName = '') and (Criteria.Series = '') and
+     (Criteria.Genre = '') and (Criteria.Lang = '') and (Criteria.KeyWord = '') and
+     (Criteria.Annotation = '') and (Criteria.LibRate = '') and (not Criteria.Deleted) then
+    raise EMcpToolError.Create('empty_filter',
+      'Вкажіть хоча б один критерій пошуку (title, author, series, genre, ' +
+      'lang, keyword, annotation, min_lib_rate) або залиште include_deleted ' +
+      'без змін (false).');
 
   Limit := ArgIntClamped(Args, 'limit', 25, 1, 200, ClampedAny);
   Offset := ArgIntClamped(Args, 'offset', 0, 0, MaxInt, Clamped);
@@ -642,14 +794,14 @@ begin
     TJSONObject.ParseJSONValue(
       '{"type":"object","properties":{' +
       '"collection_id":{"type":"integer","description":"ID колекції"},' +
-      '"title":{"type":"string"},' +
-      '"author":{"type":"string","description":"Повне або часткове ім''я автора"},' +
-      '"series":{"type":"string"},' +
+      '"title":{"type":"string","description":"Підрядок назви (без урахування регістру; лапки, % та _ шукаються буквально, не як спецсимволи)"},' +
+      '"author":{"type":"string","description":"Повне або часткове ім''я автора (без урахування регістру, буквально)"},' +
+      '"series":{"type":"string","description":"Підрядок назви серії (без урахування регістру, буквально)"},' +
       '"genre":{"type":"string","description":"Код жанру зі списку list_genres"},' +
-      '"lang":{"type":"string"},' +
-      '"keyword":{"type":"string"},' +
-      '"annotation":{"type":"string"},' +
-      '"min_lib_rate":{"type":"integer"},' +
+      '"lang":{"type":"string","description":"Підрядок коду мови (без урахування регістру, буквально)"},' +
+      '"keyword":{"type":"string","description":"Підрядок ключових слів (без урахування регістру, буквально)"},' +
+      '"annotation":{"type":"string","description":"Підрядок анотації (без урахування регістру, буквально)"},' +
+      '"min_lib_rate":{"type":"integer","description":"Мінімальний рейтинг книги (LibRate) -- повертає книги з таким рейтингом і вище"},' +
       '"include_deleted":{"type":"boolean"},' +
       '"limit":{"type":"integer","description":"Типово 25, максимум 200"},' +
       '"offset":{"type":"integer"}},' +

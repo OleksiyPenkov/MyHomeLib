@@ -82,6 +82,10 @@ comparing results with the MyHomeLib app itself:
       filter.
 - [ ] `search_books(limit=5000)` returns 200 books and `"clamped":true`.
 - [ ] `search_books(offset=…)` pages without repeating or skipping books.
+- [ ] `search_books(title=…)` with a value containing a `"`, `'`, `%` or `_`
+      matches literally instead of erroring or matching too broadly.
+- [ ] `search_books(min_lib_rate=N)` returns books rated `N` and above, not
+      only books rated exactly `N`.
 - [ ] `list_genres` returns the same genre tree the app's genre panel shows.
 - [ ] A genre code from `list_genres` used in `search_books(genre=…)` returns
       books of that genre.
@@ -197,22 +201,111 @@ statement terminator, comment marker included) stays inert inside one string
 literal. This proves containment for the `genre` field specifically, not
 that the server is free of SQL-splicing elsewhere.
 
-**It is not free of it elsewhere.** `PrepareSearchData` builds `Title`,
-`FullName` (author), `Series`, `Annotation`, `Lang`, `KeyWord`, `LibRate`,
-plus the unused-by-this-tool `FileName`/`Folder`/`FileExt`, the same way:
-each goes through `unit_SearchUtils.PrepareQuery`, which turns a bare value
-into a raw SQL fragment (`="value"`, `LIKE "value"`, or the value verbatim if
-it already contains `%`, `=`, `"`, or `LIKE`) with **no escaping of embedded
-quotes at all**, and `AddToFilter` splices that fragment straight into the
-WHERE clause. This is a deliberate app feature — `frm_main.pas`'s search
-boxes let a user type native-ish query syntax (`="exact"`, `LIKE "%x%"`)
-directly — but it means every one of those fields is exactly as spliced as
-`Genre` was before this fix, and none of them received the same treatment
-here. `search_books`'s `title`/`author`/`series`/`lang`/`keyword`/
-`annotation`/`min_lib_rate` arguments are unescaped SQL-splice surfaces
-today. Out of scope for this task (which only had to fix the field it needed
-for the `list_genres` round trip to work at all) but a real gap, not a
-hypothetical one.
+**This was also true of six other fields, fixed in a later task (below).**
+`PrepareSearchData` built `Title`, `FullName` (author), `Series`,
+`Annotation`, `Lang`, `KeyWord` the same unescaped way `Genre` used to, and
+`LibRate` was a plain exact match instead of the "minimum rating" its name
+promises. See "`search_books` free-text arguments: literal substring
+matching" below for the fix and why a quoted-literal approach (the one used
+for `genre` above) is not safe for these six fields the way it is for
+`genre`.
+
+## `search_books` free-text arguments: literal substring matching
+
+`title`, `author`, `series`, `lang`, `keyword` and `annotation` are all
+documented as plain, case-insensitive substring matches. Until this was
+fixed, none of them were: every one of them went straight into
+`Criteria.<Field> := ArgStr(Args, '<name>')`, so whatever the caller typed
+was handed unescaped to `unit_SearchUtils.PrepareQuery`/`AddToFilter` (see
+the genre section above for exactly how those two functions work). Two
+concrete, confirmed-against-a-real-collection failures resulted:
+
+- **Correctness**: a title containing a `"` (real example in this
+  collection: `Вяртаньне ў "Тутэйшыя"`, `book_id` 786) defeated
+  `PrepareQuery`'s own wrapping logic (it treats any `"` in the value as "the
+  caller already wrote a hand-crafted condition") and was spliced through
+  nearly verbatim — `AddToFilter` then had nothing to anchor the column name
+  to, and the query broke.
+- **Injection surface**: a value shaped like `x' OR '1'='1` (no `"`, so it
+  still defeated the wrapping the same way, via the `=`) was spliced into the
+  `WHERE` clause with no escaping of embedded quotes at all.
+
+The `genre` field's fix (single-quote the literal, double any embedded `'`)
+does not carry over to these six fields, because `genre` only ever fills in
+one bare `g.GenreCode = '...'` comparison, never arbitrary free text. Free
+text can itself contain `AddToFilter`'s own trigger substrings — e.g. an
+annotation containing `x < y` — and `AddToFilter` blindly text-searches the
+*final* spliced value for space-bounded ` LIKE `, ` =`, ` <>`, ` <`, ` >`
+tokens to decide where the column name goes, with no notion of "inside a
+string literal" versus "a second real operator". A literal built the normal
+way (quote it, double the embedded quotes) is exposed to exactly that
+confusion if the caller's own text contains one of those substrings.
+
+The fix (`LiteralLikeCondition` in `unit_MCP_Tools_Library.pas`) sidesteps
+both hazards by never emitting the caller's characters into the SQL text at
+all: the escaped, wildcard-wrapped pattern is rendered as SQLite
+`CHAR(code, code, ...)` calls — decimal Unicode code points — concatenated
+with `||`, chunked into groups of 100 codes per call to stay under SQLite's
+default `SQLITE_MAX_FUNCTION_ARG` (127; a single `CHAR()` call would
+otherwise reject any search value longer than ~125 characters, a real limit
+for `annotation` in particular). A value built entirely from digits, commas,
+parentheses and the fixed keywords `LIKE`/`CHAR`/`ESCAPE` contains none of
+the caller's original characters anywhere in the spliced text, so neither
+`PrepareQuery`'s wrapping decision nor `AddToFilter`'s blind token search can
+ever be confused by what the caller typed, regardless of what that text
+contains.
+
+Two details this depends on:
+
+- **Case.** The column side of the comparison (`b.SearchTitle` etc.) is
+  precomputed by a custom `MHL_UPPER` SQLite UDF backed by `Char.ToUpper`
+  (`System.Character`'s `TCharHelper.ToUpper`, see
+  `Program\DAO\SQLite\Lib\SQLite3UDF.pas`), not Delphi's `AnsiUpperCase`.
+  Because the caller's value is encoded as fixed code points, `PrepareQuery`'s
+  own `UP=True` uppercasing step (which only touches the literal
+  `LIKE CHAR(...)` text, not the characters the numbers represent) cannot
+  perform the case-folding it normally would — so `LiteralLikeCondition`
+  uppercases the value itself with the *same* function before escaping it,
+  or the match would have silently become case-sensitive against an
+  always-uppercase column.
+- **Wildcard escaping.** `%` and `_` are `LIKE` metacharacters no matter how
+  the pattern string was built, so a literal search escapes both (and the
+  escape character itself, `\`, in case the caller's text already contains
+  one) and declares `ESCAPE '\'` — otherwise a title containing a literal
+  `%` or `_` would be (mis)interpreted as a wildcard.
+
+**`lang`'s substring semantics changed.** Before this fix, `PrepareQuery` was
+called with `ConverToFull=False` for `Lang`, meaning a plain value (no
+special characters) became an *exact* match (`="value"`), not a substring —
+the only one of the six fields where the tool's actual behavior didn't match
+its "substring" billing even before considering the escaping bugs.
+`LiteralLikeCondition` treats it exactly like the other five now, which is
+what its schema entry says.
+
+**`min_lib_rate` is now a true minimum.** It was
+`Criteria.LibRate := IntToStr(MinRate)`, which `PrepareQuery(S, UP=False,
+ConverToFull=False)` wraps as `="N"` — an *exact* match, so
+`min_lib_rate: 4` silently meant "rated exactly 4", not "rated 4 or higher"
+as the name and schema description say. `MinRate` is always this tool's own
+`IntToStr` of a parsed `Integer`, never caller text, so no literal-escaping
+is needed here — only the operator: `Criteria.LibRate := Format('>= %d',
+[MinRate])` produces `b.LibRate >= N`. Confirmed against a real collection:
+`min_lib_rate: 4` returns `total_count: 18914`, matching the independently
+queried count of books rated 4 or 5 (11293 + 7621); the old code returned
+only the 11293 rated exactly 4.
+
+**A fully blank filter is now a domain error, not a raw internal one.**
+`PrepareSearchData` raises a plain `Exception` (message
+`rstrCheckFilterParams`, "Перевірте параметри фільтра") whenever every field
+above is blank *and* `include_deleted: true` (only that combination skips
+every filter `PrepareSearchData` can add, including the `b.IsDeleted = 0`
+filter that `include_deleted: false`, the default, always contributes). That
+exception is not an `EMcpToolError`, so it used to fall through
+`Guarded`/`HandleToolsCall` uncaught and surface as a raw JSON-RPC `-32603`
+carrying the DAO's own message text. `search_books` now detects the same
+"nothing to filter on" condition itself, before calling `Collection.Search`,
+and raises `EMcpToolError.Create('empty_filter', ...)` instead — a normal
+tool result with `isError: true` and a stable, machine-readable `code`.
 
 ## `list_genres`, `list_series`, `list_authors`
 
@@ -446,9 +539,10 @@ against collection 1 returns a clean
 `{"books":[],"total_count":0,"has_more":false}` — zero matches, no
 `isError`, no SQL error text, no build path. It proves containment for this
 one field on this one query shape; it is not a general injection-free proof
-of the server, and the README section above says plainly which other fields
-(`title`, `author`, `series`, `lang`, `keyword`, `annotation`,
-`min_lib_rate`) still splice caller input into SQL unescaped.
+of the server. The other fields it names (`title`, `author`, `series`,
+`lang`, `keyword`, `annotation`, `min_lib_rate`) were fixed in a later task —
+see "`search_books` free-text arguments: literal substring matching" above
+and cases `28`–`34` below.
 
 `22_get_book_toc.jsonl` through `27_get_book_toc_book_not_found_no_path_leak.jsonl`
 cover the three text tools, all captured byte-for-byte from an actual run against
@@ -480,6 +574,38 @@ this (interpolating the caught exception's own message, which for an
 invalid ID reaches an `Assert` deep in `unit_Database_SQLite.pas` carrying
 its source path) and this case pins the sanitized shape going forward.
 
+`28_search_books_title_double_quote_literal.jsonl` through
+`34_search_books_series_case_insensitive_literal.jsonl` cover the
+literal-substring-matching fix described above, all captured byte-for-byte
+against real collection 1. `28` searches `title: "\"Тутэйшыя\""` (with the
+quote characters as part of the value) and gets exactly `book_id: 786`
+(`total_count: 1`) — a title containing a `"` no longer breaks the query or
+widens the match. `29` searches `title: "_%_"` and gets `total_count: 0`,
+proving `%`/`_` are matched literally — independently confirmed against the
+same collection that an *unescaped* `%_%` (i.e. treating both as wildcards)
+would have matched 439,362 of the 439,393 non-deleted books, essentially the
+whole collection. `30` searches `title: "'третьим"` (a leading literal
+single quote) and gets exactly `book_id: 181` (`total_count: 1`). `31`
+searches `title: "x' OR '1'='1"` — the classic injection shape — and gets a
+clean `total_count: 0`, no `isError`, no SQL text, no build path: the
+payload is matched as an inert literal, not executed as SQL. `32` calls
+`min_lib_rate: 4` (`limit: 3` to keep the fixture small) and gets
+`total_count: 18914` — independently confirmed as the count of books rated 4
+*or 5* (11293 + 7621), not the 11293 rated exactly 4 the old exact-match
+code returned — with all three returned books (`119`, `120`, `323`)
+independently confirmed rated 5, i.e. above the requested minimum. `33`
+calls `search_books` with only `collection_id`/`include_deleted: true` (no
+other field set) and gets `isError: true`, `"code":"empty_filter"` instead
+of a raw `-32603`. `34` searches `series: "гарри поттер"` (lowercase) and
+gets the same real match (`book_id: 65006`, `total_count: 104`) that
+`17_list_series_filter_found.jsonl` established for `"Гарри Поттер"`,
+confirming `series` is still case-insensitive after the fix — and, since
+`lang`'s substring semantics changed by this same fix (see above), a quick
+non-fixture check that `lang: "ru"` and `lang: "RU"` both return the same
+`total_count: 374195` is recorded in the task report rather than as a
+separate case, since it exercises no code path `34` doesn't already cover
+for a different field.
+
 There is no automated case for `get_book_text`'s `unsupported_format` path:
 the only collection registered on the machine these tests were captured on
 is `Lib.rus.ec Local [FB2]` — a collection that is, by name and by a sampled
@@ -508,8 +634,12 @@ every page" misread as a clean negative — the substring check
 went unnoticed until this was rediscovered independently while working on a
 later fix round. The number above (2,200 books, 0 non-FB2) is from a
 corrected scan using `lang:"ru"` as a real, non-blank filter, which is not
-rejected. `search_books` itself was not touched by any of this — the bug is
-in `PrepareSearchData`'s pre-existing "at least one filter required"
-behavior, not a regression from Task 10's own work — but the original
-claim, resting on a scan that never actually ran, should not have been
-stated as confirmed.
+rejected. `search_books` itself was not touched by any of this at the time —
+the bug was in `PrepareSearchData`'s pre-existing "at least one filter
+required" behavior, not a regression from Task 10's own work — but the
+original claim, resting on a scan that never actually ran, should not have
+been stated as confirmed. This specific combination (every field blank plus
+`include_deleted: true`) is fixed as of the literal-substring-matching task
+above: `search_books` now detects it itself and returns
+`isError: true`/`"code":"empty_filter"` instead of letting
+`PrepareSearchData`'s raw exception text reach the client — see case `33`.
