@@ -212,6 +212,9 @@
         <DCCReference Include="Forms\frm_DeleteCollection.pas">
             <Form>dlgDeleteCollection</Form>
         </DCCReference>
+        <DCCReference Include="Forms\frm_UpdateFromFile.pas">
+            <Form>dlgUpdateFromFile</Form>
+        </DCCReference>
         <DCCReference Include="Units\unit_ImportOldUserData.pas"/>
         <DCCReference Include="DAO\SQLite\unit_SystemDatabase_SQLite.pas"/>
         <DCCReference Include="Units\unit_ColorTabs.pas"/>
