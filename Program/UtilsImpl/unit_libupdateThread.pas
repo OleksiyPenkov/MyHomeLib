@@ -25,6 +25,7 @@ uses
   SysUtils,
   unit_ImportInpxThread,
   System.Net.HttpClient,
+  unit_Globals,
   unit_UserData;
 
 type
@@ -54,12 +55,26 @@ type
     property Updated: Boolean read FUpdated;
   end;
 
+  TManualUpdateThread = class(TCollectionUpdateThreadBase)
+  private
+    FFileName: string;
+    FFull: Boolean;
+    FDisplayName: string;
+
+  protected
+    procedure WorkFunction; override;
+
+  public
+    constructor Create(const ACollectionID: Integer; const AFileName: string;
+      AFull: Boolean; AGenresType: TGenresType);
+    property DisplayName: string read FDisplayName write FDisplayName;
+  end;
+
 implementation
 
 uses
   IOUtils,
   DateUtils,
-  unit_Globals,
   unit_Consts,
   unit_Settings,
   dm_user,
@@ -95,6 +110,10 @@ rstrDownloadProgress = 'Завантажено: %u%% із %u байт';
    rstrUpdateFailedDownload = 'Завантаження оновлень не вдалося.';
    rstrCancelledByUser = 'Операцію скасовано користувачем.';
    rstrImportIntoCollection = 'Імпорт даних до колекції:';
+   rstrManualCollectionUpdate = 'Оновлення колекції %s з файлу %s:';
+   rstrManualUpdateComplete = 'Оновлення завершено.';
+   rstrManualUpdateFailed = 'Оновлення не вдалося.';
+   rstrUpdateFileNotFound = 'Файл оновлення не знайдено: %s';
 
 { TCollectionUpdateThreadBase }
 
@@ -270,6 +289,39 @@ begin
       // TODO -cBug: вообще говоря, значение i здесь неопределено
       //
       DeleteFile(Settings.WorkPath + Settings.Updates.Items[i].UpdateFile);
+    end;
+  end;
+end;
+
+{ TManualUpdateThread }
+
+constructor TManualUpdateThread.Create(const ACollectionID: Integer;
+  const AFileName: string; AFull: Boolean; AGenresType: TGenresType);
+begin
+  inherited Create(ACollectionID);
+  FFileName := AFileName;
+  FFull := AFull;
+  FGenresType := AGenresType;
+end;
+
+procedure TManualUpdateThread.WorkFunction;
+begin
+  if not FileExists(FFileName) then
+  begin
+    Teletype(Format(rstrUpdateFileNotFound, [FFileName]), tsError);
+    Exit;
+  end;
+
+  try
+    Teletype(Format(rstrManualCollectionUpdate, [FDisplayName, FFileName]), tsInfo);
+    UpdateCollection(FFileName, FCollectionID, FFull, FDisplayName);
+    Teletype(rstrManualUpdateComplete, tsInfo);
+    SetComment(rstrReady);
+  except
+    on E: Exception do
+    begin
+      Teletype(rstrManualUpdateFailed, tsError);
+      Teletype(E.Message, tsError);
     end;
   end;
 end;
