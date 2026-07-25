@@ -47,7 +47,7 @@ type
     function HandleToolsCall(const Params: TJSONObject): TJSONObject;
     procedure SendResult(Id: TJSONValue; Payload: TJSONObject);
     procedure SendError(Id: TJSONValue; Code: Integer; const Msg: string);
-    procedure Dispatch(const Request: TJSONObject);
+    procedure DispatchRequest(const Request: TJSONObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -236,7 +236,7 @@ begin
   end;
 end;
 
-procedure TMcpServer.Dispatch(const Request: TJSONObject);
+procedure TMcpServer.DispatchRequest(const Request: TJSONObject);
 var
   Method: string;
   Id: TJSONValue;
@@ -283,7 +283,7 @@ begin
     if not Assigned(Request) then
       Continue;
     try
-      Dispatch(Request);
+      DispatchRequest(Request);
     finally
       Request.Free;
     end;
