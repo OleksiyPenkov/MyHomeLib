@@ -278,8 +278,6 @@ begin
   ctx := TRttiContext.Create;
   ConstParams := TStringList.Create;
   try
-    FParams := TMultipartFormData.Create;
-
     // Add macro from collection info
     ConstParams.Values['%USER%'] := Collection.GetProperty(PROP_LIBUSER);
     ConstParams.Values['%PASS%'] := Collection.GetProperty(PROP_LIBPASSWORD);
@@ -306,6 +304,9 @@ begin
 
     // Execute scenario
     Commands := ParseCommands(Collection.GetProperty(PROP_CONNECTIONSCRIPT), ConstParams);
+
+    // Створюємо безпосередньо перед try, який його звільняє
+    FParams := TMultipartFormData.Create;
     try
       FResponse := TMemoryStream.Create;
       try
