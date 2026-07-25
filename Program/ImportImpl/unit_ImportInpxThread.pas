@@ -93,6 +93,7 @@ uses
   Classes,
   SysUtils,
   IOUtils,
+  ComCtrls,
   unit_MHLArchiveHelpers,
   unit_Consts,
   unit_Helpers,
@@ -373,6 +374,11 @@ begin
 end;
 
 procedure TImportInpxThreadBase.Import(const INPXFileName: string; CheckFiles: Boolean; BookCollection: IBookCollection);
+type
+  TInpEntry = record
+    Name: string;
+    Size: Integer;
+  end;
 var
   CollectionRoot: string;
   BookList: TStringList;
@@ -387,13 +393,15 @@ var
   header: TINPXHeader;
   strVersion: string;
   strCollection: string;
-  numFiles: Integer;
   Zip: TMHLZip;
   collectionCode: Integer;
+  InpEntries: TArray<TInpEntry>;
+  EntryCount: Integer;
+  TotalBytes: Int64;
+  BytesDone: Int64;
 
 begin
   filesProcessed := 0;
-  i := 0;
   SetProgress(0);
   collectionCode := BookCollection.CollectionCode;
 
@@ -412,12 +420,48 @@ begin
       StructureInfo := DEFAULTSTRUCTURE;
 
     GetFields(StructureInfo);
-    numFiles := Zip.FileCount;
 
-    if Zip.Find('*.inp') then
-    repeat
-      CurrentFile:= Zip.LastName;
-      if not IsOnline and (CurrentFile = 'extra.inp') then Continue;
+    //
+    // Попередній прохід: збираємо .inp-члени архіву та їхні розпаковані
+    // розміри. Розмір лежить у центральному каталозі zip, читання нічого не
+    // коштує, а важити прогрес байтами точніше, ніж кількістю членів: рядки
+    // .inp майже однакової довжини, а самі члени дуже різні за обсягом.
+    //
+    // Заразом це прибирає давню ваду обходу: TMHLZip.FindNext не перевіряє
+    // розширення, тож старий цикл, проминувши останній .inp, згодовував
+    // ParseData version.info і collection.info та засмічував журнал помилок.
+    //
+    SetLength(InpEntries, Zip.FileCount);
+    EntryCount := 0;
+    TotalBytes := 0;
+    for i := 0 to Zip.FileCount - 1 do
+    begin
+      CurrentFile := Zip.FileNames[i];
+      if not SameText(ExtractFileExt(CurrentFile), INP_EXTENSION) then
+        Continue;
+      if not IsOnline and SameText(CurrentFile, EXTRA_INP_FILENAME) then
+        Continue;
+
+      InpEntries[EntryCount].Name := CurrentFile;
+      InpEntries[EntryCount].Size := Zip.FileSizes[i];
+      Inc(TotalBytes, InpEntries[EntryCount].Size);
+      Inc(EntryCount);
+    end;
+    SetLength(InpEntries, EntryCount);
+
+    //
+    // TWorker.OpenProgress відкриває операцію з Total = 0, і TProgressEngine
+    // виставляє смузі pbstMarquee. Поки стиль marquee, Position не видно -
+    // саме через це діалог оновлення показував нескінченну «біжучу доріжку»
+    // замість прогресу.
+    //
+    if TotalBytes > 0 then
+      SetProgressHint(pbstNormal, pbsNormal);
+
+    BytesDone := 0;
+    for i := 0 to High(InpEntries) do
+    begin
+      CurrentFile := InpEntries[i].Name;
 
       Teletype(Format(rstrProcessingFile, [CurrentFile]), tsInfo);
 
@@ -425,75 +469,83 @@ begin
       try
         try
           inpStream := TMemoryStream.Create;
-          Zip.ExtractToStream(Zip.LastName, inpStream);
+          Zip.ExtractToStream(CurrentFile, inpStream);
           inpStream.Seek(0, soBeginning);
           BookList.LoadFromStream(inpStream, TEncoding.UTF8);
         finally
           FreeAndNil(inpStream);
         end;
 
-          for j := 0 to BookList.Count - 1 do
-          begin
-            try
-              ParseData(BookList[j], IsOnline, R);
-              if IsOnline then
-              begin
+        for j := 0 to BookList.Count - 1 do
+        begin
+          try
+            ParseData(BookList[j], IsOnline, R);
+            if IsOnline then
+            begin
 
-                if 0 = (CONTENT_NONFB and collectionCode) then
-                  R.Folder := R.GenerateLocation + FB2ZIP_EXTENSION;  // И\Иванов Иван\1234 Просто книга.fb2.zip
-                // Сохраним отметку о существовании файла
-                if FileExists(TPath.Combine(CollectionRoot, R.Folder)) then
-                  Include(R.BookProps, bpIsLocal)
-                else
-                  Exclude(R.BookProps, bpIsLocal);
-              end
+              if 0 = (CONTENT_NONFB and collectionCode) then
+                R.Folder := R.GenerateLocation + FB2ZIP_EXTENSION;  // И\Иванов Иван\1234 Просто книга.fb2.zip
+              // Сохраним отметку о существовании файла
+              if FileExists(TPath.Combine(CollectionRoot, R.Folder)) then
+                Include(R.BookProps, bpIsLocal)
               else
+                Exclude(R.BookProps, bpIsLocal);
+            end
+            else
+            begin
+              Include(R.BookProps, bpIsLocal);
+              if not FUseStoredFolder then
               begin
-                Include(R.BookProps, bpIsLocal);
-                if not FUseStoredFolder then
-                begin
-                  // 98058-98693.inp -> 98058-98693.zip
-                  R.Folder := ChangeFileExt(CurrentFile, ZIP_EXTENSION);
-                  //
-                  R.InsideNo := j;
-                end
-              end;
-
-              try
-                if BookCollection.InsertBook(R, CheckFiles, False) <> 0 then
-                  Inc(filesProcessed);
-              except
-                on E: Exception do
-                  raise EDBError.Create(E.Message);
-              end;
-
-              if (filesProcessed mod ProcessedItemThreshold) = 0 then
-              begin
-                SetProgress(Round((i + j / BookList.Count) * 100 / numFiles));
-                SetComment(Format(rstrAddedBooks, [filesProcessed]));
-
-                if Canceled then
-                  Break;
-              end;
-
-            except
-              on E: EConvertError do
-                Teletype(Format(rstrErrorInpStructure, [CurrentFile, j]), tsError);
-              on E: EDBError do
-                Teletype(Format(rstrDBErrorInp, [CurrentFile, j]), tsError);
-              on E: Exception do
-                Teletype(E.Message, tsError);
+                // 98058-98693.inp -> 98058-98693.zip
+                R.Folder := ChangeFileExt(CurrentFile, ZIP_EXTENSION);
+                //
+                R.InsideNo := j;
+              end
             end;
+
+            try
+              if BookCollection.InsertBook(R, CheckFiles, False) <> 0 then
+                Inc(filesProcessed);
+            except
+              on E: Exception do
+                raise EDBError.Create(E.Message);
+            end;
+
+          except
+            on E: EConvertError do
+              Teletype(Format(rstrErrorInpStructure, [CurrentFile, j]), tsError);
+            on E: EDBError do
+              Teletype(Format(rstrDBErrorInp, [CurrentFile, j]), tsError);
+            on E: Exception do
+              Teletype(E.Message, tsError);
           end;
-        finally
-          FreeAndNil(BookList);
+
+          //
+          // Крутимо смугу на кожному розібраному рядку, а не на кожній сотій
+          // *вставленій* книзі: інкрементальне оновлення, де майже все вже є
+          // в колекції, інакше стоїть на місці. SetProgress сам гасить
+          // Synchronize, доки ціле число відсотків не змінилось.
+          //
+          if TotalBytes > 0 then
+            SetProgress(Integer(
+              (BytesDone + Round(InpEntries[i].Size * ((j + 1) / BookList.Count))) * 100 div TotalBytes));
+
+          if (j mod ProcessedItemThreshold) = 0 then
+          begin
+            SetComment(Format(rstrAddedBooks, [filesProcessed]));
+
+            if Canceled then
+              Break;
+          end;
         end;
+      finally
+        FreeAndNil(BookList);
+      end;
 
-        Inc(i);
-        if Canceled then
-          Break;
-
-    until not Zip.FindNext;
+      Inc(BytesDone, InpEntries[i].Size);
+      if Canceled then
+        Break;
+    end;
 
     Teletype(Format(rstrAddedBooks, [filesProcessed]), tsInfo);
     FProgressEngine.BeginOperation(-1, rstrUpdatingDB, '');
