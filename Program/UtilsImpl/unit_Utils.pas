@@ -29,6 +29,8 @@ procedure SyncFolders(const CollectionID: Integer);
 
 function LibrusecUpdate(const LogFileName: string): Boolean;
 
+procedure ManualCollectionUpdate(const CollectionID: Integer; const LogFileName: string);
+
 procedure ShowPopup(const Msg: string);
 procedure HidePopup;
 
@@ -46,11 +48,15 @@ uses
   frm_info_popup,
   frm_search,
   frm_main,
+  frm_UpdateFromFile,
+  unit_Globals,
   unit_Interfaces,
-  unit_Settings;
+  unit_Settings,
+  dm_user;
 
 resourcestring
   rstrUpdateCollections = 'Оновлення колекцій';
+  rstrUpdateFromFile = 'Оновлення колекції з файлу';
 
 procedure SyncOnLineFiles(const CollectionID: Integer);
 var
@@ -105,6 +111,44 @@ begin
       ProgressForm.ShowModal;
       ProgressForm.SaveErrorLog(LogFileName);
       Result := worker.Updated;
+    finally
+      ProgressForm.Free;
+    end;
+  finally
+    worker.Free;
+  end;
+end;
+
+procedure ManualCollectionUpdate(const CollectionID: Integer; const LogFileName: string);
+var
+  FileName: string;
+  Full: Boolean;
+  GenresType: TGenresType;
+  CollectionInfo: TCollectionInfo;
+  worker: TManualUpdateThread;
+  ProgressForm: TImportProgressFormEx;
+begin
+  if not AskUpdateFile(FileName, Full) then
+    Exit;
+
+  CollectionInfo := DMUser.GetSystemDBConnection.GetCollectionInfo(CollectionID);
+
+  if isFB2Collection(CollectionInfo.CollectionType) then
+    GenresType := gtFb2
+  else
+    GenresType := gtAny;
+
+  worker := TManualUpdateThread.Create(CollectionID, FileName, Full, GenresType);
+  try
+    worker.DisplayName := CollectionInfo.DisplayName;
+
+    ProgressForm := TImportProgressFormEx.Create(Application);
+    ProgressForm.Caption := rstrUpdateFromFile;
+    try
+      ProgressForm.btnSaveLog.Visible := True;
+      ProgressForm.WorkerThread := worker;
+      ProgressForm.ShowModal;
+      ProgressForm.SaveErrorLog(LogFileName);
     finally
       ProgressForm.Free;
     end;

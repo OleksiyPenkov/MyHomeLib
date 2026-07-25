@@ -126,6 +126,7 @@ type
     pmiDownloadBooks: TMenuItem;
     pmCollection: TPopupMenu;
     miUpdate: TMenuItem;
+    miUpdateFromFile: TMenuItem;
     miGoToAuthor: TMenuItem;
     tlbrMain: TRzToolbar;
     tbtnRead: TRzToolButton;
@@ -428,6 +429,7 @@ type
     acViewShowLocalOnly: TAction;
     acToolsQuickSearch: TAction;
     acToolsUpdateOnlineCollections: TAction;
+    acToolsUpdateFromFile: TAction;
     acToolsClearReadFolder: TAction;
     acToolsRunScript: TAction;
     acToolsSettings: TAction;
@@ -623,6 +625,8 @@ type
     //
     procedure QuickSearchExecute(Sender: TObject);
     procedure UpdateOnlineCollectionExecute(Sender: TObject);
+    procedure UpdateCollectionFromFileExecute(Sender: TObject);
+    procedure UpdateCollectionFromFileUpdate(Sender: TObject);
     procedure ClearReadFolderExecute(Sender: TObject);
     procedure ChangeSettingsExecute(Sender: TObject);
 
@@ -6363,6 +6367,29 @@ begin
     Settings.ActiveCollection := ActiveCollectionID;
     InitCollection;
   end;
+end;
+
+procedure TfrmMain.UpdateCollectionFromFileExecute(Sender: TObject);
+var
+  ActiveCollectionID: Integer;
+begin
+  Assert(Assigned(FCollection));
+  UpdatePositions;
+
+  ActiveCollectionID := FCollection.CollectionID;
+  unit_Utils.ManualCollectionUpdate(ActiveCollectionID, Settings.SystemFileName[sfUpdateLog]);
+  Settings.ActiveCollection := ActiveCollectionID;
+  InitCollection;
+end;
+
+procedure TfrmMain.UpdateCollectionFromFileUpdate(Sender: TObject);
+var
+  Action: TAction;
+begin
+  Assert(Sender is TAction);
+
+  Action := Sender as TAction;
+  Action.Enabled := Assigned(FCollection);
 end;
 
 procedure TfrmMain.mi_dwnl_LocateAuthorClick(Sender: TObject);

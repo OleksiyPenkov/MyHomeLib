@@ -2876,6 +2876,9 @@ object frmMain: TfrmMain
       object miUpdate: TMenuItem
         Action = acToolsUpdateOnlineCollections
       end
+      object miUpdateFromFile: TMenuItem
+        Action = acToolsUpdateFromFile
+      end
       object N34: TMenuItem
         Action = acToolsClearReadFolder
       end
@@ -4092,6 +4095,12 @@ object frmMain: TfrmMain
       Category = #1030#1085#1089#1090#1088#1091#1084#1077#1085#1090#1080
       Caption = #1054#1085#1086#1074#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1111
       OnExecute = UpdateOnlineCollectionExecute
+    end
+    object acToolsUpdateFromFile: TAction
+      Category = #1030#1085#1089#1090#1088#1091#1084#1077#1085#1090#1080
+      Caption = #1054#1085#1086#1074#1080#1090#1080' '#1082#1086#1083#1077#1082#1094#1110#1102' '#1079' '#1092#1072#1081#1083#1091'...'
+      OnExecute = UpdateCollectionFromFileExecute
+      OnUpdate = UpdateCollectionFromFileUpdate
     end
     object acToolsClearReadFolder: TAction
       Category = #1030#1085#1089#1090#1088#1091#1084#1077#1085#1090#1080
