@@ -91,14 +91,27 @@ begin
     end;
 end;
 
+// Diagnostic-only logging for a developer attached to stderr. Never stdout --
+// stdout is reserved solely for TMcpTransport's JSON-RPC output (see the
+// warning in MHLMcpServer.dpr). Used to preserve inner exception detail
+// (which can carry build-machine paths, e.g. from a Delphi Assert) without
+// leaking it to the client in an EMcpToolError message.
+procedure LogToStderr(const Msg: string);
+begin
+  Writeln(ErrOutput, Msg);
+end;
+
 function CollectionOrFail(const CollectionID: Integer): IBookCollection;
 begin
   try
     Result := SystemDB.GetCollection(CollectionID);
   except
     on E: Exception do
+    begin
+      LogToStderr(Format('CollectionOrFail(%d): %s', [CollectionID, E.Message]));
       raise EMcpToolError.Create('collection_not_found',
-        Format('Collection %d not found: %s', [CollectionID, E.Message]));
+        Format('Collection %d not found', [CollectionID]));
+    end;
   end;
 
   if not Assigned(Result) then
@@ -219,8 +232,11 @@ begin
     Collection.GetBookRecord(BookKey, Book, True);
   except
     on E: Exception do
+    begin
+      LogToStderr(Format('GetBook(%d): %s', [BookKey.BookID, E.Message]));
       raise EMcpToolError.Create('book_not_found',
-        Format('Book %d not found: %s', [BookKey.BookID, E.Message]));
+        Format('Book %d not found', [BookKey.BookID]));
+    end;
   end;
 
   Result := BookToJson(Book, True);
