@@ -57,7 +57,8 @@ type
     fnSaveINPX,
     fnOpenUserData,
     fnSaveUserData,
-    fnOpenCoverImage
+    fnOpenCoverImage,
+    fnOpenUpdate
   );
 
   TListViewHelper = class helper for TListView
@@ -288,6 +289,11 @@ resourcestring
    rstrOpenCIDlgFilter = 'Зображення (*.png;*.jpg;*.jpeg)|*.jpeg;*.jpg;*.png';
    rstrOpenCIDlgDefaultExt = 'jpeg';
 
+   //fnOpenUpdate
+   rstrOpenUpdateDlgTitle = 'Вибір файлу оновлення';
+   rstrOpenUpdateDlgFilter = 'Файл оновлення (*.inpx, *.zip)|*.inpx;*.zip|Всі типи|*.*';
+   rstrOpenUpdateDlgDefaultExt = 'inpx';
+
 
 function GetFileName(key: TMHLFileName; out FileName: string): Boolean;
 const
@@ -356,8 +362,12 @@ const
       Title:      rstrOpenCIDlgTitle;
       Filter:     rstrOpenCIDlgFilter;     DefaultExt: rstrOpenCIDlgDefaultExt;
       DialogKey:  'OpenCoverImage';        OpenFile: True
+    ),
+    ( // fnOpenUpdate
+      Title:      rstrOpenUpdateDlgTitle;
+      Filter:     rstrOpenUpdateDlgFilter; DefaultExt: rstrOpenUpdateDlgDefaultExt;
+      DialogKey:  'OpenUpdateFile';        OpenFile: True
     )
-
 
 
     //(Title: ''; Filter: ''; DefaultExt: ''; ExtraOptions: ; DialogKey: ''; GetFileNameFunction:)
