@@ -153,21 +153,73 @@ begin
   Result.AddPair('collections', Arr);
 end;
 
+// Composes a display name from raw name parts, skipping blanks, instead of
+// calling TAuthorData.GetFullName. GetFullName does Assert(LastName <> ''),
+// which raises EAssertionFailed -- carrying an absolute build-machine source
+// path, since assertions are enabled at runtime in this project's Release
+// config -- for any author row with no last name. Authors come straight from
+// the DB via GetBookAuthors with no backfill, and hand-edited or
+// badly-imported metadata makes a blank LastName a real case in a home
+// library, not a hypothetical one. Nothing upstream of BookToJson catches
+// EAssertionFailed, so it would otherwise reach the client raw, reintroducing
+// the same path leak that CollectionOrFail/GetBook were just fixed for, via
+// this route instead.
+//
+// For well-formed data (LastName non-blank) this produces output identical
+// to today's GetFullName: both build LastName, then (if non-blank) FirstName,
+// then (if non-blank) MiddleName, each separated by a single space. This
+// version additionally tolerates a blank LastName by just skipping it,
+// rather than asserting or (as unit_FB2Utils.FormatName would, called
+// directly with an empty LastName) leaving a stray leading space.
+function ComposeAuthorFullName(const Author: TAuthorData): string;
+begin
+  Result := Author.LastName;
+
+  if Author.FirstName <> '' then
+  begin
+    if Result <> '' then
+      Result := Result + ' ' + Author.FirstName
+    else
+      Result := Author.FirstName;
+  end;
+
+  if Author.MiddleName <> '' then
+  begin
+    if Result <> '' then
+      Result := Result + ' ' + Author.MiddleName
+    else
+      Result := Author.MiddleName;
+  end;
+end;
+
 function AuthorsToJson(const Authors: TBookAuthors): TJSONArray;
 var
   I: Integer;
   Entry: TJSONObject;
 begin
+  // Same leak-safe shape as ListCollections: Result (and, per entry, Entry)
+  // must not leak if anything raises mid-loop -- Entry until it is handed to
+  // Result via AddElement, Result for as long as it lives.
   Result := TJSONArray.Create;
-  for I := 0 to High(Authors) do
-  begin
-    Entry := TJSONObject.Create;
-    Entry.AddPair('author_id', TJSONNumber.Create(Authors[I].AuthorID));
-    Entry.AddPair('last_name', Authors[I].LastName);
-    Entry.AddPair('first_name', Authors[I].FirstName);
-    Entry.AddPair('middle_name', Authors[I].MiddleName);
-    Entry.AddPair('full_name', Authors[I].GetFullName);
-    Result.AddElement(Entry);
+  try
+    for I := 0 to High(Authors) do
+    begin
+      Entry := TJSONObject.Create;
+      try
+        Entry.AddPair('author_id', TJSONNumber.Create(Authors[I].AuthorID));
+        Entry.AddPair('last_name', Authors[I].LastName);
+        Entry.AddPair('first_name', Authors[I].FirstName);
+        Entry.AddPair('middle_name', Authors[I].MiddleName);
+        Entry.AddPair('full_name', ComposeAuthorFullName(Authors[I]));
+      except
+        Entry.Free;
+        raise;
+      end;
+      Result.AddElement(Entry);
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
@@ -177,56 +229,81 @@ var
   Entry: TJSONObject;
 begin
   Result := TJSONArray.Create;
-  for I := 0 to High(Genres) do
-  begin
-    Entry := TJSONObject.Create;
-    Entry.AddPair('code', Genres[I].GenreCode);
-    Entry.AddPair('alias', Genres[I].GenreAlias);
-    Result.AddElement(Entry);
+  try
+    for I := 0 to High(Genres) do
+    begin
+      Entry := TJSONObject.Create;
+      try
+        Entry.AddPair('code', Genres[I].GenreCode);
+        Entry.AddPair('alias', Genres[I].GenreAlias);
+      except
+        Entry.Free;
+        raise;
+      end;
+      Result.AddElement(Entry);
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
 function BookToJson(const Book: TBookRecord; Full: Boolean): TJSONObject;
 begin
+  // Same leak-safe shape once more. Ownership note: as soon as AddPair('authors', ...)
+  // / AddPair('genres', ...) succeeds, Result owns that array -- freeing
+  // Result on the except branch below cascades into freeing it too, so it
+  // must NOT be freed separately (that would double-free it). If
+  // AuthorsToJson/GenresToJson themselves raise, they have already cleaned up
+  // their own partial state (see above) before the exception reaches here, so
+  // there is nothing of theirs left to free; only Result (and whatever it
+  // already owns from earlier AddPair calls in this function) needs freeing.
   Result := TJSONObject.Create;
-  Result.AddPair('book_id', TJSONNumber.Create(Book.BookKey.BookID));
-  Result.AddPair('title', Book.Title);
-  Result.AddPair('authors', AuthorsToJson(Book.Authors));
-  Result.AddPair('genres', GenresToJson(Book.Genres));
-  Result.AddPair('series', Book.Series);
-  Result.AddPair('seq_number', TJSONNumber.Create(Book.SeqNumber));
-  Result.AddPair('lang', Book.Lang);
-  Result.AddPair('ext', Book.FileExt);
-  Result.AddPair('size', TJSONNumber.Create(Book.Size));
-  Result.AddPair('has_text',
-    TJSONBool.Create(Book.GetBookFormat in [bfFb2, bfFb2Archive]));
+  try
+    Result.AddPair('book_id', TJSONNumber.Create(Book.BookKey.BookID));
+    Result.AddPair('title', Book.Title);
+    Result.AddPair('authors', AuthorsToJson(Book.Authors));
+    Result.AddPair('genres', GenresToJson(Book.Genres));
+    Result.AddPair('series', Book.Series);
+    Result.AddPair('seq_number', TJSONNumber.Create(Book.SeqNumber));
+    Result.AddPair('lang', Book.Lang);
+    Result.AddPair('ext', Book.FileExt);
+    Result.AddPair('size', TJSONNumber.Create(Book.Size));
+    Result.AddPair('has_text',
+      TJSONBool.Create(Book.GetBookFormat in [bfFb2, bfFb2Archive]));
 
-  if Full then
-  begin
-    Result.AddPair('lib_rate', TJSONNumber.Create(Book.LibRate));
-    Result.AddPair('rate', TJSONNumber.Create(Book.Rate));
-    Result.AddPair('progress', TJSONNumber.Create(Book.Progress));
-    Result.AddPair('keywords', Book.KeyWords);
-    Result.AddPair('folder', Book.Folder);
-    Result.AddPair('file_name', Book.FileName);
-    Result.AddPair('annotation', Book.Annotation);
-    Result.AddPair('review', Book.Review);
-    Result.AddPair('is_local', TJSONBool.Create(bpIsLocal in Book.BookProps));
-    Result.AddPair('is_deleted', TJSONBool.Create(bpIsDeleted in Book.BookProps));
-    Result.AddPair('has_review', TJSONBool.Create(bpHasReview in Book.BookProps));
+    if Full then
+    begin
+      Result.AddPair('lib_rate', TJSONNumber.Create(Book.LibRate));
+      Result.AddPair('rate', TJSONNumber.Create(Book.Rate));
+      Result.AddPair('progress', TJSONNumber.Create(Book.Progress));
+      Result.AddPair('keywords', Book.KeyWords);
+      Result.AddPair('folder', Book.Folder);
+      Result.AddPair('file_name', Book.FileName);
+      Result.AddPair('annotation', Book.Annotation);
+      Result.AddPair('review', Book.Review);
+      Result.AddPair('is_local', TJSONBool.Create(bpIsLocal in Book.BookProps));
+      Result.AddPair('is_deleted', TJSONBool.Create(bpIsDeleted in Book.BookProps));
+      Result.AddPair('has_review', TJSONBool.Create(bpHasReview in Book.BookProps));
+    end;
+  except
+    Result.Free;
+    raise;
   end;
 end;
 
 function GetBook(const Args: TJSONObject): TJSONObject;
 var
   Collection: IBookCollection;
+  CollectionID: Integer;
   BookKey: TBookKey;
   Book: TBookRecord;
 begin
-  Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
+  CollectionID := RequireInt(Args, 'collection_id');
+  Collection := CollectionOrFail(CollectionID);
 
   BookKey.BookID := RequireInt(Args, 'book_id');
-  BookKey.DatabaseID := RequireInt(Args, 'collection_id');
+  BookKey.DatabaseID := CollectionID;
 
   try
     Collection.GetBookRecord(BookKey, Book, True);
