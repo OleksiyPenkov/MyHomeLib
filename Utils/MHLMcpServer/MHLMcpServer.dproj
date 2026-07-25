@@ -42,12 +42,6 @@
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=MyHomeLib;FileDescription=MyHomeLib MCP Server;FileVersion=1.0.0.0;InternalName=MHLMcpServer;LegalCopyright=;LegalTrademarks=;OriginalFilename=MHLMcpServer.exe;ProductName=MyHomeLib;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
-        <!-- The DAO layer (Program\Units, Program\DAO\SQLite) emits pre-existing
-             hints/warnings that MyHomeLib.dproj itself already suppresses via
-             these same two switches. Mirror that here rather than patching
-             third-party-to-us code we don't own. -->
-        <DCC_Warnings>false</DCC_Warnings>
-        <DCC_Hints>false</DCC_Hints>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_ExeOutput>..\..\Program\OUT\BIN</DCC_ExeOutput>
