@@ -128,10 +128,28 @@ begin
         except
           on E: EFb2ExtractError do
           begin
+            // E.Message must NOT reach the client here: for the
+            // eekExtractionFailed case in particular, it is itself built
+            // (unit_MCP_Fb2Extract.pas) from the DOM parser's and the
+            // tag-stripping fallback's own caught exception messages, which
+            // can be MSXML error text or a Delphi assertion carrying an
+            // absolute build-machine source path -- exactly the class of
+            // leak already fixed once on the book_not_found path. Full
+            // detail (including E.Message and which Kind fired) goes to
+            // stderr only; the client gets stable text plus the caller's
+            // own collection_id/book_id, nothing derived from the book's
+            // content or the extractor's internals.
+            LogToStderr(Format('LoadBookForText.ExtractFb2(%d/%d, Kind=%d): %s',
+              [LocalCollectionID, LocalBookID, Ord(E.Kind), E.Message]));
             if E.Kind = eekNoText then
-              raise EMcpToolError.Create('book_has_no_text', E.Message)
+              raise EMcpToolError.Create('book_has_no_text',
+                Format('Book %d in collection %d has no extractable text ' +
+                  '(likely picture-only or an empty body)',
+                  [LocalBookID, LocalCollectionID]))
             else
-              raise EMcpToolError.Create('extraction_failed', E.Message);
+              raise EMcpToolError.Create('extraction_failed',
+                Format('Could not extract text from book %d in collection %d',
+                  [LocalBookID, LocalCollectionID]));
           end;
         end;
       finally

@@ -10,6 +10,16 @@ function extract(file) {
   return JSON.parse(run.stdout);
 }
 
+// For fixtures where --extract is EXPECTED to fail (a genuinely unrecoverable
+// or textless book) -- returns the raw exit status and stderr text instead of
+// parsing stdout as JSON, since RunExtractMode never writes a JSON line in
+// this case (MHLMcpServer.dpr's --extract dispatch prints
+// 'FB2 extraction failed: ' + E.Message to stderr and exits 1).
+function extractExpectFail(file) {
+  const run = spawnSync(exe, ['--extract', fx(file)], { encoding: 'utf8' });
+  return { status: run.status, stderr: run.stderr };
+}
+
 const checks = [
   ['structured: two sections', () => {
     const r = extract('structured.fb2');
@@ -78,6 +88,33 @@ const checks = [
     return r.structured === false
       && r.text.includes('Real content paragraph.')
       && !r.text.includes('QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=');
+  }],
+  // Regression coverage for the MCP fix-round-2 bug (unit_MCP_Tools_Text.pas):
+  // a book that parses as valid XML but has no text at all (picture-only)
+  // must raise EFb2ExtractError with Kind = eekNoText, not eekExtractionFailed
+  // -- that Kind is what the MCP tool layer switches on to return
+  // book_has_no_text (a textless-but-valid book) instead of extraction_failed
+  // (a corrupt one). --extract itself doesn't expose Kind (RunExtractMode
+  // catches generic Exception), so this only proves the message text --
+  // which is 1:1 with Kind by construction, since eekNoText is the only
+  // raise site producing this exact wording (see unit_MCP_Fb2Extract.pas).
+  ['picture-only: valid XML, empty body -> "has no extractable text", not "extraction failed"', () => {
+    const r = extractExpectFail('picture_only.fb2');
+    return r.status === 1
+      && r.stderr.includes('FB2 book has no extractable text (likely picture-only or an empty body)');
+  }],
+  // A genuinely empty (0-byte) file can't even be parsed as XML, so it falls
+  // through to the fallback scanner, which also produces empty text --
+  // Kind = eekExtractionFailed, the OTHER branch from the one above. Together
+  // these two cases are the only way (short of fabricating a book inside a
+  // real MyHomeLib collection, which the MCP server test suite deliberately
+  // never does) to exercise both sides of the eekNoText/eekExtractionFailed
+  // split the MCP tool layer depends on.
+  ['empty file: 0 bytes -> "extraction failed", not "has no extractable text"', () => {
+    const r = extractExpectFail('empty.fb2');
+    return r.status === 1
+      && r.stderr.includes('FB2 extraction failed: no text could be recovered from this file')
+      && !r.stderr.includes('picture-only');
   }],
 ];
 

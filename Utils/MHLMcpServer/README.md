@@ -303,13 +303,24 @@ back.
 - `book_has_no_text` — extraction itself succeeded (the DOM parsed cleanly)
   but the book genuinely has no text, e.g. picture-only or an empty body.
   This is deliberately **not** `extraction_failed` — a textless book is not
-  a corrupt one, and a caller needs to be able to tell the two apart.
+  a corrupt one, and a caller needs to be able to tell the two apart. Client
+  message: `"Book <book_id> in collection <collection_id> has no
+  extractable text (likely picture-only or an empty body)"` — stable text
+  plus the caller's own arguments only.
 - `extraction_failed` — nothing usable could be recovered at all (both the
   DOM walk and the tag-stripping fallback failed). `unit_MCP_Fb2Extract.pas`
   distinguishes the two via a structural `TFb2ExtractErrorKind` field on
   `EFb2ExtractError` (`eekNoText` vs. `eekExtractionFailed`), set explicitly
   at each raise site — not by pattern-matching the exception's message text,
   which is free to change for clarity without that match silently breaking.
+  Client message: `"Could not extract text from book <book_id> in
+  collection <collection_id>"`. Neither of these two messages interpolates
+  `EFb2ExtractError.Message` — that message can itself embed the DOM
+  parser's or the fallback scanner's own caught exception text (potentially
+  an MSXML error or a Delphi assertion carrying a build-machine source
+  path), the same class of leak fixed once already on the `book_not_found`
+  path. `E.Message` (plus which `Kind` fired) goes to stderr via
+  `LogToStderr` only.
 - `invalid_offset` (`get_book_text` only) — `offset` is past `total_length`.
 - `book_not_found` — the book ID does not exist in the collection. The
   underlying lookup can raise an assertion carrying a build-machine source
@@ -333,10 +344,34 @@ against the Win32 build.)
 argument helpers, one case per `.jsonl` file under `tests/cases/`.
 `extract_tests.js` drives `--extract` against the fixtures under
 `tests/fixtures/` to cover the FB2 extractor in isolation (structured
-sections, encoding detection, malformed-file fallback). `cache_tests.js`
-drives `--cache-selftest` to cover the on-disk text cache in isolation
-(hit/miss keying, surrogate-boundary trimming, eviction). Neither of the
-latter two touches a real collection or `DMUser` at all.
+sections, encoding detection, malformed-file fallback, and — via
+`picture_only.fb2`/`empty.fb2` — the `eekNoText`/`eekExtractionFailed` split
+`EFb2ExtractError.Kind` depends on, see the error-codes section above).
+`cache_tests.js` drives `--cache-selftest` to cover the on-disk text cache
+in isolation (hit/miss keying, surrogate-boundary trimming, eviction).
+None of the three touches a real collection or `DMUser` — `extract_tests.js`
+and `cache_tests.js` never did (they are entirely fixture/temp-dir based);
+`run_tests.js`'s cases that do reach a real collection are called out
+individually further down.
+
+**A note on what `picture_only.fb2`/`empty.fb2` do and do not prove:**
+they exercise `ExtractFb2` directly through `--extract`, confirming the
+`Kind` a real `EFb2ExtractError` carries for a textless-but-valid book vs.
+a genuinely unrecoverable one — the precondition the MCP tool layer's
+`book_has_no_text`/`extraction_failed` switch depends on. `--extract` is a
+database-free CLI mode that bypasses `unit_MCP_Tools_Text.pas` entirely
+(see "Diagnostic CLI modes" below), so neither case exercises the
+*sanitized client-facing message* those two codes return — there is no
+automated, end-to-end case for that, because doing so would require either
+a genuinely textless/unrecoverable FB2 already sitting in the one
+registered real collection (none was found; see the note further down on
+`unsupported_format`) or inserting a fabricated book into that real
+collection to force the failure, which this test suite deliberately never
+does. The sanitized-message guarantee for these two codes — stable text
+plus `book_id`/`collection_id` only, no interpolated `EFb2ExtractError.Message`
+— is verified by code inspection instead (see `unit_MCP_Tools_Text.pas`'s
+`EFb2ExtractError` catch block) and manually, the same way `collection_busy`
+and the archive-missing scenarios are.
 
 Six of `run_tests.js`'s cases (`01_ping`, `02_initialize`,
 `03_unknown_method`, `04_unknown_tool`, `05_non_object_line`,
@@ -448,10 +483,33 @@ its source path) and this case pins the sanitized shape going forward.
 There is no automated case for `get_book_text`'s `unsupported_format` path:
 the only collection registered on the machine these tests were captured on
 is `Lib.rus.ec Local [FB2]` — a collection that is, by name and by a sampled
-scan of roughly 8,800 of its 439,393 books spread across the whole ID range,
-100% FB2. `unsupported_format` is covered by unit-level reasoning instead
-(`Book.GetBookFormat in [bfFb2, bfFb2Archive]` in `LoadBookForText`) and
-belongs on the manual checklist above for whoever next runs this against a
-mixed-format collection. Likewise there is no automated case for
-`file_missing` on a text tool (it needs a real archive to go missing/get
-renamed underneath a real collection) — see the manual checklist.
+scan of 2,200 of its 452,816 `lang:"ru"` books spread across the whole ID
+range, 100% FB2 (`has_text:false` count: 0). `unsupported_format` is
+covered by unit-level reasoning instead (`Book.GetBookFormat in [bfFb2,
+bfFb2Archive]` in `LoadBookForText`) and belongs on the manual checklist
+above for whoever next runs this against a mixed-format collection.
+Likewise there is no automated case for `file_missing` on a text tool
+directly through `run_tests.js` (it needs a real archive to go
+missing/renamed underneath a real collection — verified manually instead
+during the fix rounds below, by temporarily renaming a real archive and
+restoring it) — see the manual checklist.
+
+**Correction to an earlier draft of this note:** the very first version of
+this scan used `search_books` with no filter field at all besides
+`limit`/`offset`/`include_deleted` — which, it turns out,
+`TBookCollection_SQLite.PrepareSearchData` (`unit_Database_SQLite.pas`)
+rejects outright with `"Перевірте параметри фільтра"` when *every* criteria
+field is blank (its `FilterString`/`SQLRows` end up empty, and it explicitly
+raises rather than run an unconstrained `SELECT *`). Every one of those
+original scan calls was silently failing with that JSON-RPC error, and the
+"0 non-FB2 books found" conclusion was actually "0 books returned at all,
+every page" misread as a clean negative — the substring check
+(`grep -o '"has_text":false'`) returns an empty count either way, so the bug
+went unnoticed until this was rediscovered independently while working on a
+later fix round. The number above (2,200 books, 0 non-FB2) is from a
+corrected scan using `lang:"ru"` as a real, non-blank filter, which is not
+rejected. `search_books` itself was not touched by any of this — the bug is
+in `PrepareSearchData`'s pre-existing "at least one filter required"
+behavior, not a regression from Task 10's own work — but the original
+claim, resting on a scan that never actually ran, should not have been
+stated as confirmed.
