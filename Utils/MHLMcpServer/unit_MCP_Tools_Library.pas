@@ -347,7 +347,16 @@ begin
   Criteria.Lang       := ArgStr(Args, 'lang');
   Criteria.KeyWord    := ArgStr(Args, 'keyword');
   Criteria.Annotation := ArgStr(Args, 'annotation');
-  Criteria.Deleted    := ArgBool(Args, 'include_deleted', False);
+  // TBookSearchCriteria.Deleted is inverted relative to this tool's
+  // include_deleted argument: PrepareSearchData only adds a filter when
+  // Deleted is True, and that filter is `b.IsDeleted = 0` -- i.e. Deleted
+  // means "hide deleted books" (it is set straight from a "hide deleted"
+  // checkbox in frm_main.pas), not "include deleted books". So the default
+  // include_deleted=False (exclude deleted books) must map to Deleted=True,
+  // and include_deleted=True (include deleted books) must map to
+  // Deleted=False (no filter, deleted rows pass through). Do not "simplify"
+  // this back to a direct assignment -- it was tried and is backwards.
+  Criteria.Deleted    := not ArgBool(Args, 'include_deleted', False);
 
   // DateIdx must be -1, not the Default(...) zero value. PrepareSearchData's
   // 0 branch is not "no date filter" -- it means "modified in the last

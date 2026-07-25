@@ -88,6 +88,18 @@ a real 525k-book collection during manual verification). `search_books`
 explicitly sets `Criteria.DateIdx := -1` — the actual sentinel for "skip date
 filtering" — right after `Default(TBookSearchCriteria)`.
 
+### `search_books` deleted-books polarity pitfall
+
+`TBookSearchCriteria.Deleted` is inverted relative to what its name suggests.
+`TBookCollection_SQLite.PrepareSearchData` only adds a filter when `Deleted`
+is `True`, and that filter is `b.IsDeleted = 0` — i.e. `Deleted = True` means
+"hide deleted books", not "include deleted books" (it's set straight from a
+"hide deleted" checkbox in `frm_main.pas`). `search_books` maps its
+`include_deleted` argument as `Criteria.Deleted := not <include_deleted>`,
+so `include_deleted: false` (the default) excludes deleted books and
+`include_deleted: true` includes them, matching the tool's documented
+meaning. Do not "simplify" this back to a direct assignment.
+
 ## Automated tests
 
 ```
@@ -108,7 +120,7 @@ database existing on the machine running the tests, the same as
 validation (`RequireInt` rejecting a non-integer `collection_id`) and
 `CollectionOrFail`'s not-found path respectively; both still go through
 `Guarded(...)` and so also depend on a real system database, even though
-neither ever reaches a real collection. **All fourteen cases still require
+neither ever reaches a real collection. **All sixteen cases still require
 `sqlite3.dll` to be resolvable next to the exe**, regardless of which tool
 (if any) is called — see the load-time dependency note above — since the
 process cannot start at all without it. `list_collections` is covered by the
@@ -119,9 +131,22 @@ be meaningful, not just any system database.
 `12_search_books_collection_not_found.jsonl` and
 `13_search_books_offset_paging.jsonl` exercise `search_books` against a real
 collection (`collection_id: 1`) and assert byte-for-byte responses captured
-from an actual run, not hand-written expectations. They depend on that
-collection containing the exact two "Гудок парохода" rows the fixtures were
-captured against; if collection 1's contents ever change on the machine
-running the tests, these four cases (not the other ten) may need
-recapturing the same way — run the request through the built exe and paste
-back whatever it actually prints.
+from an actual run, not hand-written expectations. They all search for
+`title: "Гудок парохода"` with `include_deleted: true`, because both real
+matches for that title (`book_id` 4 and 111933) happen to be deleted rows in
+this collection — `include_deleted: true` is there so these cases keep
+testing search/clamping/paging mechanics independently of the deleted-books
+behavior, which `14`/`15` cover instead. They depend on collection 1 still
+containing those exact two rows; if collection 1's contents ever change on
+the machine running the tests, these four cases (not the other twelve) may
+need recapturing the same way — run the request through the built exe and
+paste back whatever it actually prints.
+
+`14_search_books_excludes_deleted_by_default.jsonl` and
+`15_search_books_include_deleted.jsonl` prove the `include_deleted` polarity
+fix behaviourally: both search `title: "Белка", author: "Аббасзаде"` against
+collection 1, which has three real matches — `book_id` 1 and 111931 (both
+`is_deleted: true`, confirmed via `get_book`) and 487024 (`is_deleted:
+false`). `14` (no `include_deleted`) expects only `book_id` 487024,
+`total_count: 1`; `15` (`include_deleted: true`) expects all three,
+`total_count: 3`. Depend on the same collection-1 stability as `10`–`13`.
