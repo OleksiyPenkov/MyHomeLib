@@ -116,11 +116,45 @@ bare code — which is exactly what `list_genres`'s `code` field is, and what
 `search_books`'s `genre` argument is documented as taking — is invalid SQL on
 its own; passing one straight through (as an earlier version of this tool
 did) produced `near ".3": syntax error` for a real code like `0.3.3`.
-`search_books` now builds the same `g.GenreCode = "..."` condition itself
-from the caller's bare code, and doubles any embedded `"` first (SQLite's
-escape for a literal quote inside a double-quoted string) so a caller-supplied
-genre string cannot break out of the literal and inject arbitrary SQL into
-this `WHERE` clause.
+`search_books` now builds the same condition itself from the caller's bare
+code — `g.GenreCode = '...'` — but deliberately with single quotes rather
+than `frm_main.pas`'s double quotes, doubling any embedded `'` first
+(SQLite's escape for a literal quote inside a single-quoted string).
+
+Double quotes were tried first and rejected: doubling `""` does contain the
+value (not exploitable as written), but SQLite resolves a double-quoted
+token as an *identifier* first, only falling back to a string literal when no
+matching identifier exists. `frm_main.pas` can rely on double quotes because
+it only ever quotes a real `GenreCode` value picked from its own genre tree.
+This tool quotes arbitrary caller input, so a genre argument that happens to
+match a column name — e.g. the literal string `GenreCode` — would become
+`g.GenreCode = "GenreCode"`, comparing the column to itself and matching
+every row instead of matching nothing. Single-quoted strings have no such
+identifier fallback in SQLite, closing both the injection hole and this
+identifier-collision trap. Confirmed contained against a real collection:
+`search_books(genre: "x'); DROP TABLE Books; --")` returns
+`{"books":[],"total_count":0,"has_more":false}` — a clean empty result, no
+SQL error, no leaked SQL text — because the whole payload (quote, parens,
+statement terminator, comment marker included) stays inert inside one string
+literal. This proves containment for the `genre` field specifically, not
+that the server is free of SQL-splicing elsewhere.
+
+**It is not free of it elsewhere.** `PrepareSearchData` builds `Title`,
+`FullName` (author), `Series`, `Annotation`, `Lang`, `KeyWord`, `LibRate`,
+plus the unused-by-this-tool `FileName`/`Folder`/`FileExt`, the same way:
+each goes through `unit_SearchUtils.PrepareQuery`, which turns a bare value
+into a raw SQL fragment (`="value"`, `LIKE "value"`, or the value verbatim if
+it already contains `%`, `=`, `"`, or `LIKE`) with **no escaping of embedded
+quotes at all**, and `AddToFilter` splices that fragment straight into the
+WHERE clause. This is a deliberate app feature — `frm_main.pas`'s search
+boxes let a user type native-ish query syntax (`="exact"`, `LIKE "%x%"`)
+directly — but it means every one of those fields is exactly as spliced as
+`Genre` was before this fix, and none of them received the same treatment
+here. `search_books`'s `title`/`author`/`series`/`lang`/`keyword`/
+`annotation`/`min_lib_rate` arguments are unescaped SQL-splice surfaces
+today. Out of scope for this task (which only had to fix the field it needed
+for the `list_genres` round trip to work at all) but a real gap, not a
+hypothetical one.
 
 ## `list_genres`, `list_series`, `list_authors`
 
@@ -218,3 +252,14 @@ actual result set here is one row, keeping this fixture small on purpose.
 not-found path through `list_series`, standing in for all three new tools
 (they all call `CollectionOrFail` first, identically to `get_book` and
 `search_books`). Depend on the same collection-1 stability as `10`–`15`.
+
+`21_search_books_genre_injection_contained.jsonl` proves the single-quote
+escaping fix contains a hostile `genre` value: `"x'); DROP TABLE Books; --"`
+(a single quote plus a destructive-looking `DROP TABLE`/comment-marker tail)
+against collection 1 returns a clean
+`{"books":[],"total_count":0,"has_more":false}` — zero matches, no
+`isError`, no SQL error text, no build path. It proves containment for this
+one field on this one query shape; it is not a general injection-free proof
+of the server, and the README section above says plainly which other fields
+(`title`, `author`, `series`, `lang`, `keyword`, `annotation`,
+`min_lib_rate`) still splice caller input into SQL unescaped.

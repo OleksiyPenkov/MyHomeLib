@@ -352,14 +352,27 @@ begin
   // argument as) is not valid SQL on its own -- confirmed against a real
   // collection, where passing "0.3.3" straight through as SearchBooks did
   // before this fix produced 'near ".3": syntax error'. Build the same
-  // condition shape frm_main does, and double up any embedded '"' first
-  // (SQLite's escape for a literal quote inside a double-quoted string) so a
+  // condition shape frm_main does, but deliberately with single quotes
+  // instead of frm_main's double quotes, and double up any embedded '''
+  // (SQLite's escape for a literal quote inside a single-quoted string) so a
   // caller-supplied genre string can't break out of the literal and inject
   // arbitrary SQL into this WHERE clause.
+  //
+  // Double quotes were tried first and are NOT safe here even though doubling
+  // "" does contain the value: SQLite resolves a double-quoted token as an
+  // *identifier* first, falling back to a string literal only when no
+  // matching identifier exists. frm_main.pas can get away with this because
+  // it only ever quotes a real GenreCode value picked from its own genre
+  // tree. This tool quotes arbitrary caller input, so a genre argument that
+  // happens to match a column name -- e.g. the literal string "GenreCode" --
+  // would become g.GenreCode = "GenreCode", comparing the column to itself
+  // and matching every row instead of matching nothing. Single-quoted strings
+  // have no such identifier fallback in SQLite, so they close both the
+  // injection hole and this identifier-collision trap.
   GenreCode := ArgStr(Args, 'genre');
   if GenreCode <> '' then
-    Criteria.Genre := Format('g.GenreCode = "%s"',
-      [StringReplace(GenreCode, '"', '""', [rfReplaceAll])]);
+    Criteria.Genre := Format('g.GenreCode = ''%s''',
+      [StringReplace(GenreCode, '''', '''''', [rfReplaceAll])]);
   Criteria.Lang       := ArgStr(Args, 'lang');
   Criteria.KeyWord    := ArgStr(Args, 'keyword');
   Criteria.Annotation := ArgStr(Args, 'annotation');
