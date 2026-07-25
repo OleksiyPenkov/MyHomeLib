@@ -68,9 +68,25 @@ comparing results with the MyHomeLib app itself:
       surfaces `collection_busy` rather than crashing the server or hanging.
 - [ ] `get_book` returns a book whose title, authors, series and annotation
       match the app's book details pane.
+- [ ] `search_books(author=…)` returns the same books as the app's author
+      filter.
+- [ ] `search_books(limit=5000)` returns 200 books and `"clamped":true`.
+- [ ] `search_books(offset=…)` pages without repeating or skipping books.
 - [ ] No output other than JSON-RPC lines ever appears on stdout, even during
       `DMUser` bootstrap (verified by the automated test suite in `tests/`,
       which fails loudly on any stray line).
+
+### `search_books` date-filter pitfall
+
+`TBookSearchCriteria.DateIdx` defaults to `0` under `Default(TBookSearchCriteria)`,
+but `0` is not "no date filter" in `TBookCollection_SQLite.PrepareSearchData`
+(`Program\DAO\SQLite\unit_Database_SQLite.pas`) — it means "restrict to rows
+whose `UpdateDate` is within the last calendar day". Left at its zeroed
+default, every `search_books` call would silently return zero rows for any
+collection that has not been touched in the last 24 hours (confirmed against
+a real 525k-book collection during manual verification). `search_books`
+explicitly sets `Criteria.DateIdx := -1` — the actual sentinel for "skip date
+filtering" — right after `Default(TBookSearchCriteria)`.
 
 ## Automated tests
 
@@ -92,10 +108,20 @@ database existing on the machine running the tests, the same as
 validation (`RequireInt` rejecting a non-integer `collection_id`) and
 `CollectionOrFail`'s not-found path respectively; both still go through
 `Guarded(...)` and so also depend on a real system database, even though
-neither ever reaches a real collection. **All ten cases still require
+neither ever reaches a real collection. **All fourteen cases still require
 `sqlite3.dll` to be resolvable next to the exe**, regardless of which tool
 (if any) is called — see the load-time dependency note above — since the
-process cannot start at all without it. `list_collections` and later
-data-reading tools are covered by the manual checklist above because they
-need a real, populated collection
-list to be meaningful, not just any system database.
+process cannot start at all without it. `list_collections` is covered by the
+manual checklist above because it needs a real, populated collection list to
+be meaningful, not just any system database.
+
+`10_search_books_found.jsonl`, `11_search_books_limit_clamped.jsonl`,
+`12_search_books_collection_not_found.jsonl` and
+`13_search_books_offset_paging.jsonl` exercise `search_books` against a real
+collection (`collection_id: 1`) and assert byte-for-byte responses captured
+from an actual run, not hand-written expectations. They depend on that
+collection containing the exact two "Гудок парохода" rows the fixtures were
+captured against; if collection 1's contents ever change on the machine
+running the tests, these four cases (not the other ten) may need
+recapturing the same way — run the request through the built exe and paste
+back whatever it actually prints.

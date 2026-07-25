@@ -319,6 +319,90 @@ begin
   Result := BookToJson(Book, True);
 end;
 
+// Full-text-ish search across a single collection. LoadMemos is False --
+// summary rows (BookToJson Full=False) never surface annotation or review,
+// so there is no point paying for the extra SQLite reads. RecordCount is
+// read exactly once, into Total, before the paging loop below: the SQLite
+// iterators behind IBookIterator assert on a second call (see
+// unit_Database_SQLite.pas), which would otherwise surface to the client as
+// an uncaught EAssertionFailed carrying a build-machine path.
+function SearchBooks(const Args: TJSONObject): TJSONObject;
+var
+  Collection: IBookCollection;
+  Criteria: TBookSearchCriteria;
+  Iterator: IBookIterator;
+  Book: TBookRecord;
+  Arr: TJSONArray;
+  Limit, Offset, Skipped, Taken, MinRate: Integer;
+  Clamped, ClampedAny: Boolean;
+  Total: Integer;
+begin
+  Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
+
+  Criteria := Default(TBookSearchCriteria);
+  Criteria.Title      := ArgStr(Args, 'title');
+  Criteria.FullName   := ArgStr(Args, 'author');
+  Criteria.Series     := ArgStr(Args, 'series');
+  Criteria.Genre      := ArgStr(Args, 'genre');
+  Criteria.Lang       := ArgStr(Args, 'lang');
+  Criteria.KeyWord    := ArgStr(Args, 'keyword');
+  Criteria.Annotation := ArgStr(Args, 'annotation');
+  Criteria.Deleted    := ArgBool(Args, 'include_deleted', False);
+
+  // DateIdx must be -1, not the Default(...) zero value. PrepareSearchData's
+  // 0 branch is not "no date filter" -- it means "modified in the last
+  // calendar day", silently restricting every search to yesterday's imports.
+  // -1 is the sentinel that actually skips date filtering (it falls through
+  // to DateText, which Default(...) already left empty). Confirmed against
+  // a real 525k-book collection: without this, search_books returned zero
+  // rows for every query.
+  Criteria.DateIdx := -1;
+
+  MinRate := ArgInt(Args, 'min_lib_rate', 0);
+  if MinRate > 0 then
+    Criteria.LibRate := IntToStr(MinRate);
+
+  Limit := ArgIntClamped(Args, 'limit', 25, 1, 200, ClampedAny);
+  Offset := ArgIntClamped(Args, 'offset', 0, 0, MaxInt, Clamped);
+  ClampedAny := ClampedAny or Clamped;
+
+  Iterator := Collection.Search(Criteria, False);
+  Total := Iterator.RecordCount;
+
+  // Same leak-safe accumulator shape as ListCollections/AuthorsToJson: Arr
+  // (and, per entry, the TJSONObject from BookToJson) must not leak if
+  // anything raises mid-loop.
+  Arr := TJSONArray.Create;
+  try
+    Skipped := 0;
+    Taken := 0;
+    while Iterator.Next(Book) do
+    begin
+      if Skipped < Offset then
+      begin
+        Inc(Skipped);
+        Continue;
+      end;
+
+      if Taken >= Limit then
+        Break;
+
+      Arr.AddElement(BookToJson(Book, False));
+      Inc(Taken);
+    end;
+  except
+    Arr.Free;
+    raise;
+  end;
+
+  Result := TJSONObject.Create;
+  Result.AddPair('books', Arr);
+  Result.AddPair('total_count', TJSONNumber.Create(Total));
+  Result.AddPair('has_more', TJSONBool.Create(Offset + Taken < Total));
+  if ClampedAny then
+    Result.AddPair('clamped', TJSONBool.Create(True));
+end;
+
 procedure RegisterLibraryTools(Server: TMcpServer);
 begin
   Server.RegisterTool(
@@ -336,6 +420,26 @@ begin
       '"book_id":{"type":"integer","description":"ID книги"}},' +
       '"required":["collection_id","book_id"]}') as TJSONObject,
     Guarded(GetBook));
+
+  Server.RegisterTool(
+    'search_books',
+    'Пошук книг у колекції за назвою, автором, серією, жанром чи мовою.',
+    TJSONObject.ParseJSONValue(
+      '{"type":"object","properties":{' +
+      '"collection_id":{"type":"integer","description":"ID колекції"},' +
+      '"title":{"type":"string"},' +
+      '"author":{"type":"string","description":"Повне або часткове ім''я автора"},' +
+      '"series":{"type":"string"},' +
+      '"genre":{"type":"string","description":"Код жанру зі списку list_genres"},' +
+      '"lang":{"type":"string"},' +
+      '"keyword":{"type":"string"},' +
+      '"annotation":{"type":"string"},' +
+      '"min_lib_rate":{"type":"integer"},' +
+      '"include_deleted":{"type":"boolean"},' +
+      '"limit":{"type":"integer","description":"Типово 25, максимум 200"},' +
+      '"offset":{"type":"integer"}},' +
+      '"required":["collection_id"]}') as TJSONObject,
+    Guarded(SearchBooks));
 end;
 
 end.
