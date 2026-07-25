@@ -3081,6 +3081,8 @@ begin
   if tvAuthors.RootNodeCount = 0 then ClearScreen;
   if (FIgnoreAuthorChange) or (Node = nil) then Exit;
 
+  // finally відновлює курсор навіть на шляху Exit нижче, тож зберігаємо до try
+  SavedCursor := Screen.Cursor;
   try
     Data := tvAuthors.GetNodeData(Node);
     if not Assigned(Data) then
@@ -3089,7 +3091,6 @@ begin
       Exit;
     end;
 
-    SavedCursor := Screen.Cursor;
     Screen.Cursor := crHourGlass;
 
     if FLastAuthorID <> Data^.AuthorID then
@@ -3451,8 +3452,8 @@ begin
               //
               // Загрузим обложку
               //
+              imgBookCover := GetBookCover(book);
               try
-                imgBookCover := GetBookCover(book);
                 InfoPanel.SetBookCover(imgBookCover);
               finally
                 imgBookCover.Free;
@@ -3533,8 +3534,9 @@ begin
         Left := tvGenres;
       FavoritesView:
         Left := tvGroups;
-      SearchView:
-        Exit;
+    else
+      // SearchView і DownloadView не мають лівого дерева
+      Exit;
     end;
 
     Node := Left.FocusedNode;
@@ -3567,8 +3569,9 @@ var
 begin
   if (Button = mbLeft) and (ssShift in Shift) then
   begin
+    Tree := Sender as TBookTree;
+    Selected := nil;
     try
-      Tree := Sender as TBookTree;
       ClearLabels(Tree.Tag, True);
       Node := Tree.GetFirstSelected;
       Selected := Node;
@@ -3586,7 +3589,8 @@ begin
         Node := Tree.GetNextSelected(Node);
       end; // while
     finally
-      Tree.Selected[Selected] := True;
+      if Assigned(Selected) then
+        Tree.Selected[Selected] := True;
     end;
   end; // if
 end;
@@ -4455,8 +4459,10 @@ begin
               // Соответственно добавление в дерево узла с выбранным языком (или любым
               // при выборе '-') и пропуск всех остальных
               if (BookRecord.Lang <> SelectedLang) AND (SelectedLang <> '-')then Continue;
-              SeriesID := BookRecord.SeriesID;
             end;
+
+            // Серія береться з поточної книги і не залежить від LangSelector
+            SeriesID := BookRecord.SeriesID;
 
             AuthorNode := nil;
             if ShowAuth then
@@ -5750,11 +5756,12 @@ begin
       begin
         Assert(False, rstrNeedSpecialDataTypeForSeries);
         Exit;
-        treeView := tvSeries;
-        Edit := edFSeries;
       end
     else
+      // Assert прибирається в Release, тож виходимо явно: для інших виглядів
+      // treeView та Edit лишилися б неініціалізованими
       Assert(False);
+      Exit;
   end;
 
   Node := treeView.GetFirstSelected;

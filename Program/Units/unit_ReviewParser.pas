@@ -111,6 +111,9 @@ begin
   idxReviewBlockStart := 1;
   idxEndAllBookReviews := Pos(ANNOTATION_END, page);
 
+  // Порівнюється в умові циклу ще до першого присвоєння всередині нього
+  idxReviewBlockEnd := 0;
+
   while ((idxReviewBlockStart <> idxReviewBlockEnd) and (idxReviewBlockStart < idxEndAllBookReviews)) do
   begin
     idxReviewBlockStart := PosEx('<p>', page, idxReviewBlockStart);

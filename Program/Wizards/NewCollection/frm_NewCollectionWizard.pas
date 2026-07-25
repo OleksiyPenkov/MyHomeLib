@@ -412,6 +412,10 @@ begin
   Assert(not Assigned(FWorker));
   FWorker := nil;
 
+  // Assert прибирається в Release, тож без значення за замовчуванням
+  // несподіваний тип колекції передав би у потік неініціалізовану змінну
+  GenresType := gtFb2;
+
   case FParams.CollectionType of
     ltUserFB, ltExternalLocalFB, ltExternalOnlineFB, ltExternalLocalAny:
       GenresType := gtFb2;

@@ -41,6 +41,7 @@ var
 
 begin
   Result := False;
+  lpBaseAddress := nil;
   MemFileName := Application.ExeName;
   case RunMode of
     0: MemFileName := AnsiReplaceText(MemFileName, '\', '/');

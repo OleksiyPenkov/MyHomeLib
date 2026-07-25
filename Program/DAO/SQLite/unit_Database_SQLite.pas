@@ -1919,8 +1919,8 @@ const
 var
   query: TSQLiteQuery;
 begin
+  query := FDatabase.NewQuery(SQL_INSERT);
   try
-    query := FDatabase.NewQuery(SQL_INSERT);
     query.SetParam(0, Author.FirstName);
     query.SetParam(1, Author.MiddleName);
     query.SetParam(2, Author.LastName);

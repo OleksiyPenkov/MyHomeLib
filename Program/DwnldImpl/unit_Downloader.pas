@@ -275,9 +275,9 @@ var
 begin
   Result := True;
 
+  ctx := TRttiContext.Create;
+  ConstParams := TStringList.Create;
   try
-    ctx := TRttiContext.Create;
-    ConstParams := TStringList.Create;
     FParams := TMultipartFormData.Create;
 
     // Add macro from collection info
@@ -351,10 +351,9 @@ var
 
 begin
 
+  parameters := TStringList.Create;
+  commandStr := TStringList.Create;
   try
-    parameters := TStringList.Create;
-    commandStr := TStringList.Create;
-
     // Parse each command in scenario
     commandStr.Text := scenario;
     SetLength(Commands, commandStr.Count);
