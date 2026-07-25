@@ -307,6 +307,49 @@ carrying the DAO's own message text. `search_books` now detects the same
 and raises `EMcpToolError.Create('empty_filter', ...)` instead — a normal
 tool result with `isError: true` and a stable, machine-readable `code`.
 
+### Residual limitations of literal matching
+
+Two documented, deliberate exceptions to "every character is matched
+literally":
+
+- **A NUL (`#0`, U+0000) anywhere in a text argument is rejected**, not matched.
+  A NUL is not simply "another character" for this construction: SQLite's
+  `char(0)` embeds a real zero byte into the pattern string, and the `LIKE`
+  implementation's own UTF-8 reader stops at it, truncating the pattern.
+  Before this was caught, `title: "\0"` alone returned
+  `total_count: 439393` — the entire non-deleted collection, from a value
+  that should match nothing — and `title: "Бел\0ка"` returned 11
+  unrelated books matching the truncated pattern `%БЕЛ%`. Fixed by
+  rejecting any value containing a NUL outright
+  (`isError: true`, `"code":"invalid_params"`, naming the argument) rather
+  than trying to patch around it: the stored, pre-uppercased text these
+  arguments are compared against cannot contain a NUL either, so a value
+  containing one could never legitimately match anything. See case `35`.
+- **A value longer than 4000 characters is rejected**, also
+  `"code":"invalid_params"`, naming the argument, its length, and the
+  limit. Not a correctness bug the way NUL was, but adjacent and cheap to
+  close: an unbounded value eventually hits SQLite's own `LIKE`
+  pattern-length limit (50000 bytes) uncaught, and that raw SQLite error
+  message contains the *entire generated SQL statement* — hundreds of
+  thousands of characters — which would otherwise leak to the client as a
+  plain JSON-RPC `-32603`, the same class of leak `LogToStderr`/
+  `EMcpToolError` exist everywhere else in this file to prevent. 4000 is far
+  larger than any genuine search term needs to be. See case `36`.
+- **Characters outside the Basic Multilingual Plane (e.g. emoji, some
+  historical scripts) never match, silently.** `LiteralLikeCondition`
+  encodes each UTF-16 code unit of the argument as one `CHAR()` code point;
+  for a surrogate pair, that encodes the two halves as two out-of-range
+  code points rather than one combined one, which cannot occur in the
+  stored UTF-8 text — so the match legitimately, safely fails closed
+  (`total_count: 0`, no error, no crash), never widens. Confirmed against a
+  real collection: `title: "😀"`, `title: "𝄞"` and `title: "Белка😀"` all
+  return a clean `total_count: 0`. Not expected to matter for library
+  metadata (titles/authors/annotations in this collection are Cyrillic,
+  Latin and common CJK, all within the BMP) but stated here rather than
+  left silent, and not automated as a fixture since a persistent
+  fail-closed empty result is indistinguishable from "this book doesn't
+  exist", which is exactly what makes it safe.
+
 ## `list_genres`, `list_series`, `list_authors`
 
 `list_genres` returns the entire genre tree for a collection, unpaged — genre
@@ -599,12 +642,33 @@ other field set) and gets `isError: true`, `"code":"empty_filter"` instead
 of a raw `-32603`. `34` searches `series: "гарри поттер"` (lowercase) and
 gets the same real match (`book_id: 65006`, `total_count: 104`) that
 `17_list_series_filter_found.jsonl` established for `"Гарри Поттер"`,
-confirming `series` is still case-insensitive after the fix — and, since
-`lang`'s substring semantics changed by this same fix (see above), a quick
-non-fixture check that `lang: "ru"` and `lang: "RU"` both return the same
-`total_count: 374195` is recorded in the task report rather than as a
-separate case, since it exercises no code path `34` doesn't already cover
-for a different field.
+confirming `series` is still case-insensitive after the fix.
+
+`35_search_books_title_nul_rejected.jsonl` through
+`40_search_books_lang_substring_semantics.jsonl` were added in a fix round
+after review flagged that `29`/`31` prove only containment (they assert
+`total_count: 0`, so they would still pass if the escaping were
+*over*-aggressive and matched nothing at all) and that a NUL in a text
+argument was a real regression this task's own diff introduced. `35`
+searches `title` containing a single NUL character and gets
+`isError: true`, `"code":"invalid_params"` naming `title` — before this fix
+the same call returned `total_count: 439393`, the entire non-deleted
+collection (see "Residual limitations of literal matching" above for the
+full before/after). `36` searches a 4001-character `title` and gets
+`isError: true`, `"code":"invalid_params"` naming the argument, its length,
+and the 4000-character limit. `37` searches `title: "на 100%"` and gets
+`total_count: 23`, a **positive** literal match (as opposed to `29`'s
+proof-by-absence) independently confirmed against the collection. `38`
+searches `series: "%"` and gets `total_count: 6` — another positive match,
+and proof that a value which is *entirely* an unescaped LIKE wildcard
+character still matches only the real literal `%` substring. `39` searches
+`author: "Аббасзаде"` (no `title` filter, unlike `14`/`15`) and gets
+`total_count: 6`, covering a field other than `title`/`series` with a
+positive match. `40` searches `lang: "r"` — a substring nothing would match
+under `lang`'s old *exact*-match behavior (no real `Lang` value is just
+`"r"`) — and gets `total_count: 376101`, pinning the exact-to-substring
+semantics change as a deliberate, tested decision with a real number, not an
+unverified side effect.
 
 There is no automated case for `get_book_text`'s `unsupported_format` path:
 the only collection registered on the machine these tests were captured on

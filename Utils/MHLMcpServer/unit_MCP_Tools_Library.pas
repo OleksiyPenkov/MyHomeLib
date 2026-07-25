@@ -396,15 +396,58 @@ end;
 // one) and declare ESCAPE '\' -- otherwise a title containing a literal '%'
 // or '_' would be (mis)interpreted as a wildcard instead of matched
 // literally.
-function LiteralLikeCondition(const Value: string): string;
+//
+// Rejected rather than silently matched, and why:
+//
+// - A NUL (#0) anywhere in Value used to be encoded as CHAR(...,0,...) like
+//   any other code point, and that is NOT inert the way every other
+//   character is: SQLite's char(0) embeds a real zero byte into the runtime
+//   string, and the LIKE implementation's own UTF-8 reader
+//   (sqlite3.c's Utf8Read, used by patternCompare) stops at that byte,
+//   truncating the pattern there. `title: #0` alone collapsed to a
+//   zero-length "%<nothing>%" pattern, i.e. "matches everything" --
+//   confirmed against the real collection, where it returned
+//   total_count: 439393, the entire non-deleted collection, from a value
+//   that should match nothing. `title: 'Бел'#0'ка'` collapsed to "%БЕЛ%",
+//   returning 11 unrelated books. This is exactly the caller-controlled
+//   widening this whole task exists to prevent, so a NUL is rejected
+//   outright rather than patched around: stored text cannot contain a NUL
+//   either (it is not valid inside the SQLite text values MHL_UPPER
+//   produces), so a value containing one could never legitimately match
+//   anything -- there is no "make it literal" fix for this one, only
+//   "refuse it".
+// - An arbitrarily long Value is not a hard-vs-soft correctness question the
+//   way NUL is, but is cheap to fix here and adjacent to it: an unbounded
+//   value still reaches SQLite's LIKE pattern-length limit (50000 bytes)
+//   uncaught, and the resulting EOutOfRange-style SQLite error message
+//   contains the entire generated SQL text -- hundreds of thousands of
+//   characters, including the whole statement -- which would otherwise
+//   leak through Guarded's generic exception handling as a raw internal
+//   error carrying that text (the very leak class LogToStderr/EMcpToolError
+//   exist to prevent). MaxLength (4000) is far larger than any genuine
+//   title/author/series/lang/keyword/annotation search term needs to be,
+//   and comfortably under the ~24900-character point where this
+//   CHAR()-chunked construction was confirmed to start hitting that SQLite
+//   limit.
+function LiteralLikeCondition(const ArgName, Value: string): string;
 const
   ChunkSize = 100;
+  MaxLength = 4000;
   SQ = ''''; // a single apostrophe as a string value
 var
   Escaped: string;
   Codes, Terms: string;
   ChunkStart, ChunkEnd, I: Integer;
 begin
+  if Pos(#0, Value) > 0 then
+    raise EMcpToolError.Create('invalid_params',
+      Format('Аргумент "%s" не може містити символ NUL (U+0000)', [ArgName]));
+
+  if Length(Value) > MaxLength then
+    raise EMcpToolError.Create('invalid_params',
+      Format('Аргумент "%s" задовгий (%d символів, максимум %d)',
+        [ArgName, Length(Value), MaxLength]));
+
   Escaped := Char.ToUpper(Value);
   Escaped := StringReplace(Escaped, '\', '\\', [rfReplaceAll]);
   Escaped := StringReplace(Escaped, '%', '\%', [rfReplaceAll]);
@@ -467,13 +510,13 @@ begin
   // the full argument).
   TitleArg := ArgStr(Args, 'title');
   if TitleArg <> '' then
-    Criteria.Title := LiteralLikeCondition(TitleArg);
+    Criteria.Title := LiteralLikeCondition('title', TitleArg);
   AuthorArg := ArgStr(Args, 'author');
   if AuthorArg <> '' then
-    Criteria.FullName := LiteralLikeCondition(AuthorArg);
+    Criteria.FullName := LiteralLikeCondition('author', AuthorArg);
   SeriesArg := ArgStr(Args, 'series');
   if SeriesArg <> '' then
-    Criteria.Series := LiteralLikeCondition(SeriesArg);
+    Criteria.Series := LiteralLikeCondition('series', SeriesArg);
   // TBookSearchCriteria.Genre is not a value to compare -- PrepareSearchData
   // splices it verbatim into a WHERE clause (' WHERE (' + SearchCriteria.Genre
   // + ')'), matching how frm_main.pas builds it from its genre-tree picker:
@@ -505,13 +548,13 @@ begin
       [StringReplace(GenreCode, '''', '''''', [rfReplaceAll])]);
   LangArg := ArgStr(Args, 'lang');
   if LangArg <> '' then
-    Criteria.Lang := LiteralLikeCondition(LangArg);
+    Criteria.Lang := LiteralLikeCondition('lang', LangArg);
   KeywordArg := ArgStr(Args, 'keyword');
   if KeywordArg <> '' then
-    Criteria.KeyWord := LiteralLikeCondition(KeywordArg);
+    Criteria.KeyWord := LiteralLikeCondition('keyword', KeywordArg);
   AnnotationArg := ArgStr(Args, 'annotation');
   if AnnotationArg <> '' then
-    Criteria.Annotation := LiteralLikeCondition(AnnotationArg);
+    Criteria.Annotation := LiteralLikeCondition('annotation', AnnotationArg);
   // TBookSearchCriteria.Deleted is inverted relative to this tool's
   // include_deleted argument: PrepareSearchData only adds a filter when
   // Deleted is True, and that filter is `b.IsDeleted = 0` -- i.e. Deleted
@@ -790,7 +833,12 @@ begin
 
   Server.RegisterTool(
     'search_books',
-    'Пошук книг у колекції за назвою, автором, серією, жанром чи мовою.',
+    'Пошук книг у колекції за назвою, автором, серією, жанром чи мовою. ' +
+    'Текстові поля (title, author, series, lang, keyword, annotation) ' +
+    'шукають буквальний підрядок без урахування регістру; значення з ' +
+    'NUL-символом або довші за 4000 символів відхиляються помилкою ' +
+    'invalid_params, а символи поза базовою багатомовною площиною Unicode ' +
+    '(наприклад, емодзі) ніколи не збігаються.',
     TJSONObject.ParseJSONValue(
       '{"type":"object","properties":{' +
       '"collection_id":{"type":"integer","description":"ID колекції"},' +
