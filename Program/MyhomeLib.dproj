@@ -203,6 +203,7 @@
         <DCCReference Include="DAO\SQLite\unit_Database_SQLite.pas"/>
         <DCCReference Include="DAO\SQLite\unit_SQLiteUtils.pas"/>
         <DCCReference Include="Units\unit_ProgressEngine.pas"/>
+        <DCCReference Include="Units\unit_ProgressBarEx.pas"/>
         <DCCReference Include="Units\unit_MHLGenerics.pas"/>
         <DCCReference Include="Wizards\NewCollection\frm_NewCollectionWizard.pas">
             <Form>NewCollectionWizard</Form>

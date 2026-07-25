@@ -134,6 +134,7 @@ uses
   unit_Database_SQLite in 'DAO\SQLite\unit_Database_SQLite.pas',
   unit_SQLiteUtils in 'DAO\SQLite\unit_SQLiteUtils.pas',
   unit_ProgressEngine in 'Units\unit_ProgressEngine.pas',
+  unit_ProgressBarEx in 'Units\unit_ProgressBarEx.pas',
   unit_MHLGenerics in 'Units\unit_MHLGenerics.pas',
   frm_NewCollectionWizard in 'Wizards\NewCollection\frm_NewCollectionWizard.pas' {NewCollectionWizard},
   unit_CollectionWorkerThread in 'ImportImpl\unit_CollectionWorkerThread.pas',
