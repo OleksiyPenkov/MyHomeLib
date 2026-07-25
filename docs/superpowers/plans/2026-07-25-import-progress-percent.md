@@ -463,7 +463,7 @@ Expected: build succeeds. If you get `E2010 Incompatible types: 'TProgressBar' a
 Run the Win32 build command.
 Expected: build succeeds.
 
-- [ ] **Step 7: Manual verification**
+- [x] **Step 7: Manual verification**
 
 Run `Program\OUT\Bin64\MyHomeLib.exe`. Start an FB2 folder import into any collection (this path already reports a real percentage, so it exercises the new painting without depending on Task 3).
 
@@ -695,7 +695,7 @@ Re-indent the `for i` loop body consistently (the old `repeat` body was indented
 Run both build commands.
 Expected: both succeed. Watch for `H2077 Value assigned to 'numFiles' never used` — if it appears, a reference to `numFiles` was missed.
 
-- [ ] **Step 7: Manual verification**
+- [x] **Step 7: Manual verification**
 
 Run `Program\OUT\Bin64\MyHomeLib.exe`.
 
@@ -829,7 +829,7 @@ Until now the wizard never hooked `OnProgressHint`, so its `Bar` kept the design
 Run both build commands.
 Expected: both succeed.
 
-- [ ] **Step 6: Manual verification**
+- [x] **Step 6: Manual verification**
 
 Run `Program\OUT\Bin64\MyHomeLib.exe`.
 
