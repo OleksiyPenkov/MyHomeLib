@@ -62,7 +62,7 @@ cmd.exe //c "set BDS=C:\Program Files (x86)\Embarcadero\Studio\37.0&& set BDSCOM
 
 Task 3 consumes all three.
 
-- [ ] **Step 1: Add the `FileSizes` getter declaration**
+- [x] **Step 1: Add the `FileSizes` getter declaration**
 
 In `unit_MHLArchiveHelpers.pas`, in the `private` section of `TMHLZip` (currently lines 34-42), add `GetFileSize` immediately after the existing `GetFileName`:
 
@@ -79,7 +79,7 @@ In `unit_MHLArchiveHelpers.pas`, in the `private` section of `TMHLZip` (currentl
     function GetFileCount: Integer;
 ```
 
-- [ ] **Step 2: Add the `FileSizes` property**
+- [x] **Step 2: Add the `FileSizes` property**
 
 In the `public` section, immediately after the existing `FileNames` property (line 66):
 
@@ -91,7 +91,7 @@ In the `public` section, immediately after the existing `FileNames` property (li
       property LastSize: Integer read GetLastSize;
 ```
 
-- [ ] **Step 3: Implement the getter**
+- [x] **Step 3: Implement the getter**
 
 In the implementation section, immediately after `TMHLZip.GetFileName` (currently ending line 236):
 
@@ -104,7 +104,7 @@ end;
 
 This reads the zip central directory, which `TZipFile` has already parsed — it does not decompress anything.
 
-- [ ] **Step 4: Add the INPX filename constants**
+- [x] **Step 4: Add the INPX filename constants**
 
 In `unit_Consts.pas`, in the same `const` block, immediately after `COLLECTIONINFO_FILENAME` (line 111):
 
@@ -115,17 +115,17 @@ In `unit_Consts.pas`, in the same `const` block, immediately after `COLLECTIONIN
   TEMP_FOLDER_NAME = '_myhomelib';
 ```
 
-- [ ] **Step 5: Build Win64**
+- [x] **Step 5: Build Win64**
 
 Run the Win64 build command from Global Constraints.
 Expected: build succeeds, no errors. `MHLComponents` rebuilds first because the group project orders it ahead of the app.
 
-- [ ] **Step 6: Build Win32**
+- [x] **Step 6: Build Win32**
 
 Run the same command with `/p:Platform=Win32`.
 Expected: build succeeds, no errors.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add Components/MHLComponents/unit_MHLArchiveHelpers.pas Program/Units/unit_Consts.pas
