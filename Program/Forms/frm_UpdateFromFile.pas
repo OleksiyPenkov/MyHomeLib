@@ -40,6 +40,9 @@ type
     procedure edFileChange(Sender: TObject);
   end;
 
+var
+  dlgUpdateFromFile: TdlgUpdateFromFile;
+
 function AskUpdateFile(out AFileName: string; out AFull: Boolean): Boolean;
 
 implementation

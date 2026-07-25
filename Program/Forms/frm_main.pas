@@ -6377,9 +6377,11 @@ begin
   UpdatePositions;
 
   ActiveCollectionID := FCollection.CollectionID;
-  unit_Utils.ManualCollectionUpdate(ActiveCollectionID, Settings.SystemFileName[sfUpdateLog]);
-  Settings.ActiveCollection := ActiveCollectionID;
-  InitCollection;
+  if unit_Utils.ManualCollectionUpdate(ActiveCollectionID, Settings.SystemFileName[sfUpdateLog]) then
+  begin
+    Settings.ActiveCollection := ActiveCollectionID;
+    InitCollection;
+  end;
 end;
 
 procedure TfrmMain.UpdateCollectionFromFileUpdate(Sender: TObject);

@@ -25,8 +25,7 @@ uses
   SysUtils,
   unit_ImportInpxThread,
   System.Net.HttpClient,
-  unit_Globals,
-  unit_UserData;
+  unit_Globals;
 
 type
   TDownloadProgressEvent = procedure (Current, Total: Integer) of object;
@@ -60,6 +59,7 @@ type
     FFileName: string;
     FFull: Boolean;
     FDisplayName: string;
+    function IsValidUpdateArchive: Boolean;
 
   protected
     procedure WorkFunction; override;
@@ -82,7 +82,9 @@ uses
   unit_Lib_Updates,
   unit_Interfaces,
   unit_Logger,
-  unit_MHLHttpClient;
+  unit_MHLHttpClient,
+  unit_MHLArchiveHelpers,
+  unit_UserData;
 
 resourcestring
 rstrDownloadProgress = 'Завантажено: %u%% із %u байт';
@@ -111,9 +113,8 @@ rstrDownloadProgress = 'Завантажено: %u%% із %u байт';
    rstrCancelledByUser = 'Операцію скасовано користувачем.';
    rstrImportIntoCollection = 'Імпорт даних до колекції:';
    rstrManualCollectionUpdate = 'Оновлення колекції %s з файлу %s:';
-   rstrManualUpdateComplete = 'Оновлення завершено.';
-   rstrManualUpdateFailed = 'Оновлення не вдалося.';
    rstrUpdateFileNotFound = 'Файл оновлення не знайдено: %s';
+   rstrInvalidUpdateFile = 'Неправильний формат файлу INPX: %s';
 
 { TCollectionUpdateThreadBase }
 
@@ -146,6 +147,18 @@ begin
 
       Teletype(rstrImportIntoCollection, tsInfo);
       Import(AFileName, not AFull, Collection);
+
+      //
+      // Import лише перериває свої цикли за Canceled і повертає керування
+      // штатно. Без цієї перевірки скасований повний переімпорт закомітив би
+      // обрізану колекцію, а RemapCollectionBookIDs ще й вичистив би групи.
+      //
+      if Canceled then
+      begin
+        Collection.EndBulkOperation(False);
+        Teletype(rstrCancelledByUser, tsInfo);
+        Exit;
+      end;
 
       if AFull then
       begin
@@ -304,6 +317,27 @@ begin
   FGenresType := AGenresType;
 end;
 
+//
+// Import не переживає файл, який не є архівом, або архів без .inp:
+// його finally звільняє неініціалізовані вказівники. Перевіряємо заздалегідь.
+//
+function TManualUpdateThread.IsValidUpdateArchive: Boolean;
+var
+  Zip: TMHLZip;
+begin
+  Result := False;
+  try
+    Zip := TMHLZip.Create(FFileName, True);
+    try
+      Result := Zip.Find('*.inp');
+    finally
+      FreeAndNil(Zip);
+    end;
+  except
+    Result := False;
+  end;
+end;
+
 procedure TManualUpdateThread.WorkFunction;
 begin
   if not FileExists(FFileName) then
@@ -312,15 +346,21 @@ begin
     Exit;
   end;
 
+  if not IsValidUpdateArchive then
+  begin
+    Teletype(Format(rstrInvalidUpdateFile, [FFileName]), tsError);
+    Exit;
+  end;
+
   try
     Teletype(Format(rstrManualCollectionUpdate, [FDisplayName, FFileName]), tsInfo);
     UpdateCollection(FFileName, FCollectionID, FFull, FDisplayName);
-    Teletype(rstrManualUpdateComplete, tsInfo);
+    Teletype(rstrUpdateComplete, tsInfo);
     SetComment(rstrReady);
   except
     on E: Exception do
     begin
-      Teletype(rstrManualUpdateFailed, tsError);
+      Teletype(rstrUpdateFailed, tsError);
       Teletype(E.Message, tsError);
     end;
   end;

@@ -29,7 +29,7 @@ procedure SyncFolders(const CollectionID: Integer);
 
 function LibrusecUpdate(const LogFileName: string): Boolean;
 
-procedure ManualCollectionUpdate(const CollectionID: Integer; const LogFileName: string);
+function ManualCollectionUpdate(const CollectionID: Integer; const LogFileName: string): Boolean;
 
 procedure ShowPopup(const Msg: string);
 procedure HidePopup;
@@ -52,6 +52,7 @@ uses
   unit_Globals,
   unit_Interfaces,
   unit_Settings,
+  unit_Consts,
   dm_user;
 
 resourcestring
@@ -119,7 +120,7 @@ begin
   end;
 end;
 
-procedure ManualCollectionUpdate(const CollectionID: Integer; const LogFileName: string);
+function ManualCollectionUpdate(const CollectionID: Integer; const LogFileName: string): Boolean;
 var
   FileName: string;
   Full: Boolean;
@@ -128,15 +129,23 @@ var
   worker: TManualUpdateThread;
   ProgressForm: TImportProgressFormEx;
 begin
+  Result := False;
+
   if not AskUpdateFile(FileName, Full) then
     Exit;
 
   CollectionInfo := DMUser.GetSystemDBConnection.GetCollectionInfo(CollectionID);
 
-  if isFB2Collection(CollectionInfo.CollectionType) then
-    GenresType := gtFb2
+  //
+  // Той самий розподіл, що й у майстрі створення колекції: локальна не-FB2
+  // колекція (CT_EXTERNAL_LOCAL_NONFB) все одно користується жанрами fb2.
+  //
+  case CollectionInfo.CollectionType of
+    CT_PRIVATE_NONFB, CT_EXTERNAL_ONLINE_NONFB:
+      GenresType := gtAny;
   else
-    GenresType := gtAny;
+    GenresType := gtFb2;
+  end;
 
   worker := TManualUpdateThread.Create(CollectionID, FileName, Full, GenresType);
   try
@@ -155,6 +164,8 @@ begin
   finally
     worker.Free;
   end;
+
+  Result := True;
 end;
 
 procedure LocateBook;
