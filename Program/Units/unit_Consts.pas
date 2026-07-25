@@ -109,6 +109,8 @@ const
   COLLECTIONS_FILENAME = 'collections.ini';
   PRESETS_FILENAME = 'presets.cxml2';
   COLLECTIONINFO_FILENAME = 'collection.info'; // file holding URL, Script, etc
+  INP_EXTENSION = '.inp';
+  EXTRA_INP_FILENAME = 'extra.inp'; // on-line only: список книг, яких нема в основній базі
   TEMP_FOLDER_NAME = '_myhomelib';
   UPDATE_LOGFILE = 'update.log';
   PROGRAM_HOMEPAGE = 'https://github.com/OleksiyPenkov/myhomelib/';

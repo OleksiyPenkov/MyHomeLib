@@ -39,6 +39,7 @@ type
       function GetLastSize: Integer;
       function GetLastName: string;
       function GetFileName(Index: Integer): string;
+      function GetFileSize(Index: Integer): Integer;
     function GetFileCount: Integer;
 
 
@@ -64,6 +65,7 @@ type
 
       property LastName: string read GetLastName;
       property FileNames[Index: Integer]: string read GetFileName;
+      property FileSizes[Index: Integer]: Integer read GetFileSize;
       property FileCount: Integer read GetFileCount;
       property LastSize: Integer read GetLastSize;
   end;
@@ -233,6 +235,11 @@ end;
 function TMHLZip.GetFileName(Index: Integer): string;
 begin
   Result := FZip.FileNames[Index];
+end;
+
+function TMHLZip.GetFileSize(Index: Integer): Integer;
+begin
+  Result := FZip.FileInfos[Index].UncompressedSize;
 end;
 
 function TMHLZip.GetLastSize: Integer;
