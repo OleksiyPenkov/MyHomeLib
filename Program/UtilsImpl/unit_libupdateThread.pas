@@ -31,7 +31,13 @@ type
   TDownloadProgressEvent = procedure (Current, Total: Integer) of object;
   TDownloadSetCommentEvent = procedure (const Current, Total: string) of object;
 
-  TLibUpdateThread = class(TImportInpxThreadBase)
+  TCollectionUpdateThreadBase = class(TImportInpxThreadBase)
+  protected
+    procedure UpdateCollection(const AFileName: string; ACollectionID: Integer;
+      AFull: Boolean; const ADisplayName: string);
+  end;
+
+  TLibUpdateThread = class(TCollectionUpdateThreadBase)
   private
     FHTTPClient: THTTPClient;
     FStartDate: TDateTime;
@@ -90,6 +96,65 @@ rstrDownloadProgress = 'Завантажено: %u%% із %u байт';
    rstrCancelledByUser = 'Операцію скасовано користувачем.';
    rstrImportIntoCollection = 'Імпорт даних до колекції:';
 
+{ TCollectionUpdateThreadBase }
+
+//
+// Оновлення однієї колекції з одного файлу списків.
+// Файл AFileName не видаляється — про нього дбає викликач.
+//
+procedure TCollectionUpdateThreadBase.UpdateCollection(const AFileName: string;
+  ACollectionID: Integer; AFull: Boolean; const ADisplayName: string);
+var
+  Collection: IBookCollection;
+  UserDataBackup: TUserData;
+begin
+  //Truncate won't work with TBookCollection.Create(DBFileName, False)
+  Collection := FSystemData.GetCollection(ACollectionID);
+  Collection.BeginBulkOperation;
+  try
+    UserDataBackup := TUserData.Create;
+    try
+      if AFull then
+      begin
+        // Backup user data:
+        Teletype(Format(rstrBackupUserData, [ADisplayName]), tsInfo);
+        Collection.ExportUserData(UserDataBackup);
+
+        // clear most tables in a collection
+        Teletype(Format(rstrRemovingOldCollection, [ADisplayName]), tsInfo);
+        Collection.TruncateTablesBeforeImport;
+      end;
+
+      Teletype(rstrImportIntoCollection, tsInfo);
+      Import(AFileName, not AFull, Collection);
+
+      if AFull then
+      begin
+        // Restore user data:
+        Teletype(Format(rstrRestoreUserData, [ADisplayName]), tsInfo);
+        Collection.ImportUserData(UserDataBackup, nil);
+      end;
+    finally
+      FreeAndNil(UserDataBackup);
+    end;
+
+    Collection.EndBulkOperation(True);
+  except
+    Collection.EndBulkOperation(False);
+    raise;
+  end;
+
+  //
+  // При полном переимпорте BookID в коллекции переприсваиваются, и сохранённые
+  // в группах BookID начинают указывать на чужие книги. Приводим их к новой
+  // нумерации по LibID (при полном переимпорте заодно убираем книги, которых
+  // в коллекции больше нет).
+  // Делается только после коммита коллекции: системная БД - отдельный файл,
+  // её изменения не откатятся вместе с импортом.
+  //
+  FSystemData.RemapCollectionBookIDs(ACollectionID, AFull);
+end;
+
 { TLibUpdateThread }
 
 constructor TLibUpdateThread.Create;
@@ -141,9 +206,6 @@ var
   i: integer;
   InpxFileName: string;
   updateInfo: TUpdateInfo;
-  Collection: IBookCollection;
-  UserDataBackup: TUserData;
-  S: string;
 begin
   SetComment(rstrCheckingUpdate);
 
@@ -184,55 +246,7 @@ begin
       end;
 
       InpxFileName := TPath.Combine(Settings.UpdatePath, updateInfo.UpdateFile);
-
-      //Truncate won't work with TBookCollection.Create(DBFileName, False)
-      Collection := FSystemData.GetCollection(updateInfo.CollectionID);
-      Collection.BeginBulkOperation;
-      try
-        UserDataBackup := TUserData.Create;
-        try
-          if updateInfo.Full then
-          begin
-            // Backup user data:
-            Teletype(Format(rstrBackupUserData, [updateInfo.Name]), tsInfo);
-            Collection.ExportUserData(UserDataBackup);
-
-            // clear most tables in a collection
-            Teletype(Format(rstrRemovingOldCollection, [updateInfo.Name]), tsInfo);
-            Collection.TruncateTablesBeforeImport;
-          end; //if FULL
-
-          //  импортирум данные
-          Teletype(rstrImportIntoCollection, tsInfo);
-          Import(InpxFileName, not updateInfo.Full, Collection);
-
-          if updateInfo.Full then // a full import mode, had a backup before the process
-          begin
-            Assert(Assigned(UserDataBackup));
-            // Restore user data:
-            Teletype(Format(rstrRestoreUserData, [updateInfo.Name]),tsInfo);
-            Collection.ImportUserData(UserDataBackup, nil);
-          end;
-        finally
-          FreeAndNil(UserDataBackup);
-        end;
-
-        Collection.EndBulkOperation(True);
-      except
-        Collection.EndBulkOperation(False);
-        raise;
-      end;
-
-      //
-      // При полном переимпорте BookID в коллекции переприсваиваются, и сохранённые
-      // в группах BookID начинают указывать на чужие книги. Приводим их к новой
-      // нумерации по LibID (при полном переимпорте заодно убираем книги, которых
-      // в коллекции больше нет).
-      // Делается только после коммита коллекции: системная БД - отдельный файл,
-      // её изменения не откатятся вместе с импортом.
-      //
-      FSystemData.RemapCollectionBookIDs(updateInfo.CollectionID, updateInfo.Full);
-
+      UpdateCollection(InpxFileName, updateInfo.CollectionID, updateInfo.Full, updateInfo.Name);
       Teletype(rstrReady, tsInfo);
     end; //for .. with
 
