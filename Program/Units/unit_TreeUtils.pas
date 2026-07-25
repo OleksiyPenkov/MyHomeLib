@@ -68,7 +68,8 @@ const
 var
   FS: TFileStream;
   Str: AnsiString;
-  Data: Pointer;
+  Bytes: TBytes;
+  BOM: TBytes;
 begin
   Result := (Path + 'book_list.' + Ext[Tag]);
 
@@ -76,14 +77,42 @@ begin
   try
     case Tag of
       351:
-        Str := HTMLHead + Tree.ContentToHTML(tstAll) + HTMLFoot;
+        begin
+          //
+          // І наш заголовок, і <META> від VirtualTrees оголошують charset=utf-8,
+          // тож і байти файлу мають бути UTF-8, а не ANSI. BOM тут зайвий:
+          // кодування вже вказане у самій розмітці.
+          //
+          Bytes := TEncoding.UTF8.GetBytes(HTMLHead + Tree.ContentToHTML(tstAll) + HTMLFoot);
+          if Length(Bytes) > 0 then
+            FS.WriteBuffer(Bytes[0], Length(Bytes));
+        end;
+
       352:
-        Str := AnsiString(Tree.ContentToText(tstAll, Chr(9)));
+        begin
+          //
+          // У .txt немає де оголосити кодування, тому пишемо UTF-8 з BOM —
+          // саме за ним Notepad, Excel та інші розпізнають файл правильно.
+          //
+          BOM := TEncoding.UTF8.GetPreamble;
+          FS.WriteBuffer(BOM[0], Length(BOM));
+
+          Bytes := TEncoding.UTF8.GetBytes(Tree.ContentToText(tstAll, Chr(9)));
+          if Length(Bytes) > 0 then
+            FS.WriteBuffer(Bytes[0], Length(Bytes));
+        end;
+
       353:
-        Str := Tree.ContentToRTF(tstAll);
+        begin
+          //
+          // RTF від VirtualTrees уже несе власний \ansicpg та \'xx-послідовності,
+          // тож віддаємо його байт-у-байт.
+          //
+          Str := Tree.ContentToRTF(tstAll);
+          if Length(Str) > 0 then
+            FS.WriteBuffer(PAnsiChar(Str)^, Length(Str));
+        end;
     end;
-    Data := PChar(Str);
-    FS.WriteBuffer(Data^, Length(Str));
   finally
     FreeAndNil(FS);
   end;
