@@ -393,8 +393,8 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1)'!=''">
-        <DCC_Warnings>false</DCC_Warnings>
-        <DCC_Hints>false</DCC_Hints>
+        <DCC_Warnings>true</DCC_Warnings>
+        <DCC_Hints>true</DCC_Hints>
         <DCC_USE_BEFORE_DEF>false</DCC_USE_BEFORE_DEF>
         <DCC_ImportedDataReferences>false</DCC_ImportedDataReferences>
         <DCC_DependencyCheckOutputName>Release\Bin\MyhomeLib.exe</DCC_DependencyCheckOutputName>
