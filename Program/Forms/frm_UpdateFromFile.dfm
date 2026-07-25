@@ -1,6 +1,7 @@
 object dlgUpdateFromFile: TdlgUpdateFromFile
   Left = 0
   Top = 0
+  HelpContext = 113
   BorderStyle = bsDialog
   ClientHeight = 190
   ClientWidth = 480

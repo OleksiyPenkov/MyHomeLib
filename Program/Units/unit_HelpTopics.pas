@@ -45,13 +45,14 @@ const
   // Кожен ID узятий з властивості HelpContext відповідної форми, вкладки
   // або пункту меню. 5001 та будь-який невідомий ID відкривають зміст.
   //
-  HelpTopics: array [0 .. 20] of THelpTopic = (
+  HelpTopics: array [0 .. 21] of THelpTopic = (
     (ContextID: 1;   FileName: 'index.html'),              // pgControl
     (ContextID: 2;   FileName: 'main_window.html'),        // frmMain
     (ContextID: 105; FileName: 'menu_book.html'),          // меню "Книга"
     (ContextID: 108; FileName: 'download.html'),           // tsDownload
     (ContextID: 110; FileName: 'collections.html'),        // frmBases
     (ContextID: 112; FileName: 'menu_collection.html'),    // меню "Колекція"
+    (ContextID: 113; FileName: 'update.html'),             // dlgUpdateFromFile
     (ContextID: 117; FileName: 'editing.html'),            // frmEditAuthor
     (ContextID: 125; FileName: 'groups.html'),             // tsByGroup
     (ContextID: 126; FileName: 'search.html'),             // tsSearch
