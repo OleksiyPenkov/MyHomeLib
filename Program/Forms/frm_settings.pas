@@ -561,7 +561,9 @@ begin
   if cbOverwriteFB2Info.Checked and (edTitleTemplate.Text = '') then
   begin
     ShowMessage(rstrNeedTemplate);
-    tvSections.Select(tvSections.Items[5]);
+    // вузли дерева йдуть у тому ж порядку, що й вкладки, тому беремо індекс
+    // від самої вкладки - інакше при зміні порядку знову з'їде на сусідню
+    tvSections.Select(tvSections.Items[tsBehavour.PageIndex]);
     Exit;
   end;
 
