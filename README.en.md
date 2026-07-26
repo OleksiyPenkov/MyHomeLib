@@ -40,6 +40,10 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 - Custom scripts run after a send-to-device, with `%DEST%`, `%TMP%`, `%FILENAME%` and other substitutions.
 - Editing book and author details, exporting a book list to HTML.
 
+**AI assistants**
+
+- An MCP server (`MHLMcpServer.exe`) installs alongside the application and exposes the collection to assistants such as Claude: search books, browse authors, series and genres, read a book's table of contents and text, search inside a book. Read-only, and it does not need MyHomeLib to be running. Setup is covered in the help, under «MCP-сервер для AI-асистентів».
+
 ## Installation
 
 Prebuilt installers for 64- and 32-bit Windows are published on the [Releases](https://github.com/OleksiyPenkov/MyHomeLib/releases) page. If the file you need is not there, you can build the installer yourself — see `Installer/build_installer.cmd` (requires [Inno Setup](https://jrsoftware.org/isinfo.php)).
@@ -110,7 +114,7 @@ docs/                  design specs and implementation plans
 
 ## Utilities
 
-- **`Utils/MHLMcpServer`** — a read-only MCP (Model Context Protocol) server that exposes a MyHomeLib collection to clients such as Claude: search books, browse authors, series and genres, read a book's table of contents and text, search inside a book. It links the same DAO layer as the application, so it sees exactly the same collections. See [`Utils/MHLMcpServer/README.md`](Utils/MHLMcpServer/README.md).
+- **`Utils/MHLMcpServer`** — a read-only MCP (Model Context Protocol) server that exposes a MyHomeLib collection to clients such as Claude: search books, browse authors, series and genres, read a book's table of contents and text, search inside a book. It links the same DAO layer as the application, so it sees exactly the same collections. Unlike the other utilities it ships in the installer, next to `MyHomeLib.exe`. The user-facing description is in the help ([`mcp_server.html`](Program/Help/mcp_server.html)); the technical one is in [`Utils/MHLMcpServer/README.md`](Utils/MHLMcpServer/README.md).
 - **`Utils/MHLSQLiteConsole`** — a standalone SQLite console for working with collection databases directly.
 - **`Utils/MHLSQLiteExt`** — a C++ SQLite extension providing the custom functions the application uses.
 

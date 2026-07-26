@@ -106,6 +106,24 @@ code, kbd {
 
 kbd { border: 1px solid var(--rule); }
 
+/* Multi-line code block. Reuses --code-bg so it matches inline code and picks
+   up dark mode from the same variable. The nested code element drops its own
+   padding and background, which the block already provides. */
+pre {
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border-radius: 4px;
+  background: var(--code-bg);
+  overflow-x: auto;
+}
+
+pre code {
+  padding: 0;
+  background: none;
+  font-size: .9em;
+  line-height: 1.5;
+}
+
 .ui { font-weight: 600; }
 
 table {

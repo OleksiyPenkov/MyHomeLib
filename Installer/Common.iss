@@ -64,6 +64,12 @@ Source: {#FullSourcePath}; DestDir: {app}; DestName: {#AppExeName}; Flags: repla
 
 Source: {#LibFolder + 'sqlite3.dll'}; DestDir: {app}; Flags: replacesameversion
 
+; MCP server for AI assistants (see Help\mcp_server.html). Taken straight from
+; the build output, like MHLIcons.dll below, so it always matches the packaged
+; app. Needs the sqlite3.dll above sitting beside it: the DAO layer imports it
+; at load time, so without it the server fails to start at all.
+Source: {#SourceFolder + 'MHLMcpServer.exe'}; DestDir: {app}; Flags: replacesameversion
+
 ; Icon resource DLL, loaded at runtime by dm_Images from {app}\Icons.
 ; Taken from the build output so it always matches the exe being packaged.
 ; Deliberately no skipifsourcedoesntexist: if this is missing the app installs

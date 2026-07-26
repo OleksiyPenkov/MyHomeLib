@@ -86,7 +86,8 @@
       "title": "Додаток",
       "topics": [
         { "file": "scripts_examples.html", "title": "Приклади скриптів" },
-        { "file": "user_data.html", "title": "Експорт та імпорт даних користувача" }
+        { "file": "user_data.html", "title": "Експорт та імпорт даних користувача" },
+        { "file": "mcp_server.html", "title": "MCP-сервер для AI-асистентів" }
       ]
     }
   ]
