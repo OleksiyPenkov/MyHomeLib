@@ -99,6 +99,7 @@ type
     btnOk: TButton;
     btnCancel: TButton;
     btnHelp: TButton;
+    btnReset: TButton;
     Panel1: TPanel;
     Label11: TLabel;
     Panel2: TPanel;
@@ -234,9 +235,13 @@ type
     procedure CheckNumValue(Sender: TObject);
     procedure rbUseProxyForUpdateClick(Sender: TObject);
     procedure cbIgnoreArchivesClick(Sender: TObject);
+    procedure btnResetClick(Sender: TObject);
 
   private
     procedure SetPanelFontColor(Value: Graphics.TColor);
+
+    procedure ResetDevicesTab;
+    procedure ResetInterfaceTab;
 
     procedure EditReader(AItem: TListItem);
     procedure EditScript(AItem: TListItem);
@@ -275,6 +280,7 @@ rstrStandart = 'Стандартне';
   rstrChangeScriptParams = 'Зміна параметрів скрипта';
   rstrAddScript = 'Додавання скрипта';
   rstrProvideFolder = 'Вкажіть папку';
+  rstrConfirmReset = 'Скинути налаштування цього розділу до типових значень?';
 
 {$R *.dfm}
 
@@ -788,6 +794,61 @@ end;
 procedure TfrmSettings.tvSectionsChange(Sender: TObject; Node: TTreeNode);
 begin
   pcSetPages.ActivePageIndex := tvSections.Selected.Index;
+
+  //
+  // Скидання реалізоване лише для цих двох розділів
+  //
+  btnReset.Enabled := (pcSetPages.ActivePage = tsDevices) or
+                      (pcSetPages.ActivePage = tsInterface);
+end;
+
+//
+// Скидання розділу налаштувань до типових значень.
+//
+// Змінюємо лише контроли форми, а не Settings - інакше "Відміна" перестане
+// скасовувати скидання. Збереження й далі йде через звичайний SaveSettings.
+//
+procedure TfrmSettings.ResetDevicesTab;
+begin
+  cbPromptPath.Checked := DEF_PROMPT_DEVICE_PATH;
+  edDeviceDir.Text := DEF_DEVICE_DIR;
+  edReadDir.Text := DEF_READ_DIR;
+
+  rgDeviceFormat.ItemIndex := DEF_EXPORT_FORMAT;
+  edFolderTemplate.Text := DEF_FOLDER_TEMPLATE;
+  edFileNameTemplate.Text := DEF_FILE_NAME_TEMPLATE;
+  cbSquareFilter.Checked := DEF_REMOVE_SQUARE_BRACKETS;
+  cbTXTEncoding.ItemIndex := DEF_TXT_ENCODING;
+
+  // перечитаємо стан доступності полів шляху до пристрою
+  cbPromptPathClick(nil);
+end;
+
+procedure TfrmSettings.ResetInterfaceTab;
+begin
+  udFontSize.Position := DEF_TREE_FONT_SIZE;
+  udShortFontSize.Position := DEF_SHORT_FONT_SIZE;
+
+  SetPanelFontColor(DEF_FONT_COLOR);
+  pnDownloadedFontColor.Font.Color := DEF_LOCAL_COLOR;
+  pnDeletedFontColor.Font.Color := DEF_DELETED_COLOR;
+
+  pnCA.Color := DEF_AUTHOR_COLOR;
+  pnCS.Color := DEF_SERIES_COLOR;
+  pnASG.Color := DEF_BG_COLOR;
+  pnCT.Color := DEF_BOOK_COLOR;
+  pnBS.Color := DEF_SERIES_BOOK_COLOR;
+end;
+
+procedure TfrmSettings.btnResetClick(Sender: TObject);
+begin
+  if MessageDlg(rstrConfirmReset, mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    Exit;
+
+  if pcSetPages.ActivePage = tsDevices then
+    ResetDevicesTab
+  else if pcSetPages.ActivePage = tsInterface then
+    ResetInterfaceTab;
 end;
 
 procedure TfrmSettings.cbEnableFileSortClick(Sender: TObject);

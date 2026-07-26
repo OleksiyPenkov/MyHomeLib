@@ -1889,6 +1889,15 @@ object frmSettings: TfrmSettings
       TabOrder = 2
       OnClick = ShowHelpClick
     end
+    object btnReset: TButton
+      Left = 93
+      Top = 10
+      Width = 75
+      Height = 25
+      Caption = #1057#1082#1080#1085#1091#1090#1080
+      TabOrder = 3
+      OnClick = btnResetClick
+    end
   end
   object tvSections: TTreeView
     AlignWithMargins = True

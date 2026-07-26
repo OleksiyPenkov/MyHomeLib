@@ -36,6 +36,35 @@ uses
   unit_Globals,
   unit_Lib_Updates;
 
+const
+  //
+  // Типові значення налаштувань. Використовуються і як запасні значення при
+  // читанні ini-файлу, і кнопкою "Скинути" у вікні налаштувань, тому тримаємо
+  // їх в одному місці - інакше свіжа інсталяція та скидання розійдуться.
+  //
+
+  // Папки/Пристрої
+  DEF_DEVICE_DIR = '';
+  DEF_READ_DIR = '';
+  DEF_PROMPT_DEVICE_PATH = True;
+  DEF_EXPORT_FORMAT = 0;                // emFB2
+  DEF_FOLDER_TEMPLATE = '%fc\%s';
+  DEF_FILE_NAME_TEMPLATE = '[%n - ]%t';
+  DEF_REMOVE_SQUARE_BRACKETS = True;
+  DEF_TXT_ENCODING = 0;                 // enUTF8
+
+  // Інтерфейс
+  DEF_TREE_FONT_SIZE = 8;
+  DEF_SHORT_FONT_SIZE = 8;
+  DEF_FONT_COLOR = clBlack;
+  DEF_LOCAL_COLOR = clBlack;
+  DEF_DELETED_COLOR = clGray;
+  DEF_BOOK_COLOR = clWhite;
+  DEF_SERIES_COLOR = clWhite;
+  DEF_AUTHOR_COLOR = clWhite;
+  DEF_SERIES_BOOK_COLOR = clWhite;
+  DEF_BG_COLOR = clWhite;
+
 type
   TMHLSystemFile = (
     sfSystemDB,
@@ -657,8 +686,8 @@ begin
     //
     // PATH_SECTION
     //
-    DeviceDir := iniFile.ReadString(PATH_SECTION, 'Device', '');
-    ReadDir := iniFile.ReadString(PATH_SECTION, 'Read', '');
+    DeviceDir := iniFile.ReadString(PATH_SECTION, 'Device', DEF_DEVICE_DIR);
+    ReadDir := iniFile.ReadString(PATH_SECTION, 'Read', DEF_READ_DIR);
     UpdateDir := iniFile.ReadString(PATH_SECTION, 'Update', '');
 
     //
@@ -668,14 +697,14 @@ begin
     FActiveCollection := iniFile.ReadInteger(SYSTEM_SECTION, 'ActiveCollection', 1);
     FDoCheckUpdate := iniFile.ReadBool(SYSTEM_SECTION, 'CheckUpdates', True);
     FCheckExternalLibUpdate := iniFile.ReadBool(SYSTEM_SECTION, 'CheckLibrusecUpdates', True);
-    FPromptDevicePath := iniFile.ReadBool(SYSTEM_SECTION, 'PromptDevicePath', True);
+    FPromptDevicePath := iniFile.ReadBool(SYSTEM_SECTION, 'PromptDevicePath', DEF_PROMPT_DEVICE_PATH);
     // %fc (обраний автор), а не %f (перший автор книги) - інакше книги
     // у співавторстві розкладаються по чужих папках (#59)
-    FFolderTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FolderTemplate', '%fc\%s');
-    FFileNameTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FileNameTemplate', '[%n - ]%t');
-    FRemoveSquareBrackets := iniFile.ReadBool(SYSTEM_SECTION, 'RemoveSquareBrackets', True);
+    FFolderTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FolderTemplate', DEF_FOLDER_TEMPLATE);
+    FFileNameTemplate := iniFile.ReadString(SYSTEM_SECTION, 'FileNameTemplate', DEF_FILE_NAME_TEMPLATE);
+    FRemoveSquareBrackets := iniFile.ReadBool(SYSTEM_SECTION, 'RemoveSquareBrackets', DEF_REMOVE_SQUARE_BRACKETS);
 
-    case iniFile.ReadInteger(SYSTEM_SECTION, 'ExpFormat', 0) of
+    case iniFile.ReadInteger(SYSTEM_SECTION, 'ExpFormat', DEF_EXPORT_FORMAT) of
       0: FExportMode := emFB2;
       1: FExportMode := emFB2Zip;
       2: FExportMode := emLrf;
@@ -685,7 +714,7 @@ begin
       6: FExportMode := emMobi;
     end;
 
-    case iniFile.ReadInteger(SYSTEM_SECTION, 'TXTEncoding', 0) of
+    case iniFile.ReadInteger(SYSTEM_SECTION, 'TXTEncoding', DEF_TXT_ENCODING) of
       0: FTXTEncoding := enUTF8;
       1: FTXTEncoding := en1251;
       2: FTXTEncoding := enUnicode;
@@ -694,8 +723,8 @@ begin
     //
     // INTERFACE_SECTION
     //
-    FTreeFontSize := iniFile.ReadInteger(INTERFACE_SECTION, 'FontSize', 8);
-    FShortFontSize := iniFile.ReadInteger(INTERFACE_SECTION, 'ShortFontSize', 8);
+    FTreeFontSize := iniFile.ReadInteger(INTERFACE_SECTION, 'FontSize', DEF_TREE_FONT_SIZE);
+    FShortFontSize := iniFile.ReadInteger(INTERFACE_SECTION, 'ShortFontSize', DEF_SHORT_FONT_SIZE);
     FActivePage := iniFile.ReadInteger(INTERFACE_SECTION, 'ActivePage', 0);
 
     FFormHeight := iniFile.ReadInteger(INTERFACE_SECTION, 'FormHeight', 850);
@@ -750,15 +779,15 @@ begin
     //
     // COLORS_SECTION
     //
-    FBookColor := iniFile.ReadInteger(COLORS_SECTION, 'Book', clWhite);
-    FSeriesColor := iniFile.ReadInteger(COLORS_SECTION, 'Series', clWhite);
-    FAuthorColor := iniFile.ReadInteger(COLORS_SECTION, 'Author', clWhite);
-    FSeriesBookColor := iniFile.ReadInteger(COLORS_SECTION, 'SeriesBook', clWhite);
-    FBGColor := iniFile.ReadInteger(COLORS_SECTION, 'ASG Tree', clWhite);
-    FFontColor := iniFile.ReadInteger(COLORS_SECTION, 'Font', clBlack);
+    FBookColor := iniFile.ReadInteger(COLORS_SECTION, 'Book', DEF_BOOK_COLOR);
+    FSeriesColor := iniFile.ReadInteger(COLORS_SECTION, 'Series', DEF_SERIES_COLOR);
+    FAuthorColor := iniFile.ReadInteger(COLORS_SECTION, 'Author', DEF_AUTHOR_COLOR);
+    FSeriesBookColor := iniFile.ReadInteger(COLORS_SECTION, 'SeriesBook', DEF_SERIES_BOOK_COLOR);
+    FBGColor := iniFile.ReadInteger(COLORS_SECTION, 'ASG Tree', DEF_BG_COLOR);
+    FFontColor := iniFile.ReadInteger(COLORS_SECTION, 'Font', DEF_FONT_COLOR);
 
-    FLocalColor := iniFile.ReadInteger(COLORS_SECTION, 'Downloaded', clBlack);
-    FDeletedColor := iniFile.ReadInteger(COLORS_SECTION, 'Deleted', clGray);
+    FLocalColor := iniFile.ReadInteger(COLORS_SECTION, 'Downloaded', DEF_LOCAL_COLOR);
+    FDeletedColor := iniFile.ReadInteger(COLORS_SECTION, 'Deleted', DEF_DELETED_COLOR);
 
     //
     // SEARCH_SECTION
