@@ -490,6 +490,7 @@ function TExportToDeviceThread.SendFileToDevice: Boolean;
 var
   TempFile: string;
   MTPTargetFolder: IShellItem;
+  FreshRoot: IShellItem;
 begin
   Result := False;
   FLastError := '';
@@ -510,6 +511,27 @@ begin
       Exit;
     end;
     MTPTargetFolder := ResolveOrCreateShellSubfolder(FDeviceShellItem, FFileOprecord.TargetFolder);
+
+    if not Assigned(MTPTargetFolder) then
+    begin
+      //
+      // Оболонка Windows перелічує теки MTP асинхронно: доки в Провіднику
+      // видно "Working on it...", тека ще не готова - нащадки виглядають
+      // порожніми, а будь-яка операція під нею повертає E_UNEXPECTED.
+      // Вручну це лікується повторним вибором теки в діалозі, тож робимо те
+      // саме програмно: перечитуємо корінь зі збереженого шляху й пробуємо ще
+      // раз. Одна спроба, без очікування - це пом'якшення чужої асинхронності.
+      //
+      if Succeeded(SHCreateItemFromParsingName(PChar(FDeviceDir), nil, IShellItem, FreshRoot)) then
+      begin
+        MTPTargetFolder := ResolveOrCreateShellSubfolder(FreshRoot, FFileOprecord.TargetFolder);
+        // Свіжий корінь працює - далі користуємось ним, щоб не повторювати
+        // це для кожної наступної книги.
+        if Assigned(MTPTargetFolder) then
+          FDeviceShellItem := FreshRoot;
+      end;
+    end;
+
     if not Assigned(MTPTargetFolder) then
     begin
       FLastError := Format('Failed to resolve/create MTP subfolder: %s', [FFileOprecord.TargetFolder]);
