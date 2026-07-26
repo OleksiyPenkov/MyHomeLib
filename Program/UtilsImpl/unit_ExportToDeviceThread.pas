@@ -562,18 +562,48 @@ begin
   end
   else
   begin
+    // Книга з архіву вже розпакована у потік, а SourceFile вказує на сам архів -
+    // копіювання за SourceFile віддало б архів замість книги.
     if FUseMTP then
     begin
-      Result := ShellCopyFile(FFileOprecord.SourceFile, MTPTargetFolder, FFileOprecord.FileName);
-      if not Result then
-        FLastError := Format('ShellCopyFile failed: %s -> %s\%s',
-          [FFileOprecord.SourceFile, FFileOprecord.TargetFolder, FFileOprecord.FileName]);
+      if FFileOprecord.Stream <> nil then
+      begin
+        if not StreamToFile(FFileOprecord.TempFile, FFileOprecord.Stream) then
+        begin
+          FLastError := Format('StreamToFile failed: %s', [FFileOprecord.TempFile]);
+          Exit;
+        end;
+
+        Result := ShellCopyFile(FFileOprecord.TempFile, MTPTargetFolder, FFileOprecord.FileName);
+        if not Result then
+          FLastError := Format('ShellCopyFile failed: %s -> %s\%s',
+            [FFileOprecord.TempFile, FFileOprecord.TargetFolder, FFileOprecord.FileName]);
+
+        if FileExists(FFileOprecord.TempFile) then
+          DeleteFile(FFileOprecord.TempFile);
+      end
+      else
+      begin
+        Result := ShellCopyFile(FFileOprecord.SourceFile, MTPTargetFolder, FFileOprecord.FileName);
+        if not Result then
+          FLastError := Format('ShellCopyFile failed: %s -> %s\%s',
+            [FFileOprecord.SourceFile, FFileOprecord.TargetFolder, FFileOprecord.FileName]);
+      end;
     end
     else
     begin
-      Result := unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
-      if not Result then
-        FLastError := Format('CopyFile failed: %s -> %s', [FFileOprecord.SourceFile, FFileOprecord.TargetFile]);
+      if FFileOprecord.Stream <> nil then
+      begin
+        Result := StreamToFile(FFileOprecord.TargetFile, FFileOprecord.Stream);
+        if not Result then
+          FLastError := Format('StreamToFile failed: %s', [FFileOprecord.TargetFile]);
+      end
+      else
+      begin
+        Result := unit_globals.CopyFile(FFileOprecord.SourceFile, FFileOprecord.TargetFile);
+        if not Result then
+          FLastError := Format('CopyFile failed: %s -> %s', [FFileOprecord.SourceFile, FFileOprecord.TargetFile]);
+      end;
     end;
   end;
 end;
@@ -621,7 +651,15 @@ begin
   if FUseMTP and Assigned(FMarshalStream) then
   begin
     CoGetInterfaceAndReleaseStream(FMarshalStream, IShellItem, FDeviceShellItem);
-    FMarshalStream := nil;
+    //
+    // CoGetInterfaceAndReleaseStream перебирає на себе посилання, яке тримає
+    // FMarshalStream, і звільняє потік навіть у разі помилки. Звичайне
+    // присвоєння nil викликало б Release ще раз, на вже звільненому потоці:
+    // на посилання припадало два AddRef і три Release, тож експорт падав з AV
+    // наприкінці, коли ExportToDevice звільняв свою локальну змінну.
+    // Обнуляємо поле через Pointer, не звільняючи його повторно.
+    //
+    Pointer(FMarshalStream) := nil;
   end;
 end;
 
