@@ -84,8 +84,6 @@ cmd.exe /c "set BDS=C:\Program Files (x86)\Embarcadero\Studio\37.0&& set BDSCOMM
 
 **Результат збірки:** `Program/OUT/Bin64/` та `Program/OUT/BIN/` (виконувані файли), `Program/OUT/Units/` (DCU). Подія after-build кладе поруч з exe теку довідки та `Resources\Icons\<платформа>\MHLIcons.dll` — усі іконки програма завантажує з цієї DLL під час виконання.
 
-Опис архітектури, конвенцій коду та підводних каменів VCL — у [`CLAUDE.md`](CLAUDE.md).
-
 ## Структура репозиторію
 
 ```

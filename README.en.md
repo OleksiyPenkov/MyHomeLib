@@ -86,8 +86,6 @@ Swap `/p:Platform=Win64` for `/p:Platform=Win32` for the 32-bit build. Win64 is 
 
 **Build output:** `Program/OUT/Bin64/` and `Program/OUT/BIN/` (executables), `Program/OUT/Units/` (DCUs). The post-build event stages the help folder and `Resources\Icons\<platform>\MHLIcons.dll` next to the exe — every icon is loaded from that DLL at runtime.
 
-Architecture notes, code conventions and VCL gotchas are in [`CLAUDE.md`](CLAUDE.md).
-
 ## Repository layout
 
 ```
