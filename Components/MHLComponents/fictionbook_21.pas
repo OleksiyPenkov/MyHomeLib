@@ -11,7 +11,7 @@
   * $Id: fictionbook_21.pas 1064 2011-09-02 11:33:04Z eg_ $
   *
   * History
-  * Alex Penkov              multy-p in the annotation added
+  * Oleksiy Penkov           multy-p in the annotation added
   *
   ****************************************************************************** *)
 

@@ -353,7 +353,7 @@
         <VerInfo_Locale>1049</VerInfo_Locale>
         <VerInfo_Private>true</VerInfo_Private>
         <VerInfo_Special>true</VerInfo_Special>
-        <VerInfo_Keys>CompanyName=MyHomeLib;FileDescription=MyHomeLib;FileVersion=2.3.4.832;InternalName=MyHomeLib;LegalCopyright=Алексей Пеньков;LegalTrademarks=MyHomeLib;OriginalFilename=MyHomeLib.exe;ProductName=MyHomeLib;ProductVersion=2.1;Comments=;SpecialBuild=;PrivateBuild=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=MyHomeLib;FileDescription=MyHomeLib;FileVersion=2.3.4.832;InternalName=MyHomeLib;LegalCopyright=Олексій Пеньков;LegalTrademarks=MyHomeLib;OriginalFilename=MyHomeLib.exe;ProductName=MyHomeLib;ProductVersion=2.1;Comments=;SpecialBuild=;PrivateBuild=</VerInfo_Keys>
         <DCC_Optimize>false</DCC_Optimize>
         <DCC_Inlining>off</DCC_Inlining>
         <DCC_DebugDCUs>true</DCC_DebugDCUs>
@@ -516,7 +516,7 @@ call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(
                     <VersionInfoKeys Name="FileDescription">MyHomeLib</VersionInfoKeys>
                     <VersionInfoKeys Name="FileVersion">2.1.4.760</VersionInfoKeys>
                     <VersionInfoKeys Name="InternalName">MyHomeLib</VersionInfoKeys>
-                    <VersionInfoKeys Name="LegalCopyright">Алексей Пеньков</VersionInfoKeys>
+                    <VersionInfoKeys Name="LegalCopyright">Олексій Пеньков</VersionInfoKeys>
                     <VersionInfoKeys Name="LegalTrademarks">MyHomeLib</VersionInfoKeys>
                     <VersionInfoKeys Name="OriginalFilename">MyHomeLib.exe</VersionInfoKeys>
                     <VersionInfoKeys Name="ProductName">MyHomeLib</VersionInfoKeys>
