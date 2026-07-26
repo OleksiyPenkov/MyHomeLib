@@ -1,0 +1,2 @@
+> {"jsonrpc":"2.0","id":1,"method":"tools/list","params":[1,2,3]}
+< {"jsonrpc":"2.0","id":1,"error":{"code":-32602,"message":"Invalid params: expected an object"}}

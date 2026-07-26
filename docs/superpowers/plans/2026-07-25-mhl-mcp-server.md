@@ -446,7 +446,8 @@ type
     function HandleToolsCall(const Params: TJSONObject): TJSONObject;
     procedure SendResult(Id: TJSONValue; Payload: TJSONObject);
     procedure SendError(Id: TJSONValue; Code: Integer; const Msg: string);
-    procedure Dispatch(const Request: TJSONObject);
+    // NOT named Dispatch — that shadows TObject.Dispatch and warns W1010.
+    procedure DispatchRequest(const Request: TJSONObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -552,6 +553,7 @@ function TMcpServer.HandleToolsCall(const Params: TJSONObject): TJSONObject;
 var
   Tool: TMcpTool;
   ToolName: string;
+  ArgsValue: TJSONValue;
   Args, Payload, ErrObj: TJSONObject;
   Content: TJSONArray;
   Block: TJSONObject;
@@ -565,7 +567,12 @@ begin
   if not FindTool(ToolName, Tool) then
     raise EArgumentException.CreateFmt('Unknown tool: %s', [ToolName]);
 
-  Args := Params.GetValue('arguments') as TJSONObject; // may be nil
+  // Client-controlled shape again: a non-object `arguments` must read as
+  // invalid params (-32602), not as an internal error (-32603).
+  ArgsValue := Params.GetValue('arguments');
+  if Assigned(ArgsValue) and not (ArgsValue is TJSONObject) then
+    raise EArgumentException.Create('arguments must be an object');
+  Args := ArgsValue as TJSONObject; // may be nil
 
   IsError := False;
   Payload := nil;
@@ -635,21 +642,29 @@ begin
   end;
 end;
 
-procedure TMcpServer.Dispatch(const Request: TJSONObject);
+procedure TMcpServer.DispatchRequest(const Request: TJSONObject);
 var
   Method: string;
   Id: TJSONValue;
+  ParamsValue: TJSONValue;
   Params: TJSONObject;
 begin
   Method := Request.GetValue<string>('method', '');
   Id := Request.GetValue('id'); // nil for notifications
-  Params := Request.GetValue('params') as TJSONObject;
 
   // Notifications never get a response.
   if not Assigned(Id) then
     Exit;
 
   try
+    // Client-controlled shape: a bare `as TJSONObject` here raises
+    // EInvalidCast on `"params":[1,2,3]` and, being outside this try,
+    // would kill the process. Validate instead of casting blind.
+    ParamsValue := Request.GetValue('params');
+    if Assigned(ParamsValue) and not (ParamsValue is TJSONObject) then
+      raise EArgumentException.Create('params must be an object');
+    Params := ParamsValue as TJSONObject; // nil when absent — that is fine
+
     if Method = 'initialize' then
       SendResult(Id, HandleInitialize(Params))
     else if Method = 'ping' then
@@ -671,6 +686,7 @@ end;
 procedure TMcpServer.Run;
 var
   Line: string;
+  Parsed: TJSONValue;
   Request: TJSONObject;
 begin
   while FTransport.ReadMessage(Line) do
@@ -678,11 +694,22 @@ begin
     if Trim(Line) = '' then
       Continue;
 
-    Request := TJSONObject.ParseJSONValue(Line) as TJSONObject;
-    if not Assigned(Request) then
+    // A line may be unparseable, or parse to a non-object (`[1,2,3]`, `42`,
+    // `"ping"`). Either way there is no id to answer with, so skip it — but
+    // free the parsed value, and never `as`-cast it: EInvalidCast here would
+    // escape Run and the .dpr's try/finally and kill the whole process.
+    Parsed := TJSONObject.ParseJSONValue(Line);
+    if not Assigned(Parsed) then
       Continue;
+    if not (Parsed is TJSONObject) then
+    begin
+      Parsed.Free;
+      Continue;
+    end;
+
+    Request := TJSONObject(Parsed);
     try
-      Dispatch(Request);
+      DispatchRequest(Request);
     finally
       Request.Free;
     end;
@@ -839,11 +866,35 @@ begin
 end;
 
 function RequireInt(const Args: TJSONObject; const Name: string): Integer;
+var
+  Value: TJSONValue;
+  Num: TJSONNumber;
 begin
-  if (not Assigned(Args)) or (Args.GetValue(Name) = nil) then
+  if not Assigned(Args) then
+    Value := nil
+  else
+    Value := Args.GetValue(Name);
+
+  if not Assigned(Value) then
     raise EMcpToolError.Create('invalid_params',
       Format('Missing required argument: %s', [Name]));
-  Result := Args.GetValue<Integer>(Name);
+
+  // A present-but-wrong-type value is a DOMAIN fault, not an internal error.
+  // The 1-arg GetValue<Integer> would raise EJSONException here, which only
+  // DispatchRequest's catch-all sees — surfacing as -32603 instead of a typed
+  // invalid_params result.
+  //
+  // The requirement is that a non-integer value yields
+  // EMcpToolError('invalid_params', ...) and that no EJSONException escapes.
+  // The type test below is one way; narrowly catching the conversion failure
+  // around GetValue<Integer> is equally acceptable. What is NOT acceptable is
+  // catching Exception broadly, which would swallow unrelated failures.
+  if not (Value is TJSONNumber) then
+    raise EMcpToolError.Create('invalid_params',
+      Format('Argument %s must be an integer', [Name]));
+
+  Num := TJSONNumber(Value);
+  Result := Num.AsInt;
 end;
 
 end.

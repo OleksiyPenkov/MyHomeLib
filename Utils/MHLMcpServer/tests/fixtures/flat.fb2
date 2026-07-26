@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0">
+ <description><title-info><book-title>Flat</book-title></title-info></description>
+ <body><section><p>Текст без заголовків.</p></section></body>
+</FictionBook>

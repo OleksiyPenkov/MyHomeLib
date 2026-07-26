@@ -1,0 +1,5 @@
+> {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"test","version":"1"}}}
+< {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":"myhomelib","version":"1.0.0"}}}
+> {"jsonrpc":"2.0","method":"notifications/initialized"}
+> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_books","arguments":{"collection_id":1,"title":"\u0000"}}}
+< {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_params\",\"message\":\"\\u0410\\u0440\\u0433\\u0443\\u043C\\u0435\\u043D\\u0442 \\\"title\\\" \\u043D\\u0435 \\u043C\\u043E\\u0436\\u0435 \\u043C\\u0456\\u0441\\u0442\\u0438\\u0442\\u0438 \\u0441\\u0438\\u043C\\u0432\\u043E\\u043B NUL (U+0000)\"}"}],"isError":true}}

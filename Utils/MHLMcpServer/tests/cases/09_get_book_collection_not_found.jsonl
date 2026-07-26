@@ -1,0 +1,2 @@
+> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_book","arguments":{"collection_id":-1,"book_id":1}}}
+< {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"{\"code\":\"collection_not_found\",\"message\":\"Collection -1 not found\"}"}],"isError":true}}

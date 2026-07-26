@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FictionBook>
+ <body><section><p>Real content paragraph.</p>
+ <binary id="cover.jpg" content-type="image/jpeg">QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVo=</binary>
+</FictionBook>

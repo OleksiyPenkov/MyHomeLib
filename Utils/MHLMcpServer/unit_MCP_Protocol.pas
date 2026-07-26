@@ -1,0 +1,353 @@
+﻿unit unit_MCP_Protocol;
+
+interface
+
+uses
+  System.SysUtils,
+  System.Generics.Collections,
+  System.JSON,
+  unit_MCP_Transport;
+
+const
+  PROTOCOL_VERSION = '2025-06-18';
+  SERVER_NAME      = 'myhomelib';
+  SERVER_VERSION   = '1.0.0';
+
+  JSONRPC_METHOD_NOT_FOUND = -32601;
+  JSONRPC_INVALID_PARAMS   = -32602;
+  JSONRPC_INTERNAL_ERROR   = -32603;
+
+type
+  // A domain fault. Surfaces as a tool result with isError=true and a
+  // machine-readable code, NOT as a JSON-RPC error.
+  EMcpToolError = class(Exception)
+  private
+    FCode: string;
+  public
+    constructor Create(const ACode, AMessage: string);
+    property Code: string read FCode;
+  end;
+
+  TMcpToolHandler = reference to function(const Args: TJSONObject): TJSONObject;
+
+  TMcpTool = record
+    Name: string;
+    Description: string;
+    Schema: TJSONObject;   // owned by TMcpServer
+    Handler: TMcpToolHandler;
+  end;
+
+  TMcpServer = class
+  private
+    FTransport: TMcpTransport;
+    FTools: TList<TMcpTool>;
+    function FindTool(const Name: string; out Tool: TMcpTool): Boolean;
+    function HandleInitialize(const Params: TJSONObject): TJSONObject;
+    function HandleToolsList: TJSONObject;
+    function HandleToolsCall(const Params: TJSONObject): TJSONObject;
+    procedure SendResult(Id: TJSONValue; Payload: TJSONObject);
+    procedure SendError(Id: TJSONValue; Code: Integer; const Msg: string);
+    procedure DispatchRequest(const Request: TJSONObject);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure RegisterTool(const Name, Description: string; Schema: TJSONObject;
+      Handler: TMcpToolHandler);
+    procedure Run;
+  end;
+
+implementation
+
+constructor EMcpToolError.Create(const ACode, AMessage: string);
+begin
+  inherited Create(AMessage);
+  FCode := ACode;
+end;
+
+// Diagnostic-only logging for a developer attached to stderr -- never stdout,
+// which is reserved solely for TMcpTransport's JSON-RPC output. This is a
+// private copy of the same one-line helper unit_MCP_Tools_Library.pas and
+// unit_MCP_TextCache.pas each keep for themselves, not an import: this unit
+// sits *below* unit_MCP_Tools_Library in the dependency graph (Tools_Library
+// uses this unit, not the other way around), so importing it here would be
+// circular. See DispatchRequest's catch-all below for why this exists.
+procedure LogToStderr(const Msg: string);
+begin
+  Writeln(ErrOutput, Msg);
+end;
+
+constructor TMcpServer.Create;
+begin
+  inherited Create;
+  FTransport := TMcpTransport.Create;
+  FTools := TList<TMcpTool>.Create;
+end;
+
+destructor TMcpServer.Destroy;
+var
+  Tool: TMcpTool;
+begin
+  for Tool in FTools do
+    Tool.Schema.Free;
+  FTools.Free;
+  FTransport.Free;
+  inherited Destroy;
+end;
+
+procedure TMcpServer.RegisterTool(const Name, Description: string;
+  Schema: TJSONObject; Handler: TMcpToolHandler);
+var
+  Tool: TMcpTool;
+begin
+  Tool.Name := Name;
+  Tool.Description := Description;
+  Tool.Schema := Schema;
+  Tool.Handler := Handler;
+  FTools.Add(Tool);
+end;
+
+function TMcpServer.FindTool(const Name: string; out Tool: TMcpTool): Boolean;
+var
+  Candidate: TMcpTool;
+begin
+  for Candidate in FTools do
+    if Candidate.Name = Name then
+    begin
+      Tool := Candidate;
+      Exit(True);
+    end;
+  Result := False;
+end;
+
+function TMcpServer.HandleInitialize(const Params: TJSONObject): TJSONObject;
+var
+  Version: string;
+  Caps, Info: TJSONObject;
+begin
+  Version := PROTOCOL_VERSION;
+  if Assigned(Params) then
+    Version := Params.GetValue<string>('protocolVersion', PROTOCOL_VERSION);
+
+  Caps := TJSONObject.Create;
+  Caps.AddPair('tools', TJSONObject.Create);
+
+  Info := TJSONObject.Create;
+  Info.AddPair('name', SERVER_NAME);
+  Info.AddPair('version', SERVER_VERSION);
+
+  Result := TJSONObject.Create;
+  Result.AddPair('protocolVersion', Version);
+  Result.AddPair('capabilities', Caps);
+  Result.AddPair('serverInfo', Info);
+end;
+
+function TMcpServer.HandleToolsList: TJSONObject;
+var
+  Arr: TJSONArray;
+  Tool: TMcpTool;
+  Entry: TJSONObject;
+begin
+  Arr := TJSONArray.Create;
+  for Tool in FTools do
+  begin
+    Entry := TJSONObject.Create;
+    Entry.AddPair('name', Tool.Name);
+    Entry.AddPair('description', Tool.Description);
+    Entry.AddPair('inputSchema', Tool.Schema.Clone as TJSONObject);
+    Arr.AddElement(Entry);
+  end;
+
+  Result := TJSONObject.Create;
+  Result.AddPair('tools', Arr);
+end;
+
+function TMcpServer.HandleToolsCall(const Params: TJSONObject): TJSONObject;
+var
+  Tool: TMcpTool;
+  ToolName: string;
+  ArgsValue: TJSONValue;
+  Args, Payload, ErrObj: TJSONObject;
+  Content: TJSONArray;
+  Block: TJSONObject;
+  IsError: Boolean;
+  Text: string;
+begin
+  if not Assigned(Params) then
+    raise EArgumentException.Create('Missing params');
+
+  ToolName := Params.GetValue<string>('name', '');
+
+  Args := nil;
+  ArgsValue := Params.GetValue('arguments'); // may be absent
+  if Assigned(ArgsValue) then
+  begin
+    if not (ArgsValue is TJSONObject) then
+      raise EArgumentException.Create('Invalid arguments: expected an object');
+    Args := TJSONObject(ArgsValue);
+  end;
+
+  if not FindTool(ToolName, Tool) then
+    raise EArgumentException.CreateFmt('Unknown tool: %s', [ToolName]);
+
+  IsError := False;
+  Payload := nil;
+  try
+    Payload := Tool.Handler(Args);
+    Text := Payload.ToJSON;
+  except
+    on E: EMcpToolError do
+    begin
+      IsError := True;
+      ErrObj := TJSONObject.Create;
+      try
+        ErrObj.AddPair('code', E.Code);
+        ErrObj.AddPair('message', E.Message);
+        Text := ErrObj.ToJSON;
+      finally
+        ErrObj.Free;
+      end;
+    end;
+  end;
+  Payload.Free;
+
+  Block := TJSONObject.Create;
+  Block.AddPair('type', 'text');
+  Block.AddPair('text', Text);
+
+  Content := TJSONArray.Create;
+  Content.AddElement(Block);
+
+  Result := TJSONObject.Create;
+  Result.AddPair('content', Content);
+  if IsError then
+    Result.AddPair('isError', TJSONBool.Create(True));
+end;
+
+procedure TMcpServer.SendResult(Id: TJSONValue; Payload: TJSONObject);
+var
+  Response: TJSONObject;
+begin
+  Response := TJSONObject.Create;
+  try
+    Response.AddPair('jsonrpc', '2.0');
+    Response.AddPair('id', Id.Clone as TJSONValue);
+    Response.AddPair('result', Payload);
+    FTransport.WriteMessage(Response.ToJSON);
+  finally
+    Response.Free;
+  end;
+end;
+
+procedure TMcpServer.SendError(Id: TJSONValue; Code: Integer; const Msg: string);
+var
+  Response, ErrObj: TJSONObject;
+begin
+  ErrObj := TJSONObject.Create;
+  ErrObj.AddPair('code', TJSONNumber.Create(Code));
+  ErrObj.AddPair('message', Msg);
+
+  Response := TJSONObject.Create;
+  try
+    Response.AddPair('jsonrpc', '2.0');
+    Response.AddPair('id', Id.Clone as TJSONValue);
+    Response.AddPair('error', ErrObj);
+    FTransport.WriteMessage(Response.ToJSON);
+  finally
+    Response.Free;
+  end;
+end;
+
+procedure TMcpServer.DispatchRequest(const Request: TJSONObject);
+var
+  Method: string;
+  Id: TJSONValue;
+  ParamsValue: TJSONValue;
+  Params: TJSONObject;
+begin
+  Method := Request.GetValue<string>('method', '');
+  Id := Request.GetValue('id'); // nil for notifications
+
+  // Notifications never get a response.
+  if not Assigned(Id) then
+    Exit;
+
+  try
+    Params := nil;
+    ParamsValue := Request.GetValue('params');
+    if Assigned(ParamsValue) then
+    begin
+      if not (ParamsValue is TJSONObject) then
+        raise EArgumentException.Create('Invalid params: expected an object');
+      Params := TJSONObject(ParamsValue);
+    end;
+
+    if Method = 'initialize' then
+      SendResult(Id, HandleInitialize(Params))
+    else if Method = 'ping' then
+      SendResult(Id, TJSONObject.Create)
+    else if Method = 'tools/list' then
+      SendResult(Id, HandleToolsList)
+    else if Method = 'tools/call' then
+      SendResult(Id, HandleToolsCall(Params))
+    else
+      SendError(Id, JSONRPC_METHOD_NOT_FOUND, 'Method not found: ' + Method);
+  except
+    on E: EArgumentException do
+      SendError(Id, JSONRPC_INVALID_PARAMS, E.Message);
+    on E: Exception do
+    begin
+      // E.Message here is whatever an uncaught, non-EMcpToolError exception
+      // happened to carry -- an ESQLiteException's message includes the
+      // ENTIRE generated SQL statement (SQLiteWrap.pas), and a plain
+      // TFileStream failure (e.g. opening a cached .txt another process
+      // holds under FileShare.None) includes the absolute file path. Both
+      // were confirmed to reach the client verbatim through this branch
+      // before this fix. Every other exception class in this project is
+      // already sanitized before it gets anywhere near SendError (see
+      // EMcpToolError and the LogToStderr call sites in
+      // unit_MCP_Tools_Library.pas/unit_MCP_Tools_Text.pas) -- this is the
+      // one remaining place that had not been, precisely because it is the
+      // catch-all for whatever those call sites did not anticipate. So the
+      // full detail goes to stderr only, and the client gets stable,
+      // generic text naming the method and nothing else.
+      LogToStderr(Format('DispatchRequest(%s): %s: %s', [Method, E.ClassName, E.Message]));
+      SendError(Id, JSONRPC_INTERNAL_ERROR,
+        Format('Internal error while handling "%s"', [Method]));
+    end;
+  end;
+end;
+
+procedure TMcpServer.Run;
+var
+  Line: string;
+  Value: TJSONValue;
+  Request: TJSONObject;
+begin
+  while FTransport.ReadMessage(Line) do
+  begin
+    if Trim(Line) = '' then
+      Continue;
+
+    Value := TJSONObject.ParseJSONValue(Line);
+    if not Assigned(Value) then
+      Continue;
+
+    if not (Value is TJSONObject) then
+    begin
+      // Valid JSON but not a request envelope (e.g. a top-level array or
+      // scalar). There is no id to answer with, so this is discarded the
+      // same way an unparseable line is above.
+      Value.Free;
+      Continue;
+    end;
+
+    Request := TJSONObject(Value);
+    try
+      DispatchRequest(Request);
+    finally
+      Request.Free;
+    end;
+  end;
+end;
+
+end.
