@@ -334,6 +334,44 @@ begin
   Result := BookToJson(Book, True);
 end;
 
+// Rejects a free-text search_books argument that is unsafe to embed in SQL
+// text at all, regardless of which of the two encodings below (CHAR()-coded
+// LIKE pattern for the six LiteralLikeCondition fields, or single-quoted
+// literal for genre) ends up rendering it. Split out from LiteralLikeCondition
+// so it can be called for genre too: genre (below) never went through
+// LiteralLikeCondition -- it fills in one bare `g.GenreCode = '...'`
+// comparison via its own quote-doubling path -- and until this fix that path
+// had NEITHER of these two guards, so a NUL in `genre` reached
+// sqlite3_prepare_v2 and truncated the statement there exactly the way a NUL
+// in `title` used to (see LiteralLikeCondition's own history below).
+// Confirmed against the real collection: search_books(genre: "x\0y") is what
+// first reached the raw internal-error leak this fix round closes (see
+// unit_MCP_Protocol.pas's DispatchRequest).
+//
+// - A NUL (#0) is rejected outright, not encoded/escaped: SQLite's own
+//   internal string handling (and, for the six CHAR()-encoded fields, the
+//   LIKE implementation's UTF-8 reader specifically) treats a zero byte as
+//   a terminator, so anything after it is silently dropped from the
+//   resulting pattern/literal -- never "just another character".
+// - A value longer than MaxLength is rejected: harmless for genre's own
+//   quote-doubled literal (no length blow-up there), but shared here rather
+//   than duplicated so both call sites stay governed by one limit and one
+//   piece of reasoning, and so a future free-text field cannot be added
+//   without this guard by construction.
+procedure ValidateFreeTextArg(const ArgName, Value: string);
+const
+  MaxLength = 4000;
+begin
+  if Pos(#0, Value) > 0 then
+    raise EMcpToolError.Create('invalid_params',
+      Format('Аргумент "%s" не може містити символ NUL (U+0000)', [ArgName]));
+
+  if Length(Value) > MaxLength then
+    raise EMcpToolError.Create('invalid_params',
+      Format('Аргумент "%s" задовгий (%d символів, максимум %d)',
+        [ArgName, Length(Value), MaxLength]));
+end;
+
 // Builds a `<field> LIKE <literal>` fragment for one of search_books' free-text
 // arguments (title/author/series/lang/keyword/annotation) that matches Value
 // as a literal, case-insensitive substring -- regardless of what characters
@@ -432,21 +470,13 @@ end;
 function LiteralLikeCondition(const ArgName, Value: string): string;
 const
   ChunkSize = 100;
-  MaxLength = 4000;
   SQ = ''''; // a single apostrophe as a string value
 var
   Escaped: string;
   Codes, Terms: string;
   ChunkStart, ChunkEnd, I: Integer;
 begin
-  if Pos(#0, Value) > 0 then
-    raise EMcpToolError.Create('invalid_params',
-      Format('Аргумент "%s" не може містити символ NUL (U+0000)', [ArgName]));
-
-  if Length(Value) > MaxLength then
-    raise EMcpToolError.Create('invalid_params',
-      Format('Аргумент "%s" задовгий (%d символів, максимум %d)',
-        [ArgName, Length(Value), MaxLength]));
+  ValidateFreeTextArg(ArgName, Value);
 
   Escaped := Char.ToUpper(Value);
   Escaped := StringReplace(Escaped, '\', '\\', [rfReplaceAll]);
@@ -488,6 +518,14 @@ end;
 // unit_Database_SQLite.pas), which would otherwise surface to the client as
 // an uncaught EAssertionFailed carrying a build-machine path.
 function SearchBooks(const Args: TJSONObject): TJSONObject;
+type
+  // ArgName is what both LiteralLikeCondition and ValidateFreeTextArg name in
+  // their invalid_params messages; Target is the TBookSearchCriteria field
+  // (Title/FullName/Series/Lang/KeyWord/Annotation) this argument feeds.
+  TFreeTextField = record
+    ArgName: string;
+    Target: PString;
+  end;
 var
   Collection: IBookCollection;
   Criteria: TBookSearchCriteria;
@@ -497,26 +535,45 @@ var
   Limit, Offset, Skipped, Taken, MinRate: Integer;
   Clamped, ClampedAny: Boolean;
   Total: Integer;
-  GenreCode, TitleArg, AuthorArg, SeriesArg, LangArg, KeywordArg, AnnotationArg: string;
+  GenreCode: string;
+  FreeTextFields: array[0..5] of TFreeTextField;
+  FieldIdx: Integer;
+  FieldValue: string;
 begin
   Collection := CollectionOrFail(RequireInt(Args, 'collection_id'));
 
   Criteria := Default(TBookSearchCriteria);
+
   // Title/author/series/lang/keyword/annotation all go through
   // LiteralLikeCondition (see its comment above) rather than a direct
   // ArgStr(...) assignment -- PrepareSearchData would otherwise hand the
   // caller's raw text to PrepareQuery/AddToFilter, which splice it into the
   // WHERE clause with no escaping at all (see that function's comment for
-  // the full argument).
-  TitleArg := ArgStr(Args, 'title');
-  if TitleArg <> '' then
-    Criteria.Title := LiteralLikeCondition('title', TitleArg);
-  AuthorArg := ArgStr(Args, 'author');
-  if AuthorArg <> '' then
-    Criteria.FullName := LiteralLikeCondition('author', AuthorArg);
-  SeriesArg := ArgStr(Args, 'series');
-  if SeriesArg <> '' then
-    Criteria.Series := LiteralLikeCondition('series', SeriesArg);
+  // the full argument). Folded into one loop over their (ArgName, Target)
+  // pairs, rather than six near-identical `Arg := ArgStr(...); if Arg <> ''
+  // then Criteria.X := LiteralLikeCondition(...)` blocks repeated by hand --
+  // that repetition is exactly what let `genre` (below, a seventh free-text
+  // argument that does NOT go through this loop because it needs a different
+  // SQL shape -- an equality, not a LIKE pattern) go unnoticed as the one
+  // field whose NUL/length guards (see ValidateFreeTextArg) were never
+  // wired in. Six copies of the same shape is also six places a future
+  // change to this pairing could be applied to only some of them; one loop
+  // cannot go half-updated.
+  FreeTextFields[0].ArgName := 'title';      FreeTextFields[0].Target := @Criteria.Title;
+  FreeTextFields[1].ArgName := 'author';     FreeTextFields[1].Target := @Criteria.FullName;
+  FreeTextFields[2].ArgName := 'series';     FreeTextFields[2].Target := @Criteria.Series;
+  FreeTextFields[3].ArgName := 'lang';       FreeTextFields[3].Target := @Criteria.Lang;
+  FreeTextFields[4].ArgName := 'keyword';    FreeTextFields[4].Target := @Criteria.KeyWord;
+  FreeTextFields[5].ArgName := 'annotation'; FreeTextFields[5].Target := @Criteria.Annotation;
+
+  for FieldIdx := Low(FreeTextFields) to High(FreeTextFields) do
+  begin
+    FieldValue := ArgStr(Args, FreeTextFields[FieldIdx].ArgName);
+    if FieldValue <> '' then
+      FreeTextFields[FieldIdx].Target^ :=
+        LiteralLikeCondition(FreeTextFields[FieldIdx].ArgName, FieldValue);
+  end;
+
   // TBookSearchCriteria.Genre is not a value to compare -- PrepareSearchData
   // splices it verbatim into a WHERE clause (' WHERE (' + SearchCriteria.Genre
   // + ')'), matching how frm_main.pas builds it from its genre-tree picker:
@@ -542,19 +599,23 @@ begin
   // and matching every row instead of matching nothing. Single-quoted strings
   // have no such identifier fallback in SQLite, so they close both the
   // injection hole and this identifier-collision trap.
+  //
+  // ValidateFreeTextArg (NUL + length guards) is called explicitly here,
+  // exactly as the loop above calls it implicitly via LiteralLikeCondition --
+  // genre never went through LiteralLikeCondition (it needs an equality, not
+  // a LIKE pattern), so until this fix it was the one free-text argument
+  // that skipped both guards entirely. A NUL in genre truncates the
+  // sqlite3_prepare_v2 statement the same way it used to for title/etc:
+  // confirmed against the real collection, search_books(genre: "x\0y")
+  // reached a raw internal error carrying the whole generated SQL statement
+  // before this fix. See case 41.
   GenreCode := ArgStr(Args, 'genre');
   if GenreCode <> '' then
+  begin
+    ValidateFreeTextArg('genre', GenreCode);
     Criteria.Genre := Format('g.GenreCode = ''%s''',
       [StringReplace(GenreCode, '''', '''''', [rfReplaceAll])]);
-  LangArg := ArgStr(Args, 'lang');
-  if LangArg <> '' then
-    Criteria.Lang := LiteralLikeCondition('lang', LangArg);
-  KeywordArg := ArgStr(Args, 'keyword');
-  if KeywordArg <> '' then
-    Criteria.KeyWord := LiteralLikeCondition('keyword', KeywordArg);
-  AnnotationArg := ArgStr(Args, 'annotation');
-  if AnnotationArg <> '' then
-    Criteria.Annotation := LiteralLikeCondition('annotation', AnnotationArg);
+  end;
   // TBookSearchCriteria.Deleted is inverted relative to this tool's
   // include_deleted argument: PrepareSearchData only adds a filter when
   // Deleted is True, and that filter is `b.IsDeleted = 0` -- i.e. Deleted
@@ -852,7 +913,9 @@ begin
       '"min_lib_rate":{"type":"integer","description":"Мінімальний рейтинг книги (LibRate) -- повертає книги з таким рейтингом і вище"},' +
       '"include_deleted":{"type":"boolean"},' +
       '"limit":{"type":"integer","description":"Типово 25, максимум 200"},' +
-      '"offset":{"type":"integer"}},' +
+      '"offset":{"type":"integer","description":"Зсув для пагінації; рядки ' +
+      'пропускаються по одному в Delphi, тож великий offset повільний ' +
+      '(наприклад, offset: 400000 займає близько 18 секунд)"}},' +
       '"required":["collection_id"]}') as TJSONObject,
     Guarded(SearchBooks));
 

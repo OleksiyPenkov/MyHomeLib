@@ -166,6 +166,19 @@ so `include_deleted: false` (the default) excludes deleted books and
 `include_deleted: true` includes them, matching the tool's documented
 meaning. Do not "simplify" this back to a direct assignment.
 
+### `search_books` deep-paging performance pitfall
+
+`offset` is not a `LIMIT ... OFFSET ...` clause pushed down to SQLite — the
+paging loop in `SearchBooks` (`unit_MCP_Tools_Library.pas`) walks
+`IBookIterator.Next` one row at a time and counts skipped rows in Delphi
+until `Offset` is reached, then starts collecting. A large `offset` is
+therefore linear in `offset` itself, not free: measured against the real
+525k-book collection, `search_books(offset: 400000, ...)` takes about 18
+seconds to return its first page, versus a near-instant response at
+`offset: 0`. A client paging deep into a large result set (rather than
+narrowing the filter) should expect this cost — it is documented on the
+tool's own `offset` schema field for the same reason.
+
 ### `search_books` genre-filter pitfall
 
 `TBookSearchCriteria.Genre` is not a value to compare against a column — it is
@@ -465,6 +478,100 @@ back.
   message, the same discipline `unit_MCP_Tools_Library.pas`'s `GetBook`
   already follows.
 
+## Internal errors never leak exception text to the client
+
+`unit_MCP_Protocol.pas`'s `DispatchRequest` used to send `E.Message` straight
+into the JSON-RPC `-32603` response for any exception that was not
+`EArgumentException` and did not go through `EMcpToolError` — the catch-all
+for whatever every other sanitizing call site in this project (`LogToStderr`
+plus `EMcpToolError`, throughout `unit_MCP_Tools_Library.pas` and
+`unit_MCP_Tools_Text.pas`) did not anticipate. Two concrete leaks reached
+that catch-all, confirmed against the real collection and the built exe:
+
+- A NUL in `search_books`'s `genre` argument (see the next section) reached
+  `sqlite3_prepare_v2` and produced an `ESQLiteException` whose message is
+  the **entire generated SQL statement** (`SQLiteWrap.pas` formats the SQL
+  into every error it raises) — hundreds of characters of the server's own
+  query text, verbatim, in a client-facing `-32603`.
+- A book's cached `.txt` held open under `FileShare.None` by another process
+  (e.g. a second server instance mid-read of the same book) makes
+  `get_book_text`'s `TFileStream.Create` raise an `EFOpenError` whose message
+  is the **absolute cache file path** —
+  `C:\Users\<user>\AppData\Local\MyHomeLib\McpCache\<key>.txt` — again
+  verbatim in a client-facing `-32603`.
+
+Fixed by making the catch-all itself sanitize: it now logs `E.ClassName` and
+the full `E.Message` to stderr via a private `LogToStderr` (the same
+one-line-per-unit pattern `unit_MCP_Tools_Library.pas`/`unit_MCP_TextCache.pas`
+each already keep, kept private here too rather than imported, since this
+unit sits *below* `unit_MCP_Tools_Library` in the dependency graph) and sends
+the client only `Internal error while handling "<method>"` — the method name
+plus nothing else. Every other exception class already reaching `SendError`
+was already sanitized before this fix (an `EArgumentException`'s own message
+is this project's own fixed text, never derived from caller data); this was
+the one remaining gap, and it was the catch-all specifically because it is
+where every future *unanticipated* leak would land too.
+
+Measured before/after (`get_book_text` on a cache file locked under
+`FileShare.None` by another handle):
+
+```
+before: {"jsonrpc":"2.0","id":1,"error":{"code":-32603,"message":"Cannot open file \"C:\\Users\\...\\AppData\\Local\\MyHomeLib\\McpCache\\1_487024_2710627584_20230222224011903.txt\". The process cannot access the file because it is being used by another process"}}
+after:  {"jsonrpc":"2.0","id":1,"error":{"code":-32603,"message":"Internal error while handling \"tools/call\""}}
+```
+
+(stderr, developer-visible only, after the fix:
+`DispatchRequest(tools/call): EFOpenError: Cannot open file "...\1_487024_..._....txt". The process cannot access the file because it is being used by another process`.)
+
+## `search_books` argument type strictness
+
+`ArgStr`/`ArgInt`/`ArgBool` (`unit_MCP_Json.pas`) used to call
+`TJSONValue`'s *defaulting* `GetValue<T>(Name, Default)` overload, which
+internally calls `TryGetValue<T>` and falls back to `Default` on **any**
+failure — an absent argument and a present-but-wrong-typed one were
+indistinguishable, both silently producing `Default`. `RequireInt` (used for
+the required `collection_id`/`book_id` integers) never had this problem: it
+already distinguished "absent" from "present" and raised `invalid_params` on
+a genuine type mismatch. Measured against the real collection, before this
+fix:
+
+| call | result |
+|---|---|
+| `search_books{collection_id:1, title:"Белка"}` | `total_count: 26` |
+| `search_books{collection_id:1, title:{"a":1}}` | `total_count: 439393` (the whole non-deleted collection — an object silently became `''`, i.e. no title filter at all) |
+| `search_books{..., include_deleted:"yes"}` | silently `false` (the default, not `true`) |
+| `search_books{..., limit:"abc"}` | silently `25` (the default), no `"clamped"` flag |
+
+Fixed the same way `RequireInt` already worked: `Args.GetValue(Name) = nil`
+(the key is genuinely absent) still returns `Default`; a present value goes
+through the strict, non-defaulting `GetValue<T>(Name)` overload, which
+raises `EJSONException` on a genuine type mismatch, mapped to
+`EMcpToolError('invalid_params', ...)` naming the argument — identical shape
+to `RequireInt`'s own except block. `ArgIntClamped` (used for
+`limit`/`offset`/`length`/`max_hits`/`context_chars` across every tool) needed
+no change of its own: it calls `ArgInt` internally, so the exception now
+simply propagates through it.
+
+One nuance, common to all four helpers (including `RequireInt`, which
+already exhibited it): the RTL's own `TJSONValue.AsTValue`/`StrToTValue`
+performs some conversions before failing outright — a JSON string that
+parses as a number (`"42"`) still succeeds as an `Integer` argument, and a
+JSON number still succeeds as a `String` argument (rendered as its decimal
+text). That coercion is left alone for consistency between all four
+helpers; only an outright-incompatible value (an object/array where a
+scalar is expected, a non-numeric string for an integer, a non-boolean-shaped
+string for a boolean) raises. See cases `42`–`44`.
+
+Measured before/after for `search_books{collection_id:1, title:{"a":1}}`
+(the `books` array itself omitted below — before the fix it holds a full
+25-book page of the collection's own real data, unrelated to the malformed
+call that produced it):
+
+```
+before: {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"books\":[...25 real books, the whole non-deleted collection's first page...],\"total_count\":439393,\"has_more\":true}"}]}}
+after:  {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_params\",\"message\":\"Argument title must be a string\"}"}],"isError":true}}
+```
+
 ## Automated tests
 
 ```
@@ -669,6 +776,26 @@ under `lang`'s old *exact*-match behavior (no real `Lang` value is just
 `"r"`) — and gets `total_count: 376101`, pinning the exact-to-substring
 semantics change as a deliberate, tested decision with a real number, not an
 unverified side effect.
+
+`41_search_books_genre_nul_rejected.jsonl` through
+`44_search_books_limit_wrong_type_rejected.jsonl` were added in the final
+pre-merge fix round. `41` searches `genre` containing a NUL and gets
+`isError: true`, `"code":"invalid_params"` naming `genre` — before this fix
+`genre` was the one free-text argument that never called the NUL/length
+guard at all (it never went through `LiteralLikeCondition`, see that
+function's comment and `ValidateFreeTextArg` above), so the same call used
+to reach `sqlite3_prepare_v2` with a truncated statement and surface a raw
+`-32603` carrying the entire generated SQL text. `42` searches
+`title: {"a":1}` (a JSON object where the schema documents a string) and
+gets `isError: true`, `"code":"invalid_params"`, `"message":"Argument title
+must be a string"` — before the `ArgStr`/`ArgInt`/`ArgBool` fix (see
+"`search_books` argument type strictness" above) this silently became an
+empty title filter and returned `total_count: 439393`, the whole non-deleted
+collection. `43` and `44` cover the same fix for `ArgBool`
+(`include_deleted: "yes"`, previously silently `false`) and `ArgInt`
+(`limit: "abc"`, previously silently `25` with no `"clamped"` flag)
+respectively, both now `isError: true`/`"code":"invalid_params"` naming the
+argument.
 
 There is no automated case for `get_book_text`'s `unsupported_format` path:
 the only collection registered on the machine these tests were captured on

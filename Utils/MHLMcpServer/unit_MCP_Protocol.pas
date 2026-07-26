@@ -64,6 +64,18 @@ begin
   FCode := ACode;
 end;
 
+// Diagnostic-only logging for a developer attached to stderr -- never stdout,
+// which is reserved solely for TMcpTransport's JSON-RPC output. This is a
+// private copy of the same one-line helper unit_MCP_Tools_Library.pas and
+// unit_MCP_TextCache.pas each keep for themselves, not an import: this unit
+// sits *below* unit_MCP_Tools_Library in the dependency graph (Tools_Library
+// uses this unit, not the other way around), so importing it here would be
+// circular. See DispatchRequest's catch-all below for why this exists.
+procedure LogToStderr(const Msg: string);
+begin
+  Writeln(ErrOutput, Msg);
+end;
+
 constructor TMcpServer.Create;
 begin
   inherited Create;
@@ -283,7 +295,25 @@ begin
     on E: EArgumentException do
       SendError(Id, JSONRPC_INVALID_PARAMS, E.Message);
     on E: Exception do
-      SendError(Id, JSONRPC_INTERNAL_ERROR, E.Message);
+    begin
+      // E.Message here is whatever an uncaught, non-EMcpToolError exception
+      // happened to carry -- an ESQLiteException's message includes the
+      // ENTIRE generated SQL statement (SQLiteWrap.pas), and a plain
+      // TFileStream failure (e.g. opening a cached .txt another process
+      // holds under FileShare.None) includes the absolute file path. Both
+      // were confirmed to reach the client verbatim through this branch
+      // before this fix. Every other exception class in this project is
+      // already sanitized before it gets anywhere near SendError (see
+      // EMcpToolError and the LogToStderr call sites in
+      // unit_MCP_Tools_Library.pas/unit_MCP_Tools_Text.pas) -- this is the
+      // one remaining place that had not been, precisely because it is the
+      // catch-all for whatever those call sites did not anticipate. So the
+      // full detail goes to stderr only, and the client gets stable,
+      // generic text naming the method and nothing else.
+      LogToStderr(Format('DispatchRequest(%s): %s: %s', [Method, E.ClassName, E.Message]));
+      SendError(Id, JSONRPC_INTERNAL_ERROR,
+        Format('Internal error while handling "%s"', [Method]));
+    end;
   end;
 end;
 
