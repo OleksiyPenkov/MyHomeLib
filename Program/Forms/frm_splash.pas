@@ -277,9 +277,9 @@ begin
 
             // Version
             {$IFDEF WIN64}
-            VersionText := 'Version 2.6.0  ·  x64';
+            VersionText := 'Version 2.6.1  ·  x64';
             {$ELSE}
-            VersionText := 'Version 2.6.0  ·  x32';
+            VersionText := 'Version 2.6.1  ·  x32';
             {$ENDIF}
             Font := TGPFont.Create(FontRegular, S(11), FontStyleRegular, UnitPixel);
             try
