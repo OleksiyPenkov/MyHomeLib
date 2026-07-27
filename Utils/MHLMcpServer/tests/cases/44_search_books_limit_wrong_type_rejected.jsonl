@@ -1,5 +1,5 @@
 > {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"test","version":"1"}}}
 < {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":"myhomelib","version":"1.0.0"}}}
 > {"jsonrpc":"2.0","method":"notifications/initialized"}
-> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_books","arguments":{"collection_id":1,"title":"Белка","limit":"abc"}}}
+> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_books","arguments":{"collection_id":1,"title":"Тихий вечер","limit":"abc"}}}
 < {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_params\",\"message\":\"Argument limit must be an integer\"}"}],"isError":true}}

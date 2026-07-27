@@ -592,10 +592,105 @@ sections, encoding detection, malformed-file fallback, and — via
 `EFb2ExtractError.Kind` depends on, see the error-codes section above).
 `cache_tests.js` drives `--cache-selftest` to cover the on-disk text cache
 in isolation (hit/miss keying, surrogate-boundary trimming, eviction).
-None of the three touches a real collection or `DMUser` — `extract_tests.js`
-and `cache_tests.js` never did (they are entirely fixture/temp-dir based);
-`run_tests.js`'s cases that do reach a real collection are called out
-individually further down.
+None of the three touches a real collection: `extract_tests.js` and
+`cache_tests.js` are entirely fixture/temp-dir based, and `run_tests.js`
+builds — and then talks to — a throwaway collection of its own, described
+next.
+
+### The fixture `run_tests.js` builds for itself
+
+`run_tests.js` starts by running the server once in `--make-fixture` mode and
+then runs every case against that same private library:
+
+```
+Program\OUT\Bin64\MHLMcpServer.exe --make-fixture uselocaldata user mcpfixture
+Program\OUT\Bin64\MHLMcpServer.exe uselocaldata user mcpfixture
+```
+
+Both command lines carry the same `uselocaldata user mcpfixture` switches, and
+that is the whole mechanism: `TMHLSettings.Create` scans the raw command line
+in *both* processes (`unit_Settings.pas`), so both independently compute the
+same `<exedir>\Data\mcpfixture.dbs` and the same
+`<exedir>\mcpfixture\mcpfixture.hlc2`. The builder therefore writes the fixture
+exactly where the server under test will look for it by construction, not by
+the two sides agreeing on a path. `--make-fixture` mode itself contains no path
+logic at all (see `unit_MCP_Fixture.pas`).
+
+`mcpfixture.dbs` / `mcpfixture.ini` do not collide with the `user.dbs2` /
+`myhomelib2.ini` a developer's real library uses in the same folder — a dev
+library sitting in `Program\OUT\Bin64` survives a test run untouched, and the
+suite in turn cannot see it. That is the point: before this, the DB-backed
+cases were pinned to real book ids from one particular Librusec collection and
+passed or failed depending on which library the exe happened to resolve at
+startup.
+
+`--make-fixture` wipes and rebuilds from scratch on every run — it deletes the
+system database file and the collection folder first — which is what makes the
+ids deterministic: the collection is always id 1 and the books are always
+1..6, in insertion order. It prints a one-line JSON summary on stdout
+(`collection_id`, `root`, `db`, `books`); the harness parses that line and
+refuses to run the suite unless it reports collection 1 with six books.
+
+The fixture, as built by `unit_MCP_Fixture.pas`:
+
+| id | Title | Author | Series / seq | Genre (FB2 code) | Lang | LibRate | Deleted | Body |
+|---|---|---|---|---|---|---|---|---|
+| 1 | `Тихий вечер` | Іваненко Петро | `Хроніки` / 1 | `prose_contemporary` | `uk` | 0 | no | 2 sections |
+| 2 | `Гроза 100% певна` | Іваненко Петро | `Хроніки` / 2 | `prose_contemporary` | `uk` | 4 | no | 3 sections |
+| 3 | `Пісня_про_море` | Ковальчук Ольга | — | `sf_action` | `uk` | 0 | no | flat |
+| 4 | `О'Генрі та інші` | Ковальчук Ольга | `Збірка "Класика"` / 1 | `love_history` | `ru` | 5 | no | flat |
+| 5 | `Книга з "лапками"` | Шевченко Іван | — | `sf_action` | `en` | 0 | no | flat |
+| 6 | `Вилучена книга` | Шевченко Іван | — | `prose_contemporary` | `uk` | 0 | **yes** | flat |
+
+Every column is load-bearing:
+
+- **Title** — carries the LIKE and quote metacharacters the literal-matching
+  fix exists for: `%` (book 2), `_` (book 3), `'` (book 4) and `"` (book 5).
+  Cases `28`–`31` and `37`–`38` search for those characters in both
+  directions. Positively: a value containing `%`, `_`, `'` or `"` must still
+  match the one book whose title really contains it, so an over-aggressive
+  escape that matched nothing fails. Negatively: a value containing `%` or `_`
+  that no title actually holds must match *nothing*, so a leaked wildcard —
+  which would sweep in every book of two characters or more — fails too.
+- **Author** — three authors over six books, each shared by exactly two, so an
+  author filter is a genuine multi-row query (`39`) and `14`/`15` can vary only
+  the `include_deleted` flag over one author's two books.
+- **Series / seq** — one ordinary series (`Хроніки`, two books in sequence, the
+  paging pair `10`/`11`/`13` use) plus one whose title contains a `"`
+  (`Збірка "Класика"`), which case `34` searches in lowercase to prove `series`
+  is still matched case-insensitively *and* literally after the escaping fix.
+  Books 3, 5 and 6 have no series, so the empty-series shape is covered too.
+- **Genre (FB2 code)** — the fixture names genres by their FB2 code and lets
+  `InsertBook` map them through the collection's genre cache, so the internal
+  codes (`prose_contemporary` = `0.3.3`, `sf_action` = `0.1.1`,
+  `love_history` = `0.4.1`) are never hard-coded. Case `16` proves the codes
+  `list_genres` reports really work as `search_books` input.
+- **Lang** — three distinct values (`uk`, `ru`, `en`) so case `40` can pin
+  `lang`'s substring (not exact-match) semantics with a value, `"r"`, that
+  matches exactly one of them and would have matched none under the old
+  behaviour.
+- **LibRate** — 4 on book 2 and 5 on book 4, nothing else rated, so case `32`
+  can prove `min_lib_rate` is a *minimum*: `5` returns only book 4, `4` returns
+  both.
+- **Deleted** — exactly one deleted book, sharing an author with a live one, so
+  `14`/`15` isolate the `include_deleted` polarity fix.
+- **Body** — books 1 and 2 are the only ones with `<section>` titles (two and
+  three respectively); the rest are a single untitled section. That gives the
+  text tools a real table of contents to walk (`22`), real section offsets to
+  round-trip through `get_book_text` (`23`) and `search_in_book` (`26`), while
+  keeping the whole library a few hundred bytes.
+
+The two structured books' extracted texts are 70 and 85 UTF-16 code units
+long. That is deliberately tiny and still sufficient for `24`/`25`: the text
+tools' clamps are on the *argument range*, not on the text size
+(`length` → [1, 50000], `offset` → [0, MaxInt], `max_hits` → [1, 50],
+`context_chars` → [0, 2000]), so `length: 999999` still sets `"clamped":true`
+against a 70-character book.
+
+`Program/OUT` is build output, so a `git clean` there removes
+`Data\mcpfixture.dbs` and the `mcpfixture\` folder along with everything else.
+Nothing needs restoring by hand — the next `run_tests.js` run rebuilds both
+before the first case, and would have rebuilt them anyway.
 
 **A note on what `picture_only.fb2`/`empty.fb2` do and do not prove:**
 they exercise `ExtractFb2` directly through `--extract`, confirming the
@@ -616,76 +711,77 @@ plus `book_id`/`collection_id` only, no interpolated `EFb2ExtractError.Message`
 `EFb2ExtractError` catch block) and manually, the same way `collection_busy`
 and the archive-missing scenarios are.
 
-Six of `run_tests.js`'s cases (`01_ping`, `02_initialize`,
+Seven of `run_tests.js`'s cases (`01_ping`, `02_initialize`,
 `03_unknown_method`, `04_unknown_tool`, `05_non_object_line`,
 `06_non_object_params`, `07_non_object_arguments` — everything that never
-reaches a tool handler) never touch `DMUser` or the real system database.
+reaches a tool handler) never touch `DMUser` or the system database at all.
 `05_tool_error.jsonl` calls `get_book_text` with a nonexistent
 `collection_id: -1`, exercising the domain-error path (`collection_not_found`)
-without needing a real collection; every registered tool is wrapped in
-`Guarded(...)`, which is what lazily boots `DMUser`, so this case still
-depends on a real system database existing on the machine running the tests,
-the same as `list_collections` does — even though it never reaches a real
-collection. `08_get_book_invalid_params.jsonl` and
+without reaching a collection; every registered tool is wrapped in
+`Guarded(...)`, which is what lazily boots `DMUser`, so this case still needs
+a system database to exist — which, since the harness builds the fixture
+first, it always does. `08_get_book_invalid_params.jsonl` and
 `09_get_book_collection_not_found.jsonl` exercise `get_book`'s argument
 validation (`RequireInt` rejecting a non-integer `collection_id`) and
-`CollectionOrFail`'s not-found path respectively; both still go through
-`Guarded(...)` and so also depend on a real system database, even though
-neither ever reaches a real collection. **All cases in this suite still
+`CollectionOrFail`'s not-found path respectively; both go through
+`Guarded(...)` the same way. **All cases in this suite still
 require `sqlite3.dll` to be resolvable next to the exe**, regardless of which tool
 (if any) is called — see the load-time dependency note above — since the
 process cannot start at all without it. `list_collections` is covered by the
 manual checklist above because it needs a real, populated collection list to
-be meaningful, not just any system database.
+be meaningful, not the fixture's single entry.
 
 `10_search_books_found.jsonl`, `11_search_books_limit_clamped.jsonl`,
 `12_search_books_collection_not_found.jsonl` and
-`13_search_books_offset_paging.jsonl` exercise `search_books` against a real
-collection (`collection_id: 1`) and assert byte-for-byte responses captured
-from an actual run, not hand-written expectations. They all search for
-`title: "Гудок парохода"` with `include_deleted: true`, because both real
-matches for that title (`book_id` 4 and 111933) happen to be deleted rows in
-this collection — `include_deleted: true` is there so these cases keep
-testing search/clamping/paging mechanics independently of the deleted-books
-behavior, which `14`/`15` cover instead. They depend on collection 1 still
-containing those exact two rows; if collection 1's contents ever change on
-the machine running the tests, these four cases (not the other twelve) may
-need recapturing the same way — run the request through the built exe and
-paste back whatever it actually prints.
+`13_search_books_offset_paging.jsonl` exercise `search_books` against the
+fixture collection (`collection_id: 1`). `10`, `11` and `13` share one
+two-row query — `series: "Хроніки"`, the fixture's sequence pair, books 1 and
+2 — so that the plain search, the limit clamp and the offset skip are all
+measured on the same result set. `include_deleted: true` is kept for the
+reason it was originally there: it takes the deleted-books filter out of play
+entirely, so these three test search/clamping/paging mechanics and nothing
+else — `14`/`15` own the deleted-books behavior. `10` expects both books,
+`total_count: 2`; `11` adds `limit: 5000` and expects the same two rows plus
+`"clamped":true` (clamping is decided from the requested limit alone, before
+any row is fetched, so it shows up even though only two rows exist); `13`
+walks the same result set as two single-row pages, so both polarities of
+`has_more` are pinned — `limit: 1` returns book 1 with `has_more: true`, and
+`limit: 1, offset: 1` returns book 2 with `has_more: false`, both reporting
+the same `total_count: 2`.
 
 `14_search_books_excludes_deleted_by_default.jsonl` and
 `15_search_books_include_deleted.jsonl` prove the `include_deleted` polarity
-fix behaviourally: both search `title: "Белка", author: "Аббасзаде"` against
-collection 1, which has three real matches — `book_id` 1 and 111931 (both
-`is_deleted: true`, confirmed via `get_book`) and 487024 (`is_deleted:
-false`). `14` (no `include_deleted`) expects only `book_id` 487024,
-`total_count: 1`; `15` (`include_deleted: true`) expects all three,
-`total_count: 3`. Depend on the same collection-1 stability as `10`–`13`.
+fix behaviourally: both search `author: "Шевченко"`, whose two books are 5
+(live) and 6 (`Вилучена книга`, the fixture's one deleted row). The two cases
+differ by exactly the flag. `14` (no `include_deleted`) expects only book 5,
+`total_count: 1`; `15` (`include_deleted: true`) expects both,
+`total_count: 2`.
 
 `16_list_genres_and_search_genre_round_trip.jsonl` calls `list_genres` on
-collection 1 (asserting the full, real 317-entry tree byte-for-byte — the
-tool has no `limit`/`filter` by design, see above) and then `search_books`
-with `genre: "0.3.3"` (a real code taken from that tree), proving the whole
-point of `list_genres`: that its codes actually work as `search_books` input.
-This is also the case that caught the genre-filter pitfall documented above —
-without that fix, the `search_books` call in this file fails with a SQL
-syntax error instead of returning a book. `17_list_series_filter_found.jsonl`
-and `18_list_authors_filter_found.jsonl` prove `filter` finds real rows in
-collection 1 (`"Гарри Поттер"` for series, `"Аббасзаде"` for the same author
-`10`–`15` use). `19_list_authors_limit_clamped.jsonl` reuses the
-single-match `"Аббасзаде"` filter with `limit: 5000` — clamping is decided
-from the requested limit alone (`ArgIntClamped` compares it against `Max`
-before any row is fetched), so `"clamped":true` shows up even though the
-actual result set here is one row, keeping this fixture small on purpose.
+collection 1 (asserting the full 317-entry tree byte-for-byte — the tool has
+no `limit`/`filter` by design, see above) and then `search_books` with
+`genre: "0.3.3"`, a code taken from that tree, proving the whole point of
+`list_genres`: that its codes actually work as `search_books` input. The
+expected tree is not a capture — it is derived from
+`Installer/Common/genres_fb2.glst`, the same file the fixture collection is
+created from, sorted by genre code. This is also the case that caught the
+genre-filter pitfall documented above — without that fix, the `search_books`
+call in this file fails with a SQL syntax error instead of returning a book.
+`17_list_series_filter_found.jsonl` and `18_list_authors_filter_found.jsonl`
+prove `filter` finds rows (`"Хроніки"` for series, `"Ковальчук"` for authors).
+`19_list_authors_limit_clamped.jsonl` reuses the single-match `"Ковальчук"`
+filter with `limit: 5000` — clamping is decided from the requested limit alone
+(`ArgIntClamped` compares it against `Max` before any row is fetched), so
+`"clamped":true` shows up even though the actual result set here is one row.
 `20_list_series_collection_not_found.jsonl` exercises `CollectionOrFail`'s
 not-found path through `list_series`, standing in for all three new tools
 (they all call `CollectionOrFail` first, identically to `get_book` and
-`search_books`). Depend on the same collection-1 stability as `10`–`15`.
+`search_books`).
 
 `21_search_books_genre_injection_contained.jsonl` proves the single-quote
 escaping fix contains a hostile `genre` value: `"x'); DROP TABLE Books; --"`
 (a single quote plus a destructive-looking `DROP TABLE`/comment-marker tail)
-against collection 1 returns a clean
+against the fixture collection returns a clean
 `{"books":[],"total_count":0,"has_more":false}` — zero matches, no
 `isError`, no SQL error text, no build path. It proves containment for this
 one field on this one query shape; it is not a general injection-free proof
@@ -695,28 +791,35 @@ see "`search_books` free-text arguments: literal substring matching" above
 and cases `28`–`34` below.
 
 `22_get_book_toc.jsonl` through `27_get_book_toc_book_not_found_no_path_leak.jsonl`
-cover the three text tools, all captured byte-for-byte from an actual run against
-`book_id: 487024` in collection 1 (`Сборник "Белка"`, a real multi-story FB2
-anthology — `total_length: 198707`, 11 flat top-level sections) or
-`book_id: 4` (a much shorter FB2, `total_length: 13846`, chosen for the
-clamping/invalid-offset cases specifically so the fixture stays small rather
-than embedding a whole ~14–200K-character book where only the response shape
-matters). `22_get_book_toc.jsonl` asserts `get_book_toc`'s full section list
-for book 487024 byte-for-byte, including `level` on every entry.
-`23_get_book_text_toc_round_trip.jsonl` feeds section 2's own `offset`
-(`101182`, the "Гудок парохода" chapter) into `get_book_text` and asserts the
-returned text opens with that chapter's title and first sentence — the round
-trip the whole `get_book_toc`/`get_book_text` pair exists to support.
-`24_get_book_text_clamped.jsonl` requests `length: 999999` on book 4 at
-`offset: 13800` (near the very end, so the returned slice stays a few dozen
-characters instead of the whole book) and asserts `"clamped":true`.
+cover the three text tools against the fixture's two structured books: book 2
+(three titled sections, `total_length: 85`) and book 1 (two titled sections,
+`total_length: 70`). Every offset and length below is derived from the FB2
+template in `unit_MCP_Fixture.pas` run through `TFb2Walker`'s rules — a
+section's span is recorded *after* its own title has been appended, and each
+`<p>` contributes its text plus one line break — not read back off a run.
+`22_get_book_toc.jsonl` asserts `get_book_toc`'s full section list for book 2
+byte-for-byte, including `level` on every entry: `Вступ` at offset 0
+(length 27), `Середина` at 27 (length 30), `Кінець` at 57 (length 28), with
+`structured: true`.
+`23_get_book_text_toc_round_trip.jsonl` feeds section 2's own `offset` (`27`)
+and its own `length` (`30`) back into `get_book_text` and asserts the returned
+text is exactly that section — its title, then its paragraph — the round trip
+the whole `get_book_toc`/`get_book_text` pair exists to support.
+`24_get_book_text_clamped.jsonl` requests `length: 999999` on book 1 at
+`offset: 40` (near the end, so the returned slice is 30 characters, not the
+whole book) and asserts `"clamped":true`. The clamp is on the *argument*
+(`length` is compared against 50000 before any text is sliced), so a
+70-character book exercises it exactly as a 200K-character one would.
 `25_get_book_text_invalid_offset.jsonl` requests `offset: 99999` against
-book 4's `total_length: 13846` and asserts `isError:true` with
-`"code":"invalid_offset"`. `26_search_in_book_round_trip.jsonl` searches book
-487024 for the phrase `"Баку такой мягкой зимы"`, asserts the single real
-hit's `offset` and padded `passage`, then feeds that same `offset` into a
-second `get_book_text` call and asserts the phrase appears at the very start
-of what comes back. `27_get_book_toc_book_not_found_no_path_leak.jsonl`
+book 1's `total_length: 70` and asserts `isError:true` with
+`"code":"invalid_offset"` and the total in the message.
+`26_search_in_book_round_trip.jsonl` searches book 2 for
+`"Абзац розділу 2."` with `context_chars: 10`, asserts the single hit's
+`offset` (`39`) and its padded `passage` (the 10 characters either side,
+clamped to the text's bounds), then feeds that same `offset` into a second
+`get_book_text` call with `length: 16` and asserts what comes back is exactly
+the phrase — the match offset really is the phrase's own start, not the
+passage's. `27_get_book_toc_book_not_found_no_path_leak.jsonl`
 requests a nonexistent `book_id: 999999999` and asserts the response is
 exactly `{"code":"book_not_found","message":"Book 999999999 not found"}` —
 no build-machine path, no assertion text; a fixed point release regressed
@@ -726,30 +829,34 @@ its source path) and this case pins the sanitized shape going forward.
 
 `28_search_books_title_double_quote_literal.jsonl` through
 `34_search_books_series_case_insensitive_literal.jsonl` cover the
-literal-substring-matching fix described above, all captured byte-for-byte
-against real collection 1. `28` searches `title: "\"Тутэйшыя\""` (with the
-quote characters as part of the value) and gets exactly `book_id: 786`
+literal-substring-matching fix described above. The fixture's titles carry the
+metacharacters on purpose, so each of these searches for a character that
+really occurs in exactly one book. `28` searches `title: "\"лапками\""` (with
+the quote characters as part of the value) and gets exactly book 5
 (`total_count: 1`) — a title containing a `"` no longer breaks the query or
-widens the match. `29` searches `title: "_%_"` and gets `total_count: 0`,
-proving `%`/`_` are matched literally — independently confirmed against the
-same collection that an *unescaped* `%_%` (i.e. treating both as wildcards)
-would have matched 439,362 of the 439,393 non-deleted books, essentially the
-whole collection. `30` searches `title: "'третьим"` (a leading literal
-single quote) and gets exactly `book_id: 181` (`total_count: 1`). `31`
-searches `title: "x' OR '1'='1"` — the classic injection shape — and gets a
-clean `total_count: 0`, no `isError`, no SQL text, no build path: the
-payload is matched as an inert literal, not executed as SQL. `32` calls
-`min_lib_rate: 4` (`limit: 3` to keep the fixture small) and gets
-`total_count: 18914` — independently confirmed as the count of books rated 4
-*or 5* (11293 + 7621), not the 11293 rated exactly 4 the old exact-match
-code returned — with all three returned books (`119`, `120`, `323`)
-independently confirmed rated 5, i.e. above the requested minimum. `33`
-calls `search_books` with only `collection_id`/`include_deleted: true` (no
-other field set) and gets `isError: true`, `"code":"empty_filter"` instead
-of a raw `-32603`. `34` searches `series: "гарри поттер"` (lowercase) and
-gets the same real match (`book_id: 65006`, `total_count: 104`) that
-`17_list_series_filter_found.jsonl` established for `"Гарри Поттер"`,
-confirming `series` is still case-insensitive after the fix.
+widens the match. `29` covers `_` in both directions in two calls:
+`title: "_%_"` gets `total_count: 0`, since no fixture title contains that
+three-character sequence, whereas treating both characters as wildcards would
+make `%_%_%` match every title of two characters or more, i.e. all five
+non-deleted books; then `title: "_про_"` gets exactly book 3
+(`Пісня_про_море`, `total_count: 1`), the positive half — an escape so
+aggressive that it matched nothing would pass the first call and fail this
+one. `30` searches `title: "О'Генрі"` (an embedded literal
+single quote) and gets exactly book 4 (`total_count: 1`). `31` searches
+`title: "x' OR '1'='1"` — the classic injection shape — and gets a clean
+`total_count: 0`, no `isError`, no SQL text, no build path: the payload is
+matched as an inert literal, not executed as SQL. `32` proves `min_lib_rate`
+is a *minimum* rather than the equality the old code silently produced, in
+two calls against the only two rated books: `min_lib_rate: 5` returns book 4
+alone (`total_count: 1`), `min_lib_rate: 4` returns books 2 *and* 4
+(`total_count: 2`). Under the old exact-match behaviour the second call would
+have returned book 2 only. `33` calls `search_books` with only
+`collection_id`/`include_deleted: true` (no other field set) and gets
+`isError: true`, `"code":"empty_filter"` instead of a raw `-32603`. `34`
+searches `series: "збірка \"класика\""` — the fixture's quoted series title,
+in lowercase — and gets book 4 (`total_count: 1`), confirming in one call that
+`series` is still matched case-insensitively *and* that the `"` inside it is
+matched literally.
 
 `35_search_books_title_nul_rejected.jsonl` through
 `40_search_books_lang_substring_semantics.jsonl` were added in a fix round
@@ -759,23 +866,27 @@ after review flagged that `29`/`31` prove only containment (they assert
 argument was a real regression this task's own diff introduced. `35`
 searches `title` containing a single NUL character and gets
 `isError: true`, `"code":"invalid_params"` naming `title` — before this fix
-the same call returned `total_count: 439393`, the entire non-deleted
-collection (see "Residual limitations of literal matching" above for the
-full before/after). `36` searches a 4001-character `title` and gets
-`isError: true`, `"code":"invalid_params"` naming the argument, its length,
-and the 4000-character limit. `37` searches `title: "на 100%"` and gets
-`total_count: 23`, a **positive** literal match (as opposed to `29`'s
-proof-by-absence) independently confirmed against the collection. `38`
-searches `series: "%"` and gets `total_count: 6` — another positive match,
-and proof that a value which is *entirely* an unescaped LIKE wildcard
-character still matches only the real literal `%` substring. `39` searches
-`author: "Аббасзаде"` (no `title` filter, unlike `14`/`15`) and gets
-`total_count: 6`, covering a field other than `title`/`series` with a
-positive match. `40` searches `lang: "r"` — a substring nothing would match
-under `lang`'s old *exact*-match behavior (no real `Lang` value is just
-`"r"`) — and gets `total_count: 376101`, pinning the exact-to-substring
-semantics change as a deliberate, tested decision with a real number, not an
-unverified side effect.
+the same call returned the entire non-deleted collection (see "Residual
+limitations of literal matching" above for the full before/after). `36`
+searches a 4001-character `title` and gets `isError: true`,
+`"code":"invalid_params"` naming the argument, its length, and the
+4000-character limit. `37` searches `title: "100% певна"` — a substring of
+book 2's title that straddles its `%` — and gets that one book, a
+**positive** literal match (as opposed to `29`'s proof-by-absence): if the
+escaping were over-aggressive and matched nothing, this case fails. `38`
+makes the same point with a value that is *entirely* a bare `%`, in two calls
+against two different fields: `title: "%"` returns book 2 alone
+(`total_count: 1`), the one title that really contains a percent sign — not
+all five non-deleted books, which is what a live wildcard would return — and
+`series: "%"` returns `total_count: 0`, because no series title contains one,
+rather than the three series-bearing books a live wildcard would match. `39`
+searches `author: "Ковальчук"` and gets books 3 and 4 (`total_count: 2`),
+covering a field other than `title`/`series` with a positive match. `40`
+searches `lang: "r"` and gets book 4 (`total_count: 1`) — the fixture's only
+`lang: "ru"` row. No fixture `Lang` value *is* `"r"`, so under `lang`'s old
+*exact*-match behavior this call matched nothing; the case pins the
+exact-to-substring semantics change as a deliberate, tested decision rather
+than an unverified side effect.
 
 `41_search_books_genre_nul_rejected.jsonl` through
 `44_search_books_limit_wrong_type_rejected.jsonl` were added in the final
@@ -790,7 +901,7 @@ to reach `sqlite3_prepare_v2` with a truncated statement and surface a raw
 gets `isError: true`, `"code":"invalid_params"`, `"message":"Argument title
 must be a string"` — before the `ArgStr`/`ArgInt`/`ArgBool` fix (see
 "`search_books` argument type strictness" above) this silently became an
-empty title filter and returned `total_count: 439393`, the whole non-deleted
+empty title filter and returned the whole non-deleted
 collection. `43` and `44` cover the same fix for `ArgBool`
 (`include_deleted: "yes"`, previously silently `false`) and `ArgInt`
 (`limit: "abc"`, previously silently `25` with no `"clamped"` flag)
@@ -798,21 +909,21 @@ respectively, both now `isError: true`/`"code":"invalid_params"` naming the
 argument.
 
 There is no automated case for `get_book_text`'s `unsupported_format` path:
-the only collection registered on the machine these tests were captured on
-is `Lib.rus.ec Local [FB2]` — a collection that is, by name and by a sampled
-scan of 2,200 of its 452,816 `lang:"ru"` books spread across the whole ID
-range, 100% FB2 (`has_text:false` count: 0). `unsupported_format` is
-covered by unit-level reasoning instead (`Book.GetBookFormat in [bfFb2,
-bfFb2Archive]` in `LoadBookForText`) and belongs on the manual checklist
-above for whoever next runs this against a mixed-format collection.
-Likewise there is no automated case for `file_missing` on a text tool
-directly through `run_tests.js` (it needs a real archive to go
-missing/renamed underneath a real collection — verified manually instead
-during the fix rounds below, by temporarily renaming a real archive and
-restoring it) — see the manual checklist.
+the fixture writes every one of its six books as an FB2 file, so nothing in
+it can produce that code. `unsupported_format` is covered by unit-level
+reasoning instead (`Book.GetBookFormat in [bfFb2, bfFb2Archive]` in
+`LoadBookForText`) and belongs on the manual checklist above for whoever next
+runs this against a mixed-format collection. Likewise there is no automated
+case for `file_missing` on a text tool directly through `run_tests.js` (it
+needs an archive to go missing/renamed underneath a registered collection —
+verified manually instead during the fix rounds below, by temporarily
+renaming a real archive and restoring it) — see the manual checklist.
 
-**Correction to an earlier draft of this note:** the very first version of
-this scan used `search_books` with no filter field at all besides
+**Correction to an earlier draft of this note, kept because of what it
+taught:** back when `unsupported_format` was ruled out by scanning the
+maintainer's real Librusec collection rather than by construction, the very
+first version of that scan used `search_books` with no filter field at all
+besides
 `limit`/`offset`/`include_deleted` — which, it turns out,
 `TBookCollection_SQLite.PrepareSearchData` (`unit_Database_SQLite.pas`)
 rejects outright with `"Перевірте параметри фільтра"` when *every* criteria
@@ -823,9 +934,10 @@ original scan calls was silently failing with that JSON-RPC error, and the
 every page" misread as a clean negative — the substring check
 (`grep -o '"has_text":false'`) returns an empty count either way, so the bug
 went unnoticed until this was rediscovered independently while working on a
-later fix round. The number above (2,200 books, 0 non-FB2) is from a
-corrected scan using `lang:"ru"` as a real, non-blank filter, which is not
-rejected. `search_books` itself was not touched by any of this at the time —
+later fix round. The re-run that finally supported the claim (2,200 books
+sampled across the ID range, 0 non-FB2) used `lang:"ru"` as a real, non-blank
+filter, which is not rejected.
+`search_books` itself was not touched by any of this at the time —
 the bug was in `PrepareSearchData`'s pre-existing "at least one filter
 required" behavior, not a regression from Task 10's own work — but the
 original claim, resting on a scan that never actually ran, should not have

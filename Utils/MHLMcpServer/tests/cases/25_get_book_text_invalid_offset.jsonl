@@ -1,2 +1,2 @@
-> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_book_text","arguments":{"collection_id":1,"book_id":4,"offset":99999}}}
-< {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_offset\",\"message\":\"Offset 99999 is past the end of the text (total_length 13846)\"}"}],"isError":true}}
+> {"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"get_book_text","arguments":{"collection_id":1,"book_id":1,"offset":99999}}}
+< {"jsonrpc":"2.0","id":1,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_offset\",\"message\":\"Offset 99999 is past the end of the text (total_length 70)\"}"}],"isError":true}}
