@@ -572,6 +572,27 @@ before: {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"b
 after:  {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"code\":\"invalid_params\",\"message\":\"Argument title must be a string\"}"}],"isError":true}}
 ```
 
+## `null` means absent
+
+All five helpers (`ArgStr`, `ArgInt`, `ArgBool`, `ArgIntClamped`, `RequireInt`)
+treat an explicit JSON `null` the same as an omitted key: `IsAbsent`
+(`unit_MCP_Json.pas`) checks `Args.GetValue(Name)` for both `nil` (key not in
+the object at all) and `TJSONNull` (`"key": null`), since the RTL's
+`TJSONObject.GetValue` returns the latter, not `nil`, for an explicit null.
+`ArgStr`/`ArgInt`/`ArgBool` fall back to their `Default` for either;
+`RequireInt` reports either as `invalid_params`, `"Missing required
+argument: <name>"` — a `null` `book_id` is "missing", not "must be an
+integer". This is deliberate: MCP clients generated from JSON Schema
+routinely emit `"series": null` for an optional the caller left unset, and
+rejecting those would make the server needlessly awkward to drive.
+
+This is unrelated to the type-strictness fix above — that one is about
+values that are wrong for the slot (`"abc"` for an integer) and still raises
+`invalid_params`; `null` is a well-formed way of saying nothing. See cases
+`45` (a `search_books` call with `limit`/`series`/`include_deleted` all
+`null` returns exactly what omitting them does) and `46` (`get_book` with
+`book_id: null` is reported missing, not mistyped).
+
 ## Automated tests
 
 ```
@@ -907,6 +928,20 @@ collection. `43` and `44` cover the same fix for `ArgBool`
 (`limit: "abc"`, previously silently `25` with no `"clamped"` flag)
 respectively, both now `isError: true`/`"code":"invalid_params"` naming the
 argument.
+
+`45_null_optional_treated_as_absent.jsonl` and
+`46_null_required_reports_missing.jsonl` cover the `null`-means-absent
+convention (see "`null` means absent" above). `45` runs the same
+`search_books` call twice — once omitting `limit`/`series`/`include_deleted`,
+once passing all three as explicit `null` — and asserts the two responses are
+identical (modulo `id`); before the fix, the second call answered
+`invalid_params` instead, because a `null` handed to `ArgInt`/`ArgBool`
+reached the strict `GetValue<T>` and raised. `46` calls `get_book` with
+`book_id: null` and gets `isError: true`, `"code":"invalid_params"`,
+`"message":"Missing required argument: book_id"` — before the fix the same
+call answered `"Argument book_id must be an integer"`, a genuine type
+mismatch, since `RequireInt` did not yet distinguish `null` from a merely
+absent key.
 
 There is no automated case for `get_book_text`'s `unsupported_format` path:
 the fixture writes every one of its six books as an FB2 file, so nothing in

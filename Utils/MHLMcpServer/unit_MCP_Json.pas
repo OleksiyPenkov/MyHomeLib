@@ -47,9 +47,39 @@ implementation
 // consistency between all four helpers -- only an outright-incompatible
 // value (an object/array where a scalar is expected, a non-numeric string
 // for an integer, a non-"true"/"false"-shaped string for a boolean) raises.
+
+// An explicit JSON null counts as ABSENT, in every helper.
+//
+// The RTL makes this need saying: TJSONObject.GetValue(Name) returns a
+// TJSONNull instance -- not nil -- for "key": null, so a naive nil test
+// classes null as present and hands it to GetValue<T>. There the behaviours
+// diverge: GetValue<string> yields '', while GetValue<Integer>/<Boolean>
+// raise. That is the inconsistency this removes.
+//
+// Chosen because MCP clients generated from JSON Schema routinely emit
+// "series": null for an optional the caller left unset; rejecting those makes
+// the server needlessly awkward to drive.
+//
+// This does NOT reopen the hole the comment above was written against. That
+// one is about values that are WRONG FOR THE SLOT -- "abc" for an integer, an
+// object where a scalar belongs -- which silently became a default and
+// produced a confidently wrong result. An explicit null is not wrong for the
+// slot; it is a well-formed way of saying nothing, and nothing is precisely
+// what a default is for. Type mismatches still raise, exactly as before.
+function IsAbsent(const Args: TJSONObject; const Name: string): Boolean;
+var
+  Value: TJSONValue;
+begin
+  if not Assigned(Args) then
+    Exit(True);
+
+  Value := Args.GetValue(Name);
+  Result := (Value = nil) or (Value is TJSONNull);
+end;
+
 function ArgStr(const Args: TJSONObject; const Name: string; const Default: string): string;
 begin
-  if (not Assigned(Args)) or (Args.GetValue(Name) = nil) then
+  if IsAbsent(Args, Name) then
     Exit(Default);
   try
     Result := Args.GetValue<string>(Name);
@@ -62,7 +92,7 @@ end;
 
 function ArgInt(const Args: TJSONObject; const Name: string; Default: Integer): Integer;
 begin
-  if (not Assigned(Args)) or (Args.GetValue(Name) = nil) then
+  if IsAbsent(Args, Name) then
     Exit(Default);
   try
     Result := Args.GetValue<Integer>(Name);
@@ -75,7 +105,7 @@ end;
 
 function ArgBool(const Args: TJSONObject; const Name: string; Default: Boolean): Boolean;
 begin
-  if (not Assigned(Args)) or (Args.GetValue(Name) = nil) then
+  if IsAbsent(Args, Name) then
     Exit(Default);
   try
     Result := Args.GetValue<Boolean>(Name);
@@ -106,7 +136,7 @@ end;
 
 function RequireInt(const Args: TJSONObject; const Name: string): Integer;
 begin
-  if (not Assigned(Args)) or (Args.GetValue(Name) = nil) then
+  if IsAbsent(Args, Name) then
     raise EMcpToolError.Create('invalid_params',
       Format('Missing required argument: %s', [Name]));
   try
