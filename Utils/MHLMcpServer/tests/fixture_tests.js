@@ -33,6 +33,19 @@ if (summary) {
   check('books is an array', Array.isArray(summary.books), typeof summary.books);
 }
 
+if (summary && Array.isArray(summary.books)) {
+  check('six books', summary.books.length === 6, `got ${summary.books.length}`);
+  check('ids are 1..6',
+    summary.books.every((b, i) => b.book_id === i + 1),
+    JSON.stringify(summary.books.map(b => b.book_id)));
+  check('every book file exists',
+    summary.books.every(b => fs.existsSync(b.path)),
+    JSON.stringify(summary.books.map(b => b.path)));
+  check('deleted book is last',
+    summary.books[5] && summary.books[5].title === 'Вилучена книга',
+    JSON.stringify(summary.books[5]));
+}
+
 // Running it twice must be safe and must still yield collection_id 1.
 const again = spawnSync(exe, ARGS, { encoding: 'utf8' });
 let second = null;
