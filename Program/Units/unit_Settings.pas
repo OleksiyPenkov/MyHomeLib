@@ -306,6 +306,9 @@ type
     //
     property SystemFileName[fileType: TMHLSystemFile]: string read GetSystemFileName;
 
+    // Полный путь к ini-файлу настроек (myhomelib2.ini или <user>.ini).
+    property SettingsFileName: string read GetSettingsFileName;
+
     //
     // Собственно настройки программы
     //

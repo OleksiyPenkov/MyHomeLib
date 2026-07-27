@@ -124,10 +124,16 @@ comparing results with the MyHomeLib app itself:
 
 ## Diagnostic CLI modes
 
-Both of these run before `Application.Initialize`/`DMUser` and write their
-single JSON result through `TMcpTransport` (never raw `Writeln`) to keep the
-"only the transport writes to stdout" rule mechanically true even in these
-modes. Neither touches the database or the real machine-wide cache.
+All three write whatever they print through `TMcpTransport` (never raw
+`Writeln`), keeping the "only the transport writes to stdout" rule
+mechanically true even in these modes; diagnostics and failures go to stderr.
+
+They are not otherwise alike. `--extract` and `--cache-selftest` are read-only
+and database-free, and run *before* `Application.Initialize`/`DMUser` —
+neither touches a database or the real machine-wide cache. `--make-fixture` is
+the odd one out on every count: it needs `DMUser`, so it runs *after*
+`Application.Initialize`, and it is **destructive** — read its entry below
+before running it.
 
 - **`MHLMcpServer.exe --extract <file.fb2>`** — runs `ExtractFb2` on a local
   FB2 file and prints `{"text":…,"sections":[…],"structured":…,
@@ -141,6 +147,27 @@ modes. Neither touches the database or the real machine-wide cache.
   prints a pass/fail line per scenario. This is what `tests/cache_tests.js`
   drives; run it directly for a quick sanity check of the cache logic in
   isolation.
+- **`MHLMcpServer.exe --make-fixture uselocaldata user mcpfixture`** —
+  **destructive.** Builds the six-book throwaway collection the protocol suite
+  runs against (see "The fixture `run_tests.js` builds for itself" below), and
+  builds it by *deleting and rebuilding* a system database
+  (`Data\mcpfixture.dbs`), a settings file (`mcpfixture.ini`) and a collection
+  folder (`mcpfixture\`) — that wipe is what makes the collection and book ids
+  deterministic. Prints a one-line JSON summary
+  (`collection_id`, `root`, `db`, `books`) on stdout.
+
+  **The `uselocaldata user mcpfixture` switches are not optional.** They are
+  the only thing that makes those paths resolve to the fixture at all:
+  `TMHLSettings.Create` derives `mcpfixture.dbs`/`mcpfixture.ini` from the
+  `user mcpfixture` pair and otherwise falls back to the real
+  `user.dbs2`/`myhomelib2.ini`. `RequireFixtureTarget` in
+  `unit_MCP_Fixture.pas` therefore checks every target's name against
+  `mcpfixture` before the first delete, and the mode refuses to run — exiting
+  non-zero with the reason on stderr, having deleted nothing — if the switches
+  were omitted. `tests/fixture_tests.js` proves that refusal in a sandbox
+  directory. Do not remove that guard: the installer ships this exe to
+  end users, whose `user.dbs2` holds their entire registered-collection list,
+  favourites, ratings and reviews.
 
 ### `search_books` date-filter pitfall
 
@@ -640,7 +667,24 @@ logic at all (see `unit_MCP_Fixture.pas`).
 `mcpfixture.dbs` / `mcpfixture.ini` do not collide with the `user.dbs2` /
 `myhomelib2.ini` a developer's real library uses in the same folder — a dev
 library sitting in `Program\OUT\Bin64` survives a test run untouched, and the
-suite in turn cannot see it. That is the point: before this, the DB-backed
+suite in turn cannot see it.
+
+`mcpfixture.ini` needs one extra step to stay independent, and `--make-fixture`
+takes it. `TMHLSettings.Create` *seeds* `<user>.ini` by copying
+`myhomelib2.ini` whenever the former is missing (`unit_Settings.pas`), so left
+alone the fixture would quietly run on a snapshot of the developer's real
+settings — and on a machine with no dev ini, on different ones. The wipe
+therefore deletes `mcpfixture.ini` and writes an empty file in its place:
+present, so neither the builder nor the server process ever re-seeds it from
+`myhomelib2.ini`; empty, so every `LoadSettings` read falls back to its
+compiled-in default. (`IgnoreAbsentArchives`, read at
+`unit_MCP_Tools_Text.pas`, is one persisted setting that would otherwise let a
+developer's ini change a tool's error path.) The delete has to happen after
+`TDMUser.Create` — that is where the copy runs — and before `DMUser.Init`,
+which is where `LoadSettings` reads the file; `RunMakeFixtureMode` sits it
+between the two.
+
+That independence is the point: before this, the DB-backed
 cases were pinned to real book ids from one particular Librusec collection and
 passed or failed depending on which library the exe happened to resolve at
 startup.
@@ -720,13 +764,19 @@ a genuinely unrecoverable one — the precondition the MCP tool layer's
 `book_has_no_text`/`extraction_failed` switch depends on. `--extract` is a
 database-free CLI mode that bypasses `unit_MCP_Tools_Text.pas` entirely
 (see "Diagnostic CLI modes" below), so neither case exercises the
-*sanitized client-facing message* those two codes return — there is no
-automated, end-to-end case for that, because doing so would require either
-a genuinely textless/unrecoverable FB2 already sitting in the one
-registered real collection (none was found; see the note further down on
-`unsupported_format`) or inserting a fabricated book into that real
-collection to force the failure, which this test suite deliberately never
-does. The sanitized-message guarantee for these two codes — stable text
+*sanitized client-facing message* those two codes return — there is still no
+automated, end-to-end case for that.
+
+What used to block one no longer does. The blocker was that forcing the
+failure end to end meant either finding a genuinely textless/unrecoverable
+FB2 already sitting in the one registered *real* collection (none was) or
+fabricating a book inside it, which the suite refused to do. The suite now
+builds its own collection from scratch (`--make-fixture`), so fabricating
+books is exactly what it does — a seventh fixture book with a valid FB2 body
+that yields no extractable text (a picture-only `<body>`, as
+`tests/fixtures/picture_only.fb2` already is) would close the gap for
+`book_has_no_text` end to end, and is the obvious way to do it. It has not
+been added yet. The sanitized-message guarantee for these two codes — stable text
 plus `book_id`/`collection_id` only, no interpolated `EFb2ExtractError.Message`
 — is verified by code inspection instead (see `unit_MCP_Tools_Text.pas`'s
 `EFb2ExtractError` catch block) and manually, the same way `collection_busy`
@@ -789,7 +839,17 @@ created from, sorted by genre code. This is also the case that caught the
 genre-filter pitfall documented above — without that fix, the `search_books`
 call in this file fails with a SQL syntax error instead of returning a book.
 `17_list_series_filter_found.jsonl` and `18_list_authors_filter_found.jsonl`
-prove `filter` finds rows (`"Хроніки"` for series, `"Ковальчук"` for authors).
+prove `filter` finds rows. `18` filters authors by `"Ковальчук"`, matching
+one. `17` deliberately does not use a single-match filter: it passes `"к"`,
+which matches *both* fixture series, so it is the one case pinning
+`list_series`/`list_authors` **multi-row shape and ordering** — `18` and `19`
+are both single-row, so without it neither would be exercised anywhere. The
+expected pair is derived, not captured: `GetSeriesIterator(smAll)` issues
+`ORDER BY SeriesTitle`, SQLite's default `BINARY` collation compares UTF-8
+bytes, and `З` (U+0417, `D0 97`) sorts before `Х` (U+0425, `D0 A5`) — so
+`Збірка "Класика"` (`series_id` 2, inserted second) comes back *before*
+`Хроніки` (`series_id` 1, inserted first). Ids ascending would be the wrong
+answer, and the case would catch a switch to one.
 `19_list_authors_limit_clamped.jsonl` reuses the single-match `"Ковальчук"`
 filter with `limit: 5000` — clamping is decided from the requested limit alone
 (`ArgIntClamped` compares it against `Max` before any row is fetched), so

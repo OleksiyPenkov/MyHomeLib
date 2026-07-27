@@ -166,6 +166,17 @@ begin
   // --extract and --cache-selftest above it needs DMUser, so it sits after
   // Application.Initialize rather than before it. It must never reach
   // Server.Run.
+  //
+  // This is the one mode that deliberately reaches TDMUser.Init's
+  // create-if-missing branch, which the note above says server mode never
+  // reaches -- and to get there it first DELETES a system database, a
+  // settings file and a collection folder. Which files those are is decided
+  // entirely by the `uselocaldata user mcpfixture` switches, i.e. by the
+  // caller, so the deciding is not left to the caller: RunMakeFixtureMode
+  // checks every target's name against FIXTURE_USER_NAME before the first
+  // delete (RequireFixtureTarget in unit_MCP_Fixture.pas) and raises here --
+  // stderr, exit 1, nothing deleted -- when the switches were omitted and the
+  // paths therefore resolved to the user's real user.dbs2 / myhomelib2.ini.
   if (ParamCount >= 1) and (ParamStr(1) = '--make-fixture') then
   begin
     try

@@ -1,5 +1,5 @@
 > {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"test","version":"1"}}}
 < {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{}},"serverInfo":{"name":"myhomelib","version":"1.0.0"}}}
 > {"jsonrpc":"2.0","method":"notifications/initialized"}
-> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_series","arguments":{"collection_id":1,"filter":"Хроніки","limit":10}}}
-< {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"series\":[{\"series_id\":1,\"title\":\"\\u0425\\u0440\\u043E\\u043D\\u0456\\u043A\\u0438\"}]}"}]}}
+> {"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"list_series","arguments":{"collection_id":1,"filter":"к","limit":10}}}
+< {"jsonrpc":"2.0","id":2,"result":{"content":[{"type":"text","text":"{\"series\":[{\"series_id\":2,\"title\":\"\\u0417\\u0431\\u0456\\u0440\\u043A\\u0430 \\\"\\u041A\\u043B\\u0430\\u0441\\u0438\\u043A\\u0430\\\"\"},{\"series_id\":1,\"title\":\"\\u0425\\u0440\\u043E\\u043D\\u0456\\u043A\\u0438\"}]}"}]}}
