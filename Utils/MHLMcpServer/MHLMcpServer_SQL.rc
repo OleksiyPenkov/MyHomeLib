@@ -1,0 +1,8 @@
+// MHLMcpServer_SQL.rc - embeds the SQLite DDL scripts that
+// TSystemData_SQLite.CreateSystemTables and TBookCollection_SQLite.CreateCollection
+// load via TResourceStream(HInstance, ...). The main app links these through
+// Program\MyhomeLibResource.rc; this console project needs its own copy of the
+// same two resources under the same names because TResourceStream looks them up
+// in the current module (this exe), not in the app's.
+CreateSystemDB_SQLite RCDATA "..\..\Program\DAO\SQLite\Resources\CreateSystemDB_SQLite.sql"
+CreateCollectionDB_SQLite RCDATA "..\..\Program\DAO\SQLite\Resources\CreateCollectionDB_SQLite.sql"

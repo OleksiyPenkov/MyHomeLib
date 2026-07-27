@@ -2,6 +2,13 @@
 
 {$APPTYPE CONSOLE}
 
+// Embeds the CreateSystemDB_SQLite / CreateCollectionDB_SQLite DDL scripts
+// under this module's own HInstance -- see unit_SQLiteUtils.ReadResourceAsStringList
+// and the comment in MHLMcpServer_SQL.rc. --make-fixture (unit_MCP_Fixture.pas)
+// is the first mode in this project to create a system database or a
+// collection, so it is the first mode that needs these.
+{$R MHLMcpServer_SQL.res}
+
 uses
   Vcl.Forms,
   System.Classes,
@@ -14,7 +21,8 @@ uses
   unit_MCP_Tools_Text in 'unit_MCP_Tools_Text.pas',
   unit_MCP_Fb2Extract in 'unit_MCP_Fb2Extract.pas',
   unit_MCP_TextCache in 'unit_MCP_TextCache.pas',
-  unit_MCP_CacheSelfTest in 'unit_MCP_CacheSelfTest.pas';
+  unit_MCP_CacheSelfTest in 'unit_MCP_CacheSelfTest.pas',
+  unit_MCP_Fixture in 'unit_MCP_Fixture.pas';
 
 // Extracts one FB2 file's text and section structure and prints it as a
 // single JSON line, exactly like a tool result would look, but with no MCP
@@ -153,6 +161,28 @@ begin
   end;
 
   Application.Initialize;
+
+  // --make-fixture builds the throwaway test collection and exits. Unlike
+  // --extract and --cache-selftest above it needs DMUser, so it sits after
+  // Application.Initialize rather than before it. It must never reach
+  // Server.Run.
+  if (ParamCount >= 1) and (ParamStr(1) = '--make-fixture') then
+  begin
+    try
+      RunMakeFixtureMode;
+    except
+      on E: Exception do
+      begin
+        Writeln(ErrOutput, 'Fixture creation failed: ' + E.Message);
+        if Assigned(DMUser) then
+          FreeAndNil(DMUser);
+        Halt(1);
+      end;
+    end;
+    if Assigned(DMUser) then
+      FreeAndNil(DMUser);
+    Exit;
+  end;
 
   // Filesystem-only, database-free, and idempotent-by-design (see
   // EvictCache's own comment): runs exactly once here, at process startup,
