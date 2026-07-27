@@ -1,6 +1,6 @@
 /*
- * Builds the MyHomeLib application icon (.ico) from app-icon.svg and
- * app-icon-small.svg.
+ * Builds the MyHomeLib application icon (.ico) from app-icon.svg,
+ * app-icon-mid.svg and app-icon-small.svg.
  *
  *   node make_app_icon.js
  *
@@ -13,8 +13,14 @@
  * whatever icon it was last built with. Every other resource in the file
  * (VERSION, MANIFEST, PLATFORMTARGETS) is carried over untouched.
  *
- * Sizes 40 and up use the full artwork; 32 and below use the simplified cut -
- * below 40 the carcass and the spines start to merge into each other.
+ * Three cuts of the same idea, because one drawing cannot span 16px to 256px:
+ *
+ *   48 and up   full     bookcase, five spines, one leaning
+ *   40 and 32   mid      bookcase, four spines packed edge to edge
+ *   24 and down small    four spines on a board, no carcass
+ *
+ * The cut changes but the footprint does not, so the silhouette stays put as
+ * Windows switches between them.
  * 256 and 128 are stored PNG-compressed (Vista+); everything smaller is a
  * classic 32bpp BMP entry so the icon still resolves in older shells and in
  * VCL's TIcon.
@@ -25,6 +31,7 @@ const sharp = require('sharp');
 
 const HERE = __dirname;
 const FULL = path.join(HERE, 'app-icon.svg');
+const MID = path.join(HERE, 'app-icon-mid.svg');
 const SMALL = path.join(HERE, 'app-icon-small.svg');
 
 const TARGETS = [
@@ -38,8 +45,8 @@ const PLAN = [
   [128, FULL, true],
   [64, FULL, false],
   [48, FULL, false],
-  [40, FULL, false],
-  [32, SMALL, false],
+  [40, MID, false],
+  [32, MID, false],
   [24, SMALL, false],
   [20, SMALL, false],
   [16, SMALL, false],

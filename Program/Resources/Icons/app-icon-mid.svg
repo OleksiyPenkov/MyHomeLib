@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- MyHomeLib application icon - middle cut, tuned for 32px and 40px.
+       Keeps the bookcase, but spends its pixels differently from app-icon.svg:
+
+         - four spines instead of five, and no leaning book
+         - spines butt up against each other so neighbouring outlines merge
+           into one 1px divider instead of two, which is also how books
+           actually sit on a full shelf
+         - one wood wall unit instead of two, and no drop shadow
+
+       At 32px that leaves ~5px of colour per spine against the ~2.4px the
+       full artwork manages. Everything is laid out on multiples of 8 units
+       so edges land on whole pixels at 32px (8 units = 1px). -->
+  <defs>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CFA268"/><stop offset="100%" stop-color="#A5764A"/>
+    </linearGradient>
+    <linearGradient id="brick" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#CE6857"/><stop offset="100%" stop-color="#B85445"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E6B455"/><stop offset="100%" stop-color="#D09A38"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4FC2E8"/><stop offset="100%" stop-color="#33A6CF"/>
+    </linearGradient>
+    <linearGradient id="indigo" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3E6BA8"/><stop offset="100%" stop-color="#2F5C96"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Carcass. Same 208x192 footprint as app-icon.svg so the silhouette does
+       not jump when Windows switches between the two cuts. -->
+  <rect x="24" y="32" width="208" height="192" rx="16"
+        fill="url(#wood)" stroke="#19375F" stroke-width="8"/>
+  <rect x="36" y="44" width="184" height="168" rx="4" fill="#8B6540"/>
+
+  <!-- Spines, edge to edge, filling the shelf and sitting on it at y=212 -->
+  <g stroke="#19375F" stroke-width="8">
+    <rect x="40"  y="56" width="44" height="156" rx="4" fill="url(#brick)"/>
+    <rect x="84"  y="76" width="44" height="136" rx="4" fill="url(#amber)"/>
+    <rect x="128" y="48" width="44" height="164" rx="4" fill="url(#cyan)"/>
+    <rect x="172" y="68" width="44" height="144" rx="4" fill="url(#indigo)"/>
+  </g>
+</svg>
