@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- MyHomeLib application icon - full artwork, used for 32px and above. -->
+  <defs>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#CFA268"/>
+      <stop offset="100%" stop-color="#A5764A"/>
+    </linearGradient>
+    <linearGradient id="brick" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#CE6857"/><stop offset="100%" stop-color="#B85445"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E6B455"/><stop offset="100%" stop-color="#D09A38"/>
+    </linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4FC2E8"/><stop offset="100%" stop-color="#33A6CF"/>
+    </linearGradient>
+    <linearGradient id="indigo" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3E6BA8"/><stop offset="100%" stop-color="#2F5C96"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4CAE99"/><stop offset="100%" stop-color="#38907D"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="155%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0a1a2e" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <!-- Bookcase carcass -->
+    <rect x="24" y="30" width="208" height="196" rx="22"
+          fill="url(#wood)" stroke="#19375F" stroke-width="10"/>
+    <rect x="41" y="47" width="174" height="162" rx="7" fill="#8B6540"/>
+
+    <!-- Spines, left to right, sitting on the shelf at y=209 -->
+    <g stroke="#19375F" stroke-width="7">
+      <rect x="45" y="59" width="27" height="150" rx="6" fill="url(#brick)"/>
+      <rect x="76" y="77" width="27" height="132" rx="6" fill="url(#amber)"/>
+      <rect x="107" y="55" width="27" height="154" rx="6" fill="url(#cyan)"/>
+      <rect x="138" y="71" width="27" height="138" rx="6" fill="url(#indigo)"/>
+      <!-- Leaning book, pivots on its bottom-right corner -->
+      <rect x="157" y="85" width="26" height="124" rx="6" fill="url(#teal)"
+            transform="rotate(13 183 209)"/>
+    </g>
+
+    <!-- Title bands, large sizes only - they vanish below 48px -->
+    <g stroke="#19375F" stroke-width="5" stroke-linecap="round" opacity="0.5">
+      <line x1="51.5" y1="80" x2="65.5" y2="80"/>
+      <line x1="51.5" y1="93.5" x2="65.5" y2="93.5"/>
+      <line x1="82.5" y1="95.5" x2="96.5" y2="95.5"/>
+      <line x1="82.5" y1="107.5" x2="96.5" y2="107.5"/>
+      <line x1="113.5" y1="76.5" x2="127.5" y2="76.5"/>
+      <line x1="113.5" y1="90.5" x2="127.5" y2="90.5"/>
+      <line x1="144.5" y1="90.5" x2="158.5" y2="90.5"/>
+      <line x1="144.5" y1="102.5" x2="158.5" y2="102.5"/>
+      <g transform="rotate(13 183 209)">
+        <line x1="163" y1="102.5" x2="177" y2="102.5"/>
+        <line x1="163" y1="113.5" x2="177" y2="113.5"/>
+      </g>
+    </g>
+  </g>
+</svg>
