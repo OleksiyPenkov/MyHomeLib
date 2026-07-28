@@ -15,9 +15,9 @@
  *
  * Three cuts of the same idea, because one drawing cannot span 16px to 256px:
  *
- *   48 and up   full     bookcase, five spines, one leaning
- *   40 and 32   mid      bookcase, four spines packed edge to edge
- *   24 and down small    four spines on a board, no carcass
+ *   48 and up   full     widescreen monitor, five spines, title bands
+ *   40 and 32   mid      four spines packed edge to edge, no bands
+ *   24 and down small    three spines, bezel band widened so it survives
  *
  * The cut changes but the footprint does not, so the silhouette stays put as
  * Windows switches between them.

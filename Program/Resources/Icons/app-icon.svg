@@ -1,61 +1,60 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <!-- MyHomeLib application icon - full artwork, used for 32px and above. -->
+  <!-- MyHomeLib application icon - full artwork, used for 48px and above. -->
   <defs>
-    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#CFA268"/>
-      <stop offset="100%" stop-color="#A5764A"/>
+    <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D8E6F2"/>
+      <stop offset="100%" stop-color="#B4C8DC"/>
     </linearGradient>
-    <linearGradient id="brick" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#CE6857"/><stop offset="100%" stop-color="#B85445"/>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F07641"/><stop offset="100%" stop-color="#E8622E"/>
     </linearGradient>
-    <linearGradient id="amber" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#E6B455"/><stop offset="100%" stop-color="#D09A38"/>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#4A82C8"/><stop offset="100%" stop-color="#3A72B8"/>
     </linearGradient>
-    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#4FC2E8"/><stop offset="100%" stop-color="#33A6CF"/>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E45B57"/><stop offset="100%" stop-color="#D94A46"/>
     </linearGradient>
-    <linearGradient id="indigo" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#3E6BA8"/><stop offset="100%" stop-color="#2F5C96"/>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#5CB86A"/><stop offset="100%" stop-color="#4AA85A"/>
     </linearGradient>
-    <linearGradient id="teal" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#4CAE99"/><stop offset="100%" stop-color="#38907D"/>
+    <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F0C74E"/><stop offset="100%" stop-color="#E8B93C"/>
     </linearGradient>
     <filter id="shadow" x="-25%" y="-25%" width="150%" height="155%">
       <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#0a1a2e" flood-opacity="0.28"/>
     </filter>
   </defs>
 
-  <g filter="url(#shadow)">
-    <!-- Bookcase carcass -->
-    <rect x="24" y="30" width="208" height="196" rx="22"
-          fill="url(#wood)" stroke="#19375F" stroke-width="10"/>
-    <rect x="41" y="47" width="174" height="162" rx="7" fill="#8B6540"/>
+  <g filter="url(#shadow)" stroke="#19375F" stroke-width="9" stroke-linejoin="round">
+    <!-- Stand, drawn first so the panel overlaps the neck -->
+    <path d="M108 160 L102 202 L154 202 L148 160 Z" fill="url(#bezel)"/>
+    <rect x="72" y="196" width="112" height="22" rx="11" fill="url(#bezel)"/>
 
-    <!-- Spines, left to right, sitting on the shelf at y=209 -->
-    <g stroke="#19375F" stroke-width="7">
-      <rect x="45" y="59" width="27" height="150" rx="6" fill="url(#brick)"/>
-      <rect x="76" y="77" width="27" height="132" rx="6" fill="url(#amber)"/>
-      <rect x="107" y="55" width="27" height="154" rx="6" fill="url(#cyan)"/>
-      <rect x="138" y="71" width="27" height="138" rx="6" fill="url(#indigo)"/>
-      <!-- Leaning book, pivots on its bottom-right corner -->
-      <rect x="157" y="85" width="26" height="124" rx="6" fill="url(#teal)"
-            transform="rotate(13 183 209)"/>
+    <!-- Panel -->
+    <rect x="20" y="36" width="216" height="140" rx="14" fill="url(#bezel)"/>
+    <rect x="32" y="48" width="192" height="112" rx="5" fill="#2B2B2B" stroke="none"/>
+
+    <!-- Spines, left to right, standing on the screen floor at y=160 -->
+    <g stroke-width="6">
+      <rect x="40" y="62" width="32" height="98" rx="5" fill="url(#orange)"/>
+      <rect x="76" y="56" width="32" height="104" rx="5" fill="url(#blue)"/>
+      <rect x="112" y="66" width="32" height="94" rx="5" fill="url(#red)"/>
+      <rect x="148" y="58" width="32" height="102" rx="5" fill="url(#green)"/>
+      <rect x="184" y="64" width="32" height="96" rx="5" fill="url(#yellow)"/>
     </g>
 
-    <!-- Title bands, large sizes only - they vanish below 48px -->
-    <g stroke="#19375F" stroke-width="5" stroke-linecap="round" opacity="0.5">
-      <line x1="51.5" y1="80" x2="65.5" y2="80"/>
-      <line x1="51.5" y1="93.5" x2="65.5" y2="93.5"/>
-      <line x1="82.5" y1="95.5" x2="96.5" y2="95.5"/>
-      <line x1="82.5" y1="107.5" x2="96.5" y2="107.5"/>
-      <line x1="113.5" y1="76.5" x2="127.5" y2="76.5"/>
-      <line x1="113.5" y1="90.5" x2="127.5" y2="90.5"/>
-      <line x1="144.5" y1="90.5" x2="158.5" y2="90.5"/>
-      <line x1="144.5" y1="102.5" x2="158.5" y2="102.5"/>
-      <g transform="rotate(13 183 209)">
-        <line x1="163" y1="102.5" x2="177" y2="102.5"/>
-        <line x1="163" y1="113.5" x2="177" y2="113.5"/>
-      </g>
+    <!-- Title bands, large sizes only - they blur away below 48px -->
+    <g stroke="#fff" stroke-width="5" stroke-linecap="round" opacity="0.55">
+      <line x1="47" y1="82" x2="65" y2="82"/>
+      <line x1="47" y1="95" x2="65" y2="95"/>
+      <line x1="83" y1="76" x2="101" y2="76"/>
+      <line x1="83" y1="89" x2="101" y2="89"/>
+      <line x1="119" y1="86" x2="137" y2="86"/>
+      <line x1="119" y1="99" x2="137" y2="99"/>
+      <line x1="155" y1="78" x2="173" y2="78"/>
+      <line x1="155" y1="91" x2="173" y2="91"/>
+      <line x1="191" y1="84" x2="209" y2="84"/>
+      <line x1="191" y1="97" x2="209" y2="97"/>
     </g>
   </g>
 </svg>
