@@ -99,6 +99,10 @@ function ResolveMHLPaths: TMHLPathInfo;
 
 const
   DEFAULT_LOCALE = 'uk';
+  // The base locale's own name, for the language menu. A plain constant and
+  // NOT a resourcestring: a language is always written in its own language, so
+  // this must not change when the UI language does.
+  BASE_LOCALE_NAME = 'Українська';
 
 type
   TMHLSettings = class

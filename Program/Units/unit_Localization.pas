@@ -8,6 +8,13 @@ uses
 const
   LANG_DIR_NAME = 'Lang';
 
+type
+  TLocaleInfo = record
+    Code: string;
+    Name: string;
+  end;
+
+function AvailableLocales: TArray<TLocaleInfo>;
 function InitLocalization: Boolean;
 procedure DoneLocalization;
 function LocalizationActive: Boolean;
@@ -23,6 +30,7 @@ uses
   System.IOUtils,
   System.JSON,
   System.Generics.Collections,
+  System.Generics.Defaults,
   System.IniFiles,
   System.TypInfo,
   unit_Settings;
@@ -390,6 +398,109 @@ begin
 
   if Result = '' then
     Result := DEFAULT_LOCALE;
+end;
+
+// The language menu's source of truth: which locales can actually be offered.
+//
+// The base locale is pinned first and comes from a constant, never from a
+// file. Ukrainian is compiled into the exe and InitLocalization short-circuits
+// before reading any catalog for it, so uk.json has no effect on anything --
+// listing Ukrainian only when that file happens to exist would let a partial
+// install strand a user in a language they cannot leave.
+//
+// Everything else is discovered. This must never raise: it runs while the main
+// form is being built, and a malformed file dropped into Lang\ has to degrade
+// to "that language is not offered", the same way a malformed catalog already
+// degrades to Ukrainian.
+function AvailableLocales: TArray<TLocaleInfo>;
+var
+  Paths: TMHLPathInfo;
+  Dir, FileName, Code, LocaleName: string;
+  Files: TArray<string>;
+  Root: TJSONValue;
+  Obj: TJSONObject;
+  Seen: TDictionary<string, Boolean>;
+  Rest: TList<TLocaleInfo>;
+  Info, Base: TLocaleInfo;
+begin
+  Base.Code := DEFAULT_LOCALE;
+  Base.Name := BASE_LOCALE_NAME;
+  Result := [Base];
+
+  Paths := ResolveMHLPaths;
+  Dir := Paths.AppPath + LANG_DIR_NAME + PathDelim;
+  if not DirectoryExists(Dir) then
+    Exit;
+
+  Seen := TDictionary<string, Boolean>.Create;
+  Rest := TList<TLocaleInfo>.Create;
+  try
+    Seen.Add(LowerCase(DEFAULT_LOCALE), True);
+
+    try
+      Files := TDirectory.GetFiles(Dir, '*.json');
+    except
+      // An unreadable directory is the same as no directory.
+      Exit;
+    end;
+
+    // GetFiles gives no ordering guarantee, and the duplicate rule below is
+    // "first one wins" -- so the order has to be made deterministic here,
+    // rather than depending on how the filesystem happened to enumerate.
+    TArray.Sort<string>(Files);
+
+    for FileName in Files do
+    begin
+      Root := nil;
+      try
+        try
+          Root := TJSONObject.ParseJSONValue(
+            TFile.ReadAllText(FileName, TEncoding.UTF8));
+          if not (Root is TJSONObject) then
+            Continue;
+          Obj := TJSONObject(Root);
+
+          if not Obj.TryGetValue<string>('locale', Code) then
+            Continue;
+          if not Obj.TryGetValue<string>('name', LocaleName) then
+            Continue;
+
+          Code := LowerCase(Trim(Code));
+          LocaleName := Trim(LocaleName);
+          if (Code = '') or (LocaleName = '') then
+            Continue;
+
+          // The pinned base entry already covers uk, and a second file
+          // claiming a code we have seen loses to the first.
+          if Seen.ContainsKey(Code) then
+            Continue;
+          Seen.Add(Code, True);
+
+          Info.Code := Code;
+          Info.Name := LocaleName;
+          Rest.Add(Info);
+        except
+          // A catalog that cannot be read or parsed is simply not offered.
+          Continue;
+        end;
+      finally
+        Root.Free;
+      end;
+    end;
+
+    // Display order, applied after deduplication so that which duplicate won
+    // depends on the filename, not on the display names.
+    Rest.Sort(TComparer<TLocaleInfo>.Construct(
+      function(const L, R: TLocaleInfo): Integer
+      begin
+        Result := CompareText(L.Name, R.Name);
+      end));
+
+    Result := Result + Rest.ToArray;
+  finally
+    Rest.Free;
+    Seen.Free;
+  end;
 end;
 
 function InitLocalization: Boolean;
