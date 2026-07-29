@@ -2168,8 +2168,9 @@ end;
 // installed. Follows CreateCollectionMenu's idiom: create the item, set
 // Caption/Tag/OnClick, add it to its parent.
 //
-// GroupIndex 9 is used because frm_main.dfm already uses 1, 2 and 3, and radio
-// items only behave as one group when they share a value nothing else claims.
+// Any value would do: TurnSiblingsOff and VerifyGroupIndex (Vcl.Menus) scope
+// radio grouping to siblings under the same parent, and these items' only
+// siblings are each other. It just has to be the same for all of them.
 procedure TfrmMain.CreateLanguageMenu;
 const
   LANGUAGE_GROUP_INDEX = 9;
