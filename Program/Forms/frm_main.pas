@@ -71,7 +71,8 @@ uses
   Vcl.Themes,
   RzPanel, RzButton, RzStatus, RzTabs,
   dm_Images, VirtualTrees.BaseAncestorVCL, VirtualTrees.BaseTree,
-  VirtualTrees.AncestorVCL;
+  VirtualTrees.AncestorVCL,
+  unit_Localization;
 
 type
   TfrmMain = class(TForm, IDownloadView)
@@ -752,6 +753,7 @@ type
     FTimerDone: Boolean;
     FIgnoreAuthorChange: Boolean;
     FLangSelected: Boolean;
+    FLocales: TArray<TLocaleInfo>;
 
     function IsSelectedBookNode(Node: PVirtualNode; Data: PBookRecord): Boolean;
 
@@ -785,6 +787,9 @@ type
     procedure CreateScriptMenu;
     procedure SetColors;
     procedure CreateAlphabetToolbar;
+
+    procedure CreateLanguageMenu;
+    procedure LanguageItemClick(Sender: TObject);
 
     procedure RefreshBookInfo(const Tree: TBookTree);
     procedure RefreshActiveBookInfo;
@@ -1050,8 +1055,7 @@ uses
   frm_EditGroup,
   unit_SystemDatabase_Abstract,
   unit_MHLArchiveHelpers,
-  frm_DeleteCollection, unit_ImportOldUserData,
-  unit_Localization;
+  frm_DeleteCollection, unit_ImportOldUserData;
 
 resourcestring
 rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перевірте налаштування колекції!';
@@ -1115,6 +1119,12 @@ rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перев�
    rsrtNewCollectin = 'Нова колекція...';
    rstrSelectFolder = 'Вибір папки...';
    rstrSpecifyPath = 'Вкажіть шлях';
+   // Deliberately NOT 'Мова': that is already a catalog source whose English
+   // target was shortened to "Lang" so it would fit the search panel, and the
+   // runtime looks translations up by source text. Reusing it would put
+   // "Lang" in the menu bar.
+   rstrInterfaceLanguage = 'Мова інтерфейсу';
+   rstrLanguageChangeOnRestart = 'Мова зміниться при наступному запуску програми.';
 {$R *.dfm}
 
 //
@@ -1194,6 +1204,10 @@ procedure TfrmMain.DoCreate;
 begin
   inherited;
   Localize(Self);
+  // After Localize: the container's caption comes from a resourcestring, which
+  // the LoadResStringFunc hook translates when it is read, so the menu needs
+  // no second pass and Localize has nothing to do to it.
+  CreateLanguageMenu;
 end;
 
 procedure TfrmMain.WMGetSysCommand(var Message: TMessage);
@@ -2148,6 +2162,72 @@ begin
 
   miCopyToCollection.Enabled := (miCopyToCollection.Count > 0);
   miCollSelect.Enabled := (miCollSelect.Count > 0);
+end;
+
+// Builds the View -> Interface language submenu from whatever catalogs are
+// installed. Follows CreateCollectionMenu's idiom: create the item, set
+// Caption/Tag/OnClick, add it to its parent.
+//
+// GroupIndex 9 is used because frm_main.dfm already uses 1, 2 and 3, and radio
+// items only behave as one group when they share a value nothing else claims.
+procedure TfrmMain.CreateLanguageMenu;
+const
+  LANGUAGE_GROUP_INDEX = 9;
+var
+  Separator, Container, Item: TMenuItem;
+  I: Integer;
+begin
+  FLocales := AvailableLocales;
+
+  // One locale is not a choice: with only Ukrainian available the submenu
+  // would offer nothing but the language already in use, so build nothing at
+  // all -- no separator, no container, no trace in the View menu.
+  if Length(FLocales) < 2 then
+    Exit;
+
+  Separator := TMenuItem.Create(miView);
+  Separator.Caption := '-';
+  miView.Add(Separator);
+
+  Container := TMenuItem.Create(miView);
+  Container.Caption := rstrInterfaceLanguage;
+  miView.Add(Container);
+
+  for I := 0 to High(FLocales) do
+  begin
+    Item := TMenuItem.Create(Container);
+    // The language's own name, never translated: these are not catalog
+    // sources, so the walker misses them and each stays in its own script.
+    Item.Caption := FLocales[I].Name;
+    Item.RadioItem := True;
+    Item.GroupIndex := LANGUAGE_GROUP_INDEX;
+    Item.Tag := I;
+    Item.OnClick := LanguageItemClick;
+    Item.Checked := SameText(FLocales[I].Code, Settings.Locale);
+    Container.Add(Item);
+  end;
+end;
+
+procedure TfrmMain.LanguageItemClick(Sender: TObject);
+var
+  Index: Integer;
+  Code: string;
+begin
+  Index := TMenuItem(Sender).Tag;
+  if (Index < 0) or (Index > High(FLocales)) then
+    Exit;
+
+  Code := FLocales[Index].Code;
+  if SameText(Code, Settings.Locale) then
+    Exit; // clicking the ticked item is not a change
+
+  Settings.Locale := Code;
+  // Written now rather than at shutdown: the property is a plain field, and
+  // the choice should survive even if the process never exits cleanly.
+  Settings.SaveSettings;
+
+  TMenuItem(Sender).Checked := True;
+  MHLShowInfo(rstrLanguageChangeOnRestart);
 end;
 
 procedure TfrmMain.CreateGroupsMenu;
