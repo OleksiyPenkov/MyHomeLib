@@ -571,7 +571,7 @@ object frmMain: TfrmMain
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 0
               Spacing = 10
-              Text = #1053#1072#1079#1074#1072#1085#1080#1077
+              Text = #1053#1072#1079#1074#1072
               Width = 267
             end
             item
@@ -599,7 +599,7 @@ object frmMain: TfrmMain
               Options = [coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 2
               Spacing = 10
-              Text = #1056#1072#1079#1084#1077#1088
+              Text = #1056#1086#1079#1084#1110#1088
               Width = 65
             end
             item
@@ -868,7 +868,7 @@ object frmMain: TfrmMain
             Width = 90
             Height = 26
             Align = alLeft
-            Caption = #1053#1072#1079#1074#1072#1085#1080#1077' '#1089#1077#1088#1080#1080
+            Caption = #1053#1072#1079#1074#1072' '#1089#1077#1088#1110#1111
             Layout = tlCenter
             ExplicitHeight = 13
           end
@@ -959,7 +959,7 @@ object frmMain: TfrmMain
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 1
               Spacing = 10
-              Text = #1053#1072#1079#1074#1072#1085#1080#1077
+              Text = #1053#1072#1079#1074#1072
               Width = 181
             end
             item
@@ -985,7 +985,7 @@ object frmMain: TfrmMain
               Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 3
               Spacing = 10
-              Text = #1056#1072#1079#1084#1077#1088
+              Text = #1056#1086#1079#1084#1110#1088
               Width = 65
             end
             item
@@ -1157,7 +1157,7 @@ object frmMain: TfrmMain
             Width = 97
             Height = 26
             Align = alLeft
-            Caption = #1053#1072#1079#1074#1072#1085#1080#1077' '#1078#1072#1085#1088#1072
+            Caption = #1053#1072#1079#1074#1072' '#1078#1072#1085#1088#1091
             Layout = tlCenter
             ExplicitHeight = 13
           end
@@ -1258,7 +1258,7 @@ object frmMain: TfrmMain
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 0
               Spacing = 10
-              Text = #1040#1074#1090#1086#1088'/'#1057#1077#1088#1080#1103'/'#1053#1072#1079#1074#1072#1085#1080#1077
+              Text = #1040#1074#1090#1086#1088'/'#1057#1077#1088#1110#1103'/'#1053#1072#1079#1074#1072
               Width = 244
             end
             item
@@ -1286,7 +1286,7 @@ object frmMain: TfrmMain
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible, coAutoSpring]
               Position = 2
               Spacing = 10
-              Text = #1056#1072#1079#1084#1077#1088
+              Text = #1056#1086#1079#1084#1110#1088
               Width = 65
             end
             item
@@ -1471,14 +1471,14 @@ object frmMain: TfrmMain
               MinWidth = 30
               Position = 1
               Spacing = 10
-              Text = #1053#1072#1079#1074#1072#1085#1080#1077
+              Text = #1053#1072#1079#1074#1072
               Width = 200
             end
             item
               MaxWidth = 1000
               MinWidth = 30
               Position = 2
-              Text = #1057#1077#1088#1080#1103
+              Text = #1057#1077#1088#1110#1103
               Width = 200
             end
             item
@@ -1502,7 +1502,7 @@ object frmMain: TfrmMain
               MinWidth = 65
               Position = 4
               Spacing = 10
-              Text = #1056#1072#1079#1084#1077#1088
+              Text = #1056#1086#1079#1084#1110#1088
               Width = 65
             end
             item
@@ -1576,7 +1576,7 @@ object frmMain: TfrmMain
               Width = 178
               Height = 13
               Align = alTop
-              Caption = #1056#1072#1079#1084#1077#1097#1077#1085#1080#1077
+              Caption = #1056#1086#1079#1084#1110#1097#1077#1085#1085#1103
               ExplicitWidth = 62
             end
             object Label8: TLabel
@@ -1585,7 +1585,7 @@ object frmMain: TfrmMain
               Width = 38
               Height = 13
               Alignment = taRightJustify
-              Caption = #1054#1094#1077#1085#1082#1072
+              Caption = #1054#1094#1110#1085#1082#1072
             end
             object cbDate: TComboBox
               Left = 55
@@ -1711,7 +1711,7 @@ object frmMain: TfrmMain
               Width = 19
               Height = 13
               Align = alTop
-              Caption = #1048#1084#1103
+              Caption = #1030#1084#39#1103
             end
             object Label29: TLabel
               AlignWithMargins = True
@@ -1729,7 +1729,7 @@ object frmMain: TfrmMain
               Width = 72
               Height = 13
               Align = alTop
-              Caption = #1055#1072#1087#1082#1072' ('#1072#1088#1093#1080#1074')'
+              Caption = #1055#1072#1087#1082#1072' ('#1072#1088#1093#1110#1074')'
             end
             object edFFile: TMHLButtonedEdit
               AlignWithMargins = True
@@ -1787,7 +1787,7 @@ object frmMain: TfrmMain
               Width = 48
               Height = 13
               Align = alTop
-              Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+              Caption = #1053#1072#1079#1074#1072
             end
             object Label26: TLabel
               AlignWithMargins = True
@@ -1805,7 +1805,7 @@ object frmMain: TfrmMain
               Width = 31
               Height = 13
               Align = alTop
-              Caption = #1057#1077#1088#1080#1103
+              Caption = #1057#1077#1088#1110#1103
             end
             object Label7: TLabel
               AlignWithMargins = True
@@ -1814,7 +1814,7 @@ object frmMain: TfrmMain
               Width = 55
               Height = 13
               Align = alBottom
-              Caption = #1040#1085#1085#1086#1090#1072#1094#1080#1103
+              Caption = #1040#1085#1086#1090#1072#1094#1110#1103
             end
             object Label3: TLabel
               AlignWithMargins = True
@@ -2202,7 +2202,7 @@ object frmMain: TfrmMain
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 0
               Spacing = 10
-              Text = #1053#1072#1079#1074#1072#1085#1080#1077
+              Text = #1053#1072#1079#1074#1072
               Width = 305
             end
             item
@@ -2229,7 +2229,7 @@ object frmMain: TfrmMain
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 2
               Spacing = 10
-              Text = #1056#1072#1079#1084#1077#1088
+              Text = #1056#1086#1079#1084#1110#1088
               Width = 65
             end
             item
@@ -2246,7 +2246,7 @@ object frmMain: TfrmMain
               BiDiMode = bdLeftToRight
               Options = [coAllowClick, coDraggable, coEnabled, coParentColor, coResizable, coShowDropMark, coVisible]
               Position = 4
-              Text = #1050#1086#1083#1083#1077#1082#1094#1080#1103
+              Text = #1050#1086#1083#1077#1082#1094#1110#1103
               Width = 200
             end>
         end
@@ -2356,7 +2356,7 @@ object frmMain: TfrmMain
           Left = 226
           Top = 0
           Hint = 'Save'
-          Caption = #1057#1086#1093#1088#1072#1085#1080#1090#1100
+          Caption = #1047#1073#1077#1088#1077#1075#1090#1080
           ImageIndex = 8
           OnClick = BtnSaveClick
         end
@@ -3795,14 +3795,14 @@ object frmMain: TfrmMain
     object acImportNonFB2: TAction
       Category = #1048#1084#1087#1086#1088#1090
       Caption = #1085#1077'-fb2'
-      Hint = #1048#1084#1087#1086#1088#1090#1080#1088#1086#1074#1072#1090#1100' '#1082#1085#1080#1075#1080
+      Hint = #1030#1084#1087#1086#1088#1090#1091#1074#1072#1090#1080' '#1082#1085#1080#1075#1080
       OnExecute = ImportNonFB2Execute
       OnUpdate = ImportNonFB2Update
     end
     object acShowEditToolbar: TAction
       Category = #1042#1080#1076
       Caption = #1055#1072#1085#1077#1083#1100' '#1088#1077#1076#1072#1075#1091#1074#1072#1085#1085#1103
-      Hint = #1055#1072#1085#1077#1083#1100' '#1088#1077#1076#1072#1082#1090#1080#1088#1086#1074#1072#1085#1080#1103
+      Hint = #1055#1072#1085#1077#1083#1100' '#1088#1077#1076#1072#1075#1091#1074#1072#1085#1085#1103
       OnExecute = ShowEditToolbarExecute
       OnUpdate = ShowEditToolbarUpdate
     end
@@ -4124,7 +4124,7 @@ object frmMain: TfrmMain
     object acHelpHelp: TAction
       Category = #1055#1086#1084#1086#1097#1100
       Caption = #1044#1086#1074#1110#1076#1082#1072
-      Hint = #1057#1087#1088#1072#1074#1082#1072
+      Hint = #1044#1086#1074#1110#1076#1082#1072
       ImageIndex = 17
       OnExecute = ShowHelpExecute
     end

@@ -45,6 +45,8 @@ type
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
+  protected
+    procedure DoCreate; override;
   public
     { Public declarations }
   end;
@@ -57,13 +59,20 @@ implementation
 uses
   SysUtils,
   unit_Helpers,
-  unit_Consts;
+  unit_Consts,
+  unit_Localization;
 
 resourcestring
   rstrAppVersionInfo   = 'Версія: %s';
   rstrAppVersionInfo64 = 'Версія: %s x64';
 
 {$R *.dfm}
+
+procedure TfrmAbout.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmAbout.FormCreate(Sender: TObject);
 begin

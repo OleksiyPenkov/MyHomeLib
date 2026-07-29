@@ -73,6 +73,9 @@ type
     FSystemData: ISystemData;
     FCollection: IBookCollection;
 
+  protected
+    procedure DoCreate; override;
+
   public
     procedure SetCollection(const SystemData: ISystemData; const Collection: IBookCollection);
   end;
@@ -88,12 +91,19 @@ uses
   unit_Consts,
   unit_Errors,
   unit_Globals,
-  dm_user;
+  dm_user,
+  unit_Localization;
 
 resourcestring
   rstrChooseDataFolder = 'Виберіть папку для збереження даних';
 
 {$R *.dfm}
+
+procedure TfrmBases.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmBases.SetCollection(const SystemData: ISystemData; const Collection: IBookCollection);
 begin

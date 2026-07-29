@@ -40,6 +40,8 @@ type
     function GetPath: string;
     procedure SetExtension(const Value: string);
     procedure SetPath(const Value: string);
+  protected
+    procedure DoCreate; override;
   public
     property Extension: string read GetExtension write SetExtension;
     property Path: string read GetPath write SetPath;
@@ -51,12 +53,19 @@ var
 implementation
 
 uses
-  unit_Helpers;
+  unit_Helpers,
+  unit_Localization;
 
 resourcestring
   rstrMissingFileType = 'Тип файлу не вказано!';
 
 {$R *.dfm}
+
+procedure TfrmEditReader.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmEditReader.edPathButtonClick(Sender: TObject);
 var

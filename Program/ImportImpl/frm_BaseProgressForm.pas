@@ -41,6 +41,8 @@ type
     FWorker: TWorker;
 
   protected
+    procedure DoCreate; override;
+
     procedure StartWorker; virtual;
 
     procedure OpenProgress; virtual; abstract;
@@ -66,9 +68,16 @@ var
 implementation
 
 uses
-  unit_mhl_strings;
+  unit_mhl_strings,
+  unit_Localization;
 
 {$R *.dfm}
+
+procedure TProgressFormBase.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 destructor TProgressFormBase.Destroy;
 begin

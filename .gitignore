@@ -11,6 +11,12 @@ __history
 /Installer/Common
 /Installer/x86
 /Installer/x64
+# Translation catalogs. Deliberately not published while the multilingual UI is
+# unfinished: Russian is untranslated and there is no way to pick a language in
+# the UI yet. Ukrainian is compiled into the exe and the loader treats Lang\ as
+# purely additive, so an app shipped without this folder runs exactly as before.
+# Regenerate with tools/lang/extract.js.
+/Program/Lang/
 .superpowers/
 .claude/
 .mcp.json

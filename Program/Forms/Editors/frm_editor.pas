@@ -46,6 +46,9 @@ type
     procedure SetText(const Value: string);
     function GetText: string;
 
+  protected
+    procedure DoCreate; override;
+
   public
     property Text: string read GetText write SetText;
   end;
@@ -55,7 +58,16 @@ var
 
 implementation
 
+uses
+  unit_Localization;
+
 {$R *.dfm}
+
+procedure TfrmEditor.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmEditor.btnLikeClick(Sender: TObject);
 var

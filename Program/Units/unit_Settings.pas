@@ -87,6 +87,20 @@ type
   TSplitters = array of Integer;
   TTreeModes = array of TTreeMode;
 
+  TMHLPathInfo = record
+    AppPath: string;      // exe directory, WITH trailing path delimiter
+    WorkDir: string;      // work directory, WITHOUT trailing path delimiter
+    IniFileName: string;  // file name only, no path
+    DbsFileName: string;  // file name only, no path
+    UseLocalTemp: Boolean;
+  end;
+
+function ResolveMHLPaths: TMHLPathInfo;
+
+const
+  DEFAULT_LOCALE = 'uk';
+
+type
   TMHLSettings = class
   private
     //
@@ -121,7 +135,7 @@ type
     // INTERFACE_SECTION
     FTreeFontSize: Integer;
     FShortFontSize: Integer;
-    FAppLanguage: TAppLanguage;
+    FLocale: string;
     FActivePage: Integer;
     FSplitters: TSplitters;
     FTreeModes: TTreeModes;
@@ -343,7 +357,7 @@ type
     property ShowBookAnnotation: Boolean read FShowBookAnnotation write FShowBookAnnotation;
     property Fb2InfoPriority: Boolean read FFb2InfoPriority write FFb2InfoPriority;
 
-    property AppLanguage: TAppLanguage read FAppLanguage write FAppLanguage;
+    property Locale: string read FLocale write FLocale;
     property HideDeletedBooks: Boolean read FDoNotShowDeleted write FDoNotShowDeleted;
     property ShowLocalOnly: Boolean read FShowLocalOnly write FShowLocalOnly;
     property ShowSubGenreBooks: Boolean read FShowSubGenreBooks write FShowSubGenreBooks;
@@ -485,41 +499,35 @@ const
 
 { TMHLSettings }
 
-constructor TMHLSettings.Create;
+function ResolveMHLPaths: TMHLPathInfo;
 const
   STR_USELOCALDATA = 'uselocaldata';
   STR_USELOCALTEMP = 'uselocaltemp';
   STR_USERDBS = 'user';
-
 var
   GlobalAppDataDir: string;
-
-  UseLocalData, UseLocalTemp, UserDatabase: Boolean;
+  UseLocalData, UserDatabase: Boolean;
   I: Integer;
-
   DBFileName: string;
 begin
-  inherited Create;
-
-  FAppPath := ExtractFilePath(Application.ExeName);
+  Result.AppPath := ExtractFilePath(Application.ExeName);
   GlobalAppDataDir := GetSpecialPath(CSIDL_APPDATA) + APPDATA_DIR_NAME;
 
-  // определяем рабочую и временную папку в зависимости от параметров
-  // командной строки или ключевых файлов
-  FDbsFileName := SYSTEM_DATABASE_FILENAME;
-  FIniFileName := SETTINGS_FILE_NAME;
+  Result.DbsFileName := SYSTEM_DATABASE_FILENAME;
+  Result.IniFileName := SETTINGS_FILE_NAME;
+  Result.UseLocalTemp := False;
 
   UseLocalData := False;
-  UseLocalTemp := False;
   UserDatabase := False;
+  DBFileName := '';
 
   for I := 1 to ParamCount do
   begin
     if not UseLocalData then
       UseLocalData := (LowerCase(ParamStr(I)) = STR_USELOCALDATA);
 
-    if not UseLocalTemp then
-      UseLocalTemp := (LowerCase(ParamStr(I)) = STR_USELOCALTEMP);
+    if not Result.UseLocalTemp then
+      Result.UseLocalTemp := (LowerCase(ParamStr(I)) = STR_USELOCALTEMP);
 
     if (LowerCase(ParamStr(I)) = STR_USERDBS) and (ParamStr(I + 1) <> '') then
     begin
@@ -528,35 +536,46 @@ begin
     end;
   end;
 
-  UseLocalData := UseLocalData or FileExists(FAppPath + STR_USELOCALDATA) or not DirectoryExists(GlobalAppDataDir);
-  UseLocalTemp := UseLocalTemp or FileExists(FAppPath + STR_USELOCALTEMP);
+  UseLocalData := UseLocalData or FileExists(Result.AppPath + STR_USELOCALDATA)
+    or not DirectoryExists(GlobalAppDataDir);
+  Result.UseLocalTemp := Result.UseLocalTemp
+    or FileExists(Result.AppPath + STR_USELOCALTEMP);
 
-  //
-  // Устанавливаем рабочую папку и папку с данными
-  //
-  FWorkDir := IfThen(UseLocalData, ExcludeTrailingPathDelimiter(FAppPath), GlobalAppDataDir);
+  Result.WorkDir := IfThen(UseLocalData,
+    ExcludeTrailingPathDelimiter(Result.AppPath), GlobalAppDataDir);
+
+  if UserDatabase then
+  begin
+    Result.DbsFileName := DBFileName + '.dbs';
+    Result.IniFileName := DBFileName + '.ini';
+  end;
+end;
+
+constructor TMHLSettings.Create;
+var
+  Paths: TMHLPathInfo;
+begin
+  inherited Create;
+
+  Paths := ResolveMHLPaths;
+
+  FAppPath := Paths.AppPath;
+  FWorkDir := Paths.WorkDir;
+  FDbsFileName := Paths.DbsFileName;
+  FIniFileName := Paths.IniFileName;
   FDataDir := WorkPath + DATA_DIR_NAME;
 
-  if UserDatabase then // пользовательский файл БД и настроек
+  if Paths.IniFileName <> SETTINGS_FILE_NAME then
   begin
-    FDbsFileName := DBFileName + '.dbs';
-    FIniFileName := DBFileName + '.ini';
+    // пользовательский файл настроек: если такого файла еще нет, копируем стандартный
     if FileExists(WorkPath + SETTINGS_FILE_NAME) and not FileExists(WorkPath + FIniFileName) then
-    begin
-      // если такого файла еще нет, копируем стандартный
       unit_globals.CopyFile(WorkPath + SETTINGS_FILE_NAME, WorkPath + FIniFileName);
-      // может лучше использовать Windows.CopyFile(PChar(WorkPath + SETTINGS_FILE_NAME), PChar(WorkPath + FIniFileName), False);
-    end;
   end;
 
-  //
-  // устанавливаем временную папку
-  //
-  if UseLocalTemp then
+  if Paths.UseLocalTemp then
     FTempDir := FAppPath + TEMP_DIR_NAME
   else
     FTempDir := c_GetTempPath + TEMP_FOLDER_NAME;
-
 
   // -----------------------------------------------------
   FReaders := TReaders.Create;
@@ -742,10 +761,13 @@ begin
     FOtherSRCollapsed := iniFile.ReadBool(INTERFACE_SECTION, 'OtherSR', False);
     FEditToolBarVisible := iniFile.ReadBool(INTERFACE_SECTION, 'ShowEditToolBar', False);
 
-    if iniFile.ReadInteger(INTERFACE_SECTION, 'Lang', 0) = 0 then
-      FAppLanguage := alEng
-    else
-      FAppLanguage := alRus;
+    // The legacy integer 'Lang' key is deliberately ignored, not migrated:
+    // it was written but never read, so it encodes no real user preference.
+    // Deliberately NOT detected from the OS UI language. An existing install
+    // must never change language because of an update; the user picks it.
+    FLocale := LowerCase(Trim(iniFile.ReadString(INTERFACE_SECTION, 'Locale', '')));
+    if FLocale = '' then
+      FLocale := DEFAULT_LOCALE;
 
     LoadSplitters(iniFile);
 
@@ -903,7 +925,7 @@ begin
     //
     iniFile.WriteInteger(INTERFACE_SECTION, 'FontSize', FTreeFontSize);
     iniFile.WriteInteger(INTERFACE_SECTION, 'ShortFontSize', FShortFontSize);
-    iniFile.WriteInteger(INTERFACE_SECTION, 'Lang', Ord(FAppLanguage));
+    iniFile.WriteString(INTERFACE_SECTION, 'Locale', FLocale);
     iniFile.WriteInteger(INTERFACE_SECTION, 'ActivePage', FActivePage);
 
     iniFile.WriteInteger(INTERFACE_SECTION, 'WindowState', WindowState);

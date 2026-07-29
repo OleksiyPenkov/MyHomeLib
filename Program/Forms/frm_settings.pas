@@ -249,6 +249,9 @@ type
     procedure SaveReaders;
     procedure SaveScripts;
 
+  protected
+    procedure DoCreate; override;
+
   public
     procedure LoadSetting;
     procedure SaveSettings;
@@ -269,7 +272,8 @@ uses
   dm_user,
   unit_Helpers,
   frm_create_mask,
-  unit_Templater;
+  unit_Templater,
+  unit_Localization;
 
 resourcestring
 rstrStandart = 'Стандартне';
@@ -283,6 +287,12 @@ rstrStandart = 'Стандартне';
   rstrConfirmReset = 'Скинути налаштування цього розділу до типових значень?';
 
 {$R *.dfm}
+
+procedure TfrmSettings.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmSettings.LoadSetting;
 var

@@ -488,7 +488,8 @@
          a PostBuildEvent placed earlier expands them to empty strings. -->
     <PropertyGroup>
         <PostBuildEvent>call &quot;$(PROJECTDIR)\copy_help.cmd&quot; &quot;$(OUTPUTDIR).&quot;
-call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(Platform)&quot;</PostBuildEvent>
+call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(Platform)&quot;
+call &quot;$(PROJECTDIR)\copy_lang.cmd&quot; &quot;$(OUTPUTDIR).&quot;</PostBuildEvent>
     </PropertyGroup>
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>

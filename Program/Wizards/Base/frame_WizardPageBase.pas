@@ -27,6 +27,8 @@ type
     FPParams: PNCWParams;
 
   public
+    constructor Create(AOwner: TComponent); override;
+
     procedure Initialize(PParams: PNCWParams); virtual;
     function Activate(LoadData: Boolean): Boolean; virtual;
     function Deactivate(CheckData: Boolean): Boolean; virtual;
@@ -38,7 +40,16 @@ type
 
 implementation
 
+uses
+  unit_Localization;
+
 {$R *.dfm}
+
+constructor TWizardPageBase.Create(AOwner: TComponent);
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TWizardPageBase.Initialize(PParams: PNCWParams);
 begin

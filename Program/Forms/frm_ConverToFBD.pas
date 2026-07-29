@@ -111,6 +111,9 @@ type
 
     function ConvertCurrentBook: TAutoModeResult;
 
+  protected
+    procedure DoCreate; override;
+
   public
     //
     // Пакетне створення FBD для всіх книг активного дерева.
@@ -140,7 +143,8 @@ uses
   unit_Errors,
   unit_FileMutex,
   unit_Consts,
-  unit_MHL_strings;
+  unit_MHL_strings,
+  unit_Localization;
 
 resourcestring
   rstrAutoFBDReport = 'Пакетне створення FBD завершено.' + CRLF +
@@ -150,6 +154,12 @@ resourcestring
                       'Помилок: %d';
 
 {$R *.dfm}
+
+procedure TfrmConvertToFBD.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmConvertToFBD.FormCreate(Sender: TObject);
 begin

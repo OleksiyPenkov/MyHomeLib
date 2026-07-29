@@ -255,7 +255,7 @@ object frmConvertToFBD: TfrmConvertToFBD
       Top = 10
       Width = 75
       Height = 25
-      Hint = #1057#1083#1077#1076#1091#1102#1097#1072#1103' '#13#1082#1085#1080#1075#1072
+      Hint = #1053#1072#1089#1090#1091#1087#1085#1072' '#13#1082#1085#1080#1075#1072
       Caption = #1042#1087#1077#1088#1077#1076
       DoubleBuffered = True
       ParentDoubleBuffered = False

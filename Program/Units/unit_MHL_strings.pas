@@ -50,7 +50,7 @@ resourcestring
   //
   //
   rstrBookProcessedMsg1 = 'Оброблено книг: %u';
-  rstrBookProcessedMsg2 = 'Оброблено книг: %u из %u';
+  rstrBookProcessedMsg2 = 'Оброблено книг: %u з %u';
 
   //
   // Форма редактирования/создания FBD и пунк меню в главной форме

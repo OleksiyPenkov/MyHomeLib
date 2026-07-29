@@ -33,6 +33,9 @@ type
     procedure tvAuthorListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
   private
 
+  protected
+    procedure DoCreate; override;
+
   public
 
   end;
@@ -43,9 +46,16 @@ var
 implementation
 
 uses
-  unit_Globals;
+  unit_Globals,
+  unit_Localization;
 
   {$R *.dfm}
+
+procedure TfrmAuthorList.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmAuthorList.tvAuthorListFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var

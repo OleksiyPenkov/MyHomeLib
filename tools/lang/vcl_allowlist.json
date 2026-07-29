@@ -1,0 +1,15 @@
+[
+  "Vcl_Consts_SMsgDlgOK",     "Vcl_Consts_SMsgDlgCancel",
+  "Vcl_Consts_SMsgDlgHelp",   "Vcl_Consts_SMsgDlgAbort",
+  "Vcl_Consts_SMsgDlgRetry",  "Vcl_Consts_SMsgDlgIgnore",
+  "Vcl_Consts_SMsgDlgAll",    "Vcl_Consts_SMsgDlgNoToAll",
+  "Vcl_Consts_SMsgDlgYesToAll", "Vcl_Consts_SMsgDlgClose",
+  "Vcl_Consts_SMsgDlgWarning", "Vcl_Consts_SMsgDlgError",
+  "Vcl_Consts_SMsgDlgInformation", "Vcl_Consts_SMsgDlgConfirm",
+  "Vcl_Consts_SMsgDlgYes",    "Vcl_Consts_SMsgDlgNo",
+  "Vcl_Consts_SOKButton",     "Vcl_Consts_SCancelButton",
+  "Vcl_Consts_SYesButton",    "Vcl_Consts_SNoButton",
+  "Vcl_Consts_SHelpButton",   "Vcl_Consts_SCloseButton",
+  "Vcl_Consts_SIgnoreButton", "Vcl_Consts_SRetryButton",
+  "Vcl_Consts_SAbortButton",  "Vcl_Consts_SAllButton"
+]

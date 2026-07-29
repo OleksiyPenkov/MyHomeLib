@@ -164,6 +164,9 @@ type
 
     function CheckEmptyFields(Data: PFileData): Boolean;
 
+  protected
+    procedure DoCreate; override;
+
   public
     property Collection: IBookCollection read FCollection write FCollection;
   end;
@@ -182,7 +185,8 @@ uses
   unit_MHLHelpers,
   unit_Helpers,
   frm_author_list,
-  unit_MHLArchiveHelpers;
+  unit_MHLArchiveHelpers,
+  unit_Localization;
 
 resourcestring
 rstrFileNotSelected = 'Файл не вибраний!';
@@ -191,6 +195,12 @@ rstrFileNotSelected = 'Файл не вибраний!';
    rstrFailedToRename = 'Перейменування не вдалося!' + CRLF + 'Можливо, файл заблоковано іншою програмою.';
 
 {$R *.dfm}
+
+procedure TfrmAddnonfb2.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmAddnonfb2.FillLists;
 var

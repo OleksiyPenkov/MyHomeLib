@@ -94,6 +94,8 @@ type
     procedure SetTemplate(const Value: string);
 
     function GetTestData: TBookRecord;
+  protected
+    procedure DoCreate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -111,7 +113,8 @@ var
 implementation
 
 uses
-  unit_Errors;
+  unit_Errors,
+  unit_Localization;
 
 {$R *.dfm}
 
@@ -188,6 +191,12 @@ begin
   inherited Create(AOwner);
   FTemplater := TTemplater.Create;
   Templater := TTemplater.Create;
+end;
+
+procedure TfrmCreateMask.DoCreate;
+begin
+  inherited;
+  Localize(Self);
 end;
 
 destructor TfrmCreateMask.Destroy;

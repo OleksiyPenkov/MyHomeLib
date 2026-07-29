@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls;
+  Dialogs, StdCtrls, ExtCtrls, unit_Localization;
 
 type
   TfrmEditGroup = class(TForm)
@@ -20,6 +20,8 @@ type
     procedure SetGroupName(const Value: string);
 
     property GroupName: string read GetGroupName write SetGroupName;
+  protected
+    procedure DoCreate; override;
   public
     { Public declarations }
   end;
@@ -39,6 +41,12 @@ resourcestring
    rstrEditGroup = 'Редагування групи';
 
 {$R *.dfm}
+
+procedure TfrmEditGroup.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmEditGroup.FormShow(Sender: TObject);
 begin

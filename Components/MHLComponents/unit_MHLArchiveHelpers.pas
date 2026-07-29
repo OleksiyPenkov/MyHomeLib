@@ -88,6 +88,9 @@ uses
   WideStrUtils,
   IOUtils;
 
+resourcestring
+  rstrArchiveNotFound = 'Архів %s не знайдено!';
+
 function IsArchiveExt(const FileName: string): Boolean;
 var
   ext: string;
@@ -275,7 +278,7 @@ begin
   if RO and not(FileExists(AFileName)) then
   begin
     FResult := False;
-    raise Exception.Create(Format('Архів %s не знайдено!',[AFileName]));
+    raise Exception.CreateFmt(rstrArchiveNotFound, [AFileName]);
   end;
 
   FZip := TZipFile.Create;

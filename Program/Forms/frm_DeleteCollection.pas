@@ -51,6 +51,8 @@ type
     btnCancel: TButton;
   private
     { Private declarations }
+  protected
+    procedure DoCreate; override;
   public
     { Public declarations }
   end;
@@ -62,7 +64,16 @@ function AskDeleteCollectionAction: TDeleteCollectionAction;
 
 implementation
 
+uses
+  unit_Localization;
+
 {$R *.dfm}
+
+procedure TdlgDeleteCollection.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 resourcestring
 rstrDlgCaption = 'Видалення колекції';

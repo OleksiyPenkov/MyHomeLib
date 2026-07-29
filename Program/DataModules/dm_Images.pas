@@ -55,6 +55,13 @@ implementation
 
 {$R *.dfm}
 
+resourcestring
+  rstrIconResourceMissing =
+    'Не вдалося завантажити ресурс піктограм:'#13#10'%s'#13#10#13#10 +
+    'Помилка Windows %d: %s'#13#10#13#10 +
+    'Програма працюватиме без піктограм. Перевстановіть MyHomeLib або ' +
+    'скопіюйте теку Icons поруч із MyHomeLib.exe.';
+
 const
   CIconResFile = 'Icons\MHLIcons.dll';
 
@@ -188,11 +195,7 @@ begin
   if FResModule = 0 then
   begin
     LastError := GetLastError;
-    raise EIconResourceMissing.CreateFmt(
-      'Не вдалося завантажити ресурс піктограм:'#13#10'%s'#13#10#13#10 +
-      'Помилка Windows %d: %s'#13#10#13#10 +
-      'Програма працюватиме без піктограм. Перевстановіть MyHomeLib або ' +
-      'скопіюйте теку Icons поруч із MyHomeLib.exe.',
+    raise EIconResourceMissing.CreateFmt(rstrIconResourceMissing,
       [ResPath, LastError, SysErrorMessage(LastError)]);
   end;
 end;

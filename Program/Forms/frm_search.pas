@@ -50,6 +50,9 @@ type
     FBusy: boolean;
     FOnLocateBook: TOnLocateBookEvent;
 
+  protected
+    procedure DoCreate; override;
+
   public
     property OnLocateBook: TOnLocateBookEvent read FOnLocateBook write FOnLocateBook;
 
@@ -57,7 +60,16 @@ type
 
 implementation
 
+uses
+  unit_Localization;
+
 {$R *.dfm}
+
+procedure TfrmBookSearch.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmBookSearch.FormCreate(Sender: TObject);
 begin

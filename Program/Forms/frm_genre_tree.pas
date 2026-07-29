@@ -33,6 +33,9 @@ type
     procedure tvGenresTreeGetText(Sender: TBaseVirtualTree; Node: PVirtualNode; Column: TColumnIndex; TextType: TVSTTextType; var CellText: String);
     procedure tvGenresTreeFreeNode(Sender: TBaseVirtualTree; Node: PVirtualNode);
 
+  protected
+    procedure DoCreate; override;
+
   public
     procedure SelectGenres(const Genres: TBookGenres);
 
@@ -46,9 +49,16 @@ var
 implementation
 
 uses
-  unit_Consts;
+  unit_Consts,
+  unit_Localization;
 
 {$R *.dfm}
+
+procedure TfrmGenreTree.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmGenreTree.SelectGenres(const Genres: TBookGenres);
 var

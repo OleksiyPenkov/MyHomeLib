@@ -32,6 +32,9 @@ type
     btnClose: TButton;
     lvInfo: TListView;
 
+  protected
+    procedure DoCreate; override;
+
   public
     procedure LoadCollectionInfo(const Collection: IBookCollection);
   end;
@@ -45,12 +48,19 @@ uses
   Variants,
   SysUtils,
   unit_Consts,
-  unit_Helpers;
+  unit_Helpers,
+  unit_Localization;
 
 resourcestring
   rstrUnknown = 'unknown';
 
 {$R *.dfm}
+
+procedure TfrmStat.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmStat.LoadCollectionInfo(const Collection: IBookCollection);
 var

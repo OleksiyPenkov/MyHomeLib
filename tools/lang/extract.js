@@ -1,0 +1,466 @@
+'use strict';
+
+// Extracts the localization catalogs (Program/Lang/{uk,en,ru}.json) that
+// unit_Localization.pas loads at runtime.
+//
+// Why the .drc (compiler-resolved resourcestrings) and not the .pas sources:
+// resourcestring declarations concatenate at compile time ('a' + CRLF + 'b',
+// #13#10 escapes, constants pulled in from other units) and only the compiler
+// knows the final runtime string. TranslateText() looks strings up by that
+// exact runtime text, not by any key, so a hand-rolled .pas parser would
+// produce strings that never match at runtime. The .drc is the compiler's
+// own record of what it resolved each resourcestring to.
+
+const fs = require('fs');
+const path = require('path');
+
+const REPO_ROOT = path.resolve(__dirname, '..', '..');
+const DRC_PATH = path.join(REPO_ROOT, 'Program', 'OUT', 'Bin64', 'MyHomeLib.drc');
+const EXE_PATH = path.join(REPO_ROOT, 'Program', 'OUT', 'Bin64', 'MyHomeLib.exe');
+const PROGRAM_DIR = path.join(REPO_ROOT, 'Program');
+const LANG_DIR = path.join(REPO_ROOT, 'Program', 'Lang');
+const ALLOWLIST_PATH = path.join(__dirname, 'vcl_allowlist.json');
+
+// Same-build compile-then-link ordering means the .drc is always written a
+// short moment before the .exe it belongs to (measured ~37ms apart on this
+// machine) — that is NOT staleness. Real staleness (a .drc left over from an
+// earlier build while the .exe was rebuilt without /p:DCC_OutputDRCFile=true)
+// shows up as a gap of minutes/hours/days. Five minutes comfortably covers
+// even a slow full rebuild's compile-to-link time while still catching the
+// real failure mode.
+const STALE_TOLERANCE_MS = 5 * 60 * 1000;
+
+const LOCALES = [
+  { code: 'uk', name: 'Українська' },
+  { code: 'en', name: 'English' },
+  { code: 'ru', name: 'Русский' },
+];
+
+// `dm_` covers the data modules. They had no resourcestrings when this list
+// was first drawn up, so its absence went unnoticed until dm_Images grew one --
+// and the symptom was silent: the string simply never appeared in a catalog.
+const OURS = /^(frm_|frame_|unit_|Data_|dm_|FBD|SQLiteWrap_|BookInfoPanel_)/;
+const PROPS = new Set(['Caption', 'Hint', 'Text', 'TextHint']);
+
+function fail(message) {
+  console.error(message);
+  process.exit(1);
+}
+
+// A path SEGMENT match, case-insensitive -- not a substring test against the
+// whole absolute path. A substring test would skip everything under any
+// checkout whose directory name happens to contain "OUT" (or "__history")
+// anywhere, e.g. a folder literally named "...OUT...". Matching the segment
+// exactly still catches the real Program\OUT build-output directory and any
+// __history backup directory, wherever the repo lives on disk.
+function isExcludedSegment(name) {
+  const lower = name.toLowerCase();
+  return lower === 'out' || lower === '__history';
+}
+
+// Newest .pas mtime anywhere under `dir` (excluding build output / history
+// dirs). Used to catch a resourcestring edit that was never compiled: if a
+// .pas is newer than the .drc, the .drc cannot possibly reflect it yet.
+function findNewestPas(dir) {
+  let best = null;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    if (isExcludedSegment(entry.name)) continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const sub = findNewestPas(full);
+      if (sub && (!best || sub.mtime > best.mtime)) best = sub;
+    } else if (entry.isFile() && full.toLowerCase().endsWith('.pas')) {
+      const mtime = fs.statSync(full).mtimeMs;
+      if (!best || mtime > best.mtime) best = { mtime, file: full };
+    }
+  }
+  return best;
+}
+
+function checkDrcFreshness() {
+  if (!fs.existsSync(DRC_PATH)) {
+    fail(`Build Win64 first: ${DRC_PATH} not found`);
+  }
+  if (!fs.existsSync(EXE_PATH)) {
+    fail(`Build Win64 first: ${EXE_PATH} not found`);
+  }
+  const drcTime = fs.statSync(DRC_PATH).mtimeMs;
+  const exeTime = fs.statSync(EXE_PATH).mtimeMs;
+  if (drcTime + STALE_TOLERANCE_MS < exeTime) {
+    fail(
+      'MyHomeLib.drc is stale or missing. Rebuild with:\n' +
+      '  msbuild Program\\MHL.groupproj /t:Build /p:Config=Release /p:Platform=Win64 /p:DCC_OutputDRCFile=true'
+    );
+  }
+  const newestPas = findNewestPas(PROGRAM_DIR);
+  if (newestPas && drcTime + STALE_TOLERANCE_MS < newestPas.mtime) {
+    fail(
+      `MyHomeLib.drc is stale: ${newestPas.file} was modified more recently ` +
+      'than the .drc, so the .drc cannot reflect its current resourcestrings. Rebuild with:\n' +
+      '  msbuild Program\\MHL.groupproj /t:Build /p:Config=Release /p:Platform=Win64 /p:DCC_OutputDRCFile=true'
+    );
+  }
+}
+
+// ONE left-to-right pass over the escape sequences, not a chain of .replace()
+// calls. A chain gets \r and \n wrong in both directions: a resourcestring
+// containing CRLF is written as \r\n and must decode to real newlines (without
+// it TranslateText can never match the runtime string, so the entry is dead
+// weight in every catalog), while a literal backslash is written as \\ and a
+// path like C:\new would have its SECOND backslash eaten by a naive \n pass.
+// A single pass consumes \\ as one token, so neither case can go wrong.
+function decodeDrcValue(raw) {
+  return raw.replace(/\\(x[0-9a-fA-F]{4}|[\s\S])/g, (_, esc) => {
+    if (esc[0] === 'x') return String.fromCharCode(parseInt(esc.slice(1), 16));
+    switch (esc) {
+      case 'r': return '\r';
+      case 'n': return '\n';
+      case 't': return '\t';
+      case 'a': return '\x07';
+      case 'b': return '\b';
+      case 'f': return '\f';
+      case 'v': return '\v';
+      case '0': return '\0';
+      default: return esc; // \\ , \" , \' and anything else stand for themselves
+    }
+  });
+}
+
+function readDrc(drcPath, allowlist) {
+  const lines = fs.readFileSync(drcPath, 'utf8').split(/\r?\n/);
+  const out = new Map();
+  let inTable = false;
+  for (const line of lines) {
+    if (line.startsWith('STRINGTABLE')) { inTable = true; continue; }
+    if (!inTable) continue;
+    const m = line.match(/^\t(\w+),\t+L"(.*)"$/);
+    if (!m) continue;
+    const [, name, raw] = m;
+    const isOurs = OURS.test(name);
+    const isAllowed = allowlist.includes(name);
+    if (!isOurs && !isAllowed) continue;
+    const text = decodeDrcValue(raw);
+    // NO Cyrillic filter here, deliberately. Everything in the .drc is a
+    // resourcestring somebody wrote on purpose, and 25 genuinely translatable
+    // English ones would be lost to such a filter -- "File \"%s\" not found",
+    // "Homepage", "Nick", "Email", "unknown", the SQLiteWrap error messages,
+    // and an "OK" button caption among them. Untranslatable entries (file
+    // extensions like "inpx", identifiers like "ISBN", the "[%s [(%n) ]- ]%t"
+    // template) cost nothing: a translator leaves target equal to source, and
+    // the loader's rule 2 skips those, so they never reach the index.
+    // The Cyrillic filter still applies to DFM values, where it is earning
+    // its keep against designer junk like Text = 'Edit1'.
+    if (text.trim() === '') continue;
+    out.set(name, text);
+  }
+  return out;
+}
+
+function decodeDfmValue(tok) {
+  let out = '', i = 0;
+  while (i < tok.length) {
+    if (tok[i] === "'") {
+      i++;
+      while (i < tok.length) {
+        if (tok[i] === "'") {
+          if (tok[i + 1] === "'") { out += "'"; i += 2; continue; }
+          i++; break;
+        }
+        out += tok[i++];
+      }
+    } else if (tok[i] === '#') {
+      let n = '';
+      i++;
+      while (i < tok.length && /[0-9]/.test(tok[i])) n += tok[i++];
+      out += String.fromCharCode(parseInt(n, 10));
+    } else {
+      i++; // whitespace, '+' continuations, stray characters
+    }
+  }
+  return out;
+}
+
+function readDfm(file) {
+  const base = path.basename(file, '.dfm');
+  const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
+  // Frames on this stack are either:
+  //   { type: 'object', label }     -- an object/inherited/inline block
+  //   { type: 'collection', name, counter } -- a "Foo = <" item collection;
+  //     contributes no label of its own, only numbers the items inside it
+  //   { type: 'item', label }       -- one "item ... end" element, numbered
+  //     within its enclosing collection (label like "Columns[0]")
+  const stack = [];
+  const found = [];
+  for (let i = 0; i < lines.length; i++) {
+    const t = lines[i].trim();
+    let m;
+    if ((m = t.match(/^(?:object|inherited|inline)\s+(\w+)\s*:/))) {
+      stack.push({ type: 'object', label: m[1] });
+      continue;
+    }
+    if ((m = t.match(/^(\w+)\s*=\s*<$/))) {
+      stack.push({ type: 'collection', name: m[1], counter: 0 });
+      continue;
+    }
+    if (t === 'item') {
+      const top = stack[stack.length - 1];
+      let label;
+      if (top && top.type === 'collection') {
+        label = `${top.name}[${top.counter}]`;
+        top.counter++;
+      } else {
+        // Defensive fallback for an 'item' outside any recognised collection
+        // header -- should not happen in a well-formed DFM.
+        label = 'item';
+      }
+      stack.push({ type: 'item', label });
+      continue;
+    }
+    if (t === 'end') { stack.pop(); continue; }
+    if (t === 'end>') {
+      // Closes both the last item and the collection that opened it.
+      stack.pop(); // item
+      stack.pop(); // collection
+      continue;
+    }
+    // Items.Strings is invisible to the generic property branch below, whose
+    // /^(\w+)\s*=/ cannot match a dotted name. The list form is:
+    //     Items.Strings = (
+    //       'first'
+    //       'last')
+    // -- note the closing paren shares a line with the final item.
+    if (/^Items\.Strings\s*=\s*\($/.test(t)) {
+      const owner = stack.filter((f) => f.label !== undefined).map((f) => f.label);
+      let index = 0;
+      let buf = '';
+      let j = i + 1;
+      let closed = false;
+      while (j < lines.length && !closed) {
+        let s = lines[j].trim();
+        if (s === ')') { closed = true; break; }
+        if (s.endsWith(')')) { s = s.slice(0, -1).trimEnd(); closed = true; }
+        buf += s;
+        if (buf.endsWith('+')) { buf = buf.slice(0, -1); j++; continue; }
+        const value = decodeDfmValue(buf);
+        buf = '';
+        // The index counts EVERY item, translated or not: it has to line up
+        // with the runtime Items[] index or the key lies about what it names.
+        if (/[Ѐ-ӿ]/.test(value)) {
+          found.push([[base, ...owner, `Items[${index}]`].join('.'), value]);
+        }
+        index++;
+        if (!closed) j++;
+      }
+      i = j;
+      continue;
+    }
+    if ((m = t.match(/^(\w+)\s*=\s*(.*)$/))) {
+      if (!PROPS.has(m[1])) continue;
+      let tok = m[2];
+      // A long value may be written on the lines AFTER the property name:
+      //     Caption =
+      //       'first part' +
+      //       'second part'
+      // Nothing follows the "=" on that first line, so the '+' continuation
+      // loop below never starts and the property used to decode to '' and be
+      // dropped in silence -- that is how seven translatable captions
+      // (frm_create_mask's template-rules text, the NCW welcome/finish pages,
+      // and others) stayed out of the catalog with no warning.
+      //
+      // Adopt the following lines ONLY when the next non-empty one actually
+      // opens a string literal, i.e. starts with "'" or "#". A property whose
+      // value really is absent must not swallow whatever comes after it, and
+      // the other block-valued forms are already handled above (Foo = < ... >,
+      // Items.Strings = ( ... )) or carry their opening token on this same
+      // line (Bitmap = {, Picture.Data = {), so this test rejects them all.
+      if (tok.trim() === '') {
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim() === '') j++;
+        if (j < lines.length && /^['#]/.test(lines[j].trim())) {
+          tok = lines[j].trim();
+          i = j;
+        }
+      }
+      while (tok.trimEnd().endsWith('+') && i + 1 < lines.length) {
+        tok = tok.trimEnd().slice(0, -1) + lines[++i].trim();
+      }
+      const value = decodeDfmValue(tok);
+      if (!/[Ѐ-ӿ]/.test(value)) continue;
+      const pathLabels = stack.filter((f) => f.label !== undefined).map((f) => f.label);
+      found.push([[base, ...pathLabels, m[1]].join('.'), value]);
+    }
+  }
+  return found;
+}
+
+function findDfmFiles(dir) {
+  const results = [];
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const full = path.join(dir, entry.name);
+    if (isExcludedSegment(entry.name)) continue;
+    if (entry.isDirectory()) {
+      results.push(...findDfmFiles(full));
+    } else if (entry.isFile() && full.toLowerCase().endsWith('.dfm')) {
+      results.push(full);
+    }
+  }
+  return results;
+}
+
+function merge(existing, extracted) {
+  const out = {};
+  let newKeys = 0, droppedKeys = 0, staleKeys = 0;
+  const extractedKeys = new Set(extracted.map(([key]) => key));
+  for (const key of Object.keys(existing)) {
+    if (!extractedKeys.has(key)) droppedKeys++;
+  }
+  for (const [key, source] of extracted) {
+    const prev = existing[key];
+    if (!prev) { out[key] = { source, target: '' }; newKeys++; continue; }
+    const target = prev.target || '';
+    const entry = { source, target };
+
+    // Source text changed after the translation was written: keep the target
+    // but flag it, so the translator revisits rather than silently shipping a
+    // translation of text that no longer exists.
+    const justWentStale = prev.source !== source && !!target;
+
+    // A previously-flagged entry stays flagged across re-extractions as long
+    // as nobody has touched its target yet. `staleTarget` snapshots the
+    // target text at the moment the entry was flagged; comparing the current
+    // target against that snapshot (not against `prev.source`, which by now
+    // always matches `source`) is what lets a real translator edit clear the
+    // flag automatically, while plain re-extraction with no edit keeps it.
+    const stillStale = prev.stale === true && target === prev.staleTarget;
+
+    if (justWentStale || stillStale) {
+      entry.stale = true;
+      entry.staleTarget = target;
+      staleKeys++;
+    }
+    out[key] = entry;
+  }
+  return { out, newKeys, droppedKeys, staleKeys };
+}
+
+function writeJsonNoBom(filePath, obj) {
+  const json = JSON.stringify(obj, null, 2);
+  fs.writeFileSync(filePath, json, { encoding: 'utf8' });
+}
+
+function loadExisting(filePath) {
+  // A MISSING file is a legitimate first run: start from an empty map.
+  // An EXISTING file that fails to parse, or whose root isn't a plain
+  // object, is a different situation entirely -- continuing would make
+  // `merge` treat every key as brand new and overwrite every translator's
+  // target with "". Abort the whole extractor instead; nothing is written
+  // for any locale, so the previous run's catalogs on disk are untouched.
+  if (!fs.existsSync(filePath)) return {};
+
+  let raw;
+  try {
+    raw = fs.readFileSync(filePath, 'utf8');
+  } catch (e) {
+    fail(`Cannot read existing catalog ${filePath}: ${e.message}`);
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(raw);
+  } catch (e) {
+    fail(`Existing catalog ${filePath} is not valid JSON (${e.message}). Refusing to continue -- fix the file or restore it from git before re-running.`);
+  }
+
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    fail(`Existing catalog ${filePath} does not have an object root. Refusing to continue -- fix the file or restore it from git before re-running.`);
+  }
+
+  return parsed;
+}
+
+function main() {
+  checkDrcFreshness();
+
+  const allowlist = JSON.parse(fs.readFileSync(ALLOWLIST_PATH, 'utf8'));
+
+  const codeMap = readDrc(DRC_PATH, allowlist);
+  const codeEntries = Array.from(codeMap.entries());
+
+  const dfmFiles = findDfmFiles(PROGRAM_DIR);
+  const dfmEntries = [];
+  for (const file of dfmFiles) {
+    dfmEntries.push(...readDfm(file));
+  }
+
+  if (!fs.existsSync(LANG_DIR)) {
+    fs.mkdirSync(LANG_DIR, { recursive: true });
+  }
+
+  console.log(`Code strings extracted: ${codeEntries.length}`);
+  console.log(`DFM files scanned: ${dfmFiles.length}`);
+  console.log(`DFM strings extracted: ${dfmEntries.length}`);
+  console.log('');
+
+  // Two phases, deliberately: load+validate EVERY locale's existing catalog
+  // first, and only once all of them are known-good do we write anything.
+  // Locales are processed uk/en/ru in that order, and a naive
+  // load-merge-write loop would already have written uk.json and en.json to
+  // disk by the time it discovered a broken ru.json -- a partial write is
+  // exactly the kind of silent damage finding 1 exists to prevent. loadExisting
+  // itself aborts the whole process on a broken file, but only front-loading
+  // every load before any write makes that guarantee airtight.
+  const plans = LOCALES.map(({ code, name }) => {
+    const filePath = path.join(LANG_DIR, `${code}.json`);
+    const existing = loadExisting(filePath);
+    return { code, name, filePath, existing };
+  });
+
+  for (const plan of plans) {
+    const existingStrings = plan.existing.strings || {};
+    const existingDfm = plan.existing.dfm || {};
+
+    const stringsResult = merge(existingStrings, codeEntries);
+    const dfmResult = merge(existingDfm, dfmEntries);
+
+    let strings = stringsResult.out;
+    let dfm = dfmResult.out;
+
+    if (plan.code === 'uk') {
+      // The base catalog's target IS its source, regenerated on every run, so
+      // it can never be an outdated translation -- `stale` is meaningless here.
+      // Without this, any source-text change (a resourcestring edit, or a fix
+      // to how the .drc is decoded) permanently flags the base catalog and
+      // makes check_lang.js --strict fail on nothing at all.
+      const reset = (section) => {
+        for (const entry of Object.values(section)) {
+          entry.target = entry.source;
+          delete entry.stale;
+          delete entry.staleTarget;
+        }
+      };
+      reset(strings);
+      reset(dfm);
+    }
+
+    plan.catalog = { locale: plan.code, name: plan.name, strings, dfm };
+    plan.newKeys = stringsResult.newKeys + dfmResult.newKeys;
+    plan.droppedKeys = stringsResult.droppedKeys + dfmResult.droppedKeys;
+    plan.staleKeys = stringsResult.staleKeys + dfmResult.staleKeys;
+  }
+
+  for (const plan of plans) {
+    writeJsonNoBom(plan.filePath, plan.catalog);
+    console.log(
+      `${plan.code} (${plan.name}): strings=${Object.keys(plan.catalog.strings).length} ` +
+      `dfm=${Object.keys(plan.catalog.dfm).length} new=${plan.newKeys} dropped=${plan.droppedKeys} stale=${plan.staleKeys}`
+    );
+  }
+}
+
+if (require.main === module) {
+  main();
+}
+
+module.exports = { merge, loadExisting, readDfm, findDfmFiles, findNewestPas };

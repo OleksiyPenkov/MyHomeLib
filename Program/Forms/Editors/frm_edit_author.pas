@@ -43,6 +43,9 @@ type
     procedure SetLastName(const Value: string);
     procedure SetMidName(const Value: string);
 
+  protected
+    procedure DoCreate; override;
+
   public
     property LastName: string read GetLastName write SetLastName;
     property FirstName: string read GetFirstName write SetFirstName;
@@ -54,9 +57,18 @@ var
 
 implementation
 
+uses
+  unit_Localization;
+
 {$R *.dfm}
 
 { TfrmEditAuthorData }
+
+procedure TfrmEditAuthorData.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 function TfrmEditAuthorData.GetFirstName: string;
 begin

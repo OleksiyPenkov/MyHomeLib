@@ -726,6 +726,7 @@ type
       const Text: string; var Extent: Integer);  // Выбор языка в списке
 
   protected
+    procedure DoCreate; override;
     procedure WMGetSysCommand(var Message: TMessage); message WM_SYSCOMMAND;
     procedure OnChangeLocalStatus(var Message: TLocalStatusChangedMessage); message WM_MHL_CHANGELOCALSTATUS;
 
@@ -1049,7 +1050,8 @@ uses
   frm_EditGroup,
   unit_SystemDatabase_Abstract,
   unit_MHLArchiveHelpers,
-  frm_DeleteCollection, unit_ImportOldUserData;
+  frm_DeleteCollection, unit_ImportOldUserData,
+  unit_Localization;
 
 resourcestring
 rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перевірте налаштування колекції!';
@@ -1071,8 +1073,8 @@ rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перев�
    rstrRemovingFromGroupMessage = 'Видаляємо книги з групи...';
    rstrBuildingListMessage = 'Побудова списку...';
 
-   rstrHintTable = 'Переключиться в режим "Таблиця"';
-   rstrHintTree = 'Переключиться в режим "Дерево"';
+   rstrHintTable = 'Переключитися в режим "Таблиця"';
+   rstrHintTree = 'Переключитися в режим "Дерево"';
    rstrShuttingDown = 'відключаємось';
    rstrNeedDBUpgrade = 'Ви успішно оновили програму. Для нормальної роботи необхідно оновити струткур таблиць БД. Зробити це прямо зараз?';
    rstrFirstRun = 'MyHomeLib - перший запуск';
@@ -1112,6 +1114,7 @@ rstrFileNotFoundMsg = 'Файл %s не знайдено!' + CRLF + 'Перев�
    rstrCollectionUpdateAvailable = 'Доступне оновлення для колекцій.' + CRLF + 'Почати оновлення?';
    rsrtNewCollectin = 'Нова колекція...';
    rstrSelectFolder = 'Вибір папки...';
+   rstrSpecifyPath = 'Вкажіть шлях';
 {$R *.dfm}
 
 //
@@ -1185,6 +1188,12 @@ begin
   end;
 
   UpdateDownloadCount;
+end;
+
+procedure TfrmMain.DoCreate;
+begin
+  inherited;
+  Localize(Self);
 end;
 
 procedure TfrmMain.WMGetSysCommand(var Message: TMessage);
@@ -3793,7 +3802,7 @@ begin
   begin
     if FLastDeviceDir = '' then
       FLastDeviceDir := Settings.DeviceDir;
-    if not GetFolderShellItem(Handle, 'Вкажіть шлях', FLastDeviceDir, DeviceShellItem) then
+    if not GetFolderShellItem(Handle, rstrSpecifyPath, FLastDeviceDir, DeviceShellItem) then
       Exit;
     AFolder := FLastDeviceDir;
     UseMTP := IsShellPath(AFolder);

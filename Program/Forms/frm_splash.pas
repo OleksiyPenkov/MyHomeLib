@@ -15,6 +15,7 @@ type
     function S(Value: Integer): Integer; inline;
     procedure Render;
   protected
+    procedure DoCreate; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
@@ -30,7 +31,10 @@ implementation
 {$R *.dfm}
 
 uses
-  Winapi.GDIPAPI, Winapi.GDIPOBJ;
+  Winapi.GDIPAPI, Winapi.GDIPOBJ, unit_Localization;
+
+resourcestring
+  rstrTagline = 'Менеджер домашньої електронної бібліотеки';
 
 const
   CCardMarginTop    = 16;
@@ -51,6 +55,12 @@ begin
   Path.AddArc(X + W - R * 2,   Y + H - R * 2,   R * 2, R * 2,   0, 90);
   Path.AddArc(X,               Y + H - R * 2,   R * 2, R * 2,  90, 90);
   Path.CloseFigure;
+end;
+
+procedure TfrmSplash.DoCreate;
+begin
+  inherited;
+  Localize(Self);
 end;
 
 procedure TfrmSplash.CreateParams(var Params: TCreateParams);
@@ -267,7 +277,7 @@ begin
                 RectF.Y := CardRect.Y + S(94);
                 RectF.Width  := CardRect.Width - S(CContentLeft) * 2;
                 RectF.Height := S(22);
-                Graphics.DrawString('Менеджер домашньої електронної бібліотеки', -1, Font, RectF, SF, SolidBrush);
+                Graphics.DrawString(rstrTagline, -1, Font, RectF, SF, SolidBrush);
               finally
                 SolidBrush.Free;
               end;

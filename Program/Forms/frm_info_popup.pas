@@ -28,6 +28,9 @@ type
     lblText: TLabel;
   private
 
+  protected
+    procedure DoCreate; override;
+
   public
 
   end;
@@ -37,6 +40,15 @@ var
 
 implementation
 
+uses
+  unit_Localization;
+
 {$R *.dfm}
+
+procedure TfrmInfoPopup.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 end.

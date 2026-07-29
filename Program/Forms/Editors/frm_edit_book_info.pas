@@ -88,6 +88,9 @@ type
     function SaveData: Boolean;
     procedure DoNextBook(const MoveForward: Boolean);
 
+  protected
+    procedure DoCreate; override;
+
   public
     property Collection: IBookCollection read FCollection write FCollection;
 
@@ -109,13 +112,20 @@ uses
   frm_edit_author,
   unit_TreeUtils,
   VirtualTrees,
-  unit_Consts;
+  unit_Consts,
+  unit_Localization;
 
 resourcestring
    rstrProvideAtLeastOneAuthor = 'Вкажіть мінімум одного автора!';
    rstrProvideBookTitle = 'Вкажіть назву книги!';
 
 {$R *.dfm}
+
+procedure TfrmEditBookInfo.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TfrmEditBookInfo.FormShow(Sender: TObject);
 var

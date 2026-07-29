@@ -38,6 +38,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
     procedure edFileChange(Sender: TObject);
+  protected
+    procedure DoCreate; override;
   end;
 
 var
@@ -48,7 +50,8 @@ function AskUpdateFile(out AFileName: string; out AFull: Boolean): Boolean;
 implementation
 
 uses
-  unit_Helpers;
+  unit_Helpers,
+  unit_Localization;
 
 {$R *.dfm}
 
@@ -62,6 +65,12 @@ resourcestring
      'відновлено. Без цієї опції записи з файлу лише додаються до колекції.';
    rstrOkCaption = 'OK';
    rstrCancelCaption = 'Скасувати';
+
+procedure TdlgUpdateFromFile.DoCreate;
+begin
+  inherited;
+  Localize(Self);
+end;
 
 procedure TdlgUpdateFromFile.FormCreate(Sender: TObject);
 begin

@@ -127,6 +127,7 @@ uses
   unit_xmlUtils in 'Units\unit_xmlUtils.pas',
   frm_EditGroup in 'Forms\Editors\frm_EditGroup.pas' {frmEditGroup},
   unit_Logger in 'Units\unit_Logger.pas',
+  unit_Localization in 'Units\unit_Localization.pas',
   unit_Interfaces in 'Units\unit_Interfaces.pas',
   SQLite3 in 'DAO\SQLite\Lib\SQLite3.pas',
   SQLite3UDF in 'DAO\SQLite\Lib\SQLite3UDF.pas',
@@ -156,6 +157,11 @@ uses
 
 begin
   Application.Initialize;
+
+  // Must run before any form is constructed, so that every resourcestring and
+  // every DFM property is read through the hook. ResolveMHLPaths is used
+  // instead of Settings() because DMUser does not exist yet.
+  InitLocalization;
 
   if FirstHinstanceRunning(1) then
   begin
