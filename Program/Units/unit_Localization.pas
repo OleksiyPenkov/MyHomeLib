@@ -199,6 +199,14 @@ begin
     SetOrdProp(AObject, IdxInfo, SavedIndex);
 end;
 
+// True when reading this property touches nothing but a field. RTTI stores a
+// field offset in the getter slot for such properties and a code address for
+// every other kind, so this distinguishes a plain read from a method call.
+function IsFieldGetter(AInfo: PPropInfo): Boolean;
+begin
+  Result := (IntPtr(AInfo^.GetProc) and PROPSLOT_MASK) = PROPSLOT_FIELD;
+end;
+
 // Grid column headers are the reason this exists. A TListView's Columns and a
 // VirtualTree's Header.Columns are TCollections whose items are
 // TCollectionItem, not TComponent -- so the Components array never reaches
@@ -222,6 +230,23 @@ begin
     GetPropList(PTypeInfo(AObject.ClassInfo), [tkClass], List, False);
     for I := 0 to Count - 1 do
     begin
+      // A getter is user code, and user code called from a read-only walk can
+      // leave the UI changed behind it. TMenuItem.Bitmap is the case that hurt:
+      // its getter allocates an empty TBitmap on first read, and Vcl.Menus then
+      // reads FBitmap <> nil as "this item has a glyph" -- without checking
+      // whether the bitmap is empty -- so MeasureItem and AdvancedDrawItem
+      // reserve image-width space at the left of every menu-bar caption
+      // (Vcl.Menus.pas: TMenuItem.MeasureItem, TMenuItem.AdvancedDrawItem).
+      // The result was a menu bar indented by 16-24px in every locale except
+      // the base one, where Localize exits before the walk ever runs.
+      //
+      // Nothing here needs a computed property: the walk is looking for
+      // sub-objects a component owns, and those are plain fields. Skipping the
+      // rest also drops Action, which is a TComponent the loop would discard
+      // one line later anyway.
+      if not IsFieldGetter(List^[I]) then
+        Continue;
+
       Sub := GetObjectProp(AObject, List^[I]);
       if Sub = nil then
         Continue;
