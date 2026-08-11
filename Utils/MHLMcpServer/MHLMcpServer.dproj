@@ -38,7 +38,7 @@
         <SanitizedProjectName>MHLMcpServer</SanitizedProjectName>
         <DCC_DependencyCheckOutputName>MHLMcpServer.exe</DCC_DependencyCheckOutputName>
         <DCC_UnitSearchPath>..\..\Program\Units;..\..\Program\DAO;..\..\Program\DAO\SQLite;..\..\Program\DAO\SQLite\Lib;..\..\Program\DataModules;..\..\Program\UtilsImpl;..\..\Components\MHLComponents;..\..\Components\MHLComponents\Units;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
-        <DCC_Namespace>System;$(DCC_Namespace)</DCC_Namespace>
+        <DCC_Namespace>Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;Bde;Xml.Win;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=MyHomeLib;FileDescription=MyHomeLib MCP Server;FileVersion=1.0.0.0;InternalName=MHLMcpServer;LegalCopyright=;LegalTrademarks=;OriginalFilename=MHLMcpServer.exe;ProductName=MyHomeLib;ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
