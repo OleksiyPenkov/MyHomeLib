@@ -364,10 +364,12 @@ end;
 // Parses catalog TEXT. The caller supplies the bytes, so one parser and one
 // set of guards serve both the resources embedded in the exe and the files in
 // Lang\. ASourceName appears only in status messages.
-function LoadCatalogText(const AText, ASourceName: string): Boolean;
+function LoadCatalogText(const AText, ASourceName,
+  AExpectedLocale: string): Boolean;
 var
   Root: TJSONValue;
   Section: TJSONValue;
+  Declared: string;
 begin
   Result := False;
   Root := nil;
@@ -378,6 +380,25 @@ begin
       begin
         SetStatus('Localization: catalog is not a JSON object', ASourceName);
         Exit;
+      end;
+
+      // A catalog's locale is what it DECLARES, never what it is named. This
+      // is what stops a signed catalog being renamed into another language's
+      // slot -- the signature stays valid, but the declaration does not match
+      // and the catalog is refused.
+      if AExpectedLocale <> '' then
+      begin
+        if not TJSONObject(Root).TryGetValue<string>('locale', Declared) then
+        begin
+          SetStatus('Localization: catalog declares no locale', ASourceName);
+          Exit;
+        end;
+        if not SameText(Trim(Declared), AExpectedLocale) then
+        begin
+          SetStatus('Localization: catalog declares "' + Declared
+            + '", expected "' + AExpectedLocale + '"', ASourceName);
+          Exit;
+        end;
       end;
 
       // `is` is false for nil, so a missing section is simply skipped, and a
@@ -410,16 +431,139 @@ end;
 // Reading is guarded separately from parsing: TFile.ReadAllText raises on a
 // locked or unreadable file, and that must degrade the same way malformed
 // JSON does rather than escape to the caller.
-function LoadCatalogFile(const AFileName: string): Boolean;
+function LoadCatalogFile(const AFileName, AExpectedLocale: string): Boolean;
 begin
   Result := False;
   try
     Result := LoadCatalogText(
-      TFile.ReadAllText(AFileName, TEncoding.UTF8), AFileName);
+      TFile.ReadAllText(AFileName, TEncoding.UTF8), AFileName, AExpectedLocale);
   except
     on E: Exception do
       SetStatus('Localization: failed to read catalog - ' + E.Message,
         AFileName);
+  end;
+end;
+
+const
+  LANG_RES_PREFIX = 'LANG_';
+
+// Reads an embedded catalog resource as text. TEncoding.UTF8.GetString does
+// NOT strip a byte-order mark, so a catalog saved with one would reach the
+// JSON parser with a leading U+FEFF and fail. extract.js writes them without,
+// but a translator's editor will not necessarily agree.
+function EmbeddedCatalogText(const AResName: string; out AText: string): Boolean;
+var
+  Stream: TResourceStream;
+  Bytes: TBytes;
+begin
+  Result := False;
+  AText := '';
+  if FindResource(HInstance, PChar(AResName), RT_RCDATA) = 0 then
+    Exit;
+  try
+    Stream := TResourceStream.Create(HInstance, AResName, RT_RCDATA);
+    try
+      SetLength(Bytes, Stream.Size);
+      if Stream.Size > 0 then
+        Stream.ReadBuffer(Bytes[0], Stream.Size);
+      AText := TEncoding.UTF8.GetString(Bytes);
+      if (AText <> '') and (AText[1] = #$FEFF) then
+        Delete(AText, 1, 1);
+      Result := True;
+    finally
+      Stream.Free;
+    end;
+  except
+    on E: Exception do
+      SetStatus('Localization: failed to read embedded catalog - ' + E.Message,
+        AResName);
+  end;
+end;
+
+function HasEmbeddedCatalog(const ACode: string): Boolean;
+begin
+  Result := (ACode <> '')
+    and (FindResource(HInstance,
+      PChar(LANG_RES_PREFIX + UpperCase(ACode)), RT_RCDATA) <> 0);
+end;
+
+function LoadEmbeddedCatalog(const ACode: string): Boolean;
+var
+  Text: string;
+  ResName: string;
+begin
+  ResName := LANG_RES_PREFIX + UpperCase(ACode);
+  Result := EmbeddedCatalogText(ResName, Text)
+    and LoadCatalogText(Text, 'resource:' + ResName, ACode);
+end;
+
+// Enumerated rather than listed in a constant: the resources are generated
+// from whatever catalogs were present at build time, and a hand-maintained
+// list beside them would eventually disagree with the binary.
+function EnumLangResNames(hModule: HMODULE; lpszType, lpszName: PChar;
+  lParam: NativeInt): BOOL; stdcall;
+var
+  Name: string;
+begin
+  Result := True;
+  // Integer-id resources arrive as a value packed into the low word, not a
+  // pointer. Ours are all named, so anything without a high word is not ours
+  // and dereferencing it would fault.
+  if (NativeUInt(lpszName) shr 16) = 0 then
+    Exit;
+  Name := string(lpszName);
+  if Name.StartsWith(LANG_RES_PREFIX) then
+    TList<string>(lParam).Add(Name);
+end;
+
+function EmbeddedLocales: TArray<TLocaleInfo>;
+var
+  Names: TList<string>;
+  ResName, Text, Code, LocaleName: string;
+  Root: TJSONValue;
+  Info: TLocaleInfo;
+  List: TList<TLocaleInfo>;
+begin
+  Result := nil;
+  Names := TList<string>.Create;
+  List := TList<TLocaleInfo>.Create;
+  try
+    EnumResourceNames(HInstance, RT_RCDATA, @EnumLangResNames, NativeInt(Names));
+    Names.Sort;
+
+    for ResName in Names do
+    begin
+      if not EmbeddedCatalogText(ResName, Text) then
+        Continue;
+      Root := nil;
+      try
+        try
+          Root := TJSONObject.ParseJSONValue(Text);
+          if not (Root is TJSONObject) then
+            Continue;
+          if not TJSONObject(Root).TryGetValue<string>('locale', Code) then
+            Continue;
+          if not TJSONObject(Root).TryGetValue<string>('name', LocaleName) then
+            Continue;
+          Info.Code := LowerCase(Trim(Code));
+          Info.Name := Trim(LocaleName);
+          if (Info.Code <> '') and (Info.Name <> '') then
+            List.Add(Info);
+        except
+          // Must never raise: this runs while the main form is being built.
+          on E: Exception do
+            SetStatus('Localization: bad embedded catalog - ' + E.Message,
+              ResName);
+        end;
+      finally
+        Root.Free;
+      end;
+    end;
+
+    Result := List.ToArray;
+  finally
+    List.Free;
+    Names.Free;
   end;
 end;
 
@@ -447,16 +591,18 @@ end;
 
 // The language menu's source of truth: which locales can actually be offered.
 //
-// The base locale is pinned first and comes from a constant, never from a
-// file. Ukrainian is compiled into the exe and InitLocalization short-circuits
-// before reading any catalog for it, so uk.json has no effect on anything --
-// listing Ukrainian only when that file happens to exist would let a partial
-// install strand a user in a language they cannot leave.
+// Ukrainian is pinned first from a constant, never from a catalog. It is
+// embedded in the exe like English, but the pin is what guarantees a user can
+// always get back to it even if the resource is somehow absent -- listing it
+// conditionally would let a partial install strand someone in a language they
+// cannot leave.
 //
-// Everything else is discovered. This must never raise: it runs while the main
-// form is being built, and a malformed file dropped into Lang\ has to degrade
-// to "that language is not offered", the same way a malformed catalog already
-// degrades to Ukrainian.
+// Embedded locales come next and claim their codes, so a file in Lang\ can
+// never shadow a language we ship. Everything after that is discovered.
+//
+// This must never raise: it runs while the main form is being built, and a
+// malformed file dropped into Lang\ has to degrade to "that language is not
+// offered", the same way a malformed catalog already degrades to Ukrainian.
 function AvailableLocales: TArray<TLocaleInfo>;
 var
   Paths: TMHLPathInfo;
@@ -472,22 +618,32 @@ begin
   Base.Name := BASE_LOCALE_NAME;
   Result := [Base];
 
-  Paths := ResolveMHLPaths;
-  Dir := Paths.AppPath + LANG_DIR_NAME + PathDelim;
-  if not DirectoryExists(Dir) then
-    Exit;
-
   Seen := TDictionary<string, Boolean>.Create;
   Rest := TList<TLocaleInfo>.Create;
   try
     Seen.Add(LowerCase(DEFAULT_LOCALE), True);
 
-    try
-      Files := TDirectory.GetFiles(Dir, '*.json');
-    except
-      // An unreadable directory is the same as no directory.
-      Exit;
-    end;
+    // Embedded locales are offered whether or not a Lang\ directory exists --
+    // they are inside the exe. Collecting them before the scan also means
+    // they claim their codes first, so a file declaring one of them is
+    // dropped by the duplicate rule below rather than needing a special case.
+    for Info in EmbeddedLocales do
+      if not Seen.ContainsKey(Info.Code) then
+      begin
+        Seen.Add(Info.Code, True);
+        Rest.Add(Info);
+      end;
+
+    Paths := ResolveMHLPaths;
+    Dir := Paths.AppPath + LANG_DIR_NAME + PathDelim;
+    Files := nil;
+    if DirectoryExists(Dir) then
+      try
+        Files := TDirectory.GetFiles(Dir, '*.json');
+      except
+        // An unreadable directory is the same as no directory.
+        Files := nil;
+      end;
 
     // GetFiles gives no ordering guarantee, and the duplicate rule below is
     // "first one wins" -- so the order has to be made deterministic here,
@@ -552,6 +708,7 @@ function InitLocalization: Boolean;
 var
   Paths: TMHLPathInfo;
   Locale, FileName: string;
+  Loaded: Boolean;
 begin
   Result := False;
   if FActive then
@@ -560,23 +717,32 @@ begin
   Paths := ResolveMHLPaths;
   Locale := ReadLocale(Paths);
 
-  // Ukrainian is compiled into the exe: no catalog, no hook, no overhead.
-  if Locale = DEFAULT_LOCALE then
-  begin
-    SetStatus('Localization: base locale, hook not installed', Locale);
-    Exit;
-  end;
-
-  FileName := Paths.AppPath + LANG_DIR_NAME + PathDelim + Locale + '.json';
-  if not FileExists(FileName) then
-  begin
-    SetStatus('Localization: catalog not found, falling back to '
-      + DEFAULT_LOCALE, FileName);
-    Exit;
-  end;
-
   FIndex := TDictionary<string, string>.Create;
-  if not LoadCatalogFile(FileName) then
+
+  // Embedded catalogs win unconditionally. A file in Lang\ declaring a locale
+  // we ship is ignored -- there is no file a user can place that alters one
+  // of our languages.
+  //
+  // Ukrainian takes this path too, now that it has no short-circuit. Its
+  // catalog is pure identity, so rule 2 drops every entry, the index comes
+  // out empty, and rule 3 below declines to install the hook -- the same
+  // outcome the short-circuit produced, reached by a general rule.
+  if HasEmbeddedCatalog(Locale) then
+    Loaded := LoadEmbeddedCatalog(Locale)
+  else
+  begin
+    FileName := Paths.AppPath + LANG_DIR_NAME + PathDelim + Locale + '.json';
+    if FileExists(FileName) then
+      Loaded := LoadCatalogFile(FileName, Locale)
+    else
+    begin
+      SetStatus('Localization: catalog not found, falling back to '
+        + DEFAULT_LOCALE, FileName);
+      Loaded := False;
+    end;
+  end;
+
+  if not Loaded then
   begin
     FreeAndNil(FIndex);
     Exit;

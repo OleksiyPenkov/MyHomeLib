@@ -2,6 +2,11 @@
 
 {$APPTYPE CONSOLE}
 
+// The same embedded catalogs the application links, so the harness exercises
+// the real embedded-vs-file precedence rather than a file-only subset.
+// build.sh passes -R"Program" so this resolves.
+{$R lang.res}
+
 // Test harness for unit_Localization. Not shipped, not in any dproj.
 //
 // Usage:  LangTest.exe uselocaldata <report.json>

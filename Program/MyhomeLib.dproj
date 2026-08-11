@@ -487,9 +487,9 @@
          $(OUTPUTDIR) and $(PROJECTDIR) are undefined until that import runs, so
          a PostBuildEvent placed earlier expands them to empty strings. -->
     <PropertyGroup>
+        <PreBuildEvent>call &quot;$(PROJECTDIR)\embed_lang.cmd&quot; &quot;$(BDS)&quot;</PreBuildEvent>
         <PostBuildEvent>call &quot;$(PROJECTDIR)\copy_help.cmd&quot; &quot;$(OUTPUTDIR).&quot;
-call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(Platform)&quot;
-call &quot;$(PROJECTDIR)\copy_lang.cmd&quot; &quot;$(OUTPUTDIR).&quot;</PostBuildEvent>
+call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(Platform)&quot;</PostBuildEvent>
     </PropertyGroup>
     <ProjectExtensions>
         <Borland.Personality>Delphi.Personality.12</Borland.Personality>

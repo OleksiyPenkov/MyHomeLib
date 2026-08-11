@@ -22,7 +22,6 @@ if (!EXE || !fs.existsSync(EXE)) {
   process.exit(1);
 }
 
-const LANG_DIR = path.join(__dirname, '..', '..', '..', 'Program', 'Lang');
 const PROBES = ['Автор', 'Назва', 'Серія'];
 
 let caseNo = 0;
@@ -63,15 +62,9 @@ function run(opts) {
   return JSON.parse(fs.readFileSync(report, 'utf8').replace(/^﻿/, ''));
 }
 
-// The real English catalog, so the tests exercise production data rather than
-// a toy fixture that could diverge from it.
-function realEnglish() {
-  return JSON.parse(fs.readFileSync(path.join(LANG_DIR, 'en.json'), 'utf8'));
-}
-
 const checks = [
-  ['uk: no hook installed, translations pass through unchanged', () => {
-    const r = run({ locale: 'uk', catalogs: { 'en.json': realEnglish() } });
+  ['uk: embedded identity catalog installs nothing', () => {
+    const r = run({ locale: 'uk', noLangDir: true });
     return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 
@@ -80,47 +73,71 @@ const checks = [
     return r.locales.some(l => l.code === 'uk' && l.name === 'Українська');
   }],
 
-  ['en: catalog loads and translates', () => {
-    const r = run({ locale: 'en', catalogs: { 'en.json': realEnglish() } });
+  ['en works with no Lang directory at all -- it is in the exe', () => {
+    const r = run({ locale: 'en', noLangDir: true });
     return r.active === true
       && r.translations['Автор'] === 'Author'
       && r.translations['Назва'] === 'Title';
   }],
 
-  ['en requested but no catalog present: falls back, nothing installed', () => {
+  ['en is offered with no Lang directory at all', () => {
     const r = run({ locale: 'en', noLangDir: true });
+    return r.locales.some(l => l.code === 'en' && l.name === 'English');
+  }],
+
+  ['a file en.json cannot override the embedded English', () => {
+    const r = run({ locale: 'en', catalogs: { 'en.json': {
+      locale: 'en', name: 'English',
+      strings: { k1: { source: 'Автор', target: 'HIJACKED' } }, dfm: {},
+    } } });
+    return r.active === true && r.translations['Автор'] === 'Author';
+  }],
+
+  ['a file catalog declaring a different locale is refused', () => {
+    const r = run({ locale: 'pl', catalogs: { 'pl.json': {
+      locale: 'de', name: 'Polski',
+      strings: { k1: { source: 'Автор', target: 'Autor' } }, dfm: {},
+    } } });
     return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 
+  ['a well-formed foreign-locale file catalog still loads', () => {
+    const r = run({ locale: 'pl', catalogs: { 'pl.json': {
+      locale: 'pl', name: 'Polski',
+      strings: { k1: { source: 'Автор', target: 'Autor' } }, dfm: {},
+    } } });
+    return r.active === true && r.translations['Автор'] === 'Autor';
+  }],
+
   ['malformed catalog does not crash and does not install', () => {
-    const r = run({ locale: 'en', catalogs: { 'en.json': '{ this is not json' } });
+    const r = run({ locale: 'pl', catalogs: { 'pl.json': '{ this is not json' } });
     return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 
   ['all-identity catalog yields an empty index, so nothing installs', () => {
-    const r = run({ locale: 'en', catalogs: { 'en.json': {
-      locale: 'en', name: 'English',
+    const r = run({ locale: 'pl', catalogs: { 'pl.json': {
+      locale: 'pl', name: 'Polski',
       strings: { k1: { source: 'Автор', target: 'Автор' } }, dfm: {},
     } } });
     return r.active === false;
   }],
 
   ['empty target is ignored rather than blanking the string', () => {
-    const r = run({ locale: 'en', catalogs: { 'en.json': {
-      locale: 'en', name: 'English',
+    const r = run({ locale: 'pl', catalogs: { 'pl.json': {
+      locale: 'pl', name: 'Polski',
       strings: {
         k1: { source: 'Автор', target: '   ' },
-        k2: { source: 'Назва', target: 'Title' },
+        k2: { source: 'Назва', target: 'Tytuł' },
       },
       dfm: {},
     } } });
     return r.active === true
       && r.translations['Автор'] === 'Автор'
-      && r.translations['Назва'] === 'Title';
+      && r.translations['Назва'] === 'Tytuł';
   }],
 
   ['missing Locale key defaults to uk', () => {
-    const r = run({ catalogs: { 'en.json': realEnglish() } });
+    const r = run({ noLangDir: true });
     return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 ];
