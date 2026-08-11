@@ -74,6 +74,22 @@ resourcestring
   rstrFavoritesGroupName = 'Обране';
   rstrToReadGroupName = 'До прочитання';
 
+const
+  // Names earlier releases seeded the two default groups with, before the
+  // interface was translated to Ukrainian.
+  //
+  // Deliberately const and not resourcestring: these must never themselves be
+  // translated. They exist so that a profile created by an older build can be
+  // recognised as still carrying a name MyHomeLib wrote, rather than one the
+  // user chose. The localisation catalogs cannot supply them -- Russian is no
+  // longer a shipped language -- so without this list a pre-existing user.dbs2
+  // keeps Russian group names for good.
+  //
+  // Append here if a future release renames the seeded groups again; never
+  // remove an entry, because some profile out there still holds it.
+  LegacyFavoritesGroupNames: array[0..0] of string = ('Избранное');
+  LegacyToReadGroupNames: array[0..0] of string = ('К прочтению');
+
 implementation
 
 uses

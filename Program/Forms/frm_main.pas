@@ -1681,16 +1681,28 @@ end;
 // GroupID ordering.
 procedure TfrmMain.SyncSystemGroupNames;
 
-  procedure SyncOne(const AKey, AWanted: string);
+  procedure SyncOne(const AKey, AWanted: string; const ALegacy: array of string);
   var
     Renderings: TArray<string>;
     Iterator: IGroupIterator;
     GroupData: TGroupData;
+    Legacy: string;
   begin
     if AWanted = '' then
       Exit;
 
+    // Shipped spellings alone are not enough. A profile created before the
+    // interface was translated holds a name no current catalog contains --
+    // Russian is no longer shipped -- and would be mistaken for the user's
+    // own choice and left in Russian for good.
     Renderings := ShippedRenderings(AKey);
+    for Legacy in ALegacy do
+      if not MatchStr(Legacy, Renderings) then
+      begin
+        SetLength(Renderings, Length(Renderings) + 1);
+        Renderings[High(Renderings)] := Legacy;
+      end;
+
     if Length(Renderings) = 0 then
       Exit;
 
@@ -1713,9 +1725,9 @@ begin
   Assert(Assigned(FSystemData));
 
   SyncOne('unit_SystemDatabase_Abstract_rstrFavoritesGroupName',
-    rstrFavoritesGroupName);
+    rstrFavoritesGroupName, LegacyFavoritesGroupNames);
   SyncOne('unit_SystemDatabase_Abstract_rstrToReadGroupName',
-    rstrToReadGroupName);
+    rstrToReadGroupName, LegacyToReadGroupNames);
 end;
 
 // Keeps a collection's genre names in step with the interface language.
