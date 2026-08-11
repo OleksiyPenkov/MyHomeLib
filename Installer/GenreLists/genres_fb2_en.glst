@@ -11,7 +11,7 @@
 0.10 Computers & Internet
 0.11 Reference
 0.12 Religion & Spirituality
-0.13 Humour
+0.13 Humor
 0.14 Homemaking (Home & Family)
 0.15 Technology
 0.16 Other
@@ -233,7 +233,7 @@
 0.12.14 religion_paganism;Paganism
 0.13.0 humor_anecdote;Jokes
 0.13.1 humor_prose;Humorous fiction
-0.13.2 humor;Humour: other
+0.13.2 humor;Humor: other
 0.13.3 comedy;Comedy
 0.13.4 humor_satire;Satire
 0.14.0 home_cooking;Cooking
@@ -310,10 +310,10 @@
 0.22.1 notes;Sheet music
 0.22.2 music;Music
 0.22.3 cine;Film
-0.22.4 theatre;Theatre
+0.22.4 theatre;Theater
 0.22.5 architecture_book;Architecture
 0.22.6 visual_arts;Fine art, photography
-0.22.7 painting;Painting, albums, illustrated catalogues
+0.22.7 painting;Painting, albums, illustrated catalogs
 0.22.8 art_world_culture;World art and culture
 0.22.9 art_criticism;Art history
 #---------------------- к о н е ц                ----------------------------
