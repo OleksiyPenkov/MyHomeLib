@@ -14,7 +14,20 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const crypto = require('crypto');
 const { spawnSync } = require('child_process');
+
+// The real signing key, so the tests prove the key compiled into the binary
+// matches the one the maintainer signs with. A generated throwaway key would
+// pass the negative cases and silently fail to prove the positive one.
+const SIGN_KEY = process.env.MHL_LANG_KEY
+  || path.join(os.homedir(), '.myhomelib', 'lang-signing-key.pem');
+
+// Signs bytes the same way tools/lang/sign.js does.
+function signBytes(bytes) {
+  const key = crypto.createPrivateKey(fs.readFileSync(SIGN_KEY));
+  return crypto.sign('sha256', bytes, { key, dsaEncoding: 'ieee-p1363' });
+}
 
 const EXE = process.argv[2];
 if (!EXE || !fs.existsSync(EXE)) {
@@ -47,6 +60,9 @@ function run(opts) {
     for (const [name, body] of Object.entries(opts.catalogs || {})) {
       fs.writeFileSync(path.join(ld, name),
         typeof body === 'string' ? body : JSON.stringify(body), 'utf8');
+    }
+    for (const [name, sig] of Object.entries(opts.sigs || {})) {
+      fs.writeFileSync(path.join(ld, name), sig);
     }
   }
 
@@ -139,6 +155,52 @@ const checks = [
   ['missing Locale key defaults to uk', () => {
     const r = run({ noLangDir: true });
     return r.active === false && r.translations['Автор'] === 'Автор';
+  }],
+
+  ['verifier accepts a correctly signed catalog', () => {
+    const body = JSON.stringify({ locale: 'verify', name: 'V',
+      strings: { k1: { source: 'Автор', target: 'A' } }, dfm: {} });
+    const r = run({ locale: 'uk',
+      catalogs: { 'verify.json': body },
+      sigs: { 'verify.json.sig': signBytes(Buffer.from(body, 'utf8')) } });
+    return r.verify === true;
+  }],
+
+  ['verifier rejects a catalog with no signature at all', () => {
+    const body = JSON.stringify({ locale: 'verify', name: 'V',
+      strings: {}, dfm: {} });
+    const r = run({ locale: 'uk', catalogs: { 'verify.json': body } });
+    return r.verify === false;
+  }],
+
+  ['verifier rejects a one-byte tampered catalog', () => {
+    const body = JSON.stringify({ locale: 'verify', name: 'V',
+      strings: { k1: { source: 'Автор', target: 'A' } }, dfm: {} });
+    const sig = signBytes(Buffer.from(body, 'utf8'));
+    const r = run({ locale: 'uk',
+      catalogs: { 'verify.json': body.replace('"A"', '"B"') },
+      sigs: { 'verify.json.sig': sig } });
+    return r.verify === false;
+  }],
+
+  ['verifier rejects a truncated signature', () => {
+    const body = JSON.stringify({ locale: 'verify', name: 'V',
+      strings: {}, dfm: {} });
+    const sig = signBytes(Buffer.from(body, 'utf8')).subarray(0, 32);
+    const r = run({ locale: 'uk',
+      catalogs: { 'verify.json': body }, sigs: { 'verify.json.sig': sig } });
+    return r.verify === false;
+  }],
+
+  ['verifier rejects a signature made with a different key', () => {
+    const body = JSON.stringify({ locale: 'verify', name: 'V',
+      strings: {}, dfm: {} });
+    const other = crypto.generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+    const sig = crypto.sign('sha256', Buffer.from(body, 'utf8'),
+      { key: other.privateKey, dsaEncoding: 'ieee-p1363' });
+    const r = run({ locale: 'uk',
+      catalogs: { 'verify.json': body }, sigs: { 'verify.json.sig': sig } });
+    return r.verify === false;
   }],
 ];
 

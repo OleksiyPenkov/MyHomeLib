@@ -30,7 +30,8 @@ uses
   // rather than this file's, so they break the moment the compiler is invoked
   // from the repository root. The -U search path in build.sh finds them.
   unit_Settings,
-  unit_Localization;
+  unit_Localization,
+  unit_LangSignature;
 
 var
   Report, LocaleObj, Translations: TJSONObject;
@@ -75,6 +76,12 @@ begin
       end;
     end;
     Report.AddPair('translations', Translations);
+
+    // Direct probe of the verifier, independent of whether the loader would
+    // have chosen this catalog: verify.json is signed or not by the caller.
+    Report.AddPair('verify', TJSONBool.Create(
+      VerifyCatalogSignature(ExtractFilePath(Application.ExeName)
+        + 'Lang' + PathDelim + 'verify.json')));
 
     TFile.WriteAllText(ParamStr(ParamCount), Report.ToJSON, TEncoding.UTF8);
   finally

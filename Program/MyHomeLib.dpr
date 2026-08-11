@@ -128,6 +128,7 @@ uses
   frm_EditGroup in 'Forms\Editors\frm_EditGroup.pas' {frmEditGroup},
   unit_Logger in 'Units\unit_Logger.pas',
   unit_Localization in 'Units\unit_Localization.pas',
+  unit_LangSignature in 'Units\unit_LangSignature.pas',
   unit_Interfaces in 'Units\unit_Interfaces.pas',
   SQLite3 in 'DAO\SQLite\Lib\SQLite3.pas',
   SQLite3UDF in 'DAO\SQLite\Lib\SQLite3UDF.pas',
