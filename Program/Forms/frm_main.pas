@@ -783,6 +783,7 @@ type
     procedure CloseCollection;
     procedure InitCollection;
     procedure SyncGenreLanguage;
+    procedure SyncSystemGroupNames;
 
     procedure CreateCollectionMenu;
     procedure CreateScriptMenu;
@@ -1666,6 +1667,57 @@ begin
   end;
 end;
 
+// Keeps the two seeded group names in step with the interface language.
+//
+// AddGroup writes rstrFavoritesGroupName and rstrToReadGroupName into
+// user.dbs2 when the system database is created, so like genre names they
+// keep the language that created them.
+//
+// Renames only a group still carrying a name this build shipped, in any of
+// its languages. CanDelete = False marks the two seeded groups, but it does
+// not stop the user renaming them -- so a group whose name matches none of
+// the shipped spellings was named by the user and is left alone permanently.
+// That test also identifies which of the two a group is, without depending on
+// GroupID ordering.
+procedure TfrmMain.SyncSystemGroupNames;
+
+  procedure SyncOne(const AKey, AWanted: string);
+  var
+    Renderings: TArray<string>;
+    Iterator: IGroupIterator;
+    GroupData: TGroupData;
+  begin
+    if AWanted = '' then
+      Exit;
+
+    Renderings := ShippedRenderings(AKey);
+    if Length(Renderings) = 0 then
+      Exit;
+
+    Iterator := FSystemData.GetGroupIterator;
+    while Iterator.Next(GroupData) do
+    begin
+      if GroupData.CanDelete then
+        Continue;
+      if GroupData.Text = AWanted then
+        Continue;
+      if MatchStr(GroupData.Text, Renderings) then
+      begin
+        FSystemData.RenameGroup(GroupData.GroupID, AWanted);
+        Break;
+      end;
+    end;
+  end;
+
+begin
+  Assert(Assigned(FSystemData));
+
+  SyncOne('unit_SystemDatabase_Abstract_rstrFavoritesGroupName',
+    rstrFavoritesGroupName);
+  SyncOne('unit_SystemDatabase_Abstract_rstrToReadGroupName',
+    rstrToReadGroupName);
+end;
+
 // Keeps a collection's genre names in step with the interface language.
 //
 // Genre names are collection data: they are written into the Genres table
@@ -1777,10 +1829,11 @@ begin
 
     Assert(Assigned(FCollection));
 
-    // Genre names live in the collection database, so they do not follow a
-    // change of interface language on their own. Bring them into line here,
-    // before the tree is built from them below.
+    // Genre and seeded group names live in the databases, so they do not
+    // follow a change of interface language on their own. Bring them into
+    // line here, before the trees are built from them below.
     SyncGenreLanguage;
+    SyncSystemGroupNames;
 
     frmMain.Caption := 'MyHomeLib - ' + FCollection.CollectionDisplayName;
 
