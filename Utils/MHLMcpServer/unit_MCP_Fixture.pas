@@ -275,12 +275,19 @@ begin
   // Here it is exactly what is wanted.
   DMUser.Init;
 
+  // The untranslated genre list, deliberately NOT
+  // Settings.SystemFileName[sfGenresFB2]. That property resolves per interface
+  // locale (genres_fb2_uk.glst and friends), which would make the fixture's
+  // genre aliases depend on the developer's UI language -- and the protocol
+  // suite asserts on those aliases byte-for-byte. The fixture exists to be
+  // deterministic; the same reasoning as deleting and rebuilding the databases
+  // to pin the collection and book ids.
   CollectionID := SystemDB.CreateCollection(
     FIXTURE_DISPLAY_NAME,
     RootFolder,
     CollectionFile,
     FIXTURE_COLLECTION_TYPE,
-    DMUser.Settings.SystemFileName[sfGenresFB2]
+    DMUser.Settings.AppPath + GENRES_FB2_FILENAME
   );
 
   if CollectionID <> 1 then
