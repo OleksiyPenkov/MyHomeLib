@@ -28,8 +28,11 @@
 const fs = require('fs');
 const path = require('path');
 
+// Installer/GenreLists is the tracked source of the genre lists. Installer/
+// Common is a staging directory that build_installer.cmd fills and .gitignore
+// excludes, so validating that copy would be validating build output.
 const DIR = process.argv[2]
-  || path.join(__dirname, '..', '..', 'Installer', 'Common');
+  || path.join(__dirname, '..', '..', 'Installer', 'GenreLists');
 
 const BASES = ['genres_fb2', 'genres_nonfb2'];
 
