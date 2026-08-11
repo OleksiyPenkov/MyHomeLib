@@ -20,6 +20,7 @@ procedure DoneLocalization;
 function LocalizationActive: Boolean;
 function LocalizationStatus: string;
 function TranslateText(const AText: string): string;
+function ShippedRenderings(const AKey: string): TArray<string>;
 procedure Localize(AComponent: TComponent);
 
 implementation
@@ -564,6 +565,80 @@ begin
     Result := List.ToArray;
   finally
     List.Free;
+    Names.Free;
+  end;
+end;
+
+// Every spelling one catalog entry has across the languages built into this
+// exe, source included, de-duplicated and never empty.
+//
+// Exists for data seeded from a resourcestring and then stored: the two
+// default groups are written into user.dbs2 once, at creation, so they keep
+// whatever language created them. Knowing every shipped spelling is what
+// separates "still the name we wrote" from "the user renamed it" -- a name
+// matching none of these was chosen by the user and must not be overwritten.
+//
+// Keyed by catalog key (unit_SystemDatabase_Abstract_rstrToReadGroupName)
+// rather than by source text, because the caller holds the string already
+// translated into the active locale and cannot recover the source from it.
+//
+// Only embedded catalogs are consulted. A signed catalog sitting in Lang\ is
+// a language this build does not ship, so a group named from it is not a name
+// this build wrote.
+function ShippedRenderings(const AKey: string): TArray<string>;
+var
+  Names: TList<string>;
+  Found: TList<string>;
+  ResName, Text: string;
+  Root: TJSONValue;
+  Section, Entry: TJSONValue;
+
+  procedure Take(const AValue: string);
+  begin
+    if (AValue <> '') and (Found.IndexOf(AValue) < 0) then
+      Found.Add(AValue);
+  end;
+
+begin
+  Result := nil;
+  if AKey = '' then
+    Exit;
+
+  Names := TList<string>.Create;
+  Found := TList<string>.Create;
+  try
+    EnumResourceNames(HInstance, RT_RCDATA, @EnumLangResNames, NativeInt(Names));
+
+    for ResName in Names do
+    begin
+      if not EmbeddedCatalogText(ResName, Text) then
+        Continue;
+
+      Root := TJSONObject.ParseJSONValue(Text);
+      if Root = nil then
+        Continue;
+      try
+        if not (Root is TJSONObject) then
+          Continue;
+
+        Section := TJSONObject(Root).Values['strings'];
+        if not (Section is TJSONObject) then
+          Continue;
+
+        Entry := TJSONObject(Section).Values[AKey];
+        if not (Entry is TJSONObject) then
+          Continue;
+
+        Take(TJSONObject(Entry).GetValue<string>('source', ''));
+        Take(TJSONObject(Entry).GetValue<string>('target', ''));
+      finally
+        Root.Free;
+      end;
+    end;
+
+    Result := Found.ToArray;
+  finally
+    Found.Free;
     Names.Free;
   end;
 end;

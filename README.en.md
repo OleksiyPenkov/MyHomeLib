@@ -17,7 +17,7 @@ Beyond your own collections, MyHomeLib works as a client for libraries running t
 
 Books are stored as FB2 (loose files or zip archives), FBD, or any other format; collection metadata lives in a SQLite database.
 
-> **Note on interface language:** the UI is available in Ukrainian and English. The bundled help is Ukrainian only.
+> **Note on interface language:** the UI is available in Ukrainian, English and Bulgarian (machine-translated). The bundled help is Ukrainian only.
 
 ## Features
 
@@ -46,7 +46,11 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 
 ## Interface language
 
-The UI is available in Ukrainian and English. Switch it under **View → Interface language**; the change applies after a restart. Both languages are compiled into the executable, so no external file can replace or remove them. The bundled help is Ukrainian only.
+The UI is available in Ukrainian, English and Bulgarian. Switch it under **View → Interface language**; the change applies after a restart. All three languages are compiled into the executable, so no external file can replace or remove them. The bundled help is Ukrainian only.
+
+The genre tree follows the interface language too. Existing collections update themselves — genre names are stored inside the collection database, so they used to stay in whatever language the collection was created in.
+
+**The Bulgarian translation is machine-made** and has not been reviewed by a native speaker; the language menu says so. If a string reads wrong, please open an [issue](https://github.com/OleksiyPenkov/MyHomeLib/issues) quoting it with a suggested replacement.
 
 Additional languages load from translation catalogues placed next to the application (`Lang\<code>.json`). Only catalogues signed with the project key are loaded — an unsigned file is ignored and never appears in the menu. If you would like to translate the interface into your language, open an [issue](https://github.com/OleksiyPenkov/MyHomeLib/issues): a finished translation is signed and returned to you together with its signature file.
 

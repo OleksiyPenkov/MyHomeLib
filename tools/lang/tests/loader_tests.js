@@ -43,11 +43,17 @@ let caseNo = 0;
 //   opts.locale    -> written as [INTERFACE] Locale=<value>; omit for no key
 //   opts.catalogs  -> { 'en.json': <object|string>, ... } placed in Lang\
 //   opts.noLangDir -> true to omit the Lang folder entirely
+//   opts.appFiles  -> { 'genres_fb2_bg.glst': <text>, ... } placed BESIDE the
+//                     exe, not in Lang\ -- genre lists live in AppPath
 function run(opts) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), `langtest${caseNo++}-`));
   fs.copyFileSync(EXE, path.join(dir, 'LangTest.exe'));
   fs.writeFileSync(path.join(dir, 'probe.json'),
     JSON.stringify(PROBES), 'utf8');
+
+  for (const [name, body] of Object.entries(opts.appFiles || {})) {
+    fs.writeFileSync(path.join(dir, name), body, 'utf8');
+  }
 
   const ini = opts.locale === undefined
     ? '[INTERFACE]\r\n'
@@ -229,6 +235,80 @@ const checks = [
     const r = run({ locale: 'uk',
       catalogs: { 'verify.json': body }, sigs: { 'verify.json.sig': sig } });
     return r.verify === false;
+  }],
+
+  ['bg works with no Lang directory at all -- it is in the exe', () => {
+    // Probes Назва/Серія, not Автор: "Автор" is spelled identically in
+    // Bulgarian and Ukrainian, so an unchanged value there proves nothing.
+    // The en case above can use Автор because Author differs.
+    const r = run({ locale: 'bg', noLangDir: true });
+    return r.active === true
+      && r.translations['Назва'] === 'Заглавие'
+      && r.translations['Серія'] === 'Поредица';
+  }],
+
+  ['bg is offered with no Lang directory at all', () => {
+    const r = run({ locale: 'bg', noLangDir: true });
+    return r.locales.some(l => l.code === 'bg');
+  }],
+
+  ['bg carries its machine-translation disclosure in the menu name', () => {
+    // The disclosure reaches users only through this string. If the name in
+    // extract.js LOCALES is ever shortened to a plain "Български", the caveat
+    // silently disappears from the UI -- nothing else would notice.
+    const r = run({ locale: 'uk', noLangDir: true });
+    const bg = r.locales.find(l => l.code === 'bg');
+    return !!bg && /машинен превод/.test(bg.name);
+  }],
+
+  // --- Locale-aware genre lists -------------------------------------------
+  // The list content is irrelevant here: these cases test which FILE the app
+  // resolves to, not what is in it. check_glst.js covers the content.
+
+  ['genres: no locale list present falls back to the Russian original', () => {
+    const r = run({ locale: 'bg', noLangDir: true });
+    return r.genres.fb2 === 'genres_fb2.glst'
+      && r.genres.nonfb2 === 'genres_nonfb2.glst';
+  }],
+
+  ['genres: a matching locale list is preferred', () => {
+    const r = run({
+      locale: 'bg',
+      noLangDir: true,
+      appFiles: { 'genres_fb2_bg.glst': '﻿0.1 Фантастика\r\n' },
+    });
+    return r.genres.fb2 === 'genres_fb2_bg.glst';
+  }],
+
+  ['genres: fb2 and nonfb2 resolve independently', () => {
+    // Only the fb2 list is present, so nonfb2 must still fall back. A helper
+    // that resolved both from one existence check would pass the case above
+    // and fail here.
+    const r = run({
+      locale: 'bg',
+      noLangDir: true,
+      appFiles: { 'genres_fb2_bg.glst': '﻿0.1 Фантастика\r\n' },
+    });
+    return r.genres.fb2 === 'genres_fb2_bg.glst'
+      && r.genres.nonfb2 === 'genres_nonfb2.glst';
+  }],
+
+  ['genres: a list for a different locale is ignored', () => {
+    const r = run({
+      locale: 'uk',
+      noLangDir: true,
+      appFiles: { 'genres_fb2_bg.glst': '﻿0.1 Фантастика\r\n' },
+    });
+    return r.genres.fb2 === 'genres_fb2.glst';
+  }],
+
+  ['genres: uk gets its own list when one is present', () => {
+    const r = run({
+      locale: 'uk',
+      noLangDir: true,
+      appFiles: { 'genres_fb2_uk.glst': '﻿0.1 Фантастика\r\n' },
+    });
+    return r.genres.fb2 === 'genres_fb2_uk.glst';
   }],
 ];
 

@@ -308,6 +308,14 @@ const
   PROP_SERIES_LANG_FILTER = PROP_CLASS_COLLECTION or PROP_TYPE_INTEGER  or $0013;
   PROP_GENRES_LANG_FILTER = PROP_CLASS_COLLECTION or PROP_TYPE_INTEGER  or $0014;
   PROP_GROUPS_LANG_FILTER = PROP_CLASS_COLLECTION or PROP_TYPE_INTEGER  or $0015;
+
+  // Base name of the genre list a collection's Genres table was built from,
+  // e.g. genres_fb2_uk.glst. Stores the FILE NAME rather than a locale code
+  // so that the "no list for this locale, fall back to the Russian original"
+  // case needs no special handling: two collections agree exactly when they
+  // were filled from the same file. Empty on collections created before this
+  // property existed.
+  PROP_GENRE_FILE         = PROP_CLASS_COLLECTION or PROP_TYPE_STRING   or $0016;
 type
   TColumnSet = set of 0 .. 255;
 

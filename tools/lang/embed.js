@@ -2,9 +2,16 @@
 
 // Generates Program/lang.rc, which links the catalogs we ship into the exe.
 //
-// Only uk and en are ever embedded: they are the languages the project ships,
-// and being inside the binary is what makes them unreplaceable by a file in
-// Lang\. Any other locale is a community catalog and must be signed.
+// Only uk, en and bg are ever embedded: they are the languages the project
+// ships, and being inside the binary is what makes them unreplaceable by a
+// file in Lang\. Any other locale is a community catalog and must be signed.
+//
+// Bulgarian is embedded rather than shipped as a signed file because it is a
+// language the project ships, and the signature gate exists to keep unapproved
+// third-party catalogs out. Nothing stages Lang\ beside the exe any more --
+// copy_lang.cmd went when catalogs moved inside the binary -- so an external
+// bg.json would have needed installer plumbing for no benefit. The trade is
+// that correcting a Bulgarian string requires a release.
 //
 // A missing catalog is NOT an error. A clean clone has no Program/Lang at all
 // (it is gitignored, and lives in a separate private repository), and it must
@@ -16,7 +23,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const EMBEDDED = ['uk', 'en'];
+const EMBEDDED = ['uk', 'en', 'bg'];
 const ROOT = path.join(__dirname, '..', '..');
 const LANG_DIR = path.join(ROOT, 'Program', 'Lang');
 const RC_PATH = path.join(ROOT, 'Program', 'lang.rc');

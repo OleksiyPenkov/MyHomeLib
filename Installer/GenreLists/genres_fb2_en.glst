@@ -1,0 +1,319 @@
+﻿#---- Список жанров fb2 ------------------
+0.1 Sci-fi & Fantasy
+0.2 Mystery & Thrillers
+0.3 Fiction
+0.4 Romance
+0.5 Adventure
+0.6 Children's books
+0.7 Poetry
+0.8 Antique literature
+0.9 Science & Education
+0.10 Computers & Internet
+0.11 Reference
+0.12 Religion & Spirituality
+0.13 Humour
+0.14 Homemaking (Home & Family)
+0.15 Technology
+0.16 Other
+0.17 Business
+0.18 Non-fiction
+0.19 Drama
+0.20 Folklore
+0.21 Military
+0.22 Culture & Art
+0.0 Unsorted
+0.1.0 sf_history;Alternate history
+0.1.1 sf_action;Action sci-fi
+0.1.2 sf_epic;Epic sci-fi
+0.1.3 sf_heroic;Heroic fantasy
+0.1.4 sf_detective;Sci-fi mystery
+0.1.5 sf_cyberpunk;Cyberpunk
+0.1.6 sf_space;Space sci-fi
+0.1.7 sf_social;Social sci-fi
+0.1.8 sf_horror;Horror
+0.1.9 sf_humor;Humorous sci-fi
+0.1.10 sf_fantasy;Fantasy
+0.1.11 sf;Science fiction
+0.1.12 child_sf;Children's sci-fi
+0.1.13 sf_fantasy_city;Urban fantasy
+0.1.14 sf_postapocalyptic;Post-apocalyptic
+0.1.15 love_sf;Romantic sci-fi
+0.1.16 gothic_novel;Gothic novel
+0.1.17 nsf;Soft sci-fi
+0.1.18 fairy_fantasy;Fairy-tale fantasy
+0.1.19 sf_etc;Sci-fi: other
+0.1.20 sf_irony;Ironic sci-fi
+0.1.21 sf_fantasy_irony;Ironic fantasy
+0.1.22 sf_mystic;Supernatural fiction
+0.1.23 sf_space_opera;Space opera
+0.1.24 sf_stimpank;Steampunk
+0.1.25 sf_technofantasy;Technofantasy
+0.1.26 popadanec;Portal fantasy
+0.1.27 historical_fantasy;Historical fantasy
+0.1.28 humor_fantasy;Humorous fantasy
+0.1.29 sf_litrpg;LitRPG
+0.1.30 russian_fantasy;Slavic fantasy
+0.1.31 hronoopera;Time-travel fiction
+0.2.0 det_classic;Classic mystery
+0.2.1 det_police;Police procedural
+0.2.2 det_action;Action
+0.2.3 det_irony;Comic mystery
+0.2.4 det_history;Historical mystery
+0.2.5 det_espionage;Spy thriller
+0.2.6 det_crime;Crime fiction
+0.2.7 det_political;Political thriller
+0.2.8 det_maniac;Serial killers
+0.2.9 det_hard;Hard-boiled
+0.2.10 thriller;Thriller
+0.2.11 detective;Mystery: other
+0.2.12 love_detective;Romantic suspense
+0.2.13 child_det;Children's mystery
+0.2.14 thriller_legal;Legal thriller
+0.2.15 thriller_medical;Medical thriller
+0.2.16 thriller_techno;Techno-thriller
+0.2.17 det_cozy;Women's mystery
+0.2.18 det_su;Soviet mystery
+0.2.19 thriller_psychology;Psychological thriller
+0.3.0 prose;Fiction
+0.3.1 prose_classic;Classic fiction
+0.3.2 prose_history;Historical fiction
+0.3.3 prose_contemporary;Contemporary fiction
+0.3.4 prose_counter;Counterculture
+0.3.5 prose_rus_classic;Russian classic fiction
+0.3.6 prose_su_classics;Soviet classic fiction
+0.3.7 prose_military;War fiction
+0.3.8 aphorisms;Aphorisms
+0.3.9 essay;Essays and sketches
+0.3.10 story;Novella
+0.3.11 great_story;Short novel
+0.3.12 short_story;Short story
+0.3.13 roman;Novel
+0.3.14 extravaganza;Extravaganza
+0.3.15 epistolary_fiction;Epistolary fiction
+0.3.16 prose_epic;Epic
+0.3.17 prose_magic;Magical realism
+0.3.18 sagas;Family novel/Family saga
+0.3.19 dissident;Anti-Soviet literature
+0.3.20 prose_sentimental;Sentimental fiction
+0.3.21 foreign_prose;Foreign classic fiction
+0.3.22 literature_18;Classic fiction of the 17th-18th centuries
+0.3.23 literature_19;Classic fiction of the 19th century
+0.3.24 literature_20;Classic fiction of the 20th century
+0.3.25 prose_neformatny;Experimental, non-mainstream fiction
+0.3.26 prose_abs;Phantasmagoria, absurdist fiction
+0.4.0 love_contemporary;Contemporary romance
+0.4.1 love_history;Historical romance
+0.4.2 love_short;Short romance
+0.4.3 love_erotica;Erotica
+0.4.4 love;Love stories
+0.4.5 love_hard;Pornography
+0.5.0 adv_western;Western
+0.5.1 adv_history;Historical adventure
+0.5.2 adv_indian;Native American adventure
+0.5.3 adv_maritime;Sea adventure
+0.5.4 adv_geo;Travel & Geography
+0.5.5 adv_animal;Nature & Animals
+0.5.6 adventure;Adventure: other
+0.5.7 child_adv;Children's adventure
+0.5.8 adv_modern;Modern-day adventure
+0.5.9 tale_chivalry;Chivalric romance
+0.5.10 adv_story;Picaresque novel
+0.6.0 child_tale;Fairy tale
+0.6.1 child_verse;Children's poetry
+0.6.2 child_prose;Children's fiction
+0.6.3 child_education;Educational books
+0.6.4 children;Children's books: other
+0.6.5 ya;Young adult
+0.6.6 child_folklore;Children's folklore
+0.6.7 prose_game;Gamebook
+0.6.8 child_classical;Classic children's literature
+0.6.9 child_tale_rus;Russian fairy tales
+0.6.10 foreign_children;Foreign children's literature
+0.7.0 poetry;Poetry: other
+0.7.1 humor_verse;Humorous verse
+0.7.2 fable;Fables
+0.7.3 vers_libre;Free verse
+0.7.4 visual_poetry;Visual poetry
+0.7.5 lyrics;Lyric poetry
+0.7.6 palindromes;Palindromes
+0.7.7 song_poetry;Song lyrics
+0.7.8 experimental_poetry;Experimental poetry
+0.7.9 epic_poetry;Epic poetry
+0.7.10 in_verse;In verse
+0.7.11 poetry_classical;Classic poetry
+0.7.12 poetry_modern;Contemporary poetry
+0.7.13 poetry_rus_classical;Classic Russian poetry
+0.7.14 poetry_rus_modern;Contemporary Russian poetry
+0.7.15 poetry_for_classical;Classic foreign poetry
+0.7.16 poetry_for_modern;Contemporary foreign poetry
+0.7.17 poetry_east;Eastern poetry
+0.7.18 poem;Narrative and epic poetry
+0.8.0 antique_ant;Classical antiquity
+0.8.1 antique_european;Old European literature
+0.8.2 antique_russian;Old Russian literature
+0.8.3 antique_east;Ancient Eastern literature
+0.8.4 antique_myths;Myths. Legends. Epics
+0.8.5 antique;Antique literature: other
+0.8.6 drama_antique;Classical drama
+0.8.7 foreign_antique;Medieval classic prose
+0.9.0 sci_history;History
+0.9.1 sci_psychology;Psychology
+0.9.2 sci_culture;Cultural studies
+0.9.3 sci_religion;Religious studies
+0.9.4 sci_philosophy;Philosophy
+0.9.5 sci_politics;Politics
+0.9.6 sci_business;Business
+0.9.7 sci_juris;Law
+0.9.8 sci_linguistic;Linguistics
+0.9.9 sci_medicine;Medicine
+0.9.10 sci_phys;Physics
+0.9.11 sci_math;Mathematics
+0.9.12 sci_chem;Chemistry
+0.9.13 sci_biology;Biology
+0.9.14 sci_tech;Engineering sciences
+0.9.15 science;Science: other
+0.9.16 sci_biochem;Biochemistry
+0.9.17 sci_physchem;Physical chemistry
+0.9.18 sci_anachem;Analytical chemistry
+0.9.19 sci_orgchem;Organic chemistry
+0.9.20 sci_economy;Economics
+0.9.21 sci_state;State & Law
+0.9.22 sci_biophys;Biophysics
+0.9.23 sci_geo;Geology & Geography
+0.9.24 sci_cosmos;Astronomy & Space
+0.9.25 sci_medicine_alternative;Alternative medicine
+0.9.26 sci_philology;Literary studies
+0.9.27 sci_pedagogy;Pedagogy
+0.9.28 sci_social_studies;Social studies
+0.9.29 sci_ecology;Ecology
+0.9.30 military_history;Military history
+0.9.31 sci_veterinary;Veterinary medicine
+0.9.32 sci_zoo;Zoology
+0.9.33 sci_botany;Botany
+0.9.34 sci_textbook;Textbooks
+0.9.35 sci_crib;Crib sheets
+0.9.36 sci_abstract;Term papers
+0.9.37 foreign_language;Foreign languages
+0.9.38 psy_childs;Child psychology
+0.9.39 psy_theraphy;Psychotherapy & Counselling
+0.9.40 psy_sex_and_family;Sex & Family psychology
+0.9.41 sci_oriental;Oriental studies
+0.9.42 tbg_school;School textbooks, term papers, crib sheets
+0.9.43 tbg_secondary;Textbooks for secondary and vocational education
+0.9.44 tbg_higher;University textbooks
+0.10.0 comp_www;Internet
+0.10.1 comp_programming;Programming
+0.10.2 comp_hard;Hardware
+0.10.3 comp_soft;Software
+0.10.4 comp_db;Databases
+0.10.5 comp_osnet;OS & Networks
+0.10.6 computers;Computer culture
+0.10.7 comp_dsp;Digital signal processing
+0.10.8 tbg_computers;Tutorials and self-study guides
+0.11.0 ref_encyc;Encyclopedias
+0.11.1 ref_dict;Dictionaries
+0.11.2 ref_ref;Handbooks
+0.11.3 ref_guide;Manuals
+0.11.4 reference;Reference
+0.11.5 geo_guides;Travel guides
+0.12.0 religion_rel;Religion
+0.12.1 religion_esoterics;Esotericism
+0.12.2 religion_self;Self-improvement
+0.12.3 religion;Religion: other
+0.12.4 religion_budda;Buddhism
+0.12.5 religion_christianity;Christianity
+0.12.6 religion_orthodoxy;Orthodoxy
+0.12.7 religion_catholicism;Catholicism
+0.12.8 religion_protestantism;Protestantism
+0.12.9 religion_hinduism;Hinduism
+0.12.10 religion_islam;Islam
+0.12.11 religion_judaism;Judaism
+0.12.12 astrology;Astrology
+0.12.13 palmistry;Palmistry
+0.12.14 religion_paganism;Paganism
+0.13.0 humor_anecdote;Jokes
+0.13.1 humor_prose;Humorous fiction
+0.13.2 humor;Humour: other
+0.13.3 comedy;Comedy
+0.13.4 humor_satire;Satire
+0.14.0 home_cooking;Cooking
+0.14.1 home_pets;Pets
+0.14.2 home_crafts;Hobbies & Crafts
+0.14.3 home_entertain;Entertainment
+0.14.4 home_health;Health
+0.14.5 home_garden;Gardening
+0.14.6 home_diy;DIY
+0.14.7 home_sport;Sport
+0.14.8 home_sex;Erotica & Sex
+0.14.9 home;Homemaking
+0.14.10 home_collecting;Collecting
+0.14.11 family;Family relationships
+0.15.0 sci_transport;Transport & Aviation
+0.15.1 sci_metal;Metallurgy
+0.15.2 sci_radio;Radio electronics
+0.15.3 sci_build;Construction and strength of materials
+0.15.4 auto_regulations;Cars & Traffic rules
+0.15.5 auto_business;Motoring
+0.15.6 equ_history;History of technology
+0.16.0 other;Unsorted
+0.16.1 periodic;Newspapers & Magazines
+0.16.2 fanfiction;Fan fiction
+0.16.3 unfinished;Unfinished works
+0.16.4 sci_theories;Alternative science and theories
+0.16.5 comics;Comics
+0.16.6 network_literature;Self-published and online writing
+0.16.7 diafilm;Filmstrips
+0.17.0 banking;Banking
+0.17.1 accounting;Accounting & Audit
+0.17.2 global_economy;Foreign trade
+0.17.3 paper_work;Office administration
+0.17.4 org_behavior;Corporate culture
+0.17.5 personal_finance;Personal finance
+0.17.6 small_business;Small business
+0.17.7 marketing;Marketing, PR, advertising
+0.17.8 real_estate;Real estate
+0.17.9 popular_business;Popular business
+0.17.10 industries;Trade publications
+0.17.11 job_hunting;Job hunting, careers
+0.17.12 management;Management, recruitment
+0.17.13 stock;Securities, investment
+0.17.14 economics;Economics
+0.17.15 trade;Trade
+0.17.16 economics_ref;Business
+0.18.0 nonf_biography;Biographies & Memoirs
+0.18.1 nonf_publicism;Journalism
+0.18.2 nonf_criticism;Criticism
+0.18.3 nonfiction;Non-fiction
+0.18.4 nonf_military;Military non-fiction
+0.18.5 sci_popular;Popular science
+0.18.6 travel_notes;Geography, travel writing
+0.19.0 dramaturgy;Drama: other
+0.19.1 drama;Drama
+0.19.2 screenplays;Screenplays
+0.19.3 mystery;Mystery play
+0.19.4 scenarios;Scripts
+0.19.5 tragedy;Tragedy
+0.19.6 vaudeville;Vaudeville
+0.20.0 epic;Russian epic songs
+0.20.1 riddles;Riddles
+0.20.2 folk_songs;Folk songs
+0.20.3 folk_tale;Folk tales
+0.20.4 proverbs;Proverbs and sayings
+0.20.5 folklore;Folklore: other
+0.20.6 limerick;Comic rhymes and nursery jingles
+0.20.7 modern_tale;Modern fairy tale
+0.21.0 military_weapon;Military equipment and weapons
+0.21.1 military_arts;Martial arts
+0.21.2 military_special;Intelligence services
+0.21.3 military;Military: other
+0.22.0 design;Art & Design
+0.22.1 notes;Sheet music
+0.22.2 music;Music
+0.22.3 cine;Film
+0.22.4 theatre;Theatre
+0.22.5 architecture_book;Architecture
+0.22.6 visual_arts;Fine art, photography
+0.22.7 painting;Painting, albums, illustrated catalogues
+0.22.8 art_world_culture;World art and culture
+0.22.9 art_criticism;Art history
+#---------------------- к о н е ц                ----------------------------

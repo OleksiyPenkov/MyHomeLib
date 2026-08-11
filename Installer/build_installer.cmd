@@ -92,9 +92,22 @@ echo === Collecting Common redistributables ===
 
 if not exist "%COMMON_DIR%" mkdir "%COMMON_DIR%"
 
-:: Genre lists
-copy /y "%BIN_DIR%\genres_fb2.glst"    "%COMMON_DIR%\" >nul
-copy /y "%BIN_DIR%\genres_nonfb2.glst" "%COMMON_DIR%\" >nul
+:: Genre lists, including the per-locale ones. Staged from GenreLists\ under
+:: version control for the same reason the licences are: the build-output copy
+:: is untracked, so it drifts silently and a fresh clone does not have it.
+:: Copying the whole pattern means a new locale needs no edit here -- but it
+:: also means a list nobody validated would ship, so run
+:: `node tools\lang\check_glst.js` before building the installer.
+copy /y "%SCRIPT_DIR%GenreLists\genres_fb2*.glst"    "%COMMON_DIR%\" >nul
+if errorlevel 1 (
+    echo ERROR: could not stage genres_fb2 lists from GenreLists\
+    exit /b 1
+)
+copy /y "%SCRIPT_DIR%GenreLists\genres_nonfb2*.glst" "%COMMON_DIR%\" >nul
+if errorlevel 1 (
+    echo ERROR: could not stage genres_nonfb2 lists from GenreLists\
+    exit /b 1
+)
 
 :: Help and licences (staged from source, not from the build output), URL
 call "%ROOT_DIR%\Program\copy_help.cmd" "%COMMON_DIR%"

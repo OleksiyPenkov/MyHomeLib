@@ -782,6 +782,8 @@ type
 
     procedure CloseCollection;
     procedure InitCollection;
+    procedure SyncGenreLanguage;
+    procedure SyncSystemGroupNames;
 
     procedure CreateCollectionMenu;
     procedure CreateScriptMenu;
@@ -1665,6 +1667,113 @@ begin
   end;
 end;
 
+// Keeps the two seeded group names in step with the interface language.
+//
+// AddGroup writes rstrFavoritesGroupName and rstrToReadGroupName into
+// user.dbs2 when the system database is created, so like genre names they
+// keep the language that created them.
+//
+// Renames only a group still carrying a name this build shipped, in any of
+// its languages. CanDelete = False marks the two seeded groups, but it does
+// not stop the user renaming them -- so a group whose name matches none of
+// the shipped spellings was named by the user and is left alone permanently.
+// That test also identifies which of the two a group is, without depending on
+// GroupID ordering.
+procedure TfrmMain.SyncSystemGroupNames;
+
+  procedure SyncOne(const AKey, AWanted: string; const ALegacy: array of string);
+  var
+    Renderings: TArray<string>;
+    Iterator: IGroupIterator;
+    GroupData: TGroupData;
+    Legacy: string;
+  begin
+    if AWanted = '' then
+      Exit;
+
+    // Shipped spellings alone are not enough. A profile created before the
+    // interface was translated holds a name no current catalog contains --
+    // Russian is no longer shipped -- and would be mistaken for the user's
+    // own choice and left in Russian for good.
+    Renderings := ShippedRenderings(AKey);
+    for Legacy in ALegacy do
+      if not MatchStr(Legacy, Renderings) then
+      begin
+        SetLength(Renderings, Length(Renderings) + 1);
+        Renderings[High(Renderings)] := Legacy;
+      end;
+
+    if Length(Renderings) = 0 then
+      Exit;
+
+    Iterator := FSystemData.GetGroupIterator;
+    while Iterator.Next(GroupData) do
+    begin
+      if GroupData.CanDelete then
+        Continue;
+      if GroupData.Text = AWanted then
+        Continue;
+      if MatchStr(GroupData.Text, Renderings) then
+      begin
+        FSystemData.RenameGroup(GroupData.GroupID, AWanted);
+        Break;
+      end;
+    end;
+  end;
+
+begin
+  Assert(Assigned(FSystemData));
+
+  SyncOne('unit_SystemDatabase_Abstract_rstrFavoritesGroupName',
+    rstrFavoritesGroupName, LegacyFavoritesGroupNames);
+  SyncOne('unit_SystemDatabase_Abstract_rstrToReadGroupName',
+    rstrToReadGroupName, LegacyToReadGroupNames);
+end;
+
+// Keeps a collection's genre names in step with the interface language.
+//
+// Genre names are collection data: they are written into the Genres table
+// when the collection is created and never revisited, so switching the
+// interface language used to leave the genre tree in the old language until
+// the user found the Update genres command.
+//
+// Safe to run unconditionally for the lists we ship. tools/lang/glst_translate.js
+// rebuilds every translated list from the original and substitutes only the
+// name, so GenreCode and FB2Code are identical across locales -- which matters
+// because ReloadGenres drops Genre_List rows whose GenreCode disappeared. A
+// locale swap therefore cannot orphan a book's genre links.
+procedure TfrmMain.SyncGenreLanguage;
+var
+  Wanted: string;
+  Current: string;
+begin
+  Assert(Assigned(FCollection));
+
+  // Only FB2 collections get a list chosen for them. A non-FB2 collection's
+  // list is picked by hand, so second-guessing it would discard the user's
+  // own choice.
+  if not isFB2Collection(FCollection.CollectionCode) then
+    Exit;
+
+  Wanted := ExtractFileName(Settings.SystemFileName[sfGenresFB2]);
+  Current := VarToStr(FCollection.GetProperty(PROP_GENRE_FILE));
+
+  if SameText(Current, Wanted) then
+    Exit;
+
+  // Collections predating PROP_GENRE_FILE record nothing. When the wanted
+  // list is the untranslated original there is nothing to gain from rewriting
+  // Russian names with the same Russian names, so only record where they came
+  // from and leave the data alone.
+  if (Current = '') and SameText(Wanted, GENRES_FB2_FILENAME) then
+  begin
+    FCollection.SetProperty(PROP_GENRE_FILE, Wanted);
+    Exit;
+  end;
+
+  FCollection.ReloadGenres(Settings.SystemFileName[sfGenresFB2]);
+end;
+
 procedure TfrmMain.InitCollection;
 var
   SavedCursor: TCursor;
@@ -1731,6 +1840,13 @@ begin
     FCollection := FSystemData.GetCollection(Settings.ActiveCollection);
 
     Assert(Assigned(FCollection));
+
+    // Genre and seeded group names live in the databases, so they do not
+    // follow a change of interface language on their own. Bring them into
+    // line here, before the trees are built from them below.
+    SyncGenreLanguage;
+    SyncSystemGroupNames;
+
     frmMain.Caption := 'MyHomeLib - ' + FCollection.CollectionDisplayName;
 
     // определяем типы коллекции

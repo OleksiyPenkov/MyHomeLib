@@ -83,6 +83,15 @@ Source: Common\converters\fb2epub\*; DestDir: {app}\converters\fb2epub\; Flags: 
 Source: Common\converters\fb2mobi\*; DestDir: {app}\converters\fb2mobi\; Flags: skipifsourcedoesntexist
 Source: Common\genres_nonfb2.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\genres_fb2.glst; DestDir: {app}; Flags: replacesameversion
+; Per-locale genre lists. The app prefers genres_<base>_<locale>.glst over the
+; Russian original when one exists, so these are purely additive -- a install
+; missing them behaves exactly as before.
+Source: Common\genres_fb2_uk.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_nonfb2_uk.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_fb2_en.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_nonfb2_en.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_fb2_bg.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_nonfb2_bg.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\collections.ini; DestDir: {userappdata}\MyHomeLib; Flags: onlyifdoesntexist
 Source: Common\Help\*; DestDir: {app}\Help; Flags: recursesubdirs
 Source: Common\MyHomeLib.url; DestDir: {app}; Flags: replacesameversion
