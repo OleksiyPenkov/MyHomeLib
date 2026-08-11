@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Toolbar — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html" class="cur" aria-current="page">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Toolbar</h1>
+<!-- BODY:BEGIN -->
+<p>MyHomeLib has two toolbars — the main one and the edit toolbar. Both can be hidden or shown from the <a href="menu_view.html">View menu</a> → <span class="ui">Toolbars</span>.</p>
+
+<h2>The main toolbar</h2>
+<table>
+<tr><th>Button</th><th>What it does</th><th>Menu equivalent</th></tr>
+<tr><td><span class="ui">Read</span></td><td>Opens the selected book for reading.</td><td><a href="menu_book.html">Book → Read</a> (<kbd>Enter</kbd>)</td></tr>
+<tr><td><span class="ui">Add to download list</span></td><td>Queues the selected (checked) books for downloading from an online collection.</td><td>Book → Add to download list (<kbd>Ctrl</kbd>+<kbd>L</kbd>)</td></tr>
+<tr><td>The button hinted "Send to device"</td><td>Copies the selected books to a device using the default script; the arrow drops down the list of configured scripts so you can pick another.</td><td>Book → Send to device</td></tr>
+<tr><td><span class="ui">Cyrillic alphabet</span></td><td>Shows or hides the strip of Cyrillic letters above the tree on the Authors and Series tabs.</td><td>View → Toolbars → Cyrillic alphabet</td></tr>
+<tr><td><span class="ui">Latin alphabet</span></td><td>The same for the Latin alphabet.</td><td>View → Toolbars → Latin alphabet</td></tr>
+<tr><td>The button hinted "Select collection"</td><td>Drops down the list of connected collections for switching between them, plus an item for creating a new collection.</td><td>Collection → Select collection / Create a new collection</td></tr>
+<tr><td><span class="ui">Add to Favorites</span></td><td>Adds the selected books to the Favorites group; the arrow drops down the list of the other groups to choose from.</td><td><a href="menu_book.html">Book → Add to Favorites</a> (<kbd>Ctrl</kbd>+<kbd>F</kbd> in the book list)</td></tr>
+<tr><td>The button hinted "Check all"</td><td>Turns the check marks in every row of the active book list on or off.</td><td>Book list context menu → Check all / Uncheck all</td></tr>
+<tr><td>The button hinted "Expand/Collapse list"</td><td>Fully expands or collapses the active tree of books.</td><td>—</td></tr>
+<tr><td>The button whose hint reads Switch to "Table" mode</td><td>Switches the active book list between tree mode (with grouping) and a flat table.</td><td>View → View mode</td></tr>
+<tr><td><span class="ui">Hide deleted books</span></td><td>Hides the books marked as deleted from the list.</td><td>View → Hide deleted books</td></tr>
+<tr><td><span class="ui">Show downloaded books only</span></td><td>Leaves in the list only the books whose files are already on disk.</td><td>View → Show downloaded books only</td></tr>
+<tr><td><span class="ui">Book info panel</span></td><td>Shows or hides the right-hand panel with the cover, the annotation and the book description.</td><td>View → Book info panel</td></tr>
+<tr><td><span class="ui">Settings</span></td><td>Opens the program settings window.</td><td>Tools → Settings</td></tr>
+<tr><td>The button hinted "Help"</td><td>Opens this help.</td><td>Help → Help</td></tr>
+</table>
+
+<h2>The edit toolbar</h2>
+<p>This toolbar shows text buttons for editing the book selected in the list.</p>
+<table>
+<tr><th>Button</th><th>What it does</th><th>Menu equivalent</th></tr>
+<tr><td><span class="ui">Author</span></td><td>Opens the author details of the selected book for editing.</td><td>Edit → Author</td></tr>
+<tr><td><span class="ui">Series name</span></td><td>Opens the series title for editing.</td><td>Edit → Series name</td></tr>
+<tr><td><span class="ui">Genre name</span></td><td>Opens the genre name (alias) for editing.</td><td>Edit → Genre name</td></tr>
+<tr><td><span class="ui">Book info</span></td><td>Opens the full book description for editing.</td><td>Edit → Book info</td></tr>
+<tr><td><span class="ui">Delete</span></td><td>Deletes the selected book.</td><td><a href="menu_book.html">Book → Delete</a></td></tr>
+<tr><td><span class="ui">Convert to FBD</span></td><td>Converts the description of a non-FB2 book into an FBD file.</td><td>Edit → Convert to FBD</td></tr>
+<tr><td><span class="ui">Convert to FBD automatically</span></td><td>In the current build the button is not wired to anything — clicking it does nothing.</td><td>Edit → Convert to FBD automatically</td></tr>
+</table>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

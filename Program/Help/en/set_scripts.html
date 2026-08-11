@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scripts — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html" class="cur" aria-current="page">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Scripts</h1>
+<!-- BODY:BEGIN -->
+<p>A script here is not a script for logging in to an online library but an external program (or batch file) that MyHomeLib launches immediately after books have been sent to a device, with parameters ready to be substituted. It is a way of adding "destinations" or actions of your own to the ordinary <span class="ui">Send to device</span> command (see <a href="export_device.html">Sending books to a device</a>) — so that the same click also starts a device sync program, copies the files to a second place as well, or simply opens the result folder.</p>
+
+<h2>The list of scripts</h2>
+<p>The <span class="ui">Scripts</span> section of the settings dialog (see <a href="settings.html">Program settings</a>) has a table with the columns <span class="ui">Title</span>, <span class="ui">Path</span> and <span class="ui">Options</span>, and three buttons below it:</p>
+<dl>
+<dt>Add / Change</dt>
+<dd>Opens the <span class="ui">Script parameters</span> window with the fields <span class="ui">Title:</span>, <span class="ui">Path:</span> (the <span class="ui">Browse...</span> button offers <code>.exe</code>, <code>.bat</code>, <code>.cmd</code>, <code>.vbs</code> and <code>.js</code> files, though you can type the path by hand) and <span class="ui">Parameters:</span>. Title and path are required; without either of them the entry cannot be saved.</dd>
+<dt>Delete</dt>
+<dd>Removes the selected script from the list.</dd>
+</dl>
+<p>The <span class="ui">Default:</span> drop-down list says which of the scripts (or "Standard", meaning none at all) runs when you press the <span class="ui">Send to device</span> button on the toolbar itself without opening its list; for more about that button see <a href="toolbar.html">Toolbar</a>.</p>
+
+<h2>When scripts run</h2>
+<p>There are three equivalent ways to run the script you want:</p>
+<ul>
+<li>the arrow beside the <span class="ui">Send to device</span> button on the toolbar — it drops down the list of every configured script;</li>
+<li>the <span class="ui">Run script</span> submenu of the Tools menu (see <a href="menu_tools.html">Tools menu</a>);</li>
+<li>the <span class="ui">Run script</span> item in the context menu of the book list (see <a href="context_menus.html">Context menus</a>).</li>
+</ul>
+<p>In all three cases MyHomeLib first performs an ordinary send of the checked books — copying and, if needed, converting them into the folder and format, and under the name templates, configured in <a href="set_device.html">Devices and export</a> — and only then launches the program from the <span class="ui">Path</span> column with the parameters from the <span class="ui">Options</span> column substituted.</p>
+
+<h2>Substitutions in the parameters</h2>
+<p>The <span class="ui">Parameters</span> field accepts the following markers (they are substituted only into the parameter string handed to the program; the file on disk is not changed):</p>
+<table>
+<tr><th>Marker</th><th>What is substituted</th></tr>
+<tr><td><code>%DEST%</code></td><td>The folder the books have just been sent to.</td></tr>
+<tr><td><code>%TMP%</code></td><td>MyHomeLib's temporary folder.</td></tr>
+<tr><td><code>%FILENAME%</code></td><td>The name (or names) of the files just sent.</td></tr>
+<tr><td><code>%FOLDER path%</code></td><td>Sets the destination folder straight from the parameters — everything between "<code>%FOLDER </code>" and the next "<code>%</code>" is read as a path and used instead of the folder from Devices and export, and is removed from the parameter string passed to the program.</td></tr>
+<tr><td><code>%NFT%</code></td><td>Disables the subfolder template (see <a href="set_device.html">Devices and export</a>) for this one run — the files go into the destination folder without a subfolder being built from the template.</td></tr>
+</table>
+
+<h2>The special "%COPY%" path</h2>
+<p>If the <span class="ui">Path</span> field contains literally <code>%COPY%</code>, MyHomeLib launches no external program at all — instead it simply copies the sent files into the folder given in the <span class="ui">Options</span> field. The markers <code>%TMP%</code>, <code>%DEST%</code>, <code>%FOLDER path%</code> and <code>%NFT%</code> from the table above are substituted into that string just as they are for an ordinary script — if you do not need them there, an ordinary folder path is all the field takes. This is a handy way to add another copy destination as a single list entry without writing a program for it; for an example see <a href="scripts_examples.html">Script examples</a>.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

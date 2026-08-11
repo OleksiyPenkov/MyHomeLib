@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Key terms — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html" class="cur" aria-current="page">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Key terms</h1>
+<!-- BODY:BEGIN -->
+<p>This page explains the terms used consistently throughout the MyHomeLib help.</p>
+
+<dl>
+<dt>Collection</dt>
+<dd>A separate book database (a <code>.hlc2</code> file) — either a private library of your own or a connected external library. You can keep several collections at once and switch between them; more on this in <a href="collections.html">Working with collections</a>.</dd>
+
+<dt>Collection type: local and online</dt>
+<dd>An internal division of collections by the way books are stored, rather than the names you see on screen. A local collection keeps the book files on your own disk. An online (network) collection asks a library server (Flibusta, for instance) for its books and downloads them only when needed. Both are created by the collection wizard; see <a href="coll_types.html">Collection types</a> and <a href="new_collection.html">Creating a collection</a>.</dd>
+
+<dt>INPX</dt>
+<dd>The catalog file format that libraries running the Librusec engine exchange: an archive of book descriptions without the files themselves. An INPX file can be used to create a new collection or to update an existing one, and a collection of your own can be exported back to INPX; see <a href="new_collection.html">Creating a collection</a> and <a href="export_inpx.html">Exporting to INPX</a>.</dd>
+
+<dt>FB2, FB2.ZIP, FBD, non-FB2</dt>
+<dd><span class="ui">FB2</span> is the main book format MyHomeLib works with; <span class="ui">FB2.ZIP</span> is the same file compressed into a ZIP archive. A book in any other format (PDF, DjVu, EPUB, TXT and so on) is stored by the program as <span class="ui">non-FB2</span>; for such a book you can create a small description file — an <span class="ui">FBD</span> — which is packed together with the file itself into a single archive so that the book has an author, a title and a genre just as an FB2 does. See <a href="import_fb2.html">Importing FB2 books</a> and <a href="import_nonfb2.html">Importing non-FB2 and FBD books</a>.</dd>
+
+<dt>Group</dt>
+<dd>An arbitrary named label you can attach to any books in a collection so that you can later find them together — regardless of author or series. Groups are managed on the <span class="ui">Groups</span> tab; see <a href="groups.html">Groups and favorites</a>.</dd>
+
+<dt>Favorites</dt>
+<dd>One of the two groups that exist in MyHomeLib from the start and cannot be deleted — the other being <span class="ui">To read</span>. The <span class="ui">Favorites</span> group is meant for books you want to set aside for quick access. Technically it uses exactly the same group machinery as an ordinary group; more on this in <a href="groups.html">Groups and favorites</a>.</dd>
+
+<dt>Genre</dt>
+<dd>A label marking a book's subject or category, taken from a standard genre list (a separate one for FB2 and for non-FB2 books). Genres are organized as a tree and are shown on the genre browsing tab; see <a href="genres.html">Genre lists</a> and <a href="browsing.html">Browsing: authors, series, genres</a>.</dd>
+
+<dt>Series</dt>
+<dd>A group of books by one author or from one cycle, sharing a common name and numbered within it. Series are shown on a browsing tab of their own; see <a href="browsing.html">Browsing: authors, series, genres</a>.</dd>
+
+<dt>Device</dt>
+<dd>A folder or a connected gadget to which MyHomeLib copies or converts books for reading outside the program — an e-reader or a smartphone, for instance. Devices are configured in advance with the formats they need; see <a href="set_device.html">Devices and export</a> and <a href="export_device.html">Sending books to a device</a>.</dd>
+
+<dt>Reader</dt>
+<dd>An external program that MyHomeLib launches to view a book of a particular format (identified by the file extension). If no reader is assigned to an extension, the program registered as the system default is used. Configured in <a href="set_readers.html">File types and readers</a>.</dd>
+
+<dt>Script</dt>
+<dd>An external program or batch file that MyHomeLib can optionally run right after books are sent to a device, passing the path to the files just sent among its launch parameters. Not to be confused with the connection script of an online collection (a separate property of the collection itself — see <a href="coll_params.html">Collection properties</a>); registered scripts are configured in <a href="set_scripts.html">Scripts</a>, and there are examples in <a href="scripts_examples.html">Script examples</a>.</dd>
+
+<dt>System database</dt>
+<dd>The <code>user.dbs2</code> file — a database shared by all collections, in which MyHomeLib stores the list and the properties of the connected collections, the groups (Favorites included), and the ratings, reading progress and notes you assign to books. Where exactly this file lives is covered in <a href="faq.html">FAQ</a>.</dd>
+</dl>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

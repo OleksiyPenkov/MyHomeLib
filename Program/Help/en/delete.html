@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deleting books — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html" class="cur" aria-current="page">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Deleting books</h1>
+<!-- BODY:BEGIN -->
+<p>The <span class="ui">Delete</span> command (the Book menu or the context menu of the book list; see <a href="menu_book.html">Book menu</a>) behaves differently depending on the type of the active collection — and in one of the two cases it really does remove the book from the database for good. The command always asks for confirmation first, and the wording of the question tells you what is about to happen.</p>
+
+<p class="note">You cannot delete a book while viewing it through a group tab or through Favorites — the program will ask you to switch to the tab of the collection the book actually belongs to first. That is by design: groups are only a way of viewing books, not collections of their own; see <a href="groups.html">Groups and favorites</a>.</p>
+
+<h2>Online collection: Delete the downloaded files?</h2>
+<p>Here Delete does not touch the catalog at all. If the book file has already been downloaded to disk, MyHomeLib deletes only that file and marks the book as not downloaded; the catalog record itself, its rating, reading progress and group membership all stay as they were. You can always download the book again — see <a href="download.html">Downloading books</a>.</p>
+
+<h2>Private or connected collection: deleting the record from the database</h2>
+<p>Here the book's record is removed from the collection catalog for good — the row is deleted from the database directly, with no recycle bin and no "deleted" flag that could be undone. Along with the book:</p>
+<ul>
+<li>authors who are left with no other book linked to them after the deletion are removed from the database as well;</li>
+<li>the book disappears from every group it belonged to, Favorites and To read included.</li>
+</ul>
+<p>The only way to bring a deleted record back is to import it again (by re-importing the collection from INPX, say, or by scanning the files anew) — the program keeps no copy of the deleted book description anywhere.</p>
+
+<h3>Is the file deleted from disk</h3>
+<p>That depends on the <span class="ui">Delete files when deleting books</span> option in the settings (see <a href="set_other.html">Behavior</a>):</p>
+<ul>
+<li>the option is off — only the catalog record is deleted; the file stays on disk as it is (orphaned), and you can bring it back into the catalog later by importing it again;</li>
+<li>the option is on — for a book in a non-FB2 format the file is always deleted; for a book in FB2 format only if the active collection is private. If the collection was connected from someone else's INPX and uses someone else's files, the file is left alone when the record is deleted, so that files the program does not really own are not touched.</li>
+</ul>
+
+<p class="note">When the file does get deleted, it is an ordinary Windows deletion that bypasses the recycle bin (the code for moving files to the recycle bin exists but is disabled as "behaving oddly") — such a file can only be brought back with data recovery tools, and the MyHomeLib help makes no promises there.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

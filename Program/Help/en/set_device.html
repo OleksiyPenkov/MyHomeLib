@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devices and export — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html" class="cur" aria-current="page">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Devices and export</h1>
+<!-- BODY:BEGIN -->
+<p>The <span class="ui">Folders/Devices</span> section of the settings dialog (see <a href="settings.html">Program settings</a>) prepares everything the <span class="ui">Send to device</span> command later relies on — the destination folder itself, the conversion format and the name templates; for more about the sending process see <a href="export_device.html">Sending books to a device</a>.</p>
+
+<h2>The folder on the device</h2>
+<p>The <span class="ui">Folder on the device</span> field (with the <span class="ui">Select</span> button beside it) sets the default destination folder. The <span class="ui">Ask for the path every time</span> checkbox disables the field and the button and, instead of using the stored folder, opens a folder picker before every send (the choices there can include MTP devices — a phone or a reader connected as a portable device).</p>
+
+<h2>Device output format</h2>
+<p>The <span class="ui">Device output format</span> drop-down list sets the conversion format used by the ordinary <span class="ui">Send to device</span> command: <code>.fb2</code>, <code>.fb2.zip</code>, <code>.lrf</code>, <code>.txt</code>, <code>.epub</code>, <code>.pdf</code> or <code>.mobi</code> (<code>.fb2</code> by default). This is only the default format: the program also has separate menu items and buttons for sending in one specific format, which override this choice for that one send — see <a href="menu_book.html">Book menu</a> and <a href="toolbar.html">Toolbar</a>.</p>
+
+<h2>Name format</h2>
+<p>Two fields — <span class="ui">Folder:</span> and <span class="ui">File:</span> — hold the templates that build the subfolder inside the device folder and the file name respectively; the fields only display the current template (they are not meant to be edited in place), and the <span class="ui">Change</span> buttons beside them open the template editor. The default values (right after installation) are <code>%fc\%s</code> for the folder, that is "Author\Series" (note <code>%fc</code>, not the book's first author — see the <code>%fc</code> substitution below), and <code>[%n - ]%t</code> for the file (the number followed by a "-" separator before the title, but only if the book has a number in its series; otherwise the title alone).</p>
+
+<h3>The template editor</h3>
+<p>The same editor ("Build template") also opens for the file sorting templates (<a href="set_filesort.html">File sorting</a>) and for the book title template (<a href="set_other.html">Behavior</a>). It has two tabs:</p>
+<ul>
+<li><span class="ui">Template rules</span> — the template field itself plus a reference list of the substitutions;</li>
+<li><span class="ui">Template test</span> — test fields (last name and first name of two imaginary authors, title, series, number, book ID, two imaginary genres, root genre) with checkboxes; whichever test field is checked is what gets substituted into the result shown right below the template field, so you can check a template without sending a single real book.</li>
+</ul>
+<p>The <span class="ui">Save</span> button applies the template only if it is syntactically correct (valid substitutions, balanced brackets); if it is not, an error message appears and the window stays open.</p>
+
+<h2>Template substitutions</h2>
+<p>A substitution is a percent sign in front of the element name, with no closing sign (<code>%f</code>, not <code>%f%</code>). The full list is 14 substitutions:</p>
+<table>
+<tr><th>Substitution</th><th>What it substitutes</th></tr>
+<tr><td><code>%f</code></td><td>The last, first and middle name of the book's first author.</td></tr>
+<tr><td><code>%fc</code></td><td>The full name of the "current" author — the one whose card is selected in the author tree when the action is started. If the action was not started from browsing by author (from the series or genre tab, say), this substitutes the same thing as <code>%f</code>.</td></tr>
+<tr><td><code>%fa</code></td><td>The last name and initials (instead of first and middle name) of <strong>all</strong> the book's authors, separated by commas.</td></tr>
+<tr><td><code>%fl</code></td><td>The first author's last name only.</td></tr>
+<tr><td><code>%fn</code></td><td>The first author's last and first name (no middle name).</td></tr>
+<tr><td><code>%ff</code></td><td>The first letter of the first author's last name.</td></tr>
+<tr><td><code>%s</code></td><td>The series name.</td></tr>
+<tr><td><code>%n</code></td><td>The book's number in the series, padded to at least two digits (01, 02, …); empty if the book has no number.</td></tr>
+<tr><td><code>%t</code></td><td>The book title.</td></tr>
+<tr><td><code>%g</code></td><td>The first genre in the book's genre list.</td></tr>
+<tr><td><code>%ga</code></td><td>All of the book's genres, separated by commas.</td></tr>
+<tr><td><code>%rg</code></td><td>The root genre — the top level of the standard genre tree that the book's first genre (the same one <code>%g</code> gives) belongs to.</td></tr>
+<tr><td><code>%gr</code></td><td>The name of the group from whose tab the action was started (for example, "Favorites" while browsing through the Favorites tab); empty outside group browsing.</td></tr>
+<tr><td><code>%id</code></td><td>The book's stable identifier (LibID) — the same one books are matched by when a collection is updated or user data is imported.</td></tr>
+</table>
+
+<p>Substitution names are read greedily: after the percent sign the program takes every following letter in turn until it has the name of a known substitution. Because of this, a <code>%g</code> immediately followed by the letter "r" with no separator will always be read as the single substitution <code>%gr</code>, never as <code>%g</code> plus a stray letter. If you need literal letters right after a substitution, separate them with something that is not a letter — a space, a hyphen, an underscore and so on.</p>
+
+<p>Writing a substitution name in capitals (<code>%T</code> instead of <code>%t</code>, for instance) substitutes the transliterated (Latin) value instead of the ordinary one — handy for devices or file systems that do not get along with Cyrillic in file names.</p>
+
+<h3>Grouping with square brackets</h3>
+<p>A fragment of a template can be enclosed in square brackets — but each bracket level allows exactly one substitution, no more (trying to put two substitutions in a row inside one pair of brackets makes the template invalid). If that substitution's value is empty, the whole bracketed fragment (along with any text and any nested brackets inside it) is dropped from the result; if the value is there, the brackets themselves are dropped and their contents stay. Brackets can be nested: each nesting level depends only on "its own" substitution, not on the substitutions in the nested level.</p>
+<p>An example from the template editor itself — <code>[%s [(%n) ]- ]%t</code>: if the book has no series, only the title remains (<code>%t</code>); if there is a series but no number — "Series - Title"; if there is both a series and a number — "Series (Number) - Title".</p>
+
+<h2>Other settings</h2>
+<dl>
+<dt>TXT encoding</dt>
+<dd>UTF-8 or Windows-1251 — the encoding the text is saved in when the device output format is <code>.txt</code>.</dd>
+<dt>Enable the "[...]" filter</dt>
+<dd>When this is on, the first square-bracketed fragment, brackets included, is cut out of the file name that was built (it was designed for the book titles of online libraries such as lib.rus.ec, where service markers in brackets sometimes end up in the title). On by default.</dd>
+</dl>
+
+<h2>The "Reading" folder</h2>
+<p>The <span class="ui">"Reading" folder</span> field (with a <span class="ui">Select</span> button) sets the working folder MyHomeLib unpacks books into from packed sources (FB2.ZIP, FBD, packed non-FB2) before opening them in a reader; see <a href="reading.html">Reading books</a>. If you leave the field empty or point it at a folder that does not exist, the program's temporary folder is used.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

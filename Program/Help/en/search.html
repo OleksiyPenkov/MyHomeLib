@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search and filters — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html" class="cur" aria-current="page">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Search and filters</h1>
+<!-- BODY:BEGIN -->
+<p>The <span class="ui">Search</span> tab is a book list of its own, filled not by browsing the author, series or genre tree but by an arbitrary set of conditions. Unlike the browsing trees, it can search several fields at once and can store a set of conditions for reuse.</p>
+
+<h2>Search fields</h2>
+<p>The panel on the left is made up of three collapsible groups.</p>
+<dl>
+<dt>Book</dt>
+<dd>Author, Title, Series, Genre (with a button that opens the genre tree so you can pick with the mouse), Keywords, Annotation.</dd>
+<dt>File</dt>
+<dd>Name, Folder (archive), Type — that is, the file extension.</dd>
+<dt>Misc</dt>
+<dd>Date added (ready-made intervals in a drop-down list — <em>Today, Last 3 days, Last week, Last 2 weeks, Last month, Last 3 months</em>), Lang (a two-letter code), the external library Rating (1–5), and the Hide deleted and Read books only checkboxes.</dd>
+</dl>
+
+<h2>Simple and advanced search</h2>
+<p>The simplest approach is to type text into the field you want: MyHomeLib looks for it as a case-insensitive substring anywhere in the value. For a more precise query, the same field also understands a direct, SQL-like condition syntax:</p>
+<ul>
+<li><code>%text%</code> — an explicit substring, with the option of putting <code>%</code> on one side only;</li>
+<li><code>="exact value"</code> — an exact match;</li>
+<li><code>&lt;</code>, <code>&gt;</code>, <code>&lt;&gt;</code> — comparisons (handy for a date or a size);</li>
+<li><code>="name1" OR ="name2"</code> — several alternatives in one field; this is exactly the form in which several authors selected at once through the Add to "Search" item of the author tree are placed into the Author field (see <a href="context_menus.html">Context menus</a>).</li>
+</ul>
+<p>The button to the right of each field opens a separate editing window for it — more comfortable for a long or multi-line query than a single-line field. In the Genre field the same button opens the genre tree instead of a text editor: what you select there is placed into the field as a list of genre aliases rather than as free text.</p>
+<p>Pressing <kbd>Enter</kbd> in any field starts the search straight away, just as the <span class="ui">Apply</span> button does.</p>
+
+<h2>Search scope</h2>
+<p>The search covers only the collection that is active at that moment. To find a book in another connected collection, switch to it first (see <a href="collections.html">Working with collections</a>) and then repeat the search.</p>
+
+<h2>Presets</h2>
+<p>A filled-in set of conditions can be stored under a name of your choosing with the <span class="ui">Save</span> button and recalled later by picking that name from the list above the search panel. The <span class="ui">Delete</span> button removes the selected preset from the list (its tooltip reads Delete preset). The <span class="ui">Clear</span> button empties every field without touching the preset selection. Presets are stored in a separate file in the program's working folder and are shared by all collections.</p>
+
+<p class="note">This page replaces the search help from the 2011 version and closes its dead link to a topic that no longer exists.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

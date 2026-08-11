@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>File types and readers — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html" class="cur" aria-current="page">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>File types and readers</h1>
+<!-- BODY:BEGIN -->
+<p>The <span class="ui">File types</span> section of the settings dialog (see <a href="settings.html">Program settings</a>) is a table matching file extensions to viewer programs, and it is what the <span class="ui">Read</span> command works from; for more about how the reader is picked, see <a href="reading.html">Reading books</a>.</p>
+
+<h2>The list</h2>
+<p>The table has two columns — <span class="ui">Extension</span> and <span class="ui">Path</span> — and is managed with the three buttons below it:</p>
+<dl>
+<dt>Add</dt>
+<dd>Opens a small <span class="ui">Add file type</span> window with a <span class="ui">Type:</span> field (the extension, without the dot — case does not matter) and a <span class="ui">Path:</span> field (the full path to the reader program; the <span class="ui">Browse...</span> button opens the standard file picker). The extension is required — without it the entry is not added; and if that extension is already in the list, a message says so and the entry is not added either.</dd>
+<dt>Change</dt>
+<dd>Opens the same window for the selected row (as does a double click on the row); you can change both the path and the extension itself.</dd>
+<dt>Delete</dt>
+<dd>Removes the selected row from the list without asking for confirmation.</dd>
+</dl>
+
+<h2>If there is no reader for an extension</h2>
+<p>The list does not have to cover every file type in the collection: for an extension that is not in the table, MyHomeLib simply hands the file to whichever program Windows itself has registered for that extension (the ordinary file association) — exactly as it does for an entry with an empty <span class="ui">Path</span> field.</p>
+
+<h2>The built-in reader</h2>
+<p>MyHomeLib has no built-in reader of its own — "Read" always launches a separate program. All the installer does is put AlReader alongside it and, on first run (while the reader list is still empty), fill the table itself: it assigns AlReader to the <code>fb2</code>, <code>doc</code>, <code>txt</code>, <code>htm</code> and <code>html</code> extensions, and for four more — <code>pdf</code>, <code>djvu</code>, <code>mht</code> and <code>chm</code> — it also adds a row, but with an empty <span class="ui">Path</span> field, which, as described above, opens such a file with the program Windows has registered by default. This starting set is only a convenient initial state for the table: you are free to edit or delete any of it, like any other row.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

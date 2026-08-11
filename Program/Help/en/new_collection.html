@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creating a collection — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html" class="cur" aria-current="page">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Creating a collection</h1>
+<!-- BODY:BEGIN -->
+<p>The <span class="ui">Collection → Create a new collection</span> command (<kbd>Ctrl</kbd>+<kbd>N</kbd>) starts a wizard that creates a new empty collection, connects an existing one and builds a collection from an INPX file. Which steps the wizard shows depends on the choice you make on the second step — below they are listed in the order in which they actually follow one another, and steps marked as conditional appear only for a particular choice.</p>
+
+<h2>Step 1. Welcome</h2>
+<p>The opening page of the MyHomeLib Add Collection Wizard — explanatory text only, with no fields to fill in.</p>
+
+<h2>Step 2. Collection type</h2>
+<p>Here you choose what the wizard is going to do:</p>
+<ul>
+<li><span class="ui">New empty collection</span> — create an empty collection, which you then fill by importing books;</li>
+<li><span class="ui">Existing collection (HLC2)</span> — connect a collection file that already exists;</li>
+<li><span class="ui">Collection from an INPX file</span> — create a collection and fill it straight away from an INPX catalog file (see <a href="terms.html">Key terms</a>).</li>
+</ul>
+
+<h2>Step 3. INPX source (only for "Collection from an INPX file")</h2>
+<p>Shown only if you picked <span class="ui">Collection from an INPX file</span> on the previous step. Here you say where the INPX file is to come from:</p>
+<ul>
+<li><span class="ui">Local INPX file</span> — a file already on your disk (the <span class="ui">Select</span> button opens a file picker);</li>
+<li><span class="ui">Download from website</span> — a list of ready-made collections (lib.rus.ec, Flibusta and so on), whose sources are taken from the <code>collections.ini</code> file (see <a href="install.html">Installation</a>); the INPX file will be downloaded from the server. This option is available only if that list is not empty.</li>
+</ul>
+<p>The type of the collection to be (private or external, local or online, FB2 or non-FB2) is settled later, from the data stored inside the INPX file itself; see <a href="coll_types.html">Collection types</a>.</p>
+
+<h2>Step 4. Downloading the INPX file (only if you chose "Download from website")</h2>
+<p>Shows the progress of downloading the chosen INPX file from the server: the speed and the amount downloaded so far. There is no such step when the INPX file comes from a local disk.</p>
+
+<h2>Step 5. Collection name</h2>
+<p>A step common to every option: the collection name, the collection file and the book folder.</p>
+<ul>
+<li><span class="ui">Collection name</span> — any name you like, under which the collection will appear in lists and menus; it has to be unique among the connected collections;</li>
+<li><span class="ui">Collection file</span> — the path to the <code>.hlc2</code> file. For a new collection and for a collection from INPX you say where the file is to be created (the <span class="ui">Select</span> button); for connecting an existing collection, where to find the file that is already there;</li>
+<li><span class="ui">Books folder</span> — the folder where this collection's book files will be stored (or are stored already).</li>
+</ul>
+<p>If the collection is being created from an INPX file, the wizard fills in the name and the collection file from the data stored inside the INPX itself — you can correct that by hand.</p>
+
+<h2>Step 6. File format (only for "New empty collection")</h2>
+<p>Shown only if you picked <span class="ui">New empty collection</span> on step 2. It determines what the future collection will hold:</p>
+<ul>
+<li><span class="ui">Books in FictionBook format</span> — the collection will store <span class="ui">FB2</span>/<span class="ui">FB2.ZIP</span> books, with the standard FB2 genre tree;</li>
+<li><span class="ui">Books in other formats (FBD, PDF, DJVU)</span> — a collection for <span class="ui">non-FB2</span> books, with a genre tree of its own (the next step lets you choose the genre file).</li>
+</ul>
+<p>The <span class="ui">Start importing books after the collection is created</span> checkbox (on by default, available for FB2 only) opens the book import as soon as the collection has been created — see <a href="import_fb2.html">Importing FB2 books</a>.</p>
+
+<h2>Step 7. Genre description file (only for a new non-FB2 collection)</h2>
+<p>Shown only when a new empty collection is being created with the <span class="ui">Books in other formats</span> format. For a new FB2 collection, for connecting an existing one and for creating from INPX the genre file is chosen automatically, and this step does not appear.</p>
+<ul>
+<li><span class="ui">Default</span> — use the genre description file that ships with the program;</li>
+<li><span class="ui">Custom genre file</span> — point to a file of your own (the <span class="ui">Select</span> button).</li>
+</ul>
+<p>The <span class="ui">Start the import after the collection is created</span> checkbox here repeats the same choice as the one on the file format step. For the genre files themselves see <a href="genres.html">Genre lists</a>.</p>
+
+<h2>Step 8. Progress</h2>
+<p>A step common to every option: here the wizard actually creates or connects the collection in the system database and, for the INPX options, imports the data from the INPX file straight afterwards (with an event log and a progress bar). Only the <span class="ui">Cancel</span> button is available on this step — there are no buttons for moving to the previous or the next one; if registering the collection could not be completed, the wizard stays on this page and offers to save the error log.</p>
+
+<h2>Step 9. Finish</h2>
+<p>The closing page: the collection has been created (or connected), and you can start using it as soon as the wizard closes.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

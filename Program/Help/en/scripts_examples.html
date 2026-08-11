@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Script examples — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html" class="cur" aria-current="page">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Script examples</h1>
+<!-- BODY:BEGIN -->
+<p>This page supplements <a href="set_scripts.html">Scripts</a> with examples. A MyHomeLib script is not a conversion script (the program converts to LRF, EPUB, PDF and MOBI by itself, with built-in converters — see <a href="export_device.html">Sending books to a device</a>) and not a script for working with an online library; it is any external program you like, launched after the books have been sent, with paths substituted into its parameters. So the examples below are not about converters but about the typical shape of such an entry.</p>
+
+<h2>A second copy folder (with no program at all)</h2>
+<p>The simplest entry uses no external program whatsoever, only the special value <code>%COPY%</code> in the <span class="ui">Path</span> field (see <a href="set_scripts.html">Scripts</a>):</p>
+<table>
+<tr><th>Title</th><th>Path</th><th>Options</th></tr>
+<tr><td>Backup copy</td><td><code>%COPY%</code></td><td><code>D:\Book backup\</code></td></tr>
+</table>
+<p>Choosing this entry in the list of scripts (or as the default one) makes an ordinary send to a device additionally copy the very same files into the folder named here, without launching anything else.</p>
+
+<h2>Open the result folder in Explorer</h2>
+<p>An entry that opens the destination folder right after a send — to check the result, or to drag the files onto the device yourself. It uses <code>explorer.exe</code>, the standard Windows file manager rather than any special tool, and the <code>%DEST%</code> substitution (see <a href="set_scripts.html">Scripts</a>):</p>
+<table>
+<tr><th>Title</th><th>Path</th><th>Options</th></tr>
+<tr><td>Show folder</td><td><code>explorer.exe</code></td><td><code>%DEST%</code></td></tr>
+</table>
+
+<h2>A batch file of your own</h2>
+<p>For anything more involved (renaming, a detailed log, calling a third-party device sync tool and so on) the path points at a <code>.bat</code> or <code>.cmd</code> file of your own, and the sequence of actions is written inside that file, not in the parameters field. MyHomeLib merely passes it the substituted values as command line arguments:</p>
+<table>
+<tr><th>Title</th><th>Path</th><th>Options</th></tr>
+<tr><td>My action</td><td><code>C:\Scripts\send_to_device.bat</code></td><td><code>%DEST% %FILENAME%</code></td></tr>
+</table>
+<p>Inside such a <code>.bat</code> file the substituted values are available as ordinary command line parameters (<code>%1</code>, <code>%2</code> and so on); what the file does with them is entirely up to whoever wrote it — MyHomeLib only launches it.</p>
+
+<p class="note">This help gives no ready-made examples for particular third-party device sync or cloud storage programs — MyHomeLib ships none of those tools and tests none of them; supply your own path and parameters from the documentation of the program you need.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

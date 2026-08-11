@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reading books — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html" class="cur" aria-current="page">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Reading books</h1>
+<!-- BODY:BEGIN -->
+<p>MyHomeLib never displays the contents of a book itself — it only catalogs the files and, on the <span class="ui">Read</span> command, hands the file over to an external program. MyHomeLib has no built-in reader.</p>
+
+<h2>How the program is chosen</h2>
+<p>By the file extension, the program looks up the reader assigned to it in the <a href="set_readers.html">File types and readers</a> list. If a reader is configured for the extension, that is the one that starts; if not, the file is opened by whatever program Windows itself has associated with that extension (the ordinary file association).</p>
+<p>The installer places the AlReader reader next to the program and, on the first run, while the reader list is still empty, adds it as the default for the <code>fb2</code>, <code>doc</code>, <code>txt</code>, <code>htm</code> and <code>html</code> extensions — no default reader is assigned for PDF, DjVu and some other types, so for those the Windows association is used straight away. Even AlReader, though, is nothing special as far as MyHomeLib is concerned: it is started as a separate program and given the path to the file, exactly like any other reader.</p>
+
+<h2>What happens when a book is opened</h2>
+<p>If the book is stored in an archive (fb2.zip, FBD, packed non-FB2), MyHomeLib first extracts the file it needs into the <span class="ui">Reading</span> working folder under the name "Author - Title" (shortening it where necessary) and opens that copy in the reader; if a file of that name is already there from last time, it is not extracted again. Unpacked FB2 and raw files are opened directly from the collection folder, without being copied. The contents of this working folder can be cleared in one go with the <span class="ui">Tools → Clear the "Reading" folder</span> command.</p>
+<p>If the book belongs to an online collection and has not been downloaded yet, MyHomeLib fetches that one book first (a brief intermediate progress window); if the download fails, the book is not opened.</p>
+
+<p class="note">If the <span class="ui">Overwrite the FB2 header</span> option is switched on in the settings, opening an unpacked FB2 file of a private collection for reading immediately rewrites the author, title, genre and series inside that very file with the values from the catalog — this happens to the file sitting in the collection folder, not to a temporary copy. The same option and the same code govern the rewriting of the header when books are sent to a device; see <a href="editing.html">Editing book descriptions</a> and <a href="export_device.html">Sending books to a device</a>.</p>
+
+<h2>If nothing opens</h2>
+<ul>
+<li>Check in <a href="set_readers.html">File types and readers</a> that the path recorded for the extension still exists on disk (move or update a reader and the path may have gone stale).</li>
+<li>For a book of an online collection, make sure the file really has been downloaded (the book list shows a marker for books held locally) — if a download has just failed, try again through the <a href="download.html">download queue</a>.</li>
+<li>If no reader is assigned to the extension, the ordinary Windows association takes over — make sure the system has anything at all to open that file type with.</li>
+</ul>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MCP server for AI assistants — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html" class="cur" aria-current="page">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>MCP server for AI assistants</h1>
+<!-- BODY:BEGIN -->
+<h2>What it is</h2>
+<p>A separate executable, <code>MHLMcpServer.exe</code>, is installed together with the program: an MCP server that opens your library to AI assistants. MCP (Model Context Protocol) is an agreed way for such assistants to reach external data. Connect the server to an assistant and you can ask about your own collection in plain language: find the books of a particular author, recall what a series consists of, summarize a book or find a passage in it.</p>
+<p>The server has no window of its own and does not sit running in the background: the assistant starts it when it needs data and closes it when the conversation is over. There is no point in starting <code>MHLMcpServer.exe</code> yourself by double-clicking it — without an assistant it simply waits for commands and shows nothing.</p>
+<p>The server works with the same collections and the same system database as MyHomeLib itself, and sees them in the same way — there are no paths to configure and no collection to choose.</p>
+
+<h2>What the server can do</h2>
+<p>Catalog work: list the collections, authors, series and genres you have; find books by title, author, series, genre, language, keyword, annotation or rating; and show the full description of a single book, exactly as the info panel in the main window shows it.</p>
+<p>Book text work: show the table of contents (the list of chapters), return the text of a book or part of it, and find a given word or phrase in a book. These three capabilities work only with books in FB2 format — both with standalone files and with files inside archives.</p>
+<p>You will not have to list these capabilities by hand: the assistant asks the server for them itself as soon as it connects.</p>
+
+<h2>How to connect it</h2>
+<p>How you connect it depends on the assistant, but nearly all of them use the same description format — a <code>.mcp.json</code> file that says what to start. Add an entry like this to it:</p>
+<pre><code>{
+  "mcpServers": {
+    "myhomelib": {
+      "command": "C:\Program Files\MyHomeLib\MHLMcpServer.exe",
+      "args": []
+    }
+  }
+}</code></pre>
+<p>The path has to point at the folder MyHomeLib is installed in. The one above is the usual one for the 64-bit version; if you chose a different folder during installation, or installed the 32-bit version, substitute your own path. Note the doubled backslashes: that is how a path is written in JSON.</p>
+<p>The server has no command-line parameters, switches or settings of its own — it works everything else out for itself. Where the <code>.mcp.json</code> file lives and how to make the assistant re-read it are covered in your assistant's own documentation.</p>
+
+<h2>The server only reads</h2>
+<p>The server works strictly read-only: it changes neither the databases nor the book files, and it adds, deletes and edits nothing. Whatever you ask the assistant for, the collection stays exactly as it was, so it is safe to connect the server even to a large and carefully curated library.</p>
+<p>MyHomeLib itself is not needed for this: the server reads the collections with the program closed as well. You do not have to keep the main window open for the assistant to answer questions.</p>
+
+<h2>Limitations</h2>
+<p>The table of contents, the text and the search inside a book are available only for books in FB2 format. For books in other formats the server reports that the format is not supported; catalog information (author, series, genre, annotation) is available for every book whatever its format.</p>
+<p>While the program is busy with a long operation on a collection — an import, an update or database maintenance — the server cannot read it and will report that the collection is busy. This is temporary: as soon as the operation finishes, requests work again. Just wait and ask the assistant to try again.</p>
+<p>Searching by title, author or any other text field looks for an exact match on part of the string, ignoring case. It does not correct mistakes and does not pick up words spelled similarly, so it is worth using the same form of a word in your request as the one in the collection itself.</p>
+<p>The server returns long lists in chunks and limits their size, so that an answer cannot grow without end. If there is more to come, the assistant requests the next chunk itself.</p>
+<p>The text of a book you have already worked with is kept by the server in the <code>%LOCALAPPDATA%\MyHomeLib\McpCache</code> folder, so that it can answer faster next time. That folder holds intermediate data only: you can delete it whenever you like, and the server will simply prepare the text again.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

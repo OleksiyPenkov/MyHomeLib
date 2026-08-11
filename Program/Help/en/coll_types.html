@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collection types — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html" class="cur" aria-current="page">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Collection types</h1>
+<!-- BODY:BEGIN -->
+<p>Every collection has an internal type that determines how it stores books and which operations are available to it. The type is made up of two independent properties: <b>location</b> (local or online) and <b>content</b> (FB2 or non-FB2), plus whether it is a private collection of your own or an external library you have connected.</p>
+
+<h2>Local and online</h2>
+<p>This is the division by where the book files physically sit:</p>
+<dl>
+<dt>Local collection</dt>
+<dd>The book files are stored on your own disk, in the folder specified when the collection was created. Private collections of your own are always local.</dd>
+<dt>Online collection</dt>
+<dd>The book files are not stored in advance — the program asks the library server (Flibusta, for instance) for them and downloads each book only when you open it or send it to a device.</dd>
+</dl>
+<p>Among other things, this difference decides which properties tab the <a href="coll_params.html">Collection properties</a> window shows, and what exactly the <span class="ui">Synchronize files</span> command does — see <a href="sync_folders.html">Syncing folders and files</a>.</p>
+
+<h2>Content: FB2 or non-FB2</h2>
+<p>A collection stores its books either in <span class="ui">FB2</span> format (with the matching standard genre tree) or in any other format — <span class="ui">non-FB2</span> (with a separate genre tree of its own). See <a href="genres.html">Genre lists</a>.</p>
+<p>Copying books between collections (<a href="copy_books.html">Copying books between collections</a>) works only for FB2 collections. The mechanism for automatic updates from the network (<a href="update.html">Updating a collection</a>) is likewise designed for FB2 collections — during an update the genre lists are always parsed as FB2.</p>
+
+<h2>A private collection or a connected external library</h2>
+<p>Separately from location and content, a collection is either a private library of your own that you fill yourself, or a connected external library such as lib.rus.ec or Flibusta, whose book catalog was compiled outside MyHomeLib. Private collections are always local; external libraries can be either local (a local copy of a catalog, say) or online.</p>
+
+<h2>How the type is determined, and why it cannot be changed</h2>
+<p>The type is not a field you fill in directly — it follows from the way the collection was created in the wizard (<a href="new_collection.html">Creating a collection</a>):</p>
+<ul>
+<li>for a new empty collection the type is always private, and its content (FB2 or not) is decided by your choice on the <span class="ui">File format</span> step;</li>
+<li>for a collection built from an INPX file the type (private or external, local or online, FB2 or not) is read from the INPX file itself and set automatically, with no involvement from you;</li>
+<li>for an existing <code>.hlc2</code> file being connected, the type remains whatever the file recorded when it was created.</li>
+</ul>
+<p class="note">Once a collection has been created its type cannot be changed: the <a href="coll_params.html">Collection properties</a> window has no field for it, and no command in the program edits it. If you need a collection of a different type, create it afresh.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

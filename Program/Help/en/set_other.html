@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Behavior — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html" class="cur" aria-current="page">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Behavior</h1>
+<!-- BODY:BEGIN -->
+<p>The <span class="ui">Misc</span> section of the settings dialog (see <a href="settings.html">Program settings</a>) collects the options governing program behavior that belong to no other section.</p>
+
+<dl>
+<dt>Show books from nested genres (non-FB2)</dt>
+<dd>For collections of non-FB2 books: when you view a parent genre, also show the books tagged with its subgenres and not only with the parent genre itself. It has no effect on FB2 collections — there books are always shown that way. On by default.</dd>
+
+<dt>Minimize to tray</dt>
+<dd>Pressing the window's minimize button puts MyHomeLib into the tray instead of the taskbar. Off by default.</dd>
+
+<dt>Start downloads automatically</dt>
+<dd>The download queue (see <a href="download.html">Downloading books</a>) starts downloading the books added to it by itself, without a separate Start command. Off by default.</dd>
+
+<dt>Allow mixed collections</dt>
+<dd>Makes the actions normally offered only for FB2 collections (sending to a device with conversion to another format, in particular) available for collections of non-FB2 books as well. Off by default.</dd>
+
+<dt>Delete books "deleted in the online library"</dt>
+<dd>Applies only to online collections, during synchronization with the source library: if a book that has already been downloaded to disk is marked as deleted by the library, MyHomeLib deletes the local file along with that mark (the catalog record itself stays — see <a href="delete.html">Deleting books</a>). Off by default.</dd>
+
+<dt>Download reviews automatically</dt>
+<dd>For books in an online collection, fetch the review along with the book itself, without a separate action on your part. On by default.</dd>
+
+<dt>Delete files when deleting books</dt>
+<dd>Whether to delete the book file from disk when its record is deleted from the catalog (see <a href="delete.html">Deleting books</a>, which spells out exactly which books this happens to). Off by default.</dd>
+
+<dt>Overwrite the FB2 header</dt>
+<dd>Lets MyHomeLib rewrite the author, title, genre and series inside the FB2 file itself with the values from the collection catalog — both when sending to a device and when opening a book for reading; exactly which files and exactly when is covered in <a href="editing.html">Editing book descriptions</a>, <a href="export_device.html">Sending books to a device</a> and <a href="reading.html">Reading books</a>. Off by default.
+<p>The <span class="ui">Book title template:</span> field below (the "Change" button beside it opens the same template editor as the device and file sorting templates; the default value is simply <code>%t</code>, that is, the book title unchanged) defines what actually goes into the header. If this checkbox is on and you leave the template empty, trying to save the settings brings up a message that a template is required, and the window stays open.</p></dd>
+
+<dt>Ignore missing archives</dt>
+<dd>If the archive holding the file on disk cannot be found or is damaged when you try to open a book (for reading or for sending), then by default (checkbox on) MyHomeLib shows no separate message naming the archive — the action for that book is simply not carried out. With the checkbox off, a message about the missing archive appears instead.</dd>
+
+<dt>Treat selected as checked</dt>
+<dd>Lets certain bulk actions (deleting, sending to a device and copying between collections, in particular) count the merely selected (highlighted) rows of the list as "checked", not just the books with a check mark. On by default; turn it off and you will have to tick the books you want individually before those actions. There is an example of the behavior in <a href="selection.html">Selecting and marking books</a>.</dd>
+</dl>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

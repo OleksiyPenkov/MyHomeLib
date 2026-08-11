@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portable version — MyHomeLib Help</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">MyHomeLib Help</a></p>
+<p class="nav-section">Introduction</p>
+<ul>
+<li><a href="about.html">About MyHomeLib</a></li>
+<li><a href="terms.html">Key terms</a></li>
+<li><a href="faq.html">FAQ</a></li>
+<li><a href="donate.html">Supporting development</a></li>
+</ul>
+<p class="nav-section">Installation</p>
+<ul>
+<li><a href="install.html">Installation</a></li>
+<li><a href="upgrade.html">Upgrading a previous version</a></li>
+<li><a href="portable.html" class="cur" aria-current="page">Portable version</a></li>
+</ul>
+<p class="nav-section">Interface</p>
+<ul>
+<li><a href="interface.html">Program interface</a></li>
+<li><a href="main_window.html">Main window</a></li>
+<li><a href="browsing.html">Browsing: authors, series, genres</a></li>
+<li><a href="toolbar.html">Toolbar</a></li>
+<li><a href="hotkeys.html">Keyboard shortcuts</a></li>
+<li><a href="main_menu.html">Main menu</a></li>
+<li><a href="menu_book.html">Book menu</a></li>
+<li><a href="menu_collection.html">Collection menu</a></li>
+<li><a href="menu_tools.html">Tools menu</a></li>
+<li><a href="menu_view.html">View menu</a></li>
+<li><a href="context_menus.html">Context menus</a></li>
+</ul>
+<p class="nav-section">Working with collections</p>
+<ul>
+<li><a href="collections.html">Working with collections</a></li>
+<li><a href="coll_types.html">Collection types</a></li>
+<li><a href="new_collection.html">Creating a collection</a></li>
+<li><a href="coll_params.html">Collection properties</a></li>
+<li><a href="copy_books.html">Copying books between collections</a></li>
+<li><a href="delete_collection.html">Deleting a collection</a></li>
+<li><a href="export_inpx.html">Exporting to INPX</a></li>
+<li><a href="update.html">Updating a collection</a></li>
+<li><a href="sync_folders.html">Syncing folders and files</a></li>
+<li><a href="genres.html">Genre lists</a></li>
+<li><a href="maintenance.html">Database maintenance</a></li>
+</ul>
+<p class="nav-section">Working with books</p>
+<ul>
+<li><a href="books.html">Working with books</a></li>
+<li><a href="add_books.html">Adding books to a collection</a></li>
+<li><a href="import_fb2.html">Importing FB2 books</a></li>
+<li><a href="import_nonfb2.html">Importing non-FB2 and FBD books</a></li>
+<li><a href="download.html">Downloading books</a></li>
+<li><a href="reading.html">Reading books</a></li>
+<li><a href="selection.html">Selecting and marking books</a></li>
+<li><a href="search.html">Search and filters</a></li>
+<li><a href="groups.html">Groups and favorites</a></li>
+<li><a href="rating.html">Rating and read status</a></li>
+<li><a href="export_device.html">Sending books to a device</a></li>
+<li><a href="export_html.html">Exporting a book list</a></li>
+<li><a href="delete.html">Deleting books</a></li>
+<li><a href="editing.html">Editing book descriptions</a></li>
+</ul>
+<p class="nav-section">Settings</p>
+<ul>
+<li><a href="settings.html">Program settings</a></li>
+<li><a href="set_interface.html">Interface</a></li>
+<li><a href="set_readers.html">File types and readers</a></li>
+<li><a href="set_device.html">Devices and export</a></li>
+<li><a href="set_internet.html">Internet and proxy</a></li>
+<li><a href="set_scripts.html">Scripts</a></li>
+<li><a href="set_filesort.html">File sorting</a></li>
+<li><a href="set_other.html">Behavior</a></li>
+</ul>
+<p class="nav-section">Appendix</p>
+<ul>
+<li><a href="scripts_examples.html">Script examples</a></li>
+<li><a href="user_data.html">User data export and import</a></li>
+<li><a href="mcp_server.html">MCP server for AI assistants</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Portable version</h1>
+<!-- BODY:BEGIN -->
+<h2>Running MyHomeLib from a removable drive</h2>
+<p>MyHomeLib offers no separate portable distribution: portable mode is the same program, copied together with its folder onto a flash drive or another removable disk and started without being installed. Administrator rights are needed only by the installer (see <a href="install.html">Installation</a>); the executable itself does not require them.</p>
+
+<h2>Which files have to sit next to the executable</h2>
+<p>Required: the <code>sqlite3.dll</code> library — the program will not start without it. MyHomeLib also always looks in its own folder for the genre lists <code>genres_fb2.glst</code> and <code>genres_nonfb2.glst</code>, whether the run is portable or ordinary. The folder of the bundled AlReader reader and the folders of the format converters are optional: without them the program starts normally, it is just that the default reader and conversion are unavailable until you point <a href="set_readers.html">File types and readers</a> at another path. The simplest and most reliable approach is to copy the whole folder of the installed program onto the removable drive, exactly as the installer laid it out.</p>
+
+<h2>How the program chooses between the portable and the installed data location</h2>
+<p>By default MyHomeLib keeps its settings and the system database in the <code>%APPDATA%\MyHomeLib</code> folder (for details see <a href="faq.html">FAQ</a>). To force the program to use its own folder instead, put an empty, extensionless file named <code>uselocaldata</code> next to <code>MyHomeLib.exe</code> — that file is what marks a portable run. An equally empty <code>uselocaltemp</code> file next to the executable moves the temporary files into a subfolder of its own (<code>$tmp</code>) as well; otherwise they are written to the Windows temporary files folder. The command line parameters <code>uselocaldata</code> and <code>uselocaltemp</code> have the same effect if you start <code>MyHomeLib.exe</code> from a shortcut with those arguments.</p>
+<p>There is an automatic case, too: if the current Windows user has no <code>%APPDATA%\MyHomeLib</code> folder at all, MyHomeLib takes that as a sign of a portable run by itself and keeps its data next to the executable straight away, even without a <code>uselocaldata</code> file. It is not worth relying on that: one ordinary run of MyHomeLib on some computer (or one installation onto it) is enough to create the folder, after which a portable run on that same computer does need the <code>uselocaldata</code> file. So, for portable mode to be guaranteed on any computer, always keep the <code>uselocaldata</code> file next to the executable rather than counting on the automatic detection.</p>
+<p>In portable mode the system database lives in a <code>Data</code> subfolder next to the executable (<code>Data\user.dbs2</code>), while the settings, <code>collections.ini</code> and the working logs sit in that same folder rather than in <code>%APPDATA%</code>.</p>
+
+<h2>Limitations</h2>
+<p>The <code>uselocaldata</code> marker moves only the settings and the system database; it does not take the temporary folder with it — that needs the separate <code>uselocaltemp</code> file. Without it, even in portable mode MyHomeLib uses the Windows temporary files folder of whatever computer it is running on rather than one of its own, so it does not quite vanish from the computer without a trace.</p>
+<p>The paths to the device folder, the reading folder, the download folder, the import folder and so on are stored in the settings as ordinary absolute paths and do not adapt to a new drive letter: if the flash drive or external disk was given a different letter on another computer, those paths have to be set again.</p>
+<p>A portable copy comes with no installer support: there are no Start menu shortcuts and no uninstall entry — you manage the folder (copying, moving, deleting it) by hand.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>
