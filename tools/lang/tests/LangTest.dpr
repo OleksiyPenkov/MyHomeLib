@@ -34,13 +34,14 @@ uses
   unit_LangSignature;
 
 var
-  Report, LocaleObj, Translations: TJSONObject;
+  Report, LocaleObj, Translations, GenresObj: TJSONObject;
   Arr: TJSONArray;
   Probes: TJSONValue;
   Info: TLocaleInfo;
   I: Integer;
   ProbeFile, Source: string;
   Active: Boolean;
+  TestSettings: TMHLSettings;
 begin
   Report := TJSONObject.Create;
   try
@@ -82,6 +83,26 @@ begin
     Report.AddPair('verify', TJSONBool.Create(
       VerifyCatalogSignature(ExtractFilePath(Application.ExeName)
         + 'Lang' + PathDelim + 'verify.json')));
+
+    // Which genre list the app would load for this locale. A dedicated
+    // TMHLSettings instance, not the application's: the harness has no data
+    // module. LoadSettings is the path the real app takes, so the locale
+    // reaching SystemFileName is the one the fixture's ini actually set.
+    //
+    // File names only, never full paths -- the scratch directory differs on
+    // every run, so a path would be untestable from Node.
+    GenresObj := TJSONObject.Create;
+    TestSettings := TMHLSettings.Create;
+    try
+      TestSettings.LoadSettings;
+      GenresObj.AddPair('fb2',
+        ExtractFileName(TestSettings.SystemFileName[sfGenresFB2]));
+      GenresObj.AddPair('nonfb2',
+        ExtractFileName(TestSettings.SystemFileName[sfGenresNonFB2]));
+    finally
+      TestSettings.Free;
+    end;
+    Report.AddPair('genres', GenresObj);
 
     TFile.WriteAllText(ParamStr(ParamCount), Report.ToJSON, TEncoding.UTF8);
   finally

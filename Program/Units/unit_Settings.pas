@@ -261,6 +261,7 @@ type
     function GetSettingsFileName: string;
 
     function GetSystemFileName(fileType: TMHLSystemFile): string;
+    function LocalisedSystemFile(const BaseName: string): string;
 
     function GetDataPath: string;
     function MHLGetTempPath: string;
@@ -1368,12 +1369,34 @@ begin
   FDeviceDir := SafeGetDirName(Value);
 end;
 
+// Prefers a locale-specific copy of a system file, e.g. genres_fb2_bg.glst
+// over genres_fb2.glst. Purely additive: with no locale copy on disk the
+// result is byte-identical to what this replaced, which is why shipping no
+// list for a locale is a supported state rather than a gap.
+function TMHLSettings.LocalisedSystemFile(const BaseName: string): string;
+var
+  Candidate: string;
+begin
+  Result := AppPath + BaseName;
+
+  if FLocale = '' then
+    Exit;
+
+  Candidate := AppPath
+    + ChangeFileExt(BaseName, '')
+    + '_' + FLocale
+    + ExtractFileExt(BaseName);
+
+  if FileExists(Candidate) then
+    Result := Candidate;
+end;
+
 function TMHLSettings.GetSystemFileName(fileType: TMHLSystemFile): string;
 begin
   case fileType of
     sfSystemDB: Result := DataPath + FDbsFileName;
-    sfGenresFB2: Result := AppPath + GENRES_FB2_FILENAME;
-    sfGenresNonFB2: Result := AppPath + GENRES_NONFB2_FILENAME;
+    sfGenresFB2: Result := LocalisedSystemFile(GENRES_FB2_FILENAME);
+    sfGenresNonFB2: Result := LocalisedSystemFile(GENRES_NONFB2_FILENAME);
     sfServerErrorLog: Result := WorkPath + SERVER_ERRORLOG_FILENAME;
     // sfImportErrorLog: Result := WorkPath + IMPORT_ERRORLOG_FILENAME;         // UNUSED
     sfAppHelp: Result := AppPath + APP_HELP_FILENAME;
