@@ -782,6 +782,7 @@ type
 
     procedure CloseCollection;
     procedure InitCollection;
+    procedure SyncGenreLanguage;
 
     procedure CreateCollectionMenu;
     procedure CreateScriptMenu;
@@ -1665,6 +1666,50 @@ begin
   end;
 end;
 
+// Keeps a collection's genre names in step with the interface language.
+//
+// Genre names are collection data: they are written into the Genres table
+// when the collection is created and never revisited, so switching the
+// interface language used to leave the genre tree in the old language until
+// the user found the Update genres command.
+//
+// Safe to run unconditionally for the lists we ship. tools/lang/glst_translate.js
+// rebuilds every translated list from the original and substitutes only the
+// name, so GenreCode and FB2Code are identical across locales -- which matters
+// because ReloadGenres drops Genre_List rows whose GenreCode disappeared. A
+// locale swap therefore cannot orphan a book's genre links.
+procedure TfrmMain.SyncGenreLanguage;
+var
+  Wanted: string;
+  Current: string;
+begin
+  Assert(Assigned(FCollection));
+
+  // Only FB2 collections get a list chosen for them. A non-FB2 collection's
+  // list is picked by hand, so second-guessing it would discard the user's
+  // own choice.
+  if not isFB2Collection(FCollection.CollectionCode) then
+    Exit;
+
+  Wanted := ExtractFileName(Settings.SystemFileName[sfGenresFB2]);
+  Current := VarToStr(FCollection.GetProperty(PROP_GENRE_FILE));
+
+  if SameText(Current, Wanted) then
+    Exit;
+
+  // Collections predating PROP_GENRE_FILE record nothing. When the wanted
+  // list is the untranslated original there is nothing to gain from rewriting
+  // Russian names with the same Russian names, so only record where they came
+  // from and leave the data alone.
+  if (Current = '') and SameText(Wanted, GENRES_FB2_FILENAME) then
+  begin
+    FCollection.SetProperty(PROP_GENRE_FILE, Wanted);
+    Exit;
+  end;
+
+  FCollection.ReloadGenres(Settings.SystemFileName[sfGenresFB2]);
+end;
+
 procedure TfrmMain.InitCollection;
 var
   SavedCursor: TCursor;
@@ -1731,6 +1776,12 @@ begin
     FCollection := FSystemData.GetCollection(Settings.ActiveCollection);
 
     Assert(Assigned(FCollection));
+
+    // Genre names live in the collection database, so they do not follow a
+    // change of interface language on their own. Bring them into line here,
+    // before the tree is built from them below.
+    SyncGenreLanguage;
+
     frmMain.Caption := 'MyHomeLib - ' + FCollection.CollectionDisplayName;
 
     // определяем типы коллекции

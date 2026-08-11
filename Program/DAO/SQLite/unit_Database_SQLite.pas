@@ -320,6 +320,7 @@ begin
     // Fill the Genres table
     //
     BookCollection.LoadGenres(GenresFileName);
+    BookCollection.SetProperty(PROP_GENRE_FILE, ExtractFileName(GenresFileName));
 
     BookCollection.EndBulkOperation(True);
   except
@@ -2368,6 +2369,10 @@ begin
   FGenreCache.Clear;
 
   LoadGenres(FileName);
+
+  // Record which list the Genres table now holds, so that a later interface
+  // language change can tell whether these names still match the UI.
+  SetProperty(PROP_GENRE_FILE, ExtractFileName(FileName));
 
   // Remove missing genre reference:
   FDatabase.ExecSQL(SQL_DELETE_GENRE_LIST);
