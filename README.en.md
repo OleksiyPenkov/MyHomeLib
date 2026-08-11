@@ -5,7 +5,7 @@
 Manage your home e-book library: catalogue your own collection of book files, and work as a client for Librusec-engine online libraries.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.6.1-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
+[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64%20%7C%20x86-lightgrey.svg)](#installation)
 [![Built with Delphi](https://img.shields.io/badge/built%20with-Delphi%2013-red.svg)](#building-from-source)
 
@@ -17,7 +17,7 @@ Beyond your own collections, MyHomeLib works as a client for libraries running t
 
 Books are stored as FB2 (loose files or zip archives), FBD, or any other format; collection metadata lives in a SQLite database.
 
-> **Note on interface language:** the application UI and the bundled help are in Ukrainian. A multilingual UI is planned but not yet implemented.
+> **Note on interface language:** the UI is available in Ukrainian and English. The bundled help is Ukrainian only.
 
 ## Features
 
@@ -43,6 +43,14 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 **AI assistants**
 
 - An MCP server (`MHLMcpServer.exe`) installs alongside the application and exposes the collection to assistants such as Claude: search books, browse authors, series and genres, read a book's table of contents and text, search inside a book. Read-only, and it does not need MyHomeLib to be running. Setup is covered in the help, under «MCP-сервер для AI-асистентів».
+
+## Interface language
+
+The UI is available in Ukrainian and English. Switch it under **View → Interface language**; the change applies after a restart. Both languages are compiled into the executable, so no external file can replace or remove them. The bundled help is Ukrainian only.
+
+Additional languages load from translation catalogues placed next to the application (`Lang\<code>.json`). Only catalogues signed with the project key are loaded — an unsigned file is ignored and never appears in the menu. If you would like to translate the interface into your language, open an [issue](https://github.com/OleksiyPenkov/MyHomeLib/issues): a finished translation is signed and returned to you together with its signature file.
+
+The project does not ship a Russian interface and does not sign Russian catalogues. This is a deliberate decision.
 
 ## Installation
 
@@ -71,8 +79,11 @@ The full help (55 pages, Ukrainian) ships with the application. **F1** is contex
 
 - Delphi 13 (RAD Studio 37.0);
 - [VirtualTreeView](https://github.com/JAM-Software/Virtual-TreeView) (install via GetIt);
-- Konopka Signature VCL Controls (`BonusKSVC` 8.0.1, also via GetIt);
-- `C:\Windows\System32` on `PATH` — the post-build event calls `robocopy`, and without it the build fails at `copy_help.cmd`.
+- Konopka Signature VCL Controls (`BonusKSVC` 8.0.2, also via GetIt);
+- `C:\Windows\System32` on `PATH` — the post-build event calls `robocopy`, and without it the build fails at `copy_help.cmd`;
+- [Node.js](https://nodejs.org/) — optional. The pre-build event runs `Program\embed_lang.cmd`, which embeds the translation catalogues into the executable. Without Node.js the build still succeeds, but you get a Ukrainian-only application.
+
+The translation catalogues (`Program/Lang/`) are not part of this repository. Without them the build succeeds and produces a Ukrainian-only application; see [`tools/lang/README.md`](tools/lang/README.md) for how to obtain them.
 
 **Build through the group project only** — `Program\MHL.groupproj` builds the component package, the icon DLL, the main application and the MCP server in the right order:
 
@@ -106,8 +117,7 @@ Components/
   MHLComponents/       design-time component package (BookTreeView, FB2 parsing, archives)
 Utils/                 helper utilities (see below)
 Installer/             Inno Setup scripts
-tools/                 development helper scripts
-docs/                  design specs and implementation plans
+tools/                 development helper scripts (help, translation catalogues)
 ```
 
 ## Utilities

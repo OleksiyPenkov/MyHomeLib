@@ -5,7 +5,7 @@
 Керування домашньою бібліотекою електронних книг: каталогізація власної колекції файлів і робота як клієнт бібліотек на движку Лібрусек.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.6.1-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
+[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64%20%7C%20x86-lightgrey.svg)](#встановлення)
 [![Built with Delphi](https://img.shields.io/badge/built%20with-Delphi%2013-red.svg)](#збірка-з-вихідного-коду)
 
@@ -42,6 +42,14 @@ MyHomeLib — настільна програма для Windows, яка дає 
 
 - Разом з програмою встановлюється MCP-сервер (`MHLMcpServer.exe`), який відкриває колекцію асистентам на кшталт Claude: пошук книг, перегляд авторів, серій і жанрів, зміст і текст книги, пошук усередині книги. Працює лише на читання й не потребує запущеної MyHomeLib. Як підключити — у довідці, розділ «MCP-сервер для AI-асистентів».
 
+## Мова інтерфейсу
+
+Інтерфейс доступний українською та англійською. Мова перемикається в меню **Вигляд → Мова інтерфейсу** і застосовується після перезапуску програми. Обидві мови вбудовані у виконуваний файл, тож жоден зовнішній файл не може їх замінити чи прибрати. Довідка наразі лише українською.
+
+Інші мови підключаються каталогами перекладу поруч із програмою (`Lang\<код>.json`). Програма завантажує тільки каталоги, підписані ключем проєкту: непідписаний файл не завантажується й не з'являється в меню. Якщо ви хочете перекласти інтерфейс своєю мовою, напишіть на сторінці [Issues](https://github.com/OleksiyPenkov/MyHomeLib/issues) — готовий переклад буде підписано й повернуто вам разом з файлом підпису.
+
+Російськомовного інтерфейсу проєкт не постачає і каталогів російською не підписує. Це свідоме рішення.
+
 ## Встановлення
 
 Готові інсталятори для 64- та 32-розрядної Windows публікуються на сторінці [Releases](https://github.com/OleksiyPenkov/MyHomeLib/releases). Якщо потрібного файлу там немає, інсталятор можна зібрати самостійно — див. `Installer/build_installer.cmd` (потрібен [Inno Setup](https://jrsoftware.org/isinfo.php)).
@@ -69,8 +77,11 @@ MyHomeLib — настільна програма для Windows, яка дає 
 
 - Delphi 13 (RAD Studio 37.0);
 - [VirtualTreeView](https://github.com/JAM-Software/Virtual-TreeView) (встановлюється через GetIt);
-- Konopka Signature VCL Controls (`BonusKSVC` 8.0.1, теж через GetIt);
-- `C:\Windows\System32` у змінній `PATH` — подія after-build викликає `robocopy`, і без цього збірка падає на `copy_help.cmd`.
+- Konopka Signature VCL Controls (`BonusKSVC` 8.0.2, теж через GetIt);
+- `C:\Windows\System32` у змінній `PATH` — подія after-build викликає `robocopy`, і без цього збірка падає на `copy_help.cmd`;
+- [Node.js](https://nodejs.org/) — необов'язковий. Подія before-build викликає `Program\embed_lang.cmd`, який вбудовує каталоги перекладу у виконуваний файл. Без Node.js збірка не падає, але ви отримаєте програму лише українською.
+
+Каталоги перекладу (`Program/Lang/`) не входять до цього репозиторію. Без них збірка успішна й дає програму українською; як їх отримати — див. [`tools/lang/README.md`](tools/lang/README.md).
 
 **Збирайте лише через груповий проєкт** `Program\MHL.groupproj` — він містить пакет компонентів, DLL з іконками, головну програму та MCP-сервер у правильному порядку:
 
@@ -104,8 +115,7 @@ Components/
   MHLComponents/       пакет компонентів часу розробки (BookTreeView, розбір FB2, архіви)
 Utils/                 допоміжні утиліти (див. нижче)
 Installer/             скрипти Inno Setup
-tools/                 допоміжні скрипти розробки
-docs/                  специфікації та плани розробки
+tools/                 допоміжні скрипти розробки (довідка, каталоги перекладу)
 ```
 
 ## Утиліти
