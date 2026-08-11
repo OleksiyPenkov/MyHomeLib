@@ -237,6 +237,30 @@ const checks = [
     return r.verify === false;
   }],
 
+  ['bg works with no Lang directory at all -- it is in the exe', () => {
+    // Probes Назва/Серія, not Автор: "Автор" is spelled identically in
+    // Bulgarian and Ukrainian, so an unchanged value there proves nothing.
+    // The en case above can use Автор because Author differs.
+    const r = run({ locale: 'bg', noLangDir: true });
+    return r.active === true
+      && r.translations['Назва'] === 'Заглавие'
+      && r.translations['Серія'] === 'Поредица';
+  }],
+
+  ['bg is offered with no Lang directory at all', () => {
+    const r = run({ locale: 'bg', noLangDir: true });
+    return r.locales.some(l => l.code === 'bg');
+  }],
+
+  ['bg carries its machine-translation disclosure in the menu name', () => {
+    // The disclosure reaches users only through this string. If the name in
+    // extract.js LOCALES is ever shortened to a plain "Български", the caveat
+    // silently disappears from the UI -- nothing else would notice.
+    const r = run({ locale: 'uk', noLangDir: true });
+    const bg = r.locales.find(l => l.code === 'bg');
+    return !!bg && /машинен превод/.test(bg.name);
+  }],
+
   // --- Locale-aware genre lists -------------------------------------------
   // The list content is irrelevant here: these cases test which FILE the app
   // resolves to, not what is in it. check_glst.js covers the content.

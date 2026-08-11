@@ -90,6 +90,8 @@ Source: Common\genres_fb2_uk.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\genres_nonfb2_uk.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\genres_fb2_en.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\genres_nonfb2_en.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_fb2_bg.glst; DestDir: {app}; Flags: replacesameversion
+Source: Common\genres_nonfb2_bg.glst; DestDir: {app}; Flags: replacesameversion
 Source: Common\collections.ini; DestDir: {userappdata}\MyHomeLib; Flags: onlyifdoesntexist
 Source: Common\Help\*; DestDir: {app}\Help; Flags: recursesubdirs
 Source: Common\MyHomeLib.url; DestDir: {app}; Flags: replacesameversion
