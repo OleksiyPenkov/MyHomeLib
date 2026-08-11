@@ -7,14 +7,21 @@
 // that cannot hold a longer translation shows up as visibly clipped text
 // rather than as something you have to measure.
 //
-// It writes into the BUILD OUTPUT, never into Program/Lang. Program/Lang is
-// tracked and is mirrored to the output by copy_lang.cmd (robocopy /mir), so a
-// qa.json committed there would ship to users. Written to the output instead,
-// it is untracked, unshipped, and simply regenerated after each build -- which
-// is exactly when you want a fresh one anyway.
+// It writes into the BUILD OUTPUT, never into Program/Lang. Only uk and en are
+// ever embedded into the exe, so a qa.json in Program/Lang would not ship --
+// but it would sit in the catalog repository pretending to be a translation.
+// Written to the output instead, it is regenerated after each build, which is
+// exactly when you want a fresh one anyway.
+//
+// Each catalog is SIGNED after being written: since 2026-08-11 the loader
+// refuses any unsigned file catalog, and the pseudo-locale is a file catalog
+// like any other. There is no bypass, by design -- see tools/lang/README.md.
+// Signing needs the private key, so this only works on the maintainer's
+// machine, which is also the only place the sweep happens.
 
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
 const SOURCE_CATALOG = path.join(REPO_ROOT, 'Program', 'Lang', 'uk.json');
@@ -91,7 +98,17 @@ function main() {
     }
     const target = path.join(dir, 'qa.json');
     fs.writeFileSync(target, JSON.stringify(catalog, null, 2), { encoding: 'utf8' });
-    console.log(`wrote ${target}`);
+
+    // Reuse sign.js rather than duplicating the signing here: it also runs the
+    // validity checks, so a pseudo-catalog that the loader would reject is
+    // caught now instead of looking like a walker bug during the sweep.
+    const signed = spawnSync(process.execPath,
+      [path.join(__dirname, 'sign.js'), target], { encoding: 'utf8' });
+    if (signed.status !== 0) {
+      fail(`could not sign ${target}:\n${signed.stderr || signed.stdout}`);
+    }
+
+    console.log(`wrote and signed ${target}`);
     written++;
   }
 
