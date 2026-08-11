@@ -262,6 +262,7 @@ type
 
     function GetSystemFileName(fileType: TMHLSystemFile): string;
     function LocalisedSystemFile(const BaseName: string): string;
+    function LocalisedHelpIndex: string;
 
     function GetDataPath: string;
     function MHLGetTempPath: string;
@@ -1391,6 +1392,28 @@ begin
     Result := Candidate;
 end;
 
+// Help\<locale>\index.html when a translated tree is installed, otherwise the
+// Ukrainian Help\index.html. Callers derive the whole help directory from this
+// one path, so redirecting it moves every topic at once.
+//
+// Keyed on the index page existing rather than on the directory: a stray empty
+// Help\en\ would otherwise send every topic somewhere with nothing in it.
+function TMHLSettings.LocalisedHelpIndex: string;
+var
+  Candidate: string;
+begin
+  Result := AppPath + APP_HELP_FILENAME;
+
+  if FLocale = '' then
+    Exit;
+
+  Candidate := AppPath + APP_HELP_DIR_NAME + PathDelim + FLocale + PathDelim
+    + APP_HELP_INDEX;
+
+  if FileExists(Candidate) then
+    Result := Candidate;
+end;
+
 function TMHLSettings.GetSystemFileName(fileType: TMHLSystemFile): string;
 begin
   case fileType of
@@ -1399,7 +1422,7 @@ begin
     sfGenresNonFB2: Result := LocalisedSystemFile(GENRES_NONFB2_FILENAME);
     sfServerErrorLog: Result := WorkPath + SERVER_ERRORLOG_FILENAME;
     // sfImportErrorLog: Result := WorkPath + IMPORT_ERRORLOG_FILENAME;         // UNUSED
-    sfAppHelp: Result := AppPath + APP_HELP_FILENAME;
+    sfAppHelp: Result := LocalisedHelpIndex;
     sfAppVerInfo: Result := WorkPath + PROGRAM_VERINFO_FILENAME;
     // sfCollectionVerInfo: Result := TempPath + COLLECTION_VERINFO_FILENAME;   // UNUSED
     sfColumnsStore: Result := WorkPath + COLUMNS_STORE_FILENAME;

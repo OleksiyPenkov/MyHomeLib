@@ -89,6 +89,80 @@ for (const t of topics) {
   }
 }
 
+// --- 3b. translated help trees -------------------------------------------
+// A translation lives in Help/<locale>/. Structure is enforced exactly as for
+// the Ukrainian original; wording is not, because topics.json holds Ukrainian
+// titles and a translated <title> cannot be matched against it. The suffix
+// convention still can be, which is what catches a page translated without
+// its title.
+//
+// Missing pages fail even though ShowHelpTopic falls back per page to the
+// Ukrainian original. That fallback exists so an incomplete tree degrades
+// instead of erroring -- not as licence to ship one.
+const LOCALE_DIRS = fs.existsSync(HELP)
+  ? fs.readdirSync(HELP, { withFileTypes: true })
+      .filter((e) => e.isDirectory() && /^[a-z]{2}$/.test(e.name))
+      .map((e) => e.name)
+      .sort()
+  : [];
+
+const TITLE_SUFFIX = { en: 'MyHomeLib Help', bg: 'Помощ за MyHomeLib' };
+
+for (const loc of LOCALE_DIRS) {
+  const dir = path.join(HELP, loc);
+  const suffix = TITLE_SUFFIX[loc];
+  if (!suffix) {
+    fail(`Help/${loc}: no title suffix defined in check_help.js TITLE_SUFFIX`);
+    continue;
+  }
+
+  for (const f of fs.readdirSync(dir)) {
+    if (f === 'help.css') continue;
+    if (!declared.has(f)) fail(`Help/${loc}: undeclared file ${f}`);
+  }
+  if (!fs.existsSync(path.join(dir, 'help.css'))) fail(`Help/${loc}: missing help.css`);
+
+  for (const t of topics) {
+    const p = path.join(dir, t.file);
+    const id = `${loc}/${t.file}`;
+    if (!fs.existsSync(p)) {
+      fail(`Help/${loc}: missing ${t.file}`);
+      continue;
+    }
+
+    const buf = fs.readFileSync(p);
+    const html = buf.toString('utf8');
+
+    if (buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf) fail(`${id}: has UTF-8 BOM`);
+    if (Buffer.compare(Buffer.from(html, 'utf8'), buf) !== 0) fail(`${id}: not valid UTF-8`);
+    if (!/<meta charset="utf-8">/i.test(html)) fail(`${id}: missing <meta charset="utf-8">`);
+    if (!new RegExp(`<html lang="${loc}">`, 'i').test(html)) fail(`${id}: missing <html lang="${loc}">`);
+    if (/<img\b/i.test(html)) fail(`${id}: contains an <img> tag (help ships without images)`);
+    if (/<script\b/i.test(html)) fail(`${id}: contains a <script> tag`);
+    if (/https?:\/\/[^"']*\.(css|js|woff2?|ttf)/i.test(html)) fail(`${id}: references an external asset`);
+    if (!html.includes('<!-- TOC:BEGIN -->') || !html.includes('<!-- TOC:END -->'))
+      fail(`${id}: missing TOC markers`);
+    if (!html.includes('<!-- BODY:BEGIN -->') || !html.includes('<!-- BODY:END -->'))
+      fail(`${id}: missing BODY markers`);
+
+    const m = html.match(/<title>([^<]*)<\/title>/i);
+    if (!m || m[1].trim() === '') fail(`${id}: missing or empty <title>`);
+    else if (t.file !== 'index.html' && !m[1].endsWith(` — ${suffix}`))
+      fail(`${id}: <title> should end with " — ${suffix}"`);
+
+    const body = html.split('<!-- BODY:BEGIN -->')[1]?.split('<!-- BODY:END -->')[0] ?? '';
+    if (body.trim() === '') fail(`${id}: body is empty`);
+    if (body.includes('Розділ у роботі')) fail(`${id}: body not written yet`);
+
+    for (const mm of html.matchAll(/href="([^"#]+)(#[^"]*)?"/g)) {
+      const target = mm[1];
+      if (target.startsWith('http') || target.startsWith('mailto:')) continue;
+      if (target.endsWith('.htm')) fail(`${id}: legacy .htm link: ${target}`);
+      if (!fs.existsSync(path.join(dir, target))) fail(`${id}: dead link: ${target}`);
+    }
+  }
+}
+
 // --- 4. stylesheet exists -------------------------------------------------
 if (!fs.existsSync(path.join(HELP, 'help.css'))) fail('missing Program/Help/help.css');
 
@@ -152,12 +226,22 @@ function walkAll(dir, base, out = []) {
 }
 
 for (const entry of walkAll(HELP, HELP)) {
+  const parts = entry.rel.split('/');
+  const isLocaleRoot = parts.length === 1 && /^[a-z]{2}$/.test(parts[0]);
+  const inLocale = parts.length > 1 && /^[a-z]{2}$/.test(parts[0]);
+
   if (entry.isDir) {
+    // A two-letter directory directly under Help/ is a translated tree, and
+    // section 3b has already validated its contents. Anything else -- an img/
+    // folder, a nested directory inside a translation -- is still a stray.
+    if (isLocaleRoot) continue;
     fail(`stray directory in Program/Help: ${entry.rel}`);
     continue;
   }
-  if (entry.rel === 'help.css') continue;
-  if (declared.has(entry.rel)) continue;
+
+  const name = inLocale ? parts.slice(1).join('/') : entry.rel;
+  if (name === 'help.css') continue;
+  if (declared.has(name)) continue;
   fail(`stray file in Program/Help: ${entry.rel}`);
 }
 

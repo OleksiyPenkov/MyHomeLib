@@ -97,7 +97,13 @@ const
   GENRES_NONFB2_FILENAME = 'genres_nonfb2'  + GENRELIST_EXTENSION;
   SERVER_ERRORLOG_FILENAME = 'server_error.html';
   IMPORT_ERRORLOG_FILENAME = 'import_errors.log';
-  APP_HELP_FILENAME = 'Help\index.html';
+  // Ukrainian help sits directly in Help\; a translation goes in Help\<locale>\.
+  // A subdirectory rather than a filename suffix because the 55 pages link to
+  // each other by bare relative name and share one stylesheet -- a suffix
+  // scheme would mean rewriting every link in every page.
+  APP_HELP_DIR_NAME = 'Help';
+  APP_HELP_INDEX = 'index.html';
+  APP_HELP_FILENAME = APP_HELP_DIR_NAME + '\' + APP_HELP_INDEX;
   VERINFO_FILENAME = 'version.info';
   STRUCTUREINFO_FILENAME = 'structure.info';
   PROGRAM_VERINFO_FILENAME = 'last_version.info';

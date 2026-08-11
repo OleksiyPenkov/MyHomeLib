@@ -27,6 +27,7 @@ uses
   Forms,
   Dialogs,
   ShellAPI,
+  unit_Consts,
   unit_Settings,
   unit_MHL_strings,
   dm_user;
@@ -88,6 +89,14 @@ var
 begin
   HelpDir := ExtractFilePath(Settings.SystemFileName[sfAppHelp]);
   FullName := HelpDir + HelpTopicFile(ContextID);
+
+  // A translated help tree may be incomplete -- pages are added to the
+  // Ukrainian original over time and a translation lags. Fall back to the
+  // Ukrainian page rather than refusing to show help at all, the same way a
+  // partial catalog degrades to Ukrainian instead of blanking the UI.
+  if not FileExists(FullName) then
+    FullName := Settings.AppPath + APP_HELP_DIR_NAME + PathDelim
+      + HelpTopicFile(ContextID);
 
   if not FileExists(FullName) then
   begin
