@@ -42,6 +42,20 @@ const LOCALES = [
 // `dm_` covers the data modules. They had no resourcestrings when this list
 // was first drawn up, so its absence went unnoticed until dm_Images grew one --
 // and the symptom was silent: the string simply never appeared in a catalog.
+// Combo boxes whose items are VALUES rather than labels: code reads their
+// .Text and stores it. cbLang lands in FBookRecord.Lang and
+// FSearchCriteria.Lang (frm_main.pas:1540, frm_add_nonfb2.pas:312/498,
+// frm_edit_book_info.pas:181/317), so a translated item would be written into
+// book metadata and into the search filter. cbLibRate is the same shape
+// (frm_main.pas:1544); its items are numeric today, so the Cyrillic filter
+// already excludes them, but it is listed so that adding one word to it later
+// cannot quietly turn into a data bug.
+//
+// Contrast cbDate, which IS translated: its .Text is read only when
+// ItemIndex = -1, i.e. when the user typed a date instead of picking one
+// (frm_main.pas:1547-1549).
+const ITEMS_ARE_DATA = new Set(['cbLang', 'cbLibRate']);
+
 const OURS = /^(frm_|frame_|unit_|Data_|dm_|FBD|SQLiteWrap_|BookInfoPanel_)/;
 const PROPS = new Set(['Caption', 'Hint', 'Text', 'TextHint']);
 
@@ -235,6 +249,18 @@ function readDfm(file) {
     // -- note the closing paren shares a line with the final item.
     if (/^Items\.Strings\s*=\s*\($/.test(t)) {
       const owner = stack.filter((f) => f.label !== undefined).map((f) => f.label);
+      // Some combo boxes hold DATA, not labels: their .Text is read straight
+      // into a field. Translating those items corrupts what the user searches
+      // for and what gets written to a book record, so they never enter the
+      // catalog -- a string that is absent cannot be translated, which makes
+      // this fail-safe rather than dependent on translator discipline.
+      const ownerName = owner[owner.length - 1];
+      if (ITEMS_ARE_DATA.has(ownerName)) {
+        let k = i + 1;
+        while (k < lines.length && !/\)\s*$/.test(lines[k])) k++;
+        i = k;
+        continue;
+      }
       let index = 0;
       let buf = '';
       let j = i + 1;
