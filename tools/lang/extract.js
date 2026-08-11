@@ -174,6 +174,55 @@ function readDrc(drcPath, allowlist) {
   return out;
 }
 
+// Pulls the node captions out of a TTreeView Items.NodeData blob.
+//
+// Layout, established by reading a real blob rather than from documentation:
+//   byte   version
+//   int32  node count
+//   byte   class-name length, then that many UTF-16LE code units ("TTreeNode")
+//   then per node: fixed binary fields, a byte caption length, and that many
+//   UTF-16LE code units.
+//
+// The captions are recovered by scanning for length-prefixed UTF-16 runs after
+// the header, which is a heuristic -- so the result is checked against the
+// declared node count and the extraction FAILS if they disagree. A silently
+// short read here would drop a caption from every catalog with no diagnostic,
+// which is the failure mode this whole tool exists to avoid.
+function decodeNodeData(hex, where) {
+  const buf = Buffer.from(hex.replace(/[^0-9A-Fa-f]/g, ''), 'hex');
+  if (buf.length < 6) fail(`${where}: NodeData too short to hold a header`);
+
+  const declared = buf.readInt32LE(1);
+  const nameLen = buf[5];
+  let pos = 6 + nameLen * 2; // skip the "TTreeNode" class name
+
+  const out = [];
+  for (let i = pos; i + 1 < buf.length; i++) {
+    const n = buf[i];
+    if (n < 2 || n > 120) continue;
+    if (i + 1 + n * 2 > buf.length) continue;
+    let s = '';
+    let ok = true;
+    for (let k = 0; k < n; k++) {
+      const cp = buf.readUInt16LE(i + 1 + k * 2);
+      // Printable ASCII or Cyrillic: anything else means this is binary that
+      // happened to look like a length prefix.
+      if (cp < 0x20 || (cp > 0x7e && cp < 0x400) || cp > 0x4ff) { ok = false; break; }
+      s += String.fromCharCode(cp);
+    }
+    if (ok && /\p{L}/u.test(s)) { out.push(s); i += n * 2; }
+  }
+
+  if (out.length !== declared) {
+    fail(
+      `${where}: NodeData declares ${declared} nodes but ${out.length} caption(s) ` +
+      'were recovered. The blob format may have changed -- fix decodeNodeData ' +
+      'rather than letting captions disappear from the catalogs.'
+    );
+  }
+  return out.map((text, index) => [index, text]);
+}
+
 function decodeDfmValue(tok) {
   let out = '', i = 0;
   while (i < tok.length) {
@@ -247,6 +296,23 @@ function readDfm(file) {
     //       'first'
     //       'last')
     // -- note the closing paren shares a line with the final item.
+    // TTreeView keeps its node captions in a binary Items.NodeData blob.
+    // TTreeNode is not a component and TTreeNodes exposes nodes only through a
+    // default array property, so neither the DFM text parser nor the runtime
+    // walker can see them. Decode the blob here; frm_settings rewrites the
+    // nodes itself in DoCreate.
+    if (/^Items\.NodeData\s*=\s*\{$/.test(t)) {
+      const owner = stack.filter((f) => f.label !== undefined).map((f) => f.label);
+      let hex = '';
+      let j = i + 1;
+      while (j < lines.length && !/\}$/.test(lines[j].trim())) { hex += lines[j].trim(); j++; }
+      if (j < lines.length) hex += lines[j].trim().replace(/\}$/, '');
+      for (const [index, text] of decodeNodeData(hex, [base, ...owner].join('.'))) {
+        found.push([[base, ...owner, `Nodes[${index}]`].join('.'), text]);
+      }
+      i = j;
+      continue;
+    }
     if (/^Items\.Strings\s*=\s*\($/.test(t)) {
       const owner = stack.filter((f) => f.label !== undefined).map((f) => f.label);
       // Some combo boxes hold DATA, not labels: their .Text is read straight

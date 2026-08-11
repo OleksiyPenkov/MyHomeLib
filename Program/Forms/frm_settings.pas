@@ -289,9 +289,26 @@ rstrStandart = 'Стандартне';
 {$R *.dfm}
 
 procedure TfrmSettings.DoCreate;
+var
+  I: Integer;
 begin
   inherited;
   Localize(Self);
+
+  // The section tree's captions come from the DFM's binary Items.NodeData.
+  // TTreeNode is not a component and TTreeNodes exposes its nodes only through
+  // a default array property, so the walker cannot reach them through RTTI --
+  // they are rewritten here instead of teaching unit_Localization about
+  // Vcl.ComCtrls, which would give the generic walker a control dependency it
+  // has so far avoided entirely. tools/lang/extract.js decodes the same blob,
+  // so the sources below are already in every catalog.
+  //
+  // Node order is load-bearing: tvSectionsChange maps Selected.Index straight
+  // onto pcSetPages.ActivePageIndex. Rewriting Text in place cannot disturb
+  // it -- which is exactly why the captions are translated here rather than by
+  // rebuilding the tree.
+  for I := 0 to tvSections.Items.Count - 1 do
+    tvSections.Items[I].Text := TranslateText(tvSections.Items[I].Text);
 end;
 
 procedure TfrmSettings.LoadSetting;
