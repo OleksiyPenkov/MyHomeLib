@@ -361,7 +361,10 @@ begin
   end;
 end;
 
-function LoadCatalog(const AFileName: string): Boolean;
+// Parses catalog TEXT. The caller supplies the bytes, so one parser and one
+// set of guards serve both the resources embedded in the exe and the files in
+// Lang\. ASourceName appears only in status messages.
+function LoadCatalogText(const AText, ASourceName: string): Boolean;
 var
   Root: TJSONValue;
   Section: TJSONValue;
@@ -370,10 +373,10 @@ begin
   Root := nil;
   try
     try
-      Root := TJSONObject.ParseJSONValue(TFile.ReadAllText(AFileName, TEncoding.UTF8));
+      Root := TJSONObject.ParseJSONValue(AText);
       if not (Root is TJSONObject) then
       begin
-        SetStatus('Localization: catalog is not a JSON object', AFileName);
+        SetStatus('Localization: catalog is not a JSON object', ASourceName);
         Exit;
       end;
 
@@ -393,13 +396,30 @@ begin
       // A malformed catalog must never reach the user as a startup exception:
       // this runs before the splash screen exists.
       on E: Exception do
-        SetStatus('Localization: failed to read catalog - ' + E.Message, AFileName);
+        SetStatus('Localization: failed to parse catalog - ' + E.Message,
+          ASourceName);
     end;
   finally
     // MUST be try..finally, not a bare call after the try..except: the Exit
     // above returns from the function and would skip it, leaking the parsed
     // tree. FastMM5 is linked (MyHomeLib.dpr:44) and reports such leaks.
     Root.Free;
+  end;
+end;
+
+// Reading is guarded separately from parsing: TFile.ReadAllText raises on a
+// locked or unreadable file, and that must degrade the same way malformed
+// JSON does rather than escape to the caller.
+function LoadCatalogFile(const AFileName: string): Boolean;
+begin
+  Result := False;
+  try
+    Result := LoadCatalogText(
+      TFile.ReadAllText(AFileName, TEncoding.UTF8), AFileName);
+  except
+    on E: Exception do
+      SetStatus('Localization: failed to read catalog - ' + E.Message,
+        AFileName);
   end;
 end;
 
@@ -556,7 +576,7 @@ begin
   end;
 
   FIndex := TDictionary<string, string>.Create;
-  if not LoadCatalog(FileName) then
+  if not LoadCatalogFile(FileName) then
   begin
     FreeAndNil(FIndex);
     Exit;
