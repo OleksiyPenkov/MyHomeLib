@@ -107,3 +107,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}
 ; a BOM-less text file as the system ANSI codepage and mangles non-ASCII.
 Name: English; MessagesFile: compiler:Default.isl; LicenseFile: Common\License.txt
 Name: Ukrainian; MessagesFile: compiler:Languages\Ukrainian.isl; LicenseFile: Common\License_uk.txt
+; Bulgarian points at the English licence deliberately. Only the English MIT
+; text is authoritative, so a translated copy would be informational at best
+; and would have to track every future licence change. Bulgarian.isl ships with
+; Inno 6, so every wizard message is covered without any custom translation.
+Name: Bulgarian; MessagesFile: compiler:Languages\Bulgarian.isl; LicenseFile: Common\License.txt
