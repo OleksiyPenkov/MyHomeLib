@@ -33,7 +33,8 @@ uses
   System.Generics.Defaults,
   System.IniFiles,
   System.TypInfo,
-  unit_Settings;
+  unit_Settings,
+  unit_LangSignature;
 
 var
   FIndex: TDictionary<string, string> = nil;
@@ -652,6 +653,12 @@ begin
 
     for FileName in Files do
     begin
+      // The menu must offer only what InitLocalization would actually load,
+      // or a user picks a language and gets Ukrainian with a tick left on the
+      // wrong entry. Checked before the file is even parsed.
+      if not VerifyCatalogSignature(FileName) then
+        Continue;
+
       Root := nil;
       try
         try
@@ -669,6 +676,13 @@ begin
           Code := LowerCase(Trim(Code));
           LocaleName := Trim(LocaleName);
           if (Code = '') or (LocaleName = '') then
+            Continue;
+
+          // A signed catalog renamed into another slot must not be listed
+          // under the name it was given: InitLocalization looks it up by
+          // filename and would then refuse it for declaring something else.
+          if not SameText(Code,
+            TPath.GetFileNameWithoutExtension(FileName)) then
             Continue;
 
           // The pinned base entry already covers uk, and a second file
@@ -732,14 +746,23 @@ begin
   else
   begin
     FileName := Paths.AppPath + LANG_DIR_NAME + PathDelim + Locale + '.json';
-    if FileExists(FileName) then
-      Loaded := LoadCatalogFile(FileName, Locale)
-    else
+    if not FileExists(FileName) then
     begin
       SetStatus('Localization: catalog not found, falling back to '
         + DEFAULT_LOCALE, FileName);
       Loaded := False;
-    end;
+    end
+    // A catalog for a locale we do not ship is somebody else's file. It loads
+    // only if it carries a signature made with the project's key -- see
+    // unit_LangSignature. The project does not sign Russian catalogs.
+    else if not VerifyCatalogSignature(FileName) then
+    begin
+      SetStatus('Localization: catalog is not signed, falling back to '
+        + DEFAULT_LOCALE, FileName);
+      Loaded := False;
+    end
+    else
+      Loaded := LoadCatalogFile(FileName, Locale);
   end;
 
   if not Loaded then

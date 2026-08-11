@@ -117,36 +117,64 @@ const checks = [
     return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 
-  ['a well-formed foreign-locale file catalog still loads', () => {
+  ['an unsigned foreign-locale catalog is refused', () => {
     const r = run({ locale: 'pl', catalogs: { 'pl.json': {
       locale: 'pl', name: 'Polski',
       strings: { k1: { source: 'Автор', target: 'Autor' } }, dfm: {},
     } } });
-    return r.active === true && r.translations['Автор'] === 'Autor';
+    return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 
+  ['an unsigned catalog is not offered in the language menu', () => {
+    const r = run({ locale: 'uk', catalogs: { 'pl.json': {
+      locale: 'pl', name: 'Polski',
+      strings: { k1: { source: 'Автор', target: 'Autor' } }, dfm: {},
+    } } });
+    return !r.locales.some(l => l.code === 'pl');
+  }],
+
+  ['a signed foreign-locale catalog loads and is offered', () => {
+    const body = JSON.stringify({ locale: 'pl', name: 'Polski',
+      strings: { k1: { source: 'Автор', target: 'Autor' } }, dfm: {} });
+    const r = run({ locale: 'pl',
+      catalogs: { 'pl.json': body },
+      sigs: { 'pl.json.sig': signBytes(Buffer.from(body, 'utf8')) } });
+    return r.active === true
+      && r.translations['Автор'] === 'Autor'
+      && r.locales.some(l => l.code === 'pl' && l.name === 'Polski');
+  }],
+
+  // The three rule cases below must be SIGNED. An unsigned catalog is now
+  // rejected before these rules are ever reached, so leaving them unsigned
+  // would keep them passing while proving the signature gate rather than the
+  // rule each was written to cover.
   ['malformed catalog does not crash and does not install', () => {
-    const r = run({ locale: 'pl', catalogs: { 'pl.json': '{ this is not json' } });
+    const body = '{ this is not json';
+    const r = run({ locale: 'pl',
+      catalogs: { 'pl.json': body },
+      sigs: { 'pl.json.sig': signBytes(Buffer.from(body, 'utf8')) } });
     return r.active === false && r.translations['Автор'] === 'Автор';
   }],
 
   ['all-identity catalog yields an empty index, so nothing installs', () => {
-    const r = run({ locale: 'pl', catalogs: { 'pl.json': {
-      locale: 'pl', name: 'Polski',
-      strings: { k1: { source: 'Автор', target: 'Автор' } }, dfm: {},
-    } } });
+    const body = JSON.stringify({ locale: 'pl', name: 'Polski',
+      strings: { k1: { source: 'Автор', target: 'Автор' } }, dfm: {} });
+    const r = run({ locale: 'pl',
+      catalogs: { 'pl.json': body },
+      sigs: { 'pl.json.sig': signBytes(Buffer.from(body, 'utf8')) } });
     return r.active === false;
   }],
 
   ['empty target is ignored rather than blanking the string', () => {
-    const r = run({ locale: 'pl', catalogs: { 'pl.json': {
-      locale: 'pl', name: 'Polski',
+    const body = JSON.stringify({ locale: 'pl', name: 'Polski',
       strings: {
         k1: { source: 'Автор', target: '   ' },
         k2: { source: 'Назва', target: 'Tytuł' },
       },
-      dfm: {},
-    } } });
+      dfm: {} });
+    const r = run({ locale: 'pl',
+      catalogs: { 'pl.json': body },
+      sigs: { 'pl.json.sig': signBytes(Buffer.from(body, 'utf8')) } });
     return r.active === true
       && r.translations['Автор'] === 'Автор'
       && r.translations['Назва'] === 'Tytuł';
