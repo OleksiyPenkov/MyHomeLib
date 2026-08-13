@@ -1,4 +1,4 @@
-; ****************************************************************************
+﻿; ****************************************************************************
 ;
 ; InnoSetup script for MyHomeLib
 ;
@@ -41,7 +41,7 @@ Name: "{userappdata}\{#MyAppName}"; Permissions: everyone-modify
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}
-Name: {group}\Довідка {#MyAppName}; Filename: {app}\Help\index.html; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: {#MyAppName} Help
+Name: {group}\{cm:HelpShortcut}; Filename: {app}\{cm:HelpIndex}; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: {#MyAppName} Help
 Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}; Tasks: desktopicon
 Name: {group}\{#MyAppName} website; Filename: {app}\{#MyAppName}.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
 Name: {group}\{cm:UninstallProgram, My Home Library}; Filename: {uninstallexe}
@@ -112,3 +112,41 @@ Name: Ukrainian; MessagesFile: compiler:Languages\Ukrainian.isl; LicenseFile: Co
 ; and would have to track every future licence change. Bulgarian.isl ships with
 ; Inno 6, so every wizard message is covered without any custom translation.
 Name: Bulgarian; MessagesFile: compiler:Languages\Bulgarian.isl; LicenseFile: Common\License.txt
+
+[CustomMessages]
+; The application's locale code for each wizard language, so the interface
+; starts in the language the user chose in the installer. Kept here rather than
+; derived from {language} because the wizard language name is a display string
+; and the locale code is an identifier -- mapping one to the other in Pascal
+; code would be a second place to forget when a language is added.
+English.LocaleCode=en
+Ukrainian.LocaleCode=uk
+Bulgarian.LocaleCode=bg
+
+; The Start menu help shortcut, in the wizard's language. Its caption used to
+; be hardcoded Ukrainian and it always opened the Ukrainian index, even for a
+; user who chose another language. Ukrainian help lives at the root of Help\
+; and translations in Help\<locale>\, which is why the path is spelled out per
+; language rather than composed from LocaleCode.
+English.HelpShortcut=MyHomeLib Help
+Ukrainian.HelpShortcut=Довідка MyHomeLib
+Bulgarian.HelpShortcut=Помощ за MyHomeLib
+English.HelpIndex=Help\en\index.html
+Ukrainian.HelpIndex=Help\index.html
+Bulgarian.HelpIndex=Help\bg\index.html
+
+[INI]
+; Seed the interface language from the wizard language, but ONLY when the key
+; is absent. createkeyifdoesntexist is load-bearing: an existing installation
+; must never have its language changed by an update. That is the same reason
+; DetectDefaultLocale was removed from the application -- guessing a user's
+; language from the environment and rewriting their setting is a regression,
+; not a feature. A first install has no ini, so it gets the wizard's choice; an
+; upgrade keeps whatever the user already selected.
+;
+; This writes to the installing user's profile. With PrivilegesRequired=admin
+; and a per-machine install that is the administrator's, not necessarily the
+; person who will run the program -- the same limitation collections.ini
+; already has. Anyone else gets the application's own default and can switch it
+; from the View menu.
+Filename: {userappdata}\MyHomeLib\myhomelib2.ini; Section: INTERFACE; Key: Locale; String: {cm:LocaleCode}; Flags: createkeyifdoesntexist
