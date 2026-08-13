@@ -17,7 +17,7 @@ Beyond your own collections, MyHomeLib works as a client for libraries running t
 
 Books are stored as FB2 (loose files or zip archives), FBD, or any other format; collection metadata lives in a SQLite database.
 
-> **Note on interface language:** the UI is available in Ukrainian, English and Bulgarian (machine-translated). The bundled help is Ukrainian only.
+> **Note on interface language:** the UI is available in Ukrainian, English and Bulgarian (machine-translated). The bundled help is translated into all three languages too, and follows the interface language.
 
 ## Features
 
@@ -46,7 +46,7 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 
 ## Interface language
 
-The UI is available in Ukrainian, English and Bulgarian. Switch it under **View → Interface language**; the change applies after a restart. All three languages are compiled into the executable, so no external file can replace or remove them. The bundled help is Ukrainian only.
+The UI is available in Ukrainian, English and Bulgarian. Switch it under **View → Interface language**; the change applies after a restart. All three languages are compiled into the executable, so no external file can replace or remove them. The bundled help is translated into all three languages too, and follows the interface language.
 
 The genre tree follows the interface language too. Existing collections update themselves — genre names are stored inside the collection database, so they used to stay in whatever language the collection was created in.
 
