@@ -2308,7 +2308,7 @@ object frmMain: TfrmMain
           Tag = 20
           Left = 68
           Top = 0
-          Hint = #1042' '#1085#1072#1095#1072#1083#1086
+          Hint = #1053#1072' '#1087#1086#1095#1072#1090#1086#1082
           Caption = 'First Record'
           ImageIndex = 3
           OnClick = MoveDwnldListNodes
@@ -2335,7 +2335,7 @@ object frmMain: TfrmMain
           Tag = 23
           Left = 158
           Top = 0
-          Hint = #1042' '#1082#1086#1085#1077#1094
+          Hint = #1059' '#1082#1110#1085#1077#1094#1100
           Caption = 'Last Record'
           ImageIndex = 6
           OnClick = MoveDwnldListNodes

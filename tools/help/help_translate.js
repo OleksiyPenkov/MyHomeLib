@@ -180,12 +180,57 @@ function cmdBuild(locale, titlesFile, bodyDir) {
   process.exit(0);
 }
 
+// Rewrites the BODY block of the Ukrainian source pages in place.
+//
+// The counterpart of `build`, for correcting the original rather than
+// producing a translation. Only files present in <bodydir> are touched, so a
+// partial set is the normal case: fixing four pages means supplying four
+// bodies. Everything outside the BODY markers -- head, navigation, heading --
+// is left exactly as it was, and the block's line endings are preserved the
+// same way build does it.
+function cmdPatch(bodyDir) {
+  if (!bodyDir) fail('Usage: help_translate.js patch <bodydir>');
+
+  const spec = loadSpec();
+  const allTopics = spec.sections.flatMap((s) => s.topics);
+  const supplied = fs.readdirSync(bodyDir).filter((f) => f.endsWith('.html'));
+
+  const unknown = supplied.filter((f) => !allTopics.some((t) => t.file === f));
+  if (unknown.length > 0) {
+    fail(`${unknown.length} file(s) in ${bodyDir} are not declared topics: `
+      + unknown.slice(0, 10).join(', '));
+  }
+
+  let patched = 0;
+  for (const file of supplied) {
+    const page = path.join(HELP, file);
+    let html = fs.readFileSync(page, 'utf8');
+
+    const bodyEol = blockEol(html, '<!-- BODY:BEGIN -->', '<!-- BODY:END -->');
+    const body = fs.readFileSync(path.join(bodyDir, file), 'utf8')
+      .trim()
+      .replace(/\r?\n/g, bodyEol);
+
+    html = replaceBetween(html, '<!-- BODY:BEGIN -->', '<!-- BODY:END -->',
+      bodyEol + body + bodyEol, `${file} body`);
+
+    fs.writeFileSync(page, html, 'utf8');
+    patched++;
+  }
+
+  console.log(`patched ${patched} source page(s) in ${HELP}`);
+  console.log('run `node tools/help/check_help.js` to validate');
+  process.exit(0);
+}
+
 const [, , cmd, ...rest] = process.argv;
 switch (cmd) {
   case 'titles': cmdTitles(rest[0]); break;
   case 'build': cmdBuild(rest[0], rest[1], rest[2]); break;
+  case 'patch': cmdPatch(rest[0]); break;
   default:
     fail('Usage:\n'
       + '  node tools/help/help_translate.js titles <out.json>\n'
-      + '  node tools/help/help_translate.js build <locale> <titles.json> <bodydir>');
+      + '  node tools/help/help_translate.js build <locale> <titles.json> <bodydir>\n'
+      + '  node tools/help/help_translate.js patch <bodydir>');
 }
