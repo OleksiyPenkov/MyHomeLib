@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Свойства на колекцията — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html" class="cur" aria-current="page">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Свойства на колекцията</h1>
+<!-- BODY:BEGIN -->
+<p>Командата <span class="ui">Колекция → Свойства на колекцията</span> отваря прозореца <span class="ui">Свойства на колекцията</span> с полетата на активната колекция. Прозорецът ви предупреждава: <span class="ui">Внимание! Неправилната промяна на свойствата на колекцията може да я направи неизползваема!</span> — и това си заслужава да се приеме сериозно, не на последно място защото папката с книгите и файлът на колекцията се променят тук без каквато и да е проверка на файловете, които реално са на диска.</p>
+
+<h2>Разделът „Общи“</h2>
+<table>
+<tr><th>Поле</th><th>Какво означава</th></tr>
+<tr><td><span class="ui">Име на колекцията</span></td><td>Името, под което колекцията се показва в списъците и менютата. Може да се редактира; трябва да остане уникално сред свързаните колекции.</td></tr>
+<tr><td><span class="ui">Файл на колекцията</span></td><td>Пътят към файла с базата данни <code>.hlc2</code>. <b>Само за четене</b> — полето показва накъде сочи регистрацията на колекцията, но прозорецът не позволява да го промените.</td></tr>
+<tr><td><span class="ui">Папка с книги</span></td><td>Папката, в която са файловете на книгите от колекцията. Може да се редактира (бутонът <span class="ui">Избери</span>); промяната ѝ само мести указателя — никакви файлове на книги не се преместват никъде.</td></tr>
+<tr><td><span class="ui">Описание на колекцията</span></td><td>Свободно текстово описание, което се показва в прозореца <span class="ui">Статистика</span> (вижте <a href="collections.html">Работа с колекции</a>). Може да се редактира.</td></tr>
+</table>
+
+<h2>Разделът „Връзка“ (само за онлайн колекции)</h2>
+<p>Този раздел се появява само когато активната колекция е онлайн (вижте <a href="coll_types.html">Типове колекции</a>); за локална колекция изобщо не се показва.</p>
+<table>
+<tr><th>Поле</th><th>Какво означава</th></tr>
+<tr><td>URL</td><td>Адресът на сървъра на библиотеката. Може да се редактира.</td></tr>
+<tr><td><span class="ui">Потребител</span> / <span class="ui">Парола</span></td><td>Данните за вход в сървъра на библиотеката. Могат да се редактират.</td></tr>
+<tr><td><span class="ui">Скрипт за връзка</span></td><td>Текстът на скрипта, чрез който MyHomeLib влиза в тази онлайн колекция и търси и изтегля книги от нея. Това е свойство на самата колекция — да не се бърка със скриптовете, които се изпълняват след изпращане на книги на устройство и се настройват отделно. Може да се редактира.</td></tr>
+</table>
+
+<h2>Какво не може да се промени</h2>
+<p>Освен файла на колекцията, в този прозорец няма поле нито за типа на колекцията (вижте <a href="coll_types.html">Типове колекции</a>), нито за файловия формат (FB2 или не-FB2) — и двете се определят окончателно, когато съветникът създава колекцията, и нищо в програмата не ги променя след това.</p>
+
+<h2>Записване</h2>
+<p>Бутонът <span class="ui">Запиши</span> проверява дали името и файлът на колекцията са попълнени, дали някое от тях вече не е регистрирано за друга колекция и дали посоченият файл на колекцията съществува на диска — и едва тогава записва новите стойности на свойствата.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Примери за скриптове — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html" class="cur" aria-current="page">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Примери за скриптове</h1>
+<!-- BODY:BEGIN -->
+<p>Тази страница допълва раздела <a href="set_scripts.html">Скриптове</a> с примери. Скриптът на MyHomeLib не е скрипт за конвертиране (конвертирането в LRF, EPUB, PDF и MOBI програмата извършва сама, с вградени конвертори — вижте <a href="export_device.html">Изпращане на книги на устройство</a>) и не е скрипт за работа с онлайн библиотека; той е произволна външна програма, която се стартира след изпращането на книгите, като в параметрите ѝ се заместват пътища. Затова и примерите по-долу не са за конвертори, а за типичната форма на такъв запис.</p>
+
+<h2>Втора папка за копиране (изобщо без програма)</h2>
+<p>Най-простият запис не използва никаква външна програма, а само специалната стойност <code>%COPY%</code> в полето <span class="ui">Път</span> (вижте <a href="set_scripts.html">Скриптове</a>):</p>
+<table>
+<tr><th>Заглавие</th><th>Път</th><th>Параметри</th></tr>
+<tr><td>Резервно копие</td><td><code>%COPY%</code></td><td><code>D:\Резервни книги\</code></td></tr>
+</table>
+<p>Изборът на този запис в списъка със скриптове (или като запис по подразбиране) прави така, че обикновеното изпращане към устройство допълнително копира същите тези файлове и в посочената тук папка, без да стартира нищо друго.</p>
+
+<h2>Отваряне на папката с резултата във файловия мениджър</h2>
+<p>Запис, който отваря папката на местоназначението веднага след изпращане — за да проверите резултата или сами да плъзнете файловете към устройството. Той използва <code>explorer.exe</code>, стандартния файлов мениджър на Windows, а не някакъв специален инструмент, и заместването <code>%DEST%</code> (вижте <a href="set_scripts.html">Скриптове</a>):</p>
+<table>
+<tr><th>Заглавие</th><th>Път</th><th>Параметри</th></tr>
+<tr><td>Покажи папката</td><td><code>explorer.exe</code></td><td><code>%DEST%</code></td></tr>
+</table>
+
+<h2>Собствен пакетен файл</h2>
+<p>За нещо по-сложно (преименуване, подробен журнал, извикване на външен инструмент за синхронизиране с устройство и така нататък) пътят сочи към ваш собствен файл <code>.bat</code> или <code>.cmd</code>, а последователността от действия се описва вътре в този файл, а не в полето с параметрите. MyHomeLib само му подава заместените стойности като аргументи на командния ред:</p>
+<table>
+<tr><th>Заглавие</th><th>Път</th><th>Параметри</th></tr>
+<tr><td>Моето действие</td><td><code>C:\Scripts\send_to_device.bat</code></td><td><code>%DEST% %FILENAME%</code></td></tr>
+</table>
+<p>Вътре в такъв <code>.bat</code> файл заместените стойности са достъпни като обикновени параметри на командния ред (<code>%1</code>, <code>%2</code> и така нататък); какво точно прави файлът с тях, зависи изцяло от този, който го е написал — MyHomeLib само го стартира.</p>
+
+<p class="note">Помощта не дава готови примери за конкретни външни програми за синхронизиране с устройства или за облачни хранилища — MyHomeLib не доставя и не проверява нито един такъв инструмент; посочете собствен път и параметри според документацията на нужната ви програма.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

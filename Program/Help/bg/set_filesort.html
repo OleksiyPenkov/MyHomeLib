@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сортиране на файлове — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html" class="cur" aria-current="page">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Сортиране на файлове</h1>
+<!-- BODY:BEGIN -->
+<p>Разделът <span class="ui">Сортиране на файлове</span> на диалога с настройките (вижте <a href="settings.html">Настройки на програмата</a>) определя откъде импортът взема файловете и дали ги разпределя по подпапки вътре в колекцията; самият процес на импорт е описан в <a href="import_fb2.html">Импортиране на FB2 книги</a> и <a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a>.</p>
+
+<h2>Включване и папка за импорт</h2>
+<p>Отметката <span class="ui">Включване на сортирането при импорт</span> (по подразбиране изключена) превключва откъде командите за импорт вземат файловете:</p>
+<ul>
+<li><strong>изключена (по подразбиране)</strong> — импортът сканира самата папка на колекцията: файловете трябва да са поставени там предварително и по време на импорта не се копират и не се преименуват;</li>
+<li><strong>включена</strong> — импортът сканира отделна папка, посочена в полето <span class="ui">Папка:</span> (бутонът <span class="ui">Избери</span>), а намерените файлове копира в папката на колекцията, като ги разпределя по подпапки и ги преименува според шаблоните по-долу.</li>
+</ul>
+<p>Останалите полета в раздела са достъпни само когато сортирането е включено.</p>
+
+<h2>Шаблоните „Сортиране на FB2“ и „Сортиране на FBD“</h2>
+<p>За всеки от двата типа файлове има отделна двойка шаблони, които се редактират с бутоните <span class="ui">Промени</span>:</p>
+<dl>
+<dt>Папка</dt>
+<dd>Шаблонът за подпапката вътре в колекцията, в която се копира файлът.</dd>
+<dt>Файл</dt>
+<dd>Шаблонът за новото име на файла; ако резултатът е празен, името на файла остава без промяна.</dd>
+</dl>
+<p>И двете полета по подразбиране са празни — докато не е зададен шаблон, файловете се копират в корена на колекцията със съществуващите си имена. Синтаксисът на заместванията, редакторът на шаблони с режима му за проверка и правилата за квадратните скоби са същите, както при шаблоните за устройството; пълният списък със заместванията е в <a href="set_device.html">Устройства и експорт</a>.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

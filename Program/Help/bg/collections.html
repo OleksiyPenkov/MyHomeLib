@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Работа с колекции — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html" class="cur" aria-current="page">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Работа с колекции</h1>
+<!-- BODY:BEGIN -->
+<p>MyHomeLib работи не с една-единствена библиотека, а с набор от <a href="terms.html">колекции</a> — отделни бази данни с книги, всяка със свой файл <code>.hlc2</code> и по правило със своя папка с книги на диска. Колекция може да се създаде празна, да се свърже от вече наличен файл <code>.hlc2</code> или да се изгради от файл INPX; подробности вижте в <a href="new_collection.html">Създаване на колекция</a>.</p>
+
+<h2>Няколко колекции едновременно</h2>
+<p>Можете да свържете колкото искате колекции — собствената си библиотека, локално копие на lib.rus.ec или Flibusta, отделна колекция за книги, които не са във формат FB2, и така нататък. Във всеки момент се работи само с една от тях: <b>активната</b> колекция, чиито автори, поредици, жанрове и книги се показват в главния прозорец.</p>
+
+<h2>Списъкът с колекции и къде се съхранява</h2>
+<p>Списъкът със свързаните колекции, техните свойства (име, път до файла, папка с книги и така нататък) и вашите потребителски данни (групи, включително Любими, рейтинги, напредък на четене) се съхраняват не в самите файлове на колекциите, а отделно — в <a href="terms.html">системната база данни</a> <code>user.dbs2</code>. Къде точно се намира този файл, вижте в <a href="faq.html">Често задавани въпроси</a>. Изтриването или повреждането на <code>user.dbs2</code> означава загуба на списъка с колекции и на всички ваши потребителски данни, макар че файловете на колекциите и самите книги не изчезват заедно с него — вижте <a href="delete_collection.html">Изтриване на колекция</a>.</p>
+
+<h2>Превключване между колекции</h2>
+<p>За да направите активна друга свързана колекция, използвайте подменюто <span class="ui">Колекция → Избери колекция</span> — то изброява всички колекции освен текущата. Повече за менюто „Колекция“ вижте в <a href="menu_collection.html">Меню „Колекция“</a>.</p>
+
+<h2>Статистика на колекцията</h2>
+<p>Командата <span class="ui">Колекция → Статистика</span> отваря прозорец с кратки сведения за активната колекция: нейното име, дата на създаване, версия на данните и описание, както и броя на авторите, книгите и поредиците в нея.</p>
+
+<h2>Накъде нататък</h2>
+<ul>
+<li><a href="coll_types.html">Типове колекции</a> — по какво локалната колекция се различава от онлайн колекцията.</li>
+<li><a href="new_collection.html">Създаване на колекция</a> — съветникът, който създава и свързва колекции.</li>
+<li><a href="coll_params.html">Свойства на колекцията</a> — кои полета можете да променяте, след като колекцията е създадена.</li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a>.</li>
+<li><a href="delete_collection.html">Изтриване на колекция</a>.</li>
+<li><a href="export_inpx.html">Експортиране на колекция в INPX</a>.</li>
+<li><a href="update.html">Актуализиране на колекция</a> и <a href="sync_folders.html">синхронизиране на папки и файлове</a>.</li>
+<li><a href="genres.html">Списъци с жанрове</a> и <a href="maintenance.html">поддръжка на базата данни</a>.</li>
+</ul>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

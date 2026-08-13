@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Често задавани въпроси — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html" class="cur" aria-current="page">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Често задавани въпроси</h1>
+<!-- BODY:BEGIN -->
+<h2>Къде се съхраняват настройките и системната база данни?</h2>
+<p>По подразбиране MyHomeLib държи настройките си и системната база данни (вижте <a href="terms.html">Основни термини</a>) в папката <code>%APPDATA%\MyHomeLib</code>, а самата база данни — в подпапката <code>Data</code> в нея. Ако до изпълнимия файл на програмата има признак за portable режим (или ако изобщо липсва папка с потребителски данни на Windows), MyHomeLib съхранява същите тези файлове в собствена папка до <code>MyHomeLib.exe</code>. Подробности вижте в <a href="portable.html">Portable версия</a>.</p>
+
+<h2>Защо една книга не се отваря?</h2>
+<p>Обикновено по една от две причини. Първо, възможно е за разширението на файла да не е зададен четец, а и Windows да няма програма по подразбиране за този тип файлове — тогава задайте четец в <a href="set_readers.html">Типове файлове и четци</a>. Второ, самият файл на книгата може да е изчезнал от диска — преместен, преименуван или изтрит извън MyHomeLib; за това съобщава грешката „Файлът … не е намерен! Проверете настройките на колекцията!“.</p>
+
+<h2>Защо липсва изтеглена книга?</h2>
+<p>Изтеглената книга попада в същата онлайн колекция, от която е изтеглена, а не в някаква отделна папка за „изтегляния“ — проверете дали е отворена именно тази колекция. Ако изтеглянето е завършило с грешка, подробностите се записват в журнала <code>download_errors.log</code> до настройките на програмата. Вижте <a href="download.html">Изтегляне на книги</a>.</p>
+
+<h2>Какво става, ако файлът на колекцията изчезне от диска?</h2>
+<p>MyHomeLib пази пътя до файла на колекцията и останалите ѝ свойства в системната база данни, а не в самия файл на колекцията. Затова, когато файлът <code>.hlc2</code> е преместен, преименуван или изтрит извън програмата, колекцията не изчезва от списъка, с който превключвате колекции (<span class="ui">Колекция</span> → <span class="ui">Избери колекция</span>) — този списък се изгражда без проверка дали файлът съществува. Няма да можете обаче да отворите точно тази колекция, докато файлът не бъде върнат на предишното си място или колекцията не бъде свързана наново с новия път; вижте <a href="collections.html">Работа с колекции</a>. Съобщението „Файлът на колекцията не е намерен. Програмата не може да се стартира.“ се появява само веднъж — при стартиране, и то само когато едновременно са недостъпни файловете на всички без изключение регистрирани колекции; ако поне една от тях все още разполага със своя файл, MyHomeLib просто отваря нея вместо изчезналата колекция.</p>
+
+<h2>Как да преместя колекция на друг диск?</h2>
+<p>Копирайте (или преместете) папката с файловете на книгите и файла на базата данни на колекцията на новия диск, след което отворете свойствата на колекцията и въведете новия път в полето <span class="ui">Папка с книги:</span>. Вижте <a href="coll_params.html">Свойства на колекцията</a>.</p>
+
+<h2>Как да прехвърля цялата си библиотека на нов компютър?</h2>
+<p>Копирайте на новия компютър папката с данните на MyHomeLib (системната база данни, настройките, журналите) заедно с папките, в които се намират файловете на колекциите, като запазите същите пътища; или използвайте portable режим — тогава всичко това вече се намира до програмата и се прехвърля с копирането на една-единствена папка. Вижте <a href="portable.html">Portable версия</a>. За да прехвърлите или обедините отделно само потребителските данни (оценки, групи и т.н.), използвайте средствата, описани в <a href="user_data.html">Експорт и импорт на данни</a>.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

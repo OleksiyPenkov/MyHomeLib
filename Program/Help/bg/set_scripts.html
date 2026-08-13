@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Скриптове — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html" class="cur" aria-current="page">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Скриптове</h1>
+<!-- BODY:BEGIN -->
+<p>Скрипт тук не означава сценарий за влизане в онлайн библиотека, а външна програма (или пакетен файл), която MyHomeLib стартира веднага след изпращането на книги на устройство, с готови за заместване параметри. Това е начин да добавите собствени „местоназначения“ или действия към обикновената команда <span class="ui">Изпрати на устройството</span> (вижте <a href="export_device.html">Изпращане на книги на устройство</a>) — така че същото щракване да стартира и програма за синхронизация с устройството, да копира файловете и на второ място или просто да отвори папката с резултата.</p>
+
+<h2>Списъкът със скриптове</h2>
+<p>Разделът <span class="ui">Скриптове</span> на диалога с настройките (вижте <a href="settings.html">Настройки на програмата</a>) съдържа таблица с колоните <span class="ui">Заглавие</span>, <span class="ui">Път</span> и <span class="ui">Параметри</span> и три бутона под нея:</p>
+<dl>
+<dt>Добави / Промени</dt>
+<dd>Отваря прозореца <span class="ui">Параметри на скрипта</span> с полетата <span class="ui">Заглавие:</span>, <span class="ui">Път:</span> (бутонът <span class="ui">Преглед...</span> предлага файлове <code>.exe</code>, <code>.bat</code>, <code>.cmd</code>, <code>.vbs</code> и <code>.js</code>, макар че пътят може да се въведе и ръчно) и <span class="ui">Параметри:</span>. Заглавието и пътят са задължителни; без някое от тях записът не може да бъде запазен.</dd>
+<dt>Изтрий</dt>
+<dd>Премахва избрания скрипт от списъка.</dd>
+</dl>
+<p>Падащият списък <span class="ui">По подразбиране:</span> определя кой от скриптовете (или „Стандартно“, тоест никакъв) се изпълнява, когато натиснете самия бутон <span class="ui">Изпрати на устройството</span> на лентата с инструменти, без да разгръщате списъка му; повече за този бутон вижте в <a href="toolbar.html">Лента с инструменти</a>.</p>
+
+<h2>Кога се изпълняват скриптовете</h2>
+<p>Избраният скрипт може да се стартира по три равностойни начина:</p>
+<ul>
+<li>със стрелката до бутона <span class="ui">Изпрати на устройството</span> на лентата с инструменти — тя разгръща списъка с всички настроени скриптове;</li>
+<li>с подменюто <span class="ui">Изпълни скрипт</span> на менюто „Инструменти“ (вижте <a href="menu_tools.html">Меню „Инструменти“</a>);</li>
+<li>с пункта <span class="ui">Изпълни скрипт</span> от контекстното меню на списъка с книги (вижте <a href="context_menus.html">Контекстни менюта</a>).</li>
+</ul>
+<p>И в трите случая MyHomeLib първо извършва обикновено изпращане на маркираните книги — копира ги и при нужда ги преобразува в папката, формата и по шаблоните за име, настроени в <a href="set_device.html">Устройства и експорт</a> — и едва след това стартира програмата от колоната <span class="ui">Път</span> със заместените параметри от колоната <span class="ui">Параметри</span>.</p>
+
+<h2>Заместванията в параметрите</h2>
+<p>Полето <span class="ui">Параметри</span> приема следните означения (те се заместват само в низа с параметри, подаден на програмата; самият файл на диска не се променя):</p>
+<table>
+<tr><th>Означение</th><th>Какво се замества</th></tr>
+<tr><td><code>%DEST%</code></td><td>Папката, в която току-що са изпратени книгите.</td></tr>
+<tr><td><code>%TMP%</code></td><td>Временната папка на MyHomeLib.</td></tr>
+<tr><td><code>%FILENAME%</code></td><td>Името (имената) на току-що изпратените файлове.</td></tr>
+<tr><td><code>%FOLDER път%</code></td><td>Задава папката местоназначение направо в параметрите — всичко между „<code>%FOLDER </code>“ и следващия „<code>%</code>“ се приема за път и се използва вместо папката от „Устройства и експорт“, а от низа с параметри, подаден на програмата, се премахва.</td></tr>
+<tr><td><code>%NFT%</code></td><td>Изключва шаблона за подпапка (вижте <a href="set_device.html">Устройства и експорт</a>) само за това изпълнение — файловете попадат в папката местоназначение, без да се създава подпапка по шаблона.</td></tr>
+</table>
+
+<h2>Особеният път „%COPY%“</h2>
+<p>Ако в полето <span class="ui">Път</span> е написано буквално <code>%COPY%</code>, MyHomeLib не стартира никаква външна програма — вместо това просто копира изпратените файлове в папката, посочена в полето <span class="ui">Параметри</span>. Означенията <code>%TMP%</code>, <code>%DEST%</code>, <code>%FOLDER път%</code> и <code>%NFT%</code> от таблицата по-горе се заместват в този низ точно както при обикновен скрипт — ако там не са ви нужни, полето се попълва само с обикновен път до папка. Това е удобен начин да добавите още едно място за копиране като един-единствен пункт от списъка, без да пишете отделна програма; пример има в <a href="scripts_examples.html">Примери за скриптове</a>.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Импортиране на не-FB2 и FBD книги — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html" class="cur" aria-current="page">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Импортиране на не-FB2 и FBD книги</h1>
+<!-- BODY:BEGIN -->
+<p>Книга, която не е във формат FB2 (PDF, DjVu, EPUB, TXT и така нататък), не носи в себе си нито автор, нито заглавие, нито жанр, които програмата да може да прочете сама — за разлика от FB2. За да се появява такава книга в каталога като всяка друга (с автор, заглавие, поредица и жанр), за нея се създава малко съпътстващо описание — файл <span class="ui">FBD</span>: той се пакетира в един архив заедно със самия файл на книгата и от този момент книгата се държи в колекцията като обикновен запис. Менюто <span class="ui">Колекция → Импорт</span> предлага два различни начина да направите това — ръчен и пакетен; това са две отделни команди с различни диалози, а не два режима на един прозорец.</p>
+
+<h2>Файлове не-fb2 — ръчно добавяне на книги</h2>
+<p>Тази команда отваря собствен прозорец, в който въвеждате библиографските данни сами. Прозорецът сканира самата папка на колекцията (а не отделна папка за импортиране) и показва като дърво файловете, за чието разширение има настроен четец (вижте <a href="set_readers.html">Типове файлове и четци</a>) и които още не са в каталога; файловете fb2 и fb2.zip остават извън този списък — за тях има отделно импортиране.</p>
+<p>За избрания файл попълвате ръчно автора (с бутон или от списъка с авторите, които вече са в колекцията), заглавието, поредицата с номера в нея, жанра (през дървото на жанровете), ключовите думи и езика; бутони като <span class="ui">Фамилия</span>, <span class="ui">Име</span>, <span class="ui">Заглавие</span> и <span class="ui">Поредица</span> поставят маркирания откъс от името на файла в съответното поле с едно щракване. Отметката <span class="ui">Преобразуване във FBD</span> включва създаването на FBD архив за файла; без нея файлът влиза в каталога както си е, без обвивка FBD. Бутонът <span class="ui">Запиши</span> записва книгата в каталога и преминава към следващия файл от списъка.</p>
+<p class="note">В този прозорец заглавията на групите полета гласят <span class="ui">Параметри</span> и <span class="ui">Корица</span>, а подсказките на бутоните за корицата също са преведени; в по-стари сглобки няколко от тези надписи оставаха на руски, но това вече не е така.</p>
+
+<h2>Файлове FBD (pdf.zip djvu.zip) — пакетно импортиране</h2>
+<p>Тази команда е предназначена за готови FBD архиви (получени от някой друг, да речем, или подготвени предварително) — същите онези <code>.zip</code> файлове, които съдържат файла на книгата заедно с файл с описание <code>.fbd</code>. За разлика от Файлове не-fb2, тук нищо не се въвежда ръчно: командата сканира папката за импортиране, намира описанието FBD във всеки архив и сама прочита от него автора, заглавието, жанра и поредицата — почти както импортирането на FB2 чете тези данни от fb2 файл. Ходът се показва от същия прозорец с жив списък на грешките и бутон за записване на този списък във файл, както при <a href="import_fb2.html">импортирането на FB2</a> — отделен файл с дневник не се води автоматично.</p>
+
+<h2>Дубликати</h2>
+<p>И в двата случая книга, за която в каталога вече има запис със същото име на файл в същата папка, не се добавя повторно.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

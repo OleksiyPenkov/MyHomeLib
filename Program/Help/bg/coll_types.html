@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Типове колекции — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html" class="cur" aria-current="page">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Типове колекции</h1>
+<!-- BODY:BEGIN -->
+<p>Всяка колекция има вътрешен тип, който определя как тя съхранява книгите и какви операции са ѝ достъпни. Типът се състои от два независими признака: <b>местоположение</b> (локална или онлайн) и <b>съдържание</b> (FB2 или не-FB2), плюс това дали е собствена ваша колекция, или свързана външна библиотека.</p>
+
+<h2>Локална и онлайн</h2>
+<p>Това е делението според това къде физически се намират файловете с книги:</p>
+<dl>
+<dt>Локална колекция</dt>
+<dd>Файловете с книги се съхраняват на вашия диск, в папката, посочена при създаването на колекцията. Собствените ви колекции винаги са локални.</dd>
+<dt>Онлайн колекция</dt>
+<dd>Файловете с книги не се съхраняват предварително — програмата ги изисква от сървъра на библиотеката (например Flibusta) и изтегля всяка книга едва когато я отворите или я изпратите на устройство.</dd>
+</dl>
+<p>Освен всичко друго, тази разлика определя кой раздел със свойства показва прозорецът <a href="coll_params.html">Свойства на колекцията</a> и какво точно прави командата <span class="ui">Синхронизирай файловете</span> — вижте <a href="sync_folders.html">Синхронизиране на папки и файлове</a>.</p>
+
+<h2>Съдържание: FB2 или не-FB2</h2>
+<p>Колекцията съхранява книгите си или във формат <span class="ui">FB2</span> (със съответното стандартно дърво на жанровете), или в какъвто и да е друг формат — <span class="ui">не-FB2</span> (със свое, отделно дърво на жанровете). Вижте <a href="genres.html">Списъци с жанрове</a>.</p>
+<p>Копирането на книги между колекции (<a href="copy_books.html">Копиране на книги между колекции</a>) работи само за FB2 колекции. Механизмът за автоматично актуализиране от мрежата (<a href="update.html">Актуализиране на колекция</a>) също е предвиден именно за FB2 колекции — при актуализиране списъците с жанрове винаги се разчитат като FB2.</p>
+
+<h2>Собствена колекция или свързана външна библиотека</h2>
+<p>Отделно от местоположението и съдържанието, колекцията е или собствена ваша библиотека, която пълните сами, или свързана външна библиотека като lib.rus.ec или Flibusta, чийто каталог с книги е съставен извън MyHomeLib. Собствените колекции винаги са локални; външните библиотеки могат да бъдат както локални (например локално копие на каталог), така и онлайн.</p>
+
+<h2>Как се определя типът и защо не може да бъде променен</h2>
+<p>Типът не е поле, което попълвате пряко — той следва от начина, по който колекцията е създадена в съветника (<a href="new_collection.html">Създаване на колекция</a>):</p>
+<ul>
+<li>за нова празна колекция типът винаги е собствена, а съдържанието ѝ (FB2 или не) се определя от избора ви на стъпката <span class="ui">Формат на файловете</span>;</li>
+<li>за колекция, изградена от файл INPX, типът (собствена или външна, локална или онлайн, FB2 или не) се разчита от самия файл INPX и се задава автоматично, без ваше участие;</li>
+<li>за вече съществуващ файл <code>.hlc2</code>, който свързвате, типът остава такъв, какъвто файлът го е записал при създаването си.</li>
+</ul>
+<p class="note">След като колекцията веднъж е създадена, типът ѝ не може да бъде променен: в прозореца <a href="coll_params.html">Свойства на колекцията</a> няма поле за него и никоя команда на програмата не го редактира. Ако ви трябва колекция от друг тип, създайте я наново.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Синхронизиране на папки и файлове — Помощ за MyHomeLib</title>
+<link rel="stylesheet" href="help.css">
+</head>
+<body>
+<nav id="toc">
+<!-- TOC:BEGIN -->
+<p class="nav-title"><a href="index.html">Помощ за MyHomeLib</a></p>
+<p class="nav-section">Въведение</p>
+<ul>
+<li><a href="about.html">За MyHomeLib</a></li>
+<li><a href="terms.html">Основни термини</a></li>
+<li><a href="faq.html">Често задавани въпроси</a></li>
+<li><a href="donate.html">Подкрепа за разработката</a></li>
+</ul>
+<p class="nav-section">Инсталиране</p>
+<ul>
+<li><a href="install.html">Инсталиране</a></li>
+<li><a href="upgrade.html">Обновяване на предишна версия</a></li>
+<li><a href="portable.html">Portable версия</a></li>
+</ul>
+<p class="nav-section">Интерфейс</p>
+<ul>
+<li><a href="interface.html">Интерфейс на програмата</a></li>
+<li><a href="main_window.html">Главен прозорец</a></li>
+<li><a href="browsing.html">Преглед: автори, поредици, жанрове</a></li>
+<li><a href="toolbar.html">Лента с инструменти</a></li>
+<li><a href="hotkeys.html">Клавишни комбинации</a></li>
+<li><a href="main_menu.html">Главно меню</a></li>
+<li><a href="menu_book.html">Меню „Книга“</a></li>
+<li><a href="menu_collection.html">Меню „Колекция“</a></li>
+<li><a href="menu_tools.html">Меню „Инструменти“</a></li>
+<li><a href="menu_view.html">Меню „Изглед“</a></li>
+<li><a href="context_menus.html">Контекстни менюта</a></li>
+</ul>
+<p class="nav-section">Работа с колекции</p>
+<ul>
+<li><a href="collections.html">Работа с колекции</a></li>
+<li><a href="coll_types.html">Типове колекции</a></li>
+<li><a href="new_collection.html">Създаване на колекция</a></li>
+<li><a href="coll_params.html">Свойства на колекцията</a></li>
+<li><a href="copy_books.html">Копиране на книги между колекции</a></li>
+<li><a href="delete_collection.html">Изтриване на колекция</a></li>
+<li><a href="export_inpx.html">Експортиране в INPX</a></li>
+<li><a href="update.html">Актуализиране на колекция</a></li>
+<li><a href="sync_folders.html" class="cur" aria-current="page">Синхронизиране на папки и файлове</a></li>
+<li><a href="genres.html">Списъци с жанрове</a></li>
+<li><a href="maintenance.html">Поддръжка на базата данни</a></li>
+</ul>
+<p class="nav-section">Работа с книги</p>
+<ul>
+<li><a href="books.html">Работа с книги</a></li>
+<li><a href="add_books.html">Добавяне на книги към колекция</a></li>
+<li><a href="import_fb2.html">Импортиране на FB2 книги</a></li>
+<li><a href="import_nonfb2.html">Импортиране на не-FB2 и FBD книги</a></li>
+<li><a href="download.html">Изтегляне на книги</a></li>
+<li><a href="reading.html">Четене на книги</a></li>
+<li><a href="selection.html">Избиране и маркиране на книги</a></li>
+<li><a href="search.html">Търсене и филтри</a></li>
+<li><a href="groups.html">Групи и любими</a></li>
+<li><a href="rating.html">Рейтинг и статус „Прочетена“</a></li>
+<li><a href="export_device.html">Изпращане на книги на устройство</a></li>
+<li><a href="export_html.html">Експортиране на списък с книги</a></li>
+<li><a href="delete.html">Изтриване на книги</a></li>
+<li><a href="editing.html">Редактиране на описания на книги</a></li>
+</ul>
+<p class="nav-section">Настройки</p>
+<ul>
+<li><a href="settings.html">Настройки на програмата</a></li>
+<li><a href="set_interface.html">Интерфейс</a></li>
+<li><a href="set_readers.html">Типове файлове и четци</a></li>
+<li><a href="set_device.html">Устройства и експорт</a></li>
+<li><a href="set_internet.html">Интернет и прокси</a></li>
+<li><a href="set_scripts.html">Скриптове</a></li>
+<li><a href="set_filesort.html">Сортиране на файлове</a></li>
+<li><a href="set_other.html">Поведение</a></li>
+</ul>
+<p class="nav-section">Приложение</p>
+<ul>
+<li><a href="scripts_examples.html">Примери за скриптове</a></li>
+<li><a href="user_data.html">Експорт и импорт на данни</a></li>
+<li><a href="mcp_server.html">MCP сървър за AI асистенти</a></li>
+</ul>
+<!-- TOC:END -->
+</nav>
+<main id="content">
+<h1>Синхронизиране на папки и файлове</h1>
+<!-- BODY:BEGIN -->
+<p>Командата <span class="ui">Колекция → Поддръжка → Синхронизирай файловете</span> сверява каталога на активната колекция с това, което действително е на диска, и го прави по различен начин за локални и за онлайн колекции (вижте <a href="coll_types.html">Типове колекции</a>).</p>
+
+<h2>Локални колекции: намиране на преместени файлове</h2>
+<p>Посоката тук е от диска към базата данни: командата не променя нищо на самия диск, а само коригира препратките към файловете в каталога на колекцията, и прави това само за книгите, чийто файл в момента не се намира там, където сочи запазеният път.</p>
+<ol>
+<li>Първо се изгражда пълен списък на файловете в папката на колекцията (с размера на всеки от тях; за файловете в ZIP архиви — размера на съдържанието на архива).</li>
+<li>След това за всяка книга от каталога се проверява дали файлът ѝ съществува на запазения път.</li>
+<li>Ако файлът не е там, в току-що събрания списък се търси файл със същото име и размер; ако бъде намерен, пътят до книгата в каталога се коригира към новото местоположение.</li>
+</ol>
+<p class="note">Така единствените файлове, които се откриват, са преместените другаде в папката на колекцията с непроменени име и размер. Новите файлове, които още ги няма в каталога, не се добавят от тази команда — за това е нужен отделен импорт (вижте <a href="add_books.html">Добавяне на книги към колекция</a>). Файловете, които не се намират никъде в папката на колекцията, както и тези, чието име или размер се е променил, не се откриват: записът за книгата остава в каталога и сочи към стария, липсващ път.</p>
+
+<h2>Онлайн колекции: състояние на изтеглените файлове</h2>
+<p>Тук посоката е обратната: командата проверява дали файлът на всяка книга наистина е на диска (тоест дали книгата вече е изтеглена) и коригира отметката „изтеглена“ в каталога според фактите. Ако за книга, отбелязана от библиотеката като изтрита, все пак бъде намерен локален файл и в настройките е включено изтриването на изтритите книги, файлът се премахва от диска, а отметката „изтеглена“ се сваля.</p>
+<!-- BODY:END -->
+</main>
+</body>
+</html>
