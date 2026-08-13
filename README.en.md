@@ -1,6 +1,6 @@
 # MyHomeLib
 
-[Українська](README.md) · **English**
+[Українська](README.md) · **English** · [Български](README.bg.md)
 
 Manage your home e-book library: catalogue your own collection of book files, and work as a client for Librusec-engine online libraries.
 
@@ -75,7 +75,7 @@ The bundled help covers all of this in detail.
 
 ## Help
 
-The full help (55 pages, Ukrainian) ships with the application. **F1** is context-sensitive — it opens the page matching the active window or tab in your browser. The help sources live in [`Program/Help/`](Program/Help/); [`index.html`](Program/Help/index.html) is the table of contents and entry point.
+The full help (55 pages, in Ukrainian, English and Bulgarian) ships with the application. **F1** is context-sensitive — it opens the page matching the active window or tab in your browser. The help sources live in [`Program/Help/`](Program/Help/); [`index.html`](Program/Help/index.html) is the table of contents and entry point.
 
 ## Building from source
 
