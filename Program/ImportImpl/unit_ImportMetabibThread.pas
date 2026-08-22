@@ -144,6 +144,7 @@ var
   CollectionRoot: string;
   ArcName: string;
   idx, added, skippedNoFile, badLines: Integer;
+  Skip: Boolean;
 begin
   SetProgress(0);
   collectionCode := BookCollection.CollectionCode;
@@ -182,6 +183,7 @@ begin
         mrOk:
           try
             MapBook(MB, R);
+            Skip := False;
 
             if IsOnline then
             begin
@@ -192,18 +194,21 @@ begin
               if MB.BookID <= 0 then
               begin
                 Inc(skippedNoFile);
-                Continue;
-              end;
-              R.FileName := IntToStr(MB.BookID);
-              R.FileExt := FB2_EXTENSION;
-              R.InsideNo := 0;
-              R.Size := MB.UncompressedSize;
-              if 0 = (CONTENT_NONFB and collectionCode) then
-                R.Folder := R.GenerateLocation + FB2ZIP_EXTENSION;
-              if FileExists(TPath.Combine(CollectionRoot, R.Folder)) then
-                Include(R.BookProps, bpIsLocal)
+                Skip := True;
+              end
               else
-                Exclude(R.BookProps, bpIsLocal);
+              begin
+                R.FileName := IntToStr(MB.BookID);
+                R.FileExt := FB2_EXTENSION;
+                R.InsideNo := 0;
+                R.Size := MB.UncompressedSize;
+                if 0 = (CONTENT_NONFB and collectionCode) then
+                  R.Folder := R.GenerateLocation + FB2ZIP_EXTENSION;
+                if FileExists(TPath.Combine(CollectionRoot, R.Folder)) then
+                  Include(R.BookProps, bpIsLocal)
+                else
+                  Exclude(R.BookProps, bpIsLocal);
+              end;
             end
             else
             begin
@@ -216,28 +221,31 @@ begin
               if (not MB.HasArtifact) or (ArcName = '') or (MB.EntryName = '') then
               begin
                 Inc(skippedNoFile);
-                Continue;
+                Skip := True;
+              end
+              else
+              begin
+                R.Folder := ArcName;
+                R.FileName := TPath.GetFileNameWithoutExtension(MB.EntryName);
+                R.FileExt := ExtractFileExt(MB.EntryName);
+                if R.FileExt = '' then
+                  R.FileExt := FB2_EXTENSION;
+                R.InsideNo := MB.EntryIndex;
+                R.Size := MB.UncompressedSize;
+                Include(R.BookProps, bpIsLocal);
+                if R.LibID = '' then
+                  R.LibID := R.FileName;
               end;
-
-              R.Folder := ArcName;
-              R.FileName := TPath.GetFileNameWithoutExtension(MB.EntryName);
-              R.FileExt := ExtractFileExt(MB.EntryName);
-              if R.FileExt = '' then
-                R.FileExt := FB2_EXTENSION;
-              R.InsideNo := MB.EntryIndex;
-              R.Size := MB.UncompressedSize;
-              Include(R.BookProps, bpIsLocal);
-              if R.LibID = '' then
-                R.LibID := R.FileName;
             end;
 
-            try
-              if BookCollection.InsertBook(R, CheckFiles, False) <> 0 then
-                Inc(added);
-            except
-              on E: Exception do
-                raise EDBError.Create(E.Message);
-            end;
+            if not Skip then
+              try
+                if BookCollection.InsertBook(R, CheckFiles, False) <> 0 then
+                  Inc(added);
+              except
+                on E: Exception do
+                  raise EDBError.Create(E.Message);
+              end;
           except
             on E: EDBError do
               Teletype(Format(rstrMbDBError, [Cardinal(Reader.LineNo)]), tsError);
