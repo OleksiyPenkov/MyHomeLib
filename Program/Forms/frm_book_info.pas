@@ -302,6 +302,26 @@ begin
     AddItem(lvFileInfo, rstrSize, GetFormattedSize(bookInfo.Size, True), GroupID);
     AddItem(lvFileInfo, rstrAdded, DateToStr(bookInfo.Date), GroupID);
   end;
+
+  //
+  // Метадані з каталогу metabib: показуємо лише коли вони є, щоб книги
+  // з INPX/FB2 не отримували порожню групу.
+  //
+  if (bookInfo.Translators <> '') or (bookInfo.Publisher <> '') or
+    (bookInfo.City <> '') or (bookInfo.PubYear <> 0) or (bookInfo.ISBN <> '') then
+  begin
+    with lvFileInfo.Groups.Add do
+    begin
+      Header := rstrPublisherInfo;
+      AddItem(lvFileInfo, rstrTranslators, bookInfo.Translators, GroupID);
+      AddItem(lvFileInfo, rstrPublisher, bookInfo.Publisher, GroupID);
+      AddItem(lvFileInfo, rstrCity, bookInfo.City, GroupID);
+      if bookInfo.PubYear <> 0 then
+        AddItem(lvFileInfo, rstrYear, IntToStr(bookInfo.PubYear), GroupID);
+      AddItem(lvFileInfo, rstrISBN, bookInfo.ISBN, GroupID);
+    end;
+  end;
+
   { TODO -oNickR -cUsability : для онлайн коллекций необходимо показывать следующие поля }
   // libID: string;    ???
   // LibRate: Integer;  ???
