@@ -45,4 +45,22 @@ if errorlevel 1 (
     exit /b 1
 )
 
+:: ----------------------------------------------------------------------------
+:: libzstd.dll - runtime dependency of metabib dataset import (unit_ZstdStream
+:: loads it dynamically from the exe folder). Missing DLL only disables that
+:: import, so a missing source is a build failure to keep the package complete.
+:: ----------------------------------------------------------------------------
+set "ZSRC=%~dp0Resources\zstd\%PLATFORM%\libzstd.dll"
+
+if not exist "%ZSRC%" (
+    echo ERROR: libzstd.dll not found at "%ZSRC%".
+    exit /b 1
+)
+
+copy /y "%ZSRC%" "%DEST%\libzstd.dll" >nul
+if errorlevel 1 (
+    echo ERROR: failed to copy libzstd.dll to "%DEST%".
+    exit /b 1
+)
+
 exit /b 0

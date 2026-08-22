@@ -76,6 +76,9 @@ Source: {#SourceFolder + 'MHLMcpServer.exe'}; DestDir: {app}; Flags: replacesame
 ; with no icons at all, so the installer build must fail instead.
 Source: {#SourceFolder + 'Icons\MHLIcons.dll'}; DestDir: {app}\Icons; Flags: replacesameversion
 
+; libzstd.dll - metabib dataset import (unit_ZstdStream, loaded dynamically).
+Source: {#SourceFolder + 'libzstd.dll'}; DestDir: {app}; Flags: replacesameversion
+
 Source: Common\AlReader\*; DestDir: {app}\AlReader; Flags: recursesubdirs
 Source: Common\converters\fb2lrf\*; DestDir: {app}\converters\fb2lrf\; Flags: skipifsourcedoesntexist
 Source: Common\converters\fb2pdf\*; DestDir: {app}\converters\fb2pdf\; Flags: skipifsourcedoesntexist

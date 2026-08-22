@@ -125,6 +125,7 @@ uses
   unit_SearchPresets in 'Units\unit_SearchPresets.pas',
   unit_UserData in 'Units\unit_UserData.pas',
   unit_xmlUtils in 'Units\unit_xmlUtils.pas',
+  unit_ZstdStream in 'Units\unit_ZstdStream.pas',
   frm_EditGroup in 'Forms\Editors\frm_EditGroup.pas' {frmEditGroup},
   unit_Logger in 'Units\unit_Logger.pas',
   unit_Localization in 'Units\unit_Localization.pas',
