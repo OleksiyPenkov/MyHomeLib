@@ -130,9 +130,9 @@ end;
 constructor TZstdDecompressionStream.Create(ASource: TStream; AOwnsSource: Boolean);
 begin
   inherited Create;
-  LoadZstd;
   FSource := ASource;
   FOwnsSource := AOwnsSource;
+  LoadZstd;
   FDStream := ZSTD_createDStream;
   if not Assigned(FDStream) then
     raise EZstdError.CreateFmt(rstrZstdError, ['ZSTD_createDStream']);
