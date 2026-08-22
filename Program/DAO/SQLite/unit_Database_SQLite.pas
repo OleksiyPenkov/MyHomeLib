@@ -245,6 +245,9 @@ type
     function GetSeriesTitle(SeriesID: Integer): string;
     function InsertAuthorIfMissing(const Author: TAuthorData): Integer;
     function IsFileNameConflict(const BookRecord: TBookRecord; const IncludeFolder: Boolean): Boolean;
+
+  private
+    procedure EnsureSchemaCurrent;
   end;
 
 implementation
@@ -354,6 +357,52 @@ begin
     end;
   except
     Result := False;
+  end;
+end;
+
+//
+// Ліниве розширення схеми: GUID версії не змінюємо, тож старі збірки
+// відкривають мігровану колекцію, а стара колекція добудовує колонки
+// при першому відкритті. Транзакція не потрібна: кожен ALTER атомарний,
+// а перевірка існування колонки робить процедуру ідемпотентною.
+//
+procedure TBookCollection_SQLite.EnsureSchemaCurrent;
+const
+  NEW_COLUMNS: array [0 .. 4] of array [0 .. 1] of string = (
+    ('Translators', 'VARCHAR(300) COLLATE MHL_SYSTEM_NOCASE'),
+    ('Publisher',   'VARCHAR(200) COLLATE MHL_SYSTEM_NOCASE'),
+    ('City',        'VARCHAR(100) COLLATE MHL_SYSTEM_NOCASE'),
+    ('PubYear',     'INTEGER'),
+    ('ISBN',        'VARCHAR(50)')
+  );
+var
+  query: TSQLiteQuery;
+  Existing: TStringList;
+  i: Integer;
+begin
+  Existing := TStringList.Create;
+  try
+    Existing.CaseSensitive := False;
+    query := FDatabase.NewQuery('PRAGMA table_info(Books)');
+    try
+      query.Open;
+      while not query.Eof do
+      begin
+        Existing.Add(query.FieldAsString(1)); // column 1 = name
+        query.Next;
+      end;
+    finally
+      FreeAndNil(query);
+    end;
+
+    for i := Low(NEW_COLUMNS) to High(NEW_COLUMNS) do
+      if Existing.IndexOf(NEW_COLUMNS[i][0]) < 0 then
+        FDatabase.ExecSQL(Format(
+          'ALTER TABLE Books ADD COLUMN %s %s',
+          [NEW_COLUMNS[i][0], NEW_COLUMNS[i][1]]
+        ));
+  finally
+    FreeAndNil(Existing);
   end;
 end;
 
@@ -1101,6 +1150,8 @@ begin
   FDatabase.AddFunction('MHL_FULLNAME',    4, fullAuthorNameEx);
   FDatabase.AddFunction('MHL_TRIGGERS_ON', 0, getIsTriggersOn, SQLITE_ANY, Self);
 
+  EnsureSchemaCurrent;
+
   InternalLoadGenres;
 end;
 
@@ -1117,6 +1168,8 @@ begin
   FDatabase.AddFunction('MHL_FULLNAME',    3, fullAuthorName);
   FDatabase.AddFunction('MHL_FULLNAME',    4, fullAuthorNameEx);
   FDatabase.AddFunction('MHL_TRIGGERS_ON', 0, getIsTriggersOn, SQLITE_ANY, Self);
+
+  EnsureSchemaCurrent;
 
   InternalLoadGenres;
 end;
@@ -1666,10 +1719,11 @@ const
     'Title,     Folder,    FileName,   Ext,      InsideNo, ' +  // 0  .. 04
     'SeriesID,  SeqNumber, BookSize,   LibID, ' +               // 05 .. 08
     'IsDeleted, IsLocal,   UpdateDate, Lang,     LibRate, ' +   // 09 .. 13
-    'KeyWords,  Rate,      Progress,   Review,   Annotation' +  // 14 .. 18
+    'KeyWords,  Rate,      Progress,   Review,   Annotation, ' +// 14 .. 18
+    'Translators, Publisher, City,     PubYear,  ISBN' +        // 19 .. 23
     ') ' +
     'VALUES (' +
-    '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
+    '?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
     ')';
 var
   i: Integer;
@@ -1765,6 +1819,27 @@ begin
       else
         query.SetParam(18, BookRecord.Annotation);
 
+      if BookRecord.Translators = '' then
+        query.SetNullParam(19)
+      else
+        query.SetParam(19, BookRecord.Translators);
+      if BookRecord.Publisher = '' then
+        query.SetNullParam(20)
+      else
+        query.SetParam(20, BookRecord.Publisher);
+      if BookRecord.City = '' then
+        query.SetNullParam(21)
+      else
+        query.SetParam(21, BookRecord.City);
+      if BookRecord.PubYear = 0 then
+        query.SetNullParam(22)
+      else
+        query.SetParam(22, BookRecord.PubYear);
+      if BookRecord.ISBN = '' then
+        query.SetNullParam(23)
+      else
+        query.SetParam(23, BookRecord.ISBN);
+
       query.ExecSQL;
 
       BookRecord.BookKey.BookID := FDatabase.LastInsertRowID;
@@ -1836,7 +1911,8 @@ const
     'b.Title, b.Folder, b.FileName, b.Ext, b.InsideNo, ' +        // 0  .. 4
     'b.SeriesID, b.SeqNumber, b.BookSize, b.LibID, ' +            // 5  .. 8
     'b.IsDeleted, b.IsLocal, b.UpdateDate, b.Lang, b.LibRate, ' + // 09 .. 13
-    'b.KeyWords, b.Rate, b.Progress, b.Review, b.Annotation ' +   // 14 .. 18
+    'b.KeyWords, b.Rate, b.Progress, b.Review, b.Annotation, ' + // 14 .. 18
+    'b.Translators, b.Publisher, b.City, b.PubYear, b.ISBN ' +   // 19 .. 23
     'FROM Books b ' +
     'WHERE BookID = ?';
 var
@@ -1887,6 +1963,13 @@ begin
       BookRecord.Progress := Table.FieldAsInt(16);
       BookRecord.CollectionRoot := CollectionRoot;
       BookRecord.CollectionName := GetProperty(PROP_DISPLAYNAME);
+
+      BookRecord.Translators := Table.FieldAsString(19);
+      BookRecord.Publisher := Table.FieldAsString(20);
+      BookRecord.City := Table.FieldAsString(21);
+      if not Table.FieldIsNull(22) then
+        BookRecord.PubYear := Table.FieldAsInt(22);
+      BookRecord.ISBN := Table.FieldAsString(23);
 
       if (not Table.FieldIsNull(17)) then // review
         Include(BookRecord.BookProps, bpHasReview)

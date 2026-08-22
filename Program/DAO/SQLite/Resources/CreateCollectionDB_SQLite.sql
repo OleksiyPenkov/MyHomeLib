@@ -152,7 +152,12 @@ CREATE TABLE Books (
   SearchFileName   VARCHAR(170)          COLLATE NOCASE,
   SearchExt        VARCHAR(10)           COLLATE NOCASE,
   SearchKeyWords   VARCHAR(255)          COLLATE NOCASE,
-  SearchAnnotation VARCHAR(4096)         COLLATE NOCASE
+  SearchAnnotation VARCHAR(4096)         COLLATE NOCASE,
+  Translators      VARCHAR(300)          COLLATE MHL_SYSTEM_NOCASE,
+  Publisher        VARCHAR(200)          COLLATE MHL_SYSTEM_NOCASE,
+  City             VARCHAR(100)          COLLATE MHL_SYSTEM_NOCASE,
+  PubYear          INTEGER,
+  ISBN             VARCHAR(50)
 );
 --@@
 

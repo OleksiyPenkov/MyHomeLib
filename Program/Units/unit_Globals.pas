@@ -228,6 +228,13 @@ type
     Annotation: string;
     Review: string;
 
+    // Metabib-only metadata (empty/0 for INPX and FB2 imports)
+    Translators: string;
+    Publisher: string;
+    City: string;
+    PubYear: Integer;
+    ISBN: string;
+
     // ----------------------------------------------------
     function GetFileType: string;
     procedure Normalize;
@@ -929,6 +936,12 @@ begin
   Progress := 0;
 
   CollectionName := '';
+
+  Translators := '';
+  Publisher := '';
+  City := '';
+  PubYear := 0;
+  ISBN := '';
 end;
 
 //
