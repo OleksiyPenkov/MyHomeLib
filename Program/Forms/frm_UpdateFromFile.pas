@@ -57,7 +57,7 @@ uses
 
 resourcestring
    rstrUpdateFromFileCaption = 'Оновлення колекції з файлу';
-   rstrUpdateFileLabel = 'Файл оновлення (*.inpx, *.zip):';
+   rstrUpdateFileLabel = 'Файл оновлення (*.inpx, *.zip, *.jsonl, *.jsonl.zst):';
    rstrBrowseCaption = 'Огляд...';
    rstrFullReimportCaption = 'Повний переімпорт (очистити колекцію)';
    rstrFullReimportWarning = 'Колекцію буде очищено й наповнено заново з вибраного ' +

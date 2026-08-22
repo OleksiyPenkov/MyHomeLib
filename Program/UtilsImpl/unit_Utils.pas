@@ -45,6 +45,7 @@ uses
   unit_SyncFoldersThread,
   frm_ImportProgressFormEx,
   unit_libupdateThread,
+  unit_MetabibReader,
   frm_info_popup,
   frm_search,
   frm_main,
@@ -127,6 +128,7 @@ var
   GenresType: TGenresType;
   CollectionInfo: TCollectionInfo;
   worker: TManualUpdateThread;
+  mbWorker: TMetabibManualUpdateThread;
   ProgressForm: TImportProgressFormEx;
 begin
   Result := False;
@@ -145,6 +147,29 @@ begin
       GenresType := gtAny;
   else
     GenresType := gtFb2;
+  end;
+
+  if TMetabibReader.IsDatasetFile(FileName) then
+  begin
+    // Каталог metabib - завжди повний зріз: прапорець Full не має сенсу
+    mbWorker := TMetabibManualUpdateThread.Create(CollectionID, FileName, GenresType);
+    try
+      mbWorker.DisplayName := CollectionInfo.DisplayName;
+
+      ProgressForm := TImportProgressFormEx.Create(Application);
+      ProgressForm.Caption := rstrUpdateFromFile;
+      try
+        ProgressForm.btnSaveLog.Visible := True;
+        ProgressForm.WorkerThread := mbWorker;
+        ProgressForm.ShowModal;
+        ProgressForm.SaveErrorLog(LogFileName);
+      finally
+        ProgressForm.Free;
+      end;
+    finally
+      mbWorker.Free;
+    end;
+    Exit(True);
   end;
 
   worker := TManualUpdateThread.Create(CollectionID, FileName, Full, GenresType);

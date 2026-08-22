@@ -293,7 +293,8 @@ resourcestring
 
    //fnOpenUpdate
    rstrOpenUpdateDlgTitle = 'Вибір файлу оновлення';
-   rstrOpenUpdateDlgFilter = 'Файл оновлення (*.inpx, *.zip)|*.inpx;*.zip|Всі типи|*.*';
+   rstrOpenUpdateDlgFilter = 'Файл оновлення (*.inpx, *.zip, *.jsonl, *.jsonl.zst, *.jsonl.gz)|' +
+     '*.inpx;*.zip;*.jsonl;*.jsonl.zst;*.jsonl.gz|Всі типи|*.*';
    rstrOpenUpdateDlgDefaultExt = 'inpx';
 
 
