@@ -76,6 +76,7 @@ uses
   frm_ImportProgressFormEx in 'ImportImpl\frm_ImportProgressFormEx.pas' {ImportProgressFormEx},
   unit_ImportFB2ThreadBase in 'ImportImpl\unit_ImportFB2ThreadBase.pas',
   unit_ImportInpxThread in 'ImportImpl\unit_ImportInpxThread.pas',
+  unit_ImportMetabibThread in 'ImportImpl\unit_ImportMetabibThread.pas',
   unit_Export in 'ImportImpl\unit_Export.pas',
   frm_ExportProgressForm in 'ImportImpl\frm_ExportProgressForm.pas' {ExportProgressForm},
   frm_SyncOnLineProgressForm in 'UtilsImpl\frm_SyncOnLineProgressForm.pas' {SyncOnLineProgressForm},
