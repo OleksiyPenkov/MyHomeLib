@@ -64,12 +64,18 @@ type
   private
     FBase: TStream;          // file or memory stream (owned)
     FDecoded: TStream;       // decompression wrapper or = FBase (owned unless = FBase)
-    FReader: TStreamReader;
+    FInBuf: TBytes;
+    FInLen: Integer;
+    FInPos: Integer;
+    FPending: TBytes;
+    FEof: Boolean;
+    FFirstLine: Boolean;
     FArchives: TDictionary<string, string>; // id -> archive file name
     FLibraryName: string;
     FRecordCount: Integer;
     FLineNo: Integer;
     procedure OpenContainer(const FileName: string);
+    function ReadRawLine(out Line: string): Boolean;
     procedure ReadHeader;
   public
     constructor Create(const FileName: string);
@@ -379,8 +385,76 @@ begin
     else
       FDecoded := FBase;
   end;
+end;
 
-  FReader := TStreamReader.Create(FDecoded, TEncoding.UTF8, False, 64 * 1024);
+//
+// Читає один рядок, лише рухаючись вперед: TStreamReader тут не годиться,
+// бо на межі буфера він відмотує потік назад, а zstd-потік Seek не має.
+//
+function TMetabibReader.ReadRawLine(out Line: string): Boolean;
+var
+  i, OldLen, Chunk: Integer;
+
+  procedure EmitPending;
+  begin
+    if (Length(FPending) > 0) and (FPending[High(FPending)] = 13) then
+      SetLength(FPending, Length(FPending) - 1);
+    if FFirstLine and (Length(FPending) >= 3) and (FPending[0] = $EF) and
+      (FPending[1] = $BB) and (FPending[2] = $BF) then
+      FPending := Copy(FPending, 3, Length(FPending) - 3); // BOM, якщо каталог створили з ним
+    Line := TEncoding.UTF8.GetString(FPending);
+    FFirstLine := False;
+  end;
+
+begin
+  SetLength(FPending, 0);
+  while True do
+  begin
+    if FInPos >= FInLen then
+    begin
+      if FEof then
+        Break;
+      if Length(FInBuf) = 0 then
+        SetLength(FInBuf, 64 * 1024);
+      FInLen := FDecoded.Read(FInBuf[0], Length(FInBuf));
+      FInPos := 0;
+      if FInLen <= 0 then
+      begin
+        FEof := True;
+        Break;
+      end;
+    end;
+
+    i := FInPos;
+    while (i < FInLen) and (FInBuf[i] <> 10) do
+      Inc(i);
+
+    Chunk := i - FInPos;
+    if Chunk > 0 then
+    begin
+      OldLen := Length(FPending);
+      SetLength(FPending, OldLen + Chunk);
+      Move(FInBuf[FInPos], FPending[OldLen], Chunk);
+    end;
+
+    if i < FInLen then
+    begin
+      FInPos := i + 1; // пропускаємо LF
+      EmitPending;
+      Exit(True);
+    end;
+
+    FInPos := FInLen; // рядок продовжується в наступному буфері
+  end;
+
+  if Length(FPending) > 0 then
+  begin
+    EmitPending;
+    Exit(True);
+  end;
+
+  Line := '';
+  Result := False;
 end;
 
 procedure TMetabibReader.ReadHeader;
@@ -391,10 +465,8 @@ var
   Archives: TJSONArray;
   v: TJSONValue;
 begin
-  if FReader.EndOfStream then
+  if not ReadRawLine(Line) then
     raise EMetabibError.CreateFmt(rstrNotMetabibDataset, ['(порожній файл)']);
-
-  Line := FReader.ReadLine;
   Inc(FLineNo);
 
   Root := TJSONObject.ParseJSONValue(Line);
@@ -429,11 +501,11 @@ constructor TMetabibReader.Create(const FileName: string);
 begin
   inherited Create;
   FArchives := TDictionary<string, string>.Create;
+  FFirstLine := True;
   try
     OpenContainer(FileName);
     ReadHeader;
   except
-    FreeAndNil(FReader);
     if FDecoded <> FBase then
       FreeAndNil(FDecoded);
     FreeAndNil(FBase);
@@ -444,7 +516,6 @@ end;
 
 destructor TMetabibReader.Destroy;
 begin
-  FreeAndNil(FReader);
   if FDecoded <> FBase then
     FreeAndNil(FDecoded);
   FreeAndNil(FBase);
@@ -473,9 +544,8 @@ begin
   Book := Default (TMetabibBook);
 
   repeat
-    if FReader.EndOfStream then
+    if not ReadRawLine(Line) then
       Exit(mrEof);
-    Line := FReader.ReadLine;
     Inc(FLineNo);
   until Trim(Line) <> '';
 
