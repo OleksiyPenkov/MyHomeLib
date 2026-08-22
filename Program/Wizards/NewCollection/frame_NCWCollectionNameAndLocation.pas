@@ -43,6 +43,7 @@ type
     procedure HidePageMessage;
     function IsDataValid(Sender: TObject = nil): Boolean;
     function GetCollectionDataFromINPX:boolean;
+    function GetCollectionDataFromMetabib: Boolean;
 
   public
     function Activate(LoadData: Boolean): Boolean; override;
@@ -60,7 +61,8 @@ uses
   unit_Errors,
   unit_Consts,
   unit_Globals,
-  unit_MHLArchiveHelpers;
+  unit_MHLArchiveHelpers,
+  unit_MetabibReader;
 
 resourcestring
 rstrShowCollectionType = 'Вкажіть назву колекції.';
@@ -129,6 +131,51 @@ begin
   end;
 end;
 
+function TframeNCWNameAndLocation.GetCollectionDataFromMetabib: Boolean;
+var
+  Reader: TMetabibReader;
+  BaseName: string;
+begin
+  Result := False;
+  Assert(FPParams^.INPXFile <> '');
+
+  if (FPParams^.INPXFile = '') or not (FileExists(FPParams^.INPXFile)) then
+    Exit;
+
+  try
+    try
+      Reader := TMetabibReader.Create(FPParams^.INPXFile);
+
+      if Reader.LibraryName <> '' then
+        edCollectionName.Text := Reader.LibraryName
+      else
+      begin
+        BaseName := ExtractFileName(FPParams^.INPXFile);
+        if SameText(ExtractFileExt(BaseName), '.zst') or SameText(ExtractFileExt(BaseName), '.gz') then
+          BaseName := ChangeFileExt(BaseName, '');
+        if SameText(ExtractFileExt(BaseName), '.jsonl') then
+          BaseName := ChangeFileExt(BaseName, '');
+        edCollectionName.Text := BaseName;
+      end;
+
+      edCollectionFile.Text := edCollectionName.Text + COLLECTION_EXTENSION;
+
+      FPParams^.CollectionCode := CT_EXTERNAL_LOCAL_FB;
+      FPParams^.CollectionType := ltExternalLocalFB;
+
+      Result := True;
+    except
+      on E: Exception do
+      begin
+        MessageDlg(E.Message, mtError, [mbOK], 0);
+        Exit;
+      end;
+    end;
+  finally
+    FreeAndNil(Reader);
+  end;
+end;
+
 procedure TframeNCWNameAndLocation.ShowPageMessage(const Message: string; AImageIndex: Integer);
 begin
   pageHint.Caption := Message;
@@ -147,7 +194,9 @@ begin
   if LoadData then
   begin
     if FPParams^.Operation = otInpx then
-      Result := GetCollectionDataFromINPX;
+      Result := GetCollectionDataFromINPX
+    else if FPParams^.Operation = otMetabib then
+      Result := GetCollectionDataFromMetabib;
     IsDataValid;
   end;
 end;

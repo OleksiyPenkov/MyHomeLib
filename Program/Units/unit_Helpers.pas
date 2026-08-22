@@ -58,7 +58,8 @@ type
     fnOpenUserData,
     fnSaveUserData,
     fnOpenCoverImage,
-    fnOpenUpdate
+    fnOpenUpdate,
+    fnOpenMetabib
   );
 
   TListViewHelper = class helper for TListView
@@ -266,9 +267,7 @@ resourcestring
    rstrSaveLogDlgDefaultExt = 'log';
    //fnOpenINPX
    rstrOpenINPXDlgTitle = 'Вибір файлу списків';
-   rstrOpenINPXDlgFilter = 'Список книг MyHomeLib (*.inpx)|*.inpx|' +
-     'Каталог metabib (*.jsonl, *.jsonl.zst, *.jsonl.gz, *.zip)|' +
-     '*.jsonl;*.jsonl.zst;*.jsonl.gz;*.zip|Всі типи|*.*';
+   rstrOpenINPXDlgFilter = 'Список книг MyHomeLib (*.inpx)|*.inpx|Всі типи|*.*';
    rstrOpenINPXDlgDefaultExt = 'inpx';
 
    //fnSaveINPX
@@ -296,6 +295,12 @@ resourcestring
    rstrOpenUpdateDlgFilter = 'Файл оновлення (*.inpx, *.zip, *.jsonl, *.jsonl.zst, *.jsonl.gz)|' +
      '*.inpx;*.zip;*.jsonl;*.jsonl.zst;*.jsonl.gz|Всі типи|*.*';
    rstrOpenUpdateDlgDefaultExt = 'inpx';
+
+   //fnOpenMetabib
+   rstrOpenMetabibDlgTitle = 'Вибір каталогу metabib';
+   rstrOpenMetabibDlgFilter = 'Каталог metabib (*.jsonl, *.jsonl.zst, *.jsonl.gz, *.zip)|' +
+     '*.jsonl;*.jsonl.zst;*.jsonl.gz;*.zip|Всі типи|*.*';
+   rstrOpenMetabibDlgDefaultExt = 'jsonl';
 
 
 function GetFileName(key: TMHLFileName; out FileName: string): Boolean;
@@ -370,6 +375,11 @@ const
       Title:      rstrOpenUpdateDlgTitle;
       Filter:     rstrOpenUpdateDlgFilter; DefaultExt: rstrOpenUpdateDlgDefaultExt;
       DialogKey:  'OpenUpdateFile';        OpenFile: True
+    ),
+    ( // fnOpenMetabib
+      Title:      rstrOpenMetabibDlgTitle;
+      Filter:     rstrOpenMetabibDlgFilter; DefaultExt: rstrOpenMetabibDlgDefaultExt;
+      DialogKey:  'OpenMetabibFile';        OpenFile: True
     )
 
 

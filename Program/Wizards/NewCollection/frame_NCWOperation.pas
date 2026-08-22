@@ -37,6 +37,7 @@ type
     rbExisting: TRadioButton;
     pageHint: TMHLStaticTip;
     rbInpx: TRadioButton;
+    rbMetabib: TRadioButton;
     procedure OnSetCollectionType(Sender: TObject);
   private
 
@@ -54,6 +55,7 @@ resourcestring
    rstrCreateNew = 'Виберіть цей пункт для створення порожніх колекцій';
    rstrAddExists = 'Підключити раніше створену колекцію. Потрібен файл колекції *.hlc';
    rstrInpxBased = 'Створити колекцію з наявного файлу inpx (колекції lib.rus.ec, Flibusta, Traum)';
+   rstrMetabibBased = 'Створити колекцію з каталогу metabib (*.jsonl, *.jsonl.zst) — новий формат списків Flibusta/Librusec';
 
 {$R *.dfm}
 
@@ -65,6 +67,8 @@ begin
     pageHint.Caption := rstrAddExists
   else if Sender = rbInpx then
     pageHint.Caption := rstrInpxBased
+  else if Sender = rbMetabib then
+    pageHint.Caption := rstrMetabibBased
 end;
 
 function TframeNCWOperation.Activate(LoadData: Boolean): Boolean;
@@ -77,6 +81,7 @@ begin
       otNew: rb := rbNew;
       otExisting: rb := rbExisting;
       otInpx: rb := rbInpx;
+      otMetabib: rb := rbMetabib;
     else
       Assert(False);
       Result := False;
@@ -101,6 +106,8 @@ begin
   end
   else if rbExisting.Checked then
     FPParams^.Operation := otExisting
+  else if rbMetabib.Checked then
+    FPParams^.Operation := otMetabib
   else
     FPParams^.Operation := otInpx;
 

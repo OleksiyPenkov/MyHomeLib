@@ -112,10 +112,7 @@ uses
   dm_user,
   unit_Interfaces,
   unit_ImportInpxThread,
-  unit_MetabibReader,
-  unit_ImportMetabibThread,
-  // System.UITypes мусить іти останнім: повертає mrOk = TModalResult, затінений unit_MetabibReader
-  System.UITypes;
+  unit_ImportMetabibThread;
 
 {$R *.dfm}
 
@@ -177,7 +174,7 @@ begin
       Result := True;
 
     INPXSOURCE_PAGE_ID:
-      Result := (FParams.Operation = otInpx);
+      Result := FParams.Operation in [otInpx, otMetabib];
 
     DOWNLOAD_PAGE_ID:
       Result := (FParams.Operation = otInpxDownload);
@@ -431,10 +428,10 @@ begin
       Assert(False);
   end;
   //
-  // Каталог metabib пізнаємо за файлом, а не окремою гілкою майстра:
-  // для користувача це те саме джерело списків, лише в іншому форматі.
+  // Формат визначається операцією майстра, а не сніфінгом файлу: metabib
+  // тепер окрема гілка вибору, а не прихований варіант джерела INPX.
   //
-  if TMetabibReader.IsDatasetFile(FParams.INPXFile) then
+  if FParams.Operation = otMetabib then
     FWorker := TImportMetabibThread.Create(FParams.CollectionID, FParams.INPXFile, GenresType)
   else
     FWorker := TImportInpxThread.Create(FParams.CollectionID, FParams.INPXFile, GenresType);
