@@ -111,7 +111,10 @@ uses
   unit_Settings,
   dm_user,
   unit_Interfaces,
-  unit_ImportInpxThread;
+  unit_ImportInpxThread,
+  unit_MetabibReader,
+  unit_ImportMetabibThread,
+  System.UITypes;
 
 {$R *.dfm}
 
@@ -426,7 +429,14 @@ begin
     else
       Assert(False);
   end;
-  FWorker := TImportInpxThread.Create(FParams.CollectionID, FParams.INPXFile, GenresType);
+  //
+  // Каталог metabib пізнаємо за файлом, а не окремою гілкою майстра:
+  // для користувача це те саме джерело списків, лише в іншому форматі.
+  //
+  if TMetabibReader.IsDatasetFile(FParams.INPXFile) then
+    FWorker := TImportMetabibThread.Create(FParams.CollectionID, FParams.INPXFile, GenresType)
+  else
+    FWorker := TImportInpxThread.Create(FParams.CollectionID, FParams.INPXFile, GenresType);
 
   FProgressPage.SetComment(rstrDataImport);
   FProgressPage.ShowTeletype(rstrDataImporting, tsInfo);

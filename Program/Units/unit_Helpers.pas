@@ -266,7 +266,9 @@ resourcestring
    rstrSaveLogDlgDefaultExt = 'log';
    //fnOpenINPX
    rstrOpenINPXDlgTitle = 'Вибір файлу списків';
-   rstrOpenINPXDlgFilter = 'Список книг MyHomeLib (*.inpx)|*.inpx|Всі типи|*.*';
+   rstrOpenINPXDlgFilter = 'Список книг MyHomeLib (*.inpx)|*.inpx|' +
+     'Каталог metabib (*.jsonl, *.jsonl.zst, *.jsonl.gz, *.zip)|' +
+     '*.jsonl;*.jsonl.zst;*.jsonl.gz;*.zip|Всі типи|*.*';
    rstrOpenINPXDlgDefaultExt = 'inpx';
 
    //fnSaveINPX
