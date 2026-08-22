@@ -402,7 +402,12 @@ var
     if FFirstLine and (Length(FPending) >= 3) and (FPending[0] = $EF) and
       (FPending[1] = $BB) and (FPending[2] = $BF) then
       FPending := Copy(FPending, 3, Length(FPending) - 3); // BOM, якщо каталог створили з ним
-    Line := TEncoding.UTF8.GetString(FPending);
+    try
+      Line := TEncoding.UTF8.GetString(FPending);
+    except
+      on EEncodingError do
+        Line := '{'; // свідомо биті байти -> хай піде шляхом mrBadLine
+    end;
     FFirstLine := False;
   end;
 

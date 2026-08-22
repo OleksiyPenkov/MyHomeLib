@@ -8,6 +8,8 @@
   * Created             22.08.2026
   * Description         Потік читання zstd через libzstd.dll (динамічне
   *                     завантаження: без DLL страждає лише імпорт metabib)
+  *                     libzstd.dll: офіційні збірки facebook/zstd v1.5.7
+  *                     (github.com/facebook/zstd/releases), Win32+Win64
   *
   ****************************************************************************** *)
 
@@ -104,8 +106,6 @@ begin
 
   Path := TPath.Combine(ExtractFilePath(ParamStr(0)), ZSTD_DLL);
   ZstdLib := LoadLibrary(PChar(Path));
-  if ZstdLib = 0 then
-    ZstdLib := LoadLibrary(ZSTD_DLL); // остання надія: системний пошук
   if ZstdLib = 0 then
     raise EZstdError.CreateFmt(rstrZstdDllMissing, [ZSTD_DLL]);
 
@@ -227,7 +227,7 @@ end;
 
 function TZstdDecompressionStream.Seek(const Offset: Int64; Origin: TSeekOrigin): Int64;
 begin
-  // TStreamReader питає лише позицію; перемотування не підтримуємо.
+  // Підтримуємо лише запит позиції (TStream.Position); перемотування нема.
   if (Origin = soCurrent) and (Offset = 0) then
     Result := FPosition
   else if (Origin = soBeginning) and (Offset = FPosition) then

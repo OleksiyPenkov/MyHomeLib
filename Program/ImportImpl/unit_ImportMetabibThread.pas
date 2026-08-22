@@ -218,7 +218,9 @@ begin
               ArcName := '';
               if MB.HasArtifact then
                 ArcName := Reader.ArchiveName(MB.ArchiveID);
-              if (not MB.HasArtifact) or (ArcName = '') or (MB.EntryName = '') then
+              // Ім'я архіву з каталогу не сміє бути шляхом: захист від обходу тек
+              if (not MB.HasArtifact) or (ArcName = '') or (MB.EntryName = '') or
+                (Pos('\', ArcName) > 0) or (Pos('/', ArcName) > 0) or (Pos('..', ArcName) > 0) then
               begin
                 Inc(skippedNoFile);
                 Skip := True;

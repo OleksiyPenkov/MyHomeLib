@@ -114,6 +114,7 @@ uses
   unit_ImportInpxThread,
   unit_MetabibReader,
   unit_ImportMetabibThread,
+  // System.UITypes мусить іти останнім: повертає mrOk = TModalResult, затінений unit_MetabibReader
   System.UITypes;
 
 {$R *.dfm}
