@@ -99,7 +99,7 @@ const
     'collection-new',         // 1  acCollectionNew
     'collection-delete',      // 2  acCollectionDelete
     'collection-properties',  // 3  acCollectionProperties
-    '',                       // 4  (unused)
+    'collection-online',      // 4  collection type: online FB
     '',                       // 5  (unused)
     '',                       // 6  (unused)
     'send-to-device',         // 7  acBookSend2Device
@@ -109,7 +109,7 @@ const
     'settings',               // 11 acToolsSettings
     'book-read',              // 12 acBookRead
     'add-to-favorites',       // 13 acBookAdd2Favorites
-    '',                       // 14 (unused)
+    'collection-local',       // 14 collection type: local FB
     '',                       // 15 (unused)
     '',                       // 16 (unused)
     'help',                   // 17 acHelpHelp
