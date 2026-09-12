@@ -112,6 +112,57 @@ const checks = [
     return b.annotation === 'З файлу FB2';
   }],
 
+  // Annotation sources are ranked, not taken in array order. Real dumps put
+  // the database claim first in every field, so "first populated" alone would
+  // always hand the UI the libbannotations text.
+  ['the FB2 annotation wins over the database one', () => {
+    const b = run(record(bib({ annotation: [
+      { value: 'З бази', observation: 'db', raw: { nid: 42, title: 'Проба', body: 'З бази' } },
+      { value: 'З файлу FB2', observation: 'fb2' },
+    ] })));
+    return b.annotation === 'З файлу FB2';
+  }],
+
+  ['the FBD annotation wins over the database one', () => {
+    const b = run(record(bib({ annotation: [
+      { value: 'З бази', observation: 'db' },
+      { value: 'З сайдкара FBD', observation: 'fbd' },
+    ] })));
+    return b.annotation === 'З сайдкара FBD';
+  }],
+
+  ['the FB2 annotation wins over the FBD one', () => {
+    const b = run(record(bib({ annotation: [
+      { value: 'З сайдкара FBD', observation: 'fbd' },
+      { value: 'З файлу FB2', observation: 'fb2' },
+    ] })));
+    return b.annotation === 'З файлу FB2';
+  }],
+
+  ['the database annotation is used when the FB2 one is empty', () => {
+    const b = run(record(bib({ annotation: [
+      { value: '', observation: 'fb2' },
+      { value: 'З бази', observation: 'db' },
+    ] })));
+    return b.annotation === 'З бази';
+  }],
+
+  // A source we have never seen beats no annotation at all.
+  ['an annotation from an unranked source is still used', () => {
+    const b = run(record(bib({ annotation: [
+      { value: 'Зі стороннього джерела', observation: 'whatever' },
+    ] })));
+    return b.annotation === 'Зі стороннього джерела';
+  }],
+
+  ['ranking does not apply to other fields', () => {
+    const b = run(record(bib({ language: [
+      { value: 'ru', observation: 'db' },
+      { value: 'uk', observation: 'fb2' },
+    ] })));
+    return b.lang === 'ru';
+  }],
+
   // Not annotation-specific: the same helper serves every string field, so the
   // rule has to hold for all of them or the fix is a special case.
   ['an empty language claim does not shadow a populated one', () => {

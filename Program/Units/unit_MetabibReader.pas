@@ -110,6 +110,10 @@ const
   DATASET_SCHEMA = 'metabib.dataset/1';
   RECORD_SCHEMA = 'metabib.dataset_record/1';
 
+  // Аннотація: спершу та, що лежить у самій книзі, і лише потім база
+  // бібліотеки -- у libbannotations трапляються чужі й службові тексти.
+  ANNOTATION_SOURCES: array [0 .. 2] of string = ('fb2', 'fbd', 'db');
+
 // ---------------------------------------------------------------------------
 // Допоміжні розбори "claim array": кожне поле claims - масив
 // {observation, value, raw}; value буває скаляром або масивом.
@@ -174,6 +178,47 @@ begin
       if Trim(s) <> '' then
         Exit(s);
     end;
+end;
+
+// Same "first usable value" rule as FirstClaimString, but the sources are
+// tried in a given order instead of the order metabib happened to write them
+// in. The merge step deliberately picks no winner between sources -- it tags
+// each claim with an "observation" ("fb2", "fbd", "db") and leaves the choice
+// to the consumer -- and in practice the database claim comes first, so
+// without this the least trustworthy text would always win.
+//
+// A claim from a source outside Order (or one with no observation at all) is
+// still better than an empty field, so it is used as a last resort.
+function ClaimStringByObservation(Group: TJSONObject; const Field: string;
+  const Order: array of string): string;
+var
+  arr: TJSONArray;
+  item, obs, v: TJSONValue;
+  s: string;
+  i: Integer;
+begin
+  if Assigned(Group) and (Group.Values[Field] is TJSONArray) then
+  begin
+    arr := TJSONArray(Group.Values[Field]);
+    for i := Low(Order) to High(Order) do
+      for item in arr do
+      begin
+        if not (item is TJSONObject) then
+          Continue;
+        obs := TJSONObject(item).Values['observation'];
+        if not (obs is TJSONString) or
+          not SameText(TJSONString(obs).Value, Order[i]) then
+          Continue;
+        v := TJSONObject(item).Values['value'];
+        if not (v is TJSONString) then
+          Continue;
+        s := TJSONString(v).Value;
+        if Trim(s) <> '' then
+          Exit(s);
+      end;
+  end;
+
+  Result := FirstClaimString(Group, Field);
 end;
 
 function FirstClaimInt(Group: TJSONObject; const Field: string; Def: Integer): Integer;
@@ -640,7 +685,8 @@ begin
     Book.Translators := ClaimPersons(Bib, 'translators');
     Book.Genres := ClaimStrings(Bib, 'genres');
     Book.Lang := FirstClaimString(Bib, 'language');
-    Book.Annotation := FirstClaimString(Bib, 'annotation');
+    Book.Annotation := ClaimStringByObservation(Bib, 'annotation',
+      ANNOTATION_SOURCES);
     Book.Keywords := FirstClaimString(Bib, 'keywords');
 
     Seqs := ClaimValues(Bib, 'sequences');
