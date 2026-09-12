@@ -14,20 +14,29 @@
 // docs/superpowers/specs/2026-08-11-signed-lang-catalogs-design.md.
 //
 // Crypto lives only in this unit. unit_Localization knows nothing beyond the
-// one function below.
+// two functions below: one for a catalog on disk, one for a catalog embedded
+// in the exe as a resource pair.
 
 interface
+
+uses
+  System.SysUtils;
 
 // True only when <ACatalogFileName>.sig exists, is exactly 64 bytes, and
 // verifies. Never raises: it runs before the splash screen exists, where an
 // exception dialog is not an acceptable outcome.
 function VerifyCatalogSignature(const ACatalogFileName: string): Boolean;
 
+// The same check over bytes already in hand, for catalogs embedded in the exe
+// as resources -- there is no file to read, but the rule is identical. Refuses
+// anything that is not a 64-byte signature over non-empty data before any
+// crypto runs. Never raises, for the same reason as above.
+function VerifyBytes(const AData, ASignature: TBytes): Boolean;
+
 implementation
 
 uses
   Winapi.Windows,
-  System.SysUtils,
   System.IOUtils,
   System.Hash;
 
@@ -114,6 +123,10 @@ var
   Blob, Digest: TBytes;
 begin
   Result := False;
+  // Guarded here rather than in every caller: @ASignature[0] on an empty array
+  // faults, and a wrong-sized .sig is not a signature this scheme ever made.
+  if (Length(ASignature) <> SIGNATURE_SIZE) or (Length(AData) = 0) then
+    Exit;
   hAlg := 0;
   try
     if BCryptOpenAlgorithmProvider(hAlg, PWideChar(BCRYPT_ECDSA_P256_ALGORITHM),

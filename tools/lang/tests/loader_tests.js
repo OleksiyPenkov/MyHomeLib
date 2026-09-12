@@ -115,6 +115,29 @@ const checks = [
     return r.active === true && r.translations['Автор'] === 'Author';
   }],
 
+  // LANG_XX and LANG_ZZ are linked by the harness alone (make_fixture_res.js).
+  // They stand in for what a resource editor can add to a shipped exe: a
+  // perfectly well-formed catalog that the maintainer never signed.
+  ['an embedded catalog with no signature resource is not offered', () => {
+    const r = run({ locale: 'uk', noLangDir: true });
+    return !r.locales.some(l => l.code === 'xx');
+  }],
+
+  ['an embedded catalog with a bogus signature is not offered', () => {
+    const r = run({ locale: 'uk', noLangDir: true });
+    return !r.locales.some(l => l.code === 'zz');
+  }],
+
+  ['selecting an unsigned embedded locale falls back to Ukrainian', () => {
+    const r = run({ locale: 'xx', noLangDir: true });
+    return r.active === false && r.translations['Автор'] === 'Автор';
+  }],
+
+  ['selecting a bogusly signed embedded locale falls back to Ukrainian', () => {
+    const r = run({ locale: 'zz', noLangDir: true });
+    return r.active === false && r.translations['Автор'] === 'Автор';
+  }],
+
   ['a file catalog declaring a different locale is refused', () => {
     const r = run({ locale: 'pl', catalogs: { 'pl.json': {
       locale: 'de', name: 'Polski',

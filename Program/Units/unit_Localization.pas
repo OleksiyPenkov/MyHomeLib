@@ -448,33 +448,78 @@ end;
 
 const
   LANG_RES_PREFIX = 'LANG_';
+  LANG_RES_SIG_SUFFIX = '_SIG';
 
-// Reads an embedded catalog resource as text. TEncoding.UTF8.GetString does
-// NOT strip a byte-order mark, so a catalog saved with one would reach the
-// JSON parser with a leading U+FEFF and fail. extract.js writes them without,
-// but a translator's editor will not necessarily agree.
-function EmbeddedCatalogText(const AResName: string; out AText: string): Boolean;
+// Reads a raw RCDATA resource. Both halves of an embedded catalog -- the JSON
+// and its detached signature -- arrive through here.
+function EmbeddedResourceBytes(const AResName: string;
+  out ABytes: TBytes): Boolean;
 var
   Stream: TResourceStream;
-  Bytes: TBytes;
 begin
   Result := False;
-  AText := '';
+  ABytes := nil;
   if FindResource(HInstance, PChar(AResName), RT_RCDATA) = 0 then
     Exit;
   try
     Stream := TResourceStream.Create(HInstance, AResName, RT_RCDATA);
     try
-      SetLength(Bytes, Stream.Size);
+      SetLength(ABytes, Stream.Size);
       if Stream.Size > 0 then
-        Stream.ReadBuffer(Bytes[0], Stream.Size);
-      AText := TEncoding.UTF8.GetString(Bytes);
-      if (AText <> '') and (AText[1] = #$FEFF) then
-        Delete(AText, 1, 1);
+        Stream.ReadBuffer(ABytes[0], Stream.Size);
       Result := True;
     finally
       Stream.Free;
     end;
+  except
+    on E: Exception do
+      SetStatus('Localization: failed to read embedded resource - ' + E.Message,
+        AResName);
+  end;
+end;
+
+// Reads an embedded catalog resource as text -- and only if LANG_<CODE>_SIG
+// sits beside it and verifies.
+//
+// Being embedded used to be proof enough, which made a resource editor the
+// cheapest way past this whole feature: add LANG_RU to a shipped exe and the
+// menu offers Russian, no source and no key needed. The bytes now face the
+// same key the Lang path uses, so adding a locale costs a code patch instead.
+// That is a higher wall, not a guarantee -- the public key is in this same
+// binary and can be patched too. See unit_LangSignature.
+//
+// TEncoding.UTF8.GetString does NOT strip a byte-order mark, so a catalog
+// saved with one would reach the JSON parser with a leading U+FEFF and fail.
+// extract.js writes them without, but a translator's editor will not
+// necessarily agree.
+function EmbeddedCatalogText(const AResName: string; out AText: string): Boolean;
+var
+  Bytes, Signature: TBytes;
+begin
+  Result := False;
+  AText := '';
+  if not EmbeddedResourceBytes(AResName, Bytes) then
+    Exit;
+
+  if not EmbeddedResourceBytes(AResName + LANG_RES_SIG_SUFFIX, Signature) then
+  begin
+    SetStatus('Localization: embedded catalog carries no signature resource',
+      AResName);
+    Exit;
+  end;
+
+  if not VerifyBytes(Bytes, Signature) then
+  begin
+    SetStatus('Localization: embedded catalog signature does not verify',
+      AResName);
+    Exit;
+  end;
+
+  try
+    AText := TEncoding.UTF8.GetString(Bytes);
+    if (AText <> '') and (AText[1] = #$FEFF) then
+      Delete(AText, 1, 1);
+    Result := True;
   except
     on E: Exception do
       SetStatus('Localization: failed to read embedded catalog - ' + E.Message,
@@ -482,11 +527,15 @@ begin
   end;
 end;
 
+// "Has one we would actually load", not "has a resource by that name". A bare
+// FindResource here would let an unsigned LANG_RU shadow a properly signed
+// ru.json in Lang -- the injected resource would claim the locale, then fail.
 function HasEmbeddedCatalog(const ACode: string): Boolean;
+var
+  Text: string;
 begin
   Result := (ACode <> '')
-    and (FindResource(HInstance,
-      PChar(LANG_RES_PREFIX + UpperCase(ACode)), RT_RCDATA) <> 0);
+    and EmbeddedCatalogText(LANG_RES_PREFIX + UpperCase(ACode), Text);
 end;
 
 function LoadEmbeddedCatalog(const ACode: string): Boolean;
@@ -514,7 +563,10 @@ begin
   if (NativeUInt(lpszName) shr 16) = 0 then
     Exit;
   Name := string(lpszName);
-  if Name.StartsWith(LANG_RES_PREFIX) then
+  // The signature resources share the prefix. Enumerating one would send 64
+  // bytes of ECDSA into the JSON parser and then look for LANG_UK_SIG_SIG.
+  if Name.StartsWith(LANG_RES_PREFIX)
+    and not Name.EndsWith(LANG_RES_SIG_SUFFIX) then
     TList<string>(lParam).Add(Name);
 end;
 
@@ -667,11 +719,11 @@ end;
 
 // The language menu's source of truth: which locales can actually be offered.
 //
-// Ukrainian is pinned first from a constant, never from a catalog. It is
-// embedded in the exe like English, but the pin is what guarantees a user can
-// always get back to it even if the resource is somehow absent -- listing it
-// conditionally would let a partial install strand someone in a language they
-// cannot leave.
+// Ukrainian is pinned first from a constant, never from a catalog. There is
+// no catalog for it to come from: it is the language the source is written in,
+// so a uk catalog would be pure identity. The pin is what guarantees a user can
+// always get back to it -- listing it conditionally would let a partial install
+// strand someone in a language they cannot leave.
 //
 // Embedded locales come next and claim their codes, so a file in Lang\ can
 // never shadow a language we ship. Everything after that is discovered.
@@ -812,10 +864,10 @@ begin
   // we ship is ignored -- there is no file a user can place that alters one
   // of our languages.
   //
-  // Ukrainian takes this path too, now that it has no short-circuit. Its
-  // catalog is pure identity, so rule 2 drops every entry, the index comes
-  // out empty, and rule 3 below declines to install the hook -- the same
-  // outcome the short-circuit produced, reached by a general rule.
+  // Ukrainian reaches neither branch usefully: nothing is embedded for it and
+  // no file is expected, so it falls out below as "not loaded" and the hook is
+  // never installed. That is the correct outcome -- the resourcestrings are
+  // already Ukrainian, so there is nothing to translate.
   if HasEmbeddedCatalog(Locale) then
     Loaded := LoadEmbeddedCatalog(Locale)
   else

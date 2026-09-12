@@ -51,13 +51,26 @@ see them.
 
 | Locale | How it travels | Verified |
 | --- | --- | --- |
-| `uk`, `en` | RCDATA resources in the exe, linked by `Program\embed_lang.cmd` before every build | Not needed — nothing outside the binary to trust |
+| `en`, `bg` | RCDATA pair in the exe -- `LANG_<CODE>` and `LANG_<CODE>_SIG`, linked by `Program\embed_lang.cmd` before every build | ECDSA P-256, same key |
+| `uk` | Not a catalog at all -- it is the source language, compiled in | Nothing to verify |
 | anything else | `Lang\<code>.json` + `Lang\<code>.json.sig` next to the exe | ECDSA P-256 against the key in `unit_LangSignature.pas` |
 
 Embedded always wins. A `Lang\en.json` is ignored whether or not it is signed,
 so there is no file a user can place that alters a language we ship. A
 catalog's locale is what it **declares**, not what it is named, so renaming a
 signed catalog into another slot does not work either.
+
+Embedded catalogs carry a signature as well, and the loader checks it before
+using one. Without that, a resource editor was the cheapest way past this
+whole feature: adding a `LANG_RU` resource to a released exe put Russian in
+the language menu, no source and no key required. It now costs a code patch
+instead -- a higher wall, not a guarantee, since the public key sits in the
+same binary.
+
+The practical consequence: **`embed_lang.cmd` refuses to build when a catalog
+in `Program/Lang` has no `.sig` beside it.** Signing is part of preparing a
+release, not an afterthought. A clone with no catalogs at all still builds, as
+it always did.
 
 ## Accepting a community translation
 

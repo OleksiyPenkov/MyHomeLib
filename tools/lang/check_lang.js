@@ -18,6 +18,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const { EMBEDDED } = require('./embedded_locales');
+
 const LANG_DIR = path.join(__dirname, '..', '..', 'Program', 'Lang');
 const STRICT = process.argv.includes('--strict');
 
@@ -399,13 +401,41 @@ function main() {
   }
   console.log('');
 
+  // --- Report: detached signatures on the shipped catalogs ---
+  //
+  // unit_Localization verifies LANG_<CODE> against LANG_<CODE>_SIG before it
+  // will load it, so an embedded catalog with no .sig is a language that
+  // silently will not be offered. Cheaper to fail here than to ship an exe
+  // missing a menu entry.
+  //
+  // Only the embedded set is checked. uk.json is the extraction baseline, not
+  // a shipped catalog -- it is pure identity and sign.js refuses it, correctly.
+  // A community catalog sitting in this folder is signed by hand through
+  // sign.js after review, so its state here means nothing either.
+  console.log('--- Check 10: detached signature on every shipped catalog ---');
+  const unsigned = [];
+  for (const cat of catalogs) {
+    if (!EMBEDDED.includes(cat.locale)) continue;
+    if (!fs.existsSync(path.join(LANG_DIR, `${cat.file}.sig`))) {
+      unsigned.push(cat.file);
+    }
+  }
+  if (unsigned.length > 0) {
+    for (const file of unsigned) {
+      console.log(`  [${file}] no ${file}.sig -- run: node tools/lang/sign.js Program/Lang/${file}`);
+    }
+  } else {
+    console.log('  OK - every embedded catalog has a .sig beside it.');
+  }
+  console.log('');
+
   if (catalogs.length === 0) {
     console.log('=== Result ===');
     console.log('FAIL - no catalog could be loaded');
     process.exit(1);
   }
 
-  let anyAlwaysFail = anyMalformed;
+  let anyAlwaysFail = anyMalformed || unsigned.length > 0;
   let anyStrictFail = false;
 
   const perLocaleConflicts = new Map();
@@ -595,6 +625,7 @@ function main() {
   } else {
     const reasons = [];
     if (anyMalformed) reasons.push('malformed catalog(s)/entrie(s)');
+    if (unsigned.length > 0) reasons.push('unsigned catalog(s)');
     if (anyConflictAtAll) reasons.push('conflicting targets for one source');
     if (drift.length > 0) reasons.push('key-set drift across catalogs');
     if (sourceMismatches.length > 0) reasons.push('divergent source for one or more keys across catalogs');

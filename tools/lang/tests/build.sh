@@ -45,5 +45,9 @@ for d in $DIRS $LIBS; do UNITS="$UNITS;$d"; done
 
 NS="Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;System;Xml;Data;Datasnap;Web;Soap;Winapi;Bde;Xml.Win;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win"
 
+# The fixture catalogs LangTest.dpr links are generated, not tracked: they
+# exist to be refused, and a stale .res would quietly stop testing that.
+node tools/lang/tests/make_fixture_res.js "$BDS/bin/brcc32.exe" || exit 1
+
 "$BDS/bin/dcc64.exe" -B -E"$OUT" -N0"$OUT/dcu" -U"$UNITS" -NS"$NS" -R"Program" \
   tools/lang/tests/LangTest.dpr 2>&1 | grep -Ev "^(Embarcadero|Copyright)|H2443" | tail -8
