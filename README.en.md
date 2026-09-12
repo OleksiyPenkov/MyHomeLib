@@ -134,6 +134,8 @@ tools/                 development helper scripts (help, translation catalogues)
 
 MIT — see [LICENSE](LICENSE). © 2008–2026 Oleksiy Penkov.
 
+The licence covers the code, not the name. A fork that distributes binaries must release them under its own name — see [NOTICE](NOTICE).
+
 ## Credits
 
 Programming: Oleksiy Penkov, Nikolay Rymanov, eg.

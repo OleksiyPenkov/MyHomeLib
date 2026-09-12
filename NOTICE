@@ -1,0 +1,19 @@
+NOTICE
+
+MyHomeLib is a project by Oleksiy Penkov. The MIT licence in LICENSE covers the
+source code of this repository. It grants no rights to the project's name.
+
+"MyHomeLib" identifies the builds published by the author. A fork that
+distributes binaries must publish them under a different name, and must not use
+"MyHomeLib" as the executable name, the release title, or the value of the
+ProductName, InternalName, OriginalFilename or LegalTrademarks fields of the
+compiled binary's version information.
+
+The copyright notice must be carried unchanged, as the licence requires: in
+LICENSE, in source-file headers, and in the LegalCopyright version-information
+field and the About box of any binary built from this code. The author's name is
+written "Олексій Пеньков" in Cyrillic and "Oleksiy Penkov" in Latin. It is not to
+be transliterated into any other form.
+
+On those two conditions, forking, modifying and redistributing this source is
+welcome.

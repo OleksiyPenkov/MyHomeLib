@@ -134,6 +134,8 @@ tools/                 development helper scripts (help, translation catalogues)
 
 MIT — вижте [LICENSE](LICENSE). © 2008–2026 Oleksiy Penkov.
 
+Лицензът обхваща кода, но не и името. Форк, който разпространява компилации, трябва да ги издава под собствено име — вижте [NOTICE](NOTICE).
+
 ## Автори
 
 Програмиране: Олексій Пеньков, Николай Рыманов, eg.
