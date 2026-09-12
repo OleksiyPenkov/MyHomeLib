@@ -31,7 +31,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Winapi.GDIPAPI, Winapi.GDIPOBJ, unit_Localization;
+  Winapi.GDIPAPI, Winapi.GDIPOBJ, unit_Localization, unit_MHLHelpers;
 
 resourcestring
   rstrTagline = 'Менеджер домашньої електронної бібліотеки';
@@ -285,11 +285,18 @@ begin
               Font.Free;
             end;
 
-            // Version
+            // Version, read from the exe's own resource rather than
+            // written here. A literal cannot be bumped by anything in the
+            // build, so it silently disagrees with the About box, the status
+            // bar and the update check the moment VerInfo_Keys changes -- this
+            // one still said 2.6.1 through the whole of 2.7.0. Same call those
+            // three already use.
             {$IFDEF WIN64}
-            VersionText := 'Version 2.6.1  ·  x64';
+            VersionText := Format('Version %s  ·  x64',
+              [GetFileVersion(Application.ExeName)]);
             {$ELSE}
-            VersionText := 'Version 2.6.1  ·  x32';
+            VersionText := Format('Version %s  ·  x32',
+              [GetFileVersion(Application.ExeName)]);
             {$ENDIF}
             Font := TGPFont.Create(FontRegular, S(11), FontStyleRegular, UnitPixel);
             try
