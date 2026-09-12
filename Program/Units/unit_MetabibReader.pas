@@ -152,14 +152,28 @@ begin
   end;
 end;
 
+// "First usable value", not "first value". A field's claims can come from
+// several sources -- FB2, an FBD sidecar and, since metabib 2.1.0, the library
+// database -- and a source that simply had nothing to say still contributes a
+// claim with an empty value. Stopping at it would discard a populated claim
+// sitting right behind it: a book with no FB2 annotation but a database one
+// would import with no annotation at all.
+//
+// The value itself is returned unmodified. Only the decision to skip is made
+// on the trimmed form, so nothing rewrites text on its way into a collection.
 function FirstClaimString(Group: TJSONObject; const Field: string): string;
 var
   v: TJSONValue;
+  s: string;
 begin
   Result := '';
   for v in ClaimValues(Group, Field) do
     if v is TJSONString then
-      Exit(TJSONString(v).Value);
+    begin
+      s := TJSONString(v).Value;
+      if Trim(s) <> '' then
+        Exit(s);
+    end;
 end;
 
 function FirstClaimInt(Group: TJSONObject; const Field: string; Def: Integer): Integer;
@@ -197,7 +211,9 @@ begin
       Exit(TJSONBool(v).AsBoolean);
     if v is TJSONNumber then
       Exit(TJSONNumber(v).AsInt <> 0);
-    if v is TJSONString then
+    // Same rule as FirstClaimString: an empty string is a source with nothing
+    // to say, not a claim that the flag is False.
+    if (v is TJSONString) and (Trim(TJSONString(v).Value) <> '') then
       Exit(MatchText(TJSONString(v).Value, ['1', 'true', 'yes']));
   end;
 end;
