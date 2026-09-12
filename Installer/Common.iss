@@ -41,10 +41,10 @@ Name: "{userappdata}\{#MyAppName}"; Permissions: everyone-modify
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}
-Name: {group}\{cm:HelpShortcut}; Filename: {app}\{cm:HelpIndex}; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: {#MyAppName} Help
+Name: {group}\{cm:HelpShortcut}; Filename: {app}\{cm:HelpIndex}; WorkingDir: {app}; IconFilename: {sys}\ieframe.dll; IconIndex: 36; Comment: {cm:HelpShortcut}
 Name: {commondesktop}\{#MyAppName}; Filename: {app}\{#AppExeName}; WorkingDir: {app}; IconFilename: {app}\{#AppExeName}; IconIndex: 0; Comment: {#MyAppName}; Tasks: desktopicon
-Name: {group}\{#MyAppName} website; Filename: {app}\{#MyAppName}.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
-Name: {group}\{cm:UninstallProgram, My Home Library}; Filename: {uninstallexe}
+Name: {group}\{cm:WebsiteShortcut}; Filename: {app}\{#MyAppName}.url; IconFilename: {sys}\ieframe.dll; IconIndex: 36
+Name: {group}\{cm:UninstallProgram,{#MyAppName}}; Filename: {uninstallexe}
 
 [UninstallDelete]
 Name: {userappdata}\{#MyAppName}\Data; Type: filesandordirs
@@ -134,6 +134,12 @@ Bulgarian.LocaleCode=bg
 English.HelpShortcut=MyHomeLib Help
 Ukrainian.HelpShortcut=Довідка MyHomeLib
 Bulgarian.HelpShortcut=Помощ за MyHomeLib
+; The website shortcut caption. Only the word around the product name is
+; translated -- MyHomeLib is a name, not a phrase.
+English.WebsiteShortcut=MyHomeLib website
+Ukrainian.WebsiteShortcut=Сайт MyHomeLib
+Bulgarian.WebsiteShortcut=Уебсайт на MyHomeLib
+
 English.HelpIndex=Help\en\index.html
 Ukrainian.HelpIndex=Help\index.html
 Bulgarian.HelpIndex=Help\bg\index.html
