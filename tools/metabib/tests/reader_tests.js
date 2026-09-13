@@ -53,6 +53,13 @@ function record(claims) {
   };
 }
 
+// The shape of a real 2.1.0+ archive-backed record: no book_id in the locator.
+function idRecord(extra) {
+  const rec = record({});
+  delete rec.record.locator.book_id;
+  return Object.assign(rec, extra);
+}
+
 let caseNo = 0;
 
 function run(rec) {
@@ -184,6 +191,64 @@ const checks = [
       catalog: { deleted: [{ value: '' }, { value: true }] },
     }));
     return b.deleted === true;
+  }],
+
+  // Book id. Since metabib 2.1.0 an archive_entry locator carries only
+  // source + index; the id sits in identities.catalog and in the db observation.
+  ['book_id is read from the locator when present', () => {
+    return run(record({})).book_id === 101;
+  }],
+
+  ['without locator.book_id the db catalog identity wins over the archive one', () => {
+    const rec = idRecord({
+      identities: { catalog: [
+        { scheme: 'test-lib.book', value: '555', observation: 'archive', basis: 'numeric_entry_stem' },
+        { scheme: 'test-lib.book', value: '888386', observation: 'db' },
+      ] },
+    });
+    return run(rec).book_id === 888386;
+  }],
+
+  ['the db observation locator is used when there is no db identity', () => {
+    const rec = idRecord({
+      identities: { catalog: [
+        { scheme: 'test-lib.book', value: '555', observation: 'archive' },
+      ] },
+      observations: [
+        { id: 'db', status: 'present', kind: 'database_book', locator: { book_id: 777 } },
+      ],
+    });
+    return run(rec).book_id === 777;
+  }],
+
+  ['an absent db observation is ignored', () => {
+    const rec = idRecord({
+      identities: { catalog: [
+        { scheme: 'test-lib.book', value: '555', observation: 'archive' },
+      ] },
+      observations: [
+        { id: 'db', status: 'absent', kind: 'database_book', locator: { book_id: 777 } },
+      ],
+    });
+    return run(rec).book_id === 555;
+  }],
+
+  ['the archive catalog identity is the last fallback', () => {
+    const rec = idRecord({
+      identities: { catalog: [
+        { scheme: 'test-lib.book', value: '555', observation: 'archive' },
+      ] },
+    });
+    return run(rec).book_id === 555;
+  }],
+
+  ['a catalog identity from another library scheme is ignored', () => {
+    const rec = idRecord({
+      identities: { catalog: [
+        { scheme: 'other.book', value: '999', observation: 'db' },
+      ] },
+    });
+    return run(rec).book_id === 0;
   }],
 
   ['an ordinary record still parses', () => {

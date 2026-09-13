@@ -367,6 +367,85 @@ begin
     Result := TJSONNumber(v).AsInt64;
 end;
 
+function JSONToInt64(v: TJSONValue): Int64;
+begin
+  if v is TJSONNumber then
+    Result := TJSONNumber(v).AsInt64
+  else if v is TJSONString then
+    Result := StrToInt64Def(Trim(TJSONString(v).Value), 0)
+  else
+    Result := 0;
+end;
+
+// Catalog book id from identities.catalog[] for one observation. The scheme is
+// "<library>.book" -- "flibusta.book" in real dumps.
+function CatalogIdentity(Obj: TJSONObject; const Scheme, Observation: string): Int64;
+var
+  item: TJSONValue;
+  id: TJSONObject;
+begin
+  Result := 0;
+  id := ObjValue(Obj, 'identities');
+  if not Assigned(id) or not (id.Values['catalog'] is TJSONArray) then
+    Exit;
+  for item in TJSONArray(id.Values['catalog']) do
+    if (item is TJSONObject) and
+      SameText(StrValue(TJSONObject(item), 'scheme'), Scheme) and
+      SameText(StrValue(TJSONObject(item), 'observation'), Observation) then
+    begin
+      Result := JSONToInt64(TJSONObject(item).Values['value']);
+      if Result > 0 then
+        Exit;
+    end;
+end;
+
+function PresentObservationBookID(Obj: TJSONObject; const Observation: string): Int64;
+var
+  item: TJSONValue;
+  o, loc: TJSONObject;
+begin
+  Result := 0;
+  if not (Obj.Values['observations'] is TJSONArray) then
+    Exit;
+  for item in TJSONArray(Obj.Values['observations']) do
+    if item is TJSONObject then
+    begin
+      o := TJSONObject(item);
+      if SameText(StrValue(o, 'id'), Observation) and
+        SameText(StrValue(o, 'status'), 'present') then
+      begin
+        loc := ObjValue(o, 'locator');
+        if Assigned(loc) then
+          Result := JSONToInt64(loc.Values['book_id']);
+        if Result > 0 then
+          Exit;
+      end;
+    end;
+end;
+
+// Only a "database_book" locator carries book_id. Since metabib 2.1.0 an
+// "archive_entry" locator is a physical position (source + index) and the id
+// lives in identities.catalog. The preference is spelled out rather than taken
+// from array order: the database id is authoritative, the archive one is merely
+// guessed from a numeric entry name and may disagree with the database match.
+function ResolveBookID(Obj, Locator: TJSONObject; const LibraryName: string): Int64;
+var
+  Scheme: string;
+begin
+  Result := IntValue(Locator, 'book_id', 0);
+  if Result > 0 then
+    Exit;
+
+  Scheme := LibraryName + '.book';
+  Result := CatalogIdentity(Obj, Scheme, 'db');
+  if Result > 0 then
+    Exit;
+  Result := PresentObservationBookID(Obj, 'db');
+  if Result > 0 then
+    Exit;
+  Result := CatalogIdentity(Obj, Scheme, 'archive');
+end;
+
 { TMetabibReader }
 
 class function TMetabibReader.IsDatasetFile(const FileName: string): Boolean;
@@ -604,7 +683,7 @@ var
   vArt, vOcc: TJSONValue;
   Occ, Chosen, FirstOcc: TJSONObject;
   Seqs: TArray<TJSONValue>;
-  StampStr: string;
+  StampStr, LibName: string;
   dt: TDateTime;
 begin
   Book := Default (TMetabibBook);
@@ -627,7 +706,10 @@ begin
     RecObj := ObjValue(Obj, 'record');
     Locator := ObjValue(RecObj, 'locator');
     Book.LocatorKind := StrValue(Locator, 'kind');
-    Book.BookID := IntValue(Locator, 'book_id', 0);
+    LibName := StrValue(RecObj, 'library');
+    if LibName = '' then
+      LibName := FLibraryName;
+    Book.BookID := ResolveBookID(Obj, Locator, LibName);
 
     // ------ артефакт: віддаємо перевагу входженню, на яке вказує локатор
     Chosen := nil;
