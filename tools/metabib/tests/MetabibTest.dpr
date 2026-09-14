@@ -18,6 +18,19 @@ uses
   System.JSON,
   unit_MetabibReader;
 
+function PersonsJSON(const Persons: TArray<TMetabibPerson>): TJSONArray;
+var
+  p: TMetabibPerson;
+begin
+  Result := TJSONArray.Create;
+  for p in Persons do
+    Result.AddElement(TJSONObject.Create
+      .AddPair('last', p.LastName)
+      .AddPair('first', p.FirstName)
+      .AddPair('middle', p.MiddleName)
+      .AddPair('nick', p.NickName));
+end;
+
 var
   Reader: TMetabibReader;
   Book: TMetabibBook;
@@ -58,6 +71,10 @@ begin
           Obj.AddPair('isbn', Book.ISBN);
           Obj.AddPair('pub_year', TJSONNumber.Create(Book.PubYear));
           Obj.AddPair('deleted', TJSONBool.Create(Book.Deleted));
+          Obj.AddPair('authors', PersonsJSON(Book.Authors));
+          Obj.AddPair('translators', PersonsJSON(Book.Translators));
+          Obj.AddPair('series', Book.SeriesName);
+          Obj.AddPair('series_no', TJSONNumber.Create(Book.SeriesNo));
           Books.AddElement(Obj);
         until Res = mrEof;
       finally

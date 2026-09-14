@@ -97,6 +97,7 @@ uses
   IOUtils,
   DateUtils,
   StrUtils,
+  Character,
   System.JSON,
   ZLib,
   unit_ZstdStream,
@@ -113,6 +114,10 @@ const
   // Аннотація: спершу та, що лежить у самій книзі, і лише потім база
   // бібліотеки -- у libbannotations трапляються чужі й службові тексти.
   ANNOTATION_SOURCES: array [0 .. 2] of string = ('fb2', 'fbd', 'db');
+
+  // Каталожні поля (автори, перекладачі, назва, серія) -- навпаки: база
+  // бібліотеки первинна, а FB2 буває битим (U+FFFD замість імен).
+  CATALOG_SOURCES: array [0 .. 2] of string = ('db', 'fb2', 'fbd');
 
 // ---------------------------------------------------------------------------
 // Допоміжні розбори "claim array": кожне поле claims - масив
@@ -156,69 +161,165 @@ begin
   end;
 end;
 
-// "First usable value", not "first value". A field's claims can come from
-// several sources -- FB2, an FBD sidecar and, since metabib 2.1.0, the library
-// database -- and a source that simply had nothing to say still contributes a
-// claim with an empty value. Stopping at it would discard a populated claim
-// sitting right behind it: a book with no FB2 annotation but a database one
-// would import with no annotation at all.
-//
-// The value itself is returned unmodified. Only the decision to skip is made
-// on the trimmed form, so nothing rewrites text on its way into a collection.
-function FirstClaimString(Group: TJSONObject; const Field: string): string;
+// A value is usable when it has at least one letter or digit. Empty and blank
+// values are a source with nothing to say; values made of nothing but
+// punctuation or U+FFFD replacement characters are what a corrupted FB2 leaves
+// behind ("()", "- -", "������"), and taking one would hide a good claim from
+// another source. Surrogates pass: a name written entirely outside the BMP is
+// rare but real, and U+FFFD is never one.
+function IsUsableText(const S: string): Boolean;
 var
-  v: TJSONValue;
-  s: string;
+  ch: Char;
 begin
-  Result := '';
-  for v in ClaimValues(Group, Field) do
-    if v is TJSONString then
-    begin
-      s := TJSONString(v).Value;
-      if Trim(s) <> '' then
-        Exit(s);
-    end;
+  for ch in S do
+    if ch.IsLetterOrDigit or ch.IsSurrogate then
+      Exit(True);
+  Result := False;
 end;
 
-// Same "first usable value" rule as FirstClaimString, but the sources are
-// tried in a given order instead of the order metabib happened to write them
-// in. The merge step deliberately picks no winner between sources -- it tags
-// each claim with an "observation" ("fb2", "fbd", "db") and leaves the choice
-// to the consumer -- and in practice the database claim comes first, so
-// without this the least trustworthy text would always win.
+// Decodes the HTML entities that leak into names from the library database
+// ("&quot;", "&#34;", "&#x2014;"). Anything that does not parse as an entity is
+// left as it is.
+function DecodeEntities(const S: string): string;
+var
+  i, j, code: Integer;
+  name: string;
+  sb: TStringBuilder;
+begin
+  if Pos('&', S) = 0 then
+    Exit(S);
+
+  sb := TStringBuilder.Create(Length(S));
+  try
+    i := 1;
+    while i <= Length(S) do
+    begin
+      if S[i] = '&' then
+      begin
+        j := i + 1;
+        while (j <= Length(S)) and (j - i <= 10) and (S[j] <> ';') and (S[j] <> '&') do
+          Inc(j);
+        if (j <= Length(S)) and (S[j] = ';') then
+        begin
+          name := Copy(S, i + 1, j - i - 1);
+          code := -1;
+          if (Length(name) > 1) and (name[1] = '#') then
+          begin
+            if CharInSet(name[2], ['x', 'X']) then
+              code := StrToIntDef('$' + Copy(name, 3, MaxInt), -1)
+            else
+              code := StrToIntDef(Copy(name, 2, MaxInt), -1);
+          end
+          else if name = 'amp' then
+            code := Ord('&')
+          else if name = 'quot' then
+            code := Ord('"')
+          else if name = 'apos' then
+            code := Ord('''')
+          else if name = 'lt' then
+            code := Ord('<')
+          else if name = 'gt' then
+            code := Ord('>')
+          else if name = 'nbsp' then
+            code := Ord(' ');
+
+          if (code > 0) and (code <= $10FFFF) and ((code < $D800) or (code > $DFFF)) then
+          begin
+            sb.Append(Char.ConvertFromUtf32(code));
+            i := j + 1;
+            Continue;
+          end;
+        end;
+      end;
+      sb.Append(S[i]);
+      Inc(i);
+    end;
+    Result := sb.ToString;
+  finally
+    sb.Free;
+  end;
+end;
+
+// Claims of a field in the order the consumer trusts them: those whose
+// observation is in Order, source by source, then everything else in the order
+// metabib wrote it. The merge step deliberately picks no winner between
+// sources -- it tags each claim with an "observation" ("db", "fb2", "fbd") and
+// leaves the choice to the consumer -- so the preference is spelled out here
+// rather than read off the array. A claim from a source outside Order (or one
+// with no observation at all) is still better than an empty field, which is why
+// it stays in the list as a last resort.
+function ClaimsInOrder(Group: TJSONObject; const Field: string;
+  const Order: array of string): TArray<TJSONObject>;
+var
+  arr: TJSONArray;
+  obs: TJSONValue;
+  used: TArray<Boolean>;
+  list: TList<TJSONObject>;
+  i, j: Integer;
+begin
+  Result := nil;
+  if not Assigned(Group) or not (Group.Values[Field] is TJSONArray) then
+    Exit;
+  arr := TJSONArray(Group.Values[Field]);
+  SetLength(used, arr.Count);
+
+  list := TList<TJSONObject>.Create;
+  try
+    for i := Low(Order) to High(Order) do
+      for j := 0 to arr.Count - 1 do
+        if not used[j] and (arr.Items[j] is TJSONObject) then
+        begin
+          obs := TJSONObject(arr.Items[j]).Values['observation'];
+          if (obs is TJSONString) and SameText(TJSONString(obs).Value, Order[i]) then
+          begin
+            used[j] := True;
+            list.Add(TJSONObject(arr.Items[j]));
+          end;
+        end;
+
+    for j := 0 to arr.Count - 1 do
+      if not used[j] and (arr.Items[j] is TJSONObject) then
+        list.Add(TJSONObject(arr.Items[j]));
+
+    Result := list.ToArray;
+  finally
+    list.Free;
+  end;
+end;
+
+// "First usable value", tried source by source. A source that simply had
+// nothing to say still contributes a claim with an empty value, and a corrupted
+// FB2 contributes one full of replacement characters; stopping at either would
+// discard a populated claim sitting right behind it -- a book with no FB2
+// annotation but a database one would import with no annotation at all.
 //
-// A claim from a source outside Order (or one with no observation at all) is
-// still better than an empty field, so it is used as a last resort.
+// The value itself is returned unmodified. Only the decision to skip is made
+// on it, so nothing rewrites text on its way into a collection.
 function ClaimStringByObservation(Group: TJSONObject; const Field: string;
   const Order: array of string): string;
 var
-  arr: TJSONArray;
-  item, obs, v: TJSONValue;
-  s: string;
-  i: Integer;
+  claim: TJSONObject;
+  v, el: TJSONValue;
 begin
-  if Assigned(Group) and (Group.Values[Field] is TJSONArray) then
+  Result := '';
+  for claim in ClaimsInOrder(Group, Field, Order) do
   begin
-    arr := TJSONArray(Group.Values[Field]);
-    for i := Low(Order) to High(Order) do
-      for item in arr do
-      begin
-        if not (item is TJSONObject) then
-          Continue;
-        obs := TJSONObject(item).Values['observation'];
-        if not (obs is TJSONString) or
-          not SameText(TJSONString(obs).Value, Order[i]) then
-          Continue;
-        v := TJSONObject(item).Values['value'];
-        if not (v is TJSONString) then
-          Continue;
-        s := TJSONString(v).Value;
-        if Trim(s) <> '' then
-          Exit(s);
-      end;
+    v := claim.Values['value'];
+    if v is TJSONArray then
+    begin
+      for el in TJSONArray(v) do
+        if (el is TJSONString) and IsUsableText(TJSONString(el).Value) then
+          Exit(TJSONString(el).Value);
+    end
+    else if (v is TJSONString) and IsUsableText(TJSONString(v).Value) then
+      Exit(TJSONString(v).Value);
   end;
+end;
 
-  Result := FirstClaimString(Group, Field);
+// Same rule for fields where no source is preferred: claims in array order.
+function FirstClaimString(Group: TJSONObject; const Field: string): string;
+begin
+  Result := ClaimStringByObservation(Group, Field, []);
 end;
 
 function FirstClaimInt(Group: TJSONObject; const Field: string; Def: Integer): Integer;
@@ -277,38 +378,72 @@ begin
     end;
 end;
 
-function ClaimPersons(Group: TJSONObject; const Field: string): TArray<TMetabibPerson>;
+// The person list of ONE source, the first in Order that names anybody usable.
+// Lists are never merged across sources: each source lists the same people, so
+// merging put every author on a book twice, turned a spelling difference
+// ("Татьяна О." / "Татьяна Олеговна") into a second person, and let a corrupted
+// FB2 name ride along next to the good database one.
+//
+// Names are trimmed and entity-decoded, a name part with no letter or digit is
+// dropped, and a person left with no name at all is skipped.
+function ClaimPersons(Group: TJSONObject; const Field: string;
+  const Order: array of string): TArray<TMetabibPerson>;
 var
-  v: TJSONValue;
-  o: TJSONObject;
   list: TList<TMetabibPerson>;
-  p: TMetabibPerson;
+  claim: TJSONObject;
+  v, el: TJSONValue;
 
-  function S(const Name: string): string;
+  function CleanName(o: TJSONObject; const Name: string): string;
   var
     fv: TJSONValue;
   begin
+    Result := '';
     fv := o.Values[Name];
     if fv is TJSONString then
-      Result := TJSONString(fv).Value
-    else
-      Result := '';
+    begin
+      Result := Trim(DecodeEntities(TJSONString(fv).Value));
+      if not IsUsableText(Result) then
+        Result := '';
+    end;
+  end;
+
+  procedure AddPerson(o: TJSONObject);
+  var
+    p, q: TMetabibPerson;
+  begin
+    p.LastName := CleanName(o, 'last_name');
+    p.FirstName := CleanName(o, 'first_name');
+    p.MiddleName := CleanName(o, 'middle_name');
+    p.NickName := CleanName(o, 'nick_name');
+    if (p.LastName = '') and (p.FirstName = '') and (p.NickName = '') then
+      Exit;
+
+    for q in list do
+      if SameText(q.LastName, p.LastName) and SameText(q.FirstName, p.FirstName) and
+        SameText(q.MiddleName, p.MiddleName) and SameText(q.NickName, p.NickName) then
+        Exit;
+
+    list.Add(p);
   end;
 
 begin
   list := TList<TMetabibPerson>.Create;
   try
-    for v in ClaimValues(Group, Field) do
-      if v is TJSONObject then
+    for claim in ClaimsInOrder(Group, Field, Order) do
+    begin
+      v := claim.Values['value'];
+      if v is TJSONArray then
       begin
-        o := TJSONObject(v);
-        p.LastName := S('last_name');
-        p.FirstName := S('first_name');
-        p.MiddleName := S('middle_name');
-        p.NickName := S('nick_name');
-        if (p.LastName <> '') or (p.FirstName <> '') or (p.NickName <> '') then
-          list.Add(p);
-      end;
+        for el in TJSONArray(v) do
+          if el is TJSONObject then
+            AddPerson(TJSONObject(el));
+      end
+      else if v is TJSONObject then
+        AddPerson(TJSONObject(v));
+
+      if list.Count > 0 then
+        Break;
+    end;
     Result := list.ToArray;
   finally
     list.Free;
@@ -375,6 +510,52 @@ begin
     Result := StrToInt64Def(Trim(TJSONString(v).Value), 0)
   else
     Result := 0;
+end;
+
+// The first sequence with a usable name, sources tried in Order. The number is
+// a plain JSON number in older dumps and {"value": n} in the database claims of
+// metabib 2.1.0; reading only the former lost every database series number.
+procedure ClaimSequence(Group: TJSONObject; const Order: array of string;
+  out Name: string; out Number: Integer);
+var
+  claim: TJSONObject;
+  v, el: TJSONValue;
+
+  function TryTake(Item: TJSONValue): Boolean;
+  var
+    nv: TJSONValue;
+  begin
+    Result := False;
+    if not (Item is TJSONObject) then
+      Exit;
+    Name := Trim(StrValue(TJSONObject(Item), 'name'));
+    if not IsUsableText(Name) then
+    begin
+      Name := '';
+      Exit;
+    end;
+    nv := TJSONObject(Item).Values['number'];
+    if nv is TJSONObject then
+      nv := TJSONObject(nv).Values['value'];
+    Number := Integer(JSONToInt64(nv));
+    Result := True;
+  end;
+
+begin
+  Name := '';
+  Number := 0;
+  for claim in ClaimsInOrder(Group, 'sequences', Order) do
+  begin
+    v := claim.Values['value'];
+    if v is TJSONArray then
+    begin
+      for el in TJSONArray(v) do
+        if TryTake(el) then
+          Exit;
+    end
+    else if TryTake(v) then
+      Exit;
+  end;
 end;
 
 // Catalog book id from identities.catalog[] for one observation. The scheme is
@@ -682,7 +863,6 @@ var
   Artifacts, Occurrences: TJSONArray;
   vArt, vOcc: TJSONValue;
   Occ, Chosen, FirstOcc: TJSONObject;
-  Seqs: TArray<TJSONValue>;
   StampStr, LibName: string;
   dt: TDateTime;
 begin
@@ -761,22 +941,17 @@ begin
     Pub := ObjValue(Claims, 'publication');
     Cat := ObjValue(Claims, 'catalog');
 
-    Book.Title := FirstClaimString(Bib, 'title');
+    Book.Title := ClaimStringByObservation(Bib, 'title', CATALOG_SOURCES);
     Book.BookName := FirstClaimString(Pub, 'book_name');
-    Book.Authors := ClaimPersons(Bib, 'authors');
-    Book.Translators := ClaimPersons(Bib, 'translators');
+    Book.Authors := ClaimPersons(Bib, 'authors', CATALOG_SOURCES);
+    Book.Translators := ClaimPersons(Bib, 'translators', CATALOG_SOURCES);
     Book.Genres := ClaimStrings(Bib, 'genres');
     Book.Lang := FirstClaimString(Bib, 'language');
     Book.Annotation := ClaimStringByObservation(Bib, 'annotation',
       ANNOTATION_SOURCES);
     Book.Keywords := FirstClaimString(Bib, 'keywords');
 
-    Seqs := ClaimValues(Bib, 'sequences');
-    if (Length(Seqs) > 0) and (Seqs[0] is TJSONObject) then
-    begin
-      Book.SeriesName := StrValue(TJSONObject(Seqs[0]), 'name');
-      Book.SeriesNo := IntValue(TJSONObject(Seqs[0]), 'number', 0);
-    end;
+    ClaimSequence(Bib, CATALOG_SOURCES, Book.SeriesName, Book.SeriesNo);
 
     Book.Publisher := FirstClaimString(Pub, 'publisher');
     Book.City := FirstClaimString(Pub, 'city');

@@ -73,7 +73,7 @@ resourcestring
 procedure TImportMetabibThreadBase.MapBook(const MB: TMetabibBook; var R: TBookRecord);
 var
   i: Integer;
-  s: string;
+  s, t: string;
 begin
   R.Clear;
 
@@ -82,8 +82,11 @@ begin
     R.Title := MB.BookName;
 
   for i := 0 to High(MB.Authors) do
-    TAuthorsHelper.Add(R.Authors, MB.Authors[i].LastName, MB.Authors[i].FirstName,
-      MB.Authors[i].MiddleName);
+    if (MB.Authors[i].LastName = '') and (MB.Authors[i].FirstName = '') then
+      TAuthorsHelper.Add(R.Authors, MB.Authors[i].NickName, '', '') // лише псевдонім
+    else
+      TAuthorsHelper.Add(R.Authors, MB.Authors[i].LastName, MB.Authors[i].FirstName,
+        MB.Authors[i].MiddleName);
 
   for i := 0 to High(MB.Genres) do
     if FGenresType = gtFb2 then
@@ -119,10 +122,13 @@ begin
   s := '';
   for i := 0 to High(MB.Translators) do
   begin
+    t := Trim(MB.Translators[i].LastName + ' ' + MB.Translators[i].FirstName +
+      ' ' + MB.Translators[i].MiddleName);
+    if t = '' then
+      t := MB.Translators[i].NickName;
     if s <> '' then
       s := s + ', ';
-    s := s + Trim(MB.Translators[i].LastName + ' ' + MB.Translators[i].FirstName +
-      ' ' + MB.Translators[i].MiddleName);
+    s := s + t;
   end;
   R.Translators := s;
   R.Publisher := MB.Publisher;
