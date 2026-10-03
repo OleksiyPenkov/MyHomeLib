@@ -62,11 +62,13 @@ function idRecord(extra) {
 
 let caseNo = 0;
 
-function run(rec) {
+// Runs any number of lines (records, or raw strings for malformed input)
+// through the harness and returns the whole report.
+function runReport(lines) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), `mbtest${caseNo++}-`));
   const data = path.join(dir, 'dataset.jsonl');
-  fs.writeFileSync(data,
-    JSON.stringify(HEADER) + '\n' + JSON.stringify(rec) + '\n', 'utf8');
+  const body = lines.map((l) => (typeof l === 'string' ? l : JSON.stringify(l))).join('\n');
+  fs.writeFileSync(data, JSON.stringify(HEADER) + '\n' + body + '\n', 'utf8');
   const report = path.join(dir, 'report.json');
   const r = spawnSync(EXE, [data, report], { encoding: 'utf8' });
   if (r.status !== 0) {
@@ -74,6 +76,11 @@ function run(rec) {
   }
   const out = JSON.parse(fs.readFileSync(report, 'utf8').replace(/^﻿/, ''));
   if (out.error) throw new Error('reader error: ' + out.error);
+  return out;
+}
+
+function run(rec) {
+  const out = runReport([rec]);
   if (!out.books || out.books.length !== 1) {
     throw new Error('expected exactly 1 book, got ' + (out.books || []).length);
   }
@@ -258,6 +265,47 @@ const checks = [
     }));
     return b.title === 'Проба' && b.lang === 'uk'
       && b.publisher === 'Вид' && b.isbn === '978-0' && b.deleted === false;
+  }],
+
+  // A database series claim stores its number as {"value": n}, and n is not
+  // always an integer: 28.6 occurs in a real Flibusta dump. TJSONNumber.AsInt64
+  // is StrToInt64, so reading it raised "'28.6' is not a valid integer value",
+  // and that exception aborted a whole 705,399-record import.
+  ['a fractional database series number is truncated, not an error', () => {
+    const b = run(record(bib({
+      sequences: [{ value: { name: 'Хроніки', number: { value: 28.6 } }, observation: 'db' }],
+    })));
+    return b.series === 'Хроніки' && b.series_no === 28;
+  }],
+
+  ['a fractional series number in a string is truncated too', () => {
+    const b = run(record(bib({
+      sequences: [{ value: { name: 'Хроніки', number: '28.6' } }],
+    })));
+    return b.series === 'Хроніки' && b.series_no === 28;
+  }],
+
+  ['a fractional year does not abort the record', () => {
+    const b = run(record({
+      bibliographic: { title: [{ value: 'Проба' }] },
+      publication: { year: [{ value: 2005.5 }] },
+    }));
+    return b.pub_year === 2005;
+  }],
+
+  ['a fractional deleted flag is read as zero', () => {
+    const b = run(record({
+      bibliographic: { title: [{ value: 'Проба' }] },
+      catalog: { deleted: [{ value: 0.5 }] },
+    }));
+    return b.deleted === false;
+  }],
+
+  // The risk is not the bad record itself but the run around it: one
+  // unparseable line must cost that line only, not the lines after it.
+  ['a malformed line is skipped, not fatal', () => {
+    const out = runReport([record({}), '{ "schema": "metabib.dataset', record({})]);
+    return out.books.length === 2 && out.bad_lines === 1;
   }],
 ];
 

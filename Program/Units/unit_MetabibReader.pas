@@ -81,6 +81,9 @@ type
     constructor Create(const FileName: string);
     destructor Destroy; override;
 
+    // Розбирає один запис. mrBadLine - рядок не є записом metabib. На
+    // структурно зіпсованому записі функція може кинути виняток: споживач
+    // зобов'язаний пропустити такий рядок, а не обривати імпорт.
     function ReadNext(out Book: TMetabibBook): TMetabibReadResult;
     function ArchiveName(const ArchiveID: string): string;
 
@@ -175,6 +178,30 @@ begin
     if ch.IsLetterOrDigit or ch.IsSurrogate then
       Exit(True);
   Result := False;
+end;
+
+// A numeric field is read without raising. metabib can put a fractional number
+// where an integer belongs ("number": {"value": 28.6} in a database series
+// claim), and TJSONNumber.AsInt64 is StrToInt64, so it raised EConvertError
+// ("'28.6' is not a valid integer value"); that exception escaped the import
+// loop and rolled a whole transaction back. The literal text is parsed with
+// invariant settings and truncated; anything unusable -- a magnitude that does
+// not fit into Int64, junk -- yields Def.
+function ToInt64(const Text: string; Def: Int64): Int64;
+var
+  s: string;
+  d: Double;
+begin
+  Result := Def;
+  s := Trim(Text);
+  if s = '' then
+    Exit;
+  if TryStrToInt64(s, Result) then
+    Exit;
+  if TryStrToFloat(s, d, TFormatSettings.Invariant) and (Abs(d) < 9.2E18) then
+    Result := Trunc(d)
+  else
+    Result := Def;
 end;
 
 // Decodes the HTML entities that leak into names from the library database
@@ -327,12 +354,18 @@ var
   v: TJSONValue;
   s: string;
   i: Integer;
+  i64: Int64;
 begin
   Result := Def;
   for v in ClaimValues(Group, Field) do
   begin
     if v is TJSONNumber then
-      Exit(TJSONNumber(v).AsInt);
+    begin
+      i64 := ToInt64(TJSONNumber(v).Value, Def);
+      if (i64 < Low(Integer)) or (i64 > High(Integer)) then
+        i64 := Def;
+      Exit(Integer(i64));
+    end;
     if v is TJSONString then
     begin
       // рік інколи приходить рядком на кшталт "2005" чи "2005-2006"
@@ -356,7 +389,7 @@ begin
     if v is TJSONBool then
       Exit(TJSONBool(v).AsBoolean);
     if v is TJSONNumber then
-      Exit(TJSONNumber(v).AsInt <> 0);
+      Exit(ToInt64(TJSONNumber(v).Value, 0) <> 0);
     // Same rule as FirstClaimString: an empty string is a source with nothing
     // to say, not a claim that the flag is False.
     if (v is TJSONString) and (Trim(TJSONString(v).Value) <> '') then
@@ -367,14 +400,16 @@ end;
 function FirstClaimFloat(Group: TJSONObject; const Field, SubField: string): Double;
 var
   v, sub: TJSONValue;
+  d: Double;
 begin
   Result := 0;
   for v in ClaimValues(Group, Field) do
     if v is TJSONObject then
     begin
       sub := TJSONObject(v).Values[SubField];
-      if sub is TJSONNumber then
-        Exit(TJSONNumber(sub).AsDouble);
+      if (sub is TJSONNumber) and
+        TryStrToFloat(TJSONNumber(sub).Value, d, TFormatSettings.Invariant) then
+        Exit(d);
     end;
 end;
 
@@ -499,15 +534,15 @@ begin
     Exit;
   v := Parent.Values[Name];
   if v is TJSONNumber then
-    Result := TJSONNumber(v).AsInt64;
+    Result := ToInt64(TJSONNumber(v).Value, Def);
 end;
 
 function JSONToInt64(v: TJSONValue): Int64;
 begin
   if v is TJSONNumber then
-    Result := TJSONNumber(v).AsInt64
+    Result := ToInt64(TJSONNumber(v).Value, 0)
   else if v is TJSONString then
-    Result := StrToInt64Def(Trim(TJSONString(v).Value), 0)
+    Result := ToInt64(TJSONString(v).Value, 0)
   else
     Result := 0;
 end;

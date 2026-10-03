@@ -151,6 +151,8 @@ var
   ArcName: string;
   idx, added, skippedNoFile, badLines: Integer;
   Skip: Boolean;
+  Res: TMetabibReadResult;
+  ParseError: string;
 begin
   SetProgress(0);
   collectionCode := BookCollection.CollectionCode;
@@ -176,14 +178,27 @@ begin
 
     while True do
     begin
-      case Reader.ReadNext(MB) of
+      // Один зіпсований запис у сторонньому каталозі не сміє зірвати весь
+      // імпорт: раніше виняток з розбору вилітав з Import і відкочував усю
+      // транзакцію. Такий рядок іде шляхом mrBadLine - пропущений і полічений.
+      Res := mrBadLine;
+      ParseError := '';
+      try
+        Res := Reader.ReadNext(MB);
+      except
+        on E: Exception do
+          ParseError := ' ' + E.Message;
+      end;
+
+      case Res of
         mrEof:
           Break;
 
         mrBadLine:
           begin
             Inc(badLines);
-            Teletype(Format(rstrMbBadLine, [Cardinal(Reader.LineNo)]), tsError);
+            Teletype(Format(rstrMbBadLine, [Cardinal(Reader.LineNo)]) +
+              ParseError, tsError);
           end;
 
         mrOk:
