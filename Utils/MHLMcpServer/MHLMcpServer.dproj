@@ -2,7 +2,7 @@
     <PropertyGroup>
         <ProjectGuid>{046A6570-31BF-46CA-8769-A9401BA60CAC}</ProjectGuid>
         <MainSource>MHLMcpServer.dpr</MainSource>
-        <ProjectVersion>20.3</ProjectVersion>
+        <ProjectVersion>20.4</ProjectVersion>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
@@ -14,16 +14,6 @@
     <PropertyGroup Condition="'$(Config)'=='Base' or '$(Base)'!=''">
         <Base>true</Base>
     </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
-        <Cfg_1>true</Cfg_1>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
-        <Cfg_2>true</Cfg_2>
-        <CfgParent>Base</CfgParent>
-        <Base>true</Base>
-    </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win32' and '$(Base)'=='true') or '$(Base_Win32)'!=''">
         <Base_Win32>true</Base_Win32>
         <CfgParent>Base</CfgParent>
@@ -31,6 +21,16 @@
     </PropertyGroup>
     <PropertyGroup Condition="('$(Platform)'=='Win64' and '$(Base)'=='true') or '$(Base_Win64)'!=''">
         <Base_Win64>true</Base_Win64>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Release' or '$(Cfg_1)'!=''">
+        <Cfg_1>true</Cfg_1>
+        <CfgParent>Base</CfgParent>
+        <Base>true</Base>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Config)'=='Debug' or '$(Cfg_2)'!=''">
+        <Cfg_2>true</Cfg_2>
         <CfgParent>Base</CfgParent>
         <Base>true</Base>
     </PropertyGroup>
@@ -65,16 +65,18 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
+        <DCCReference Include="..\..\Program\DataModules\dm_user.pas">
+            <Form>DMUser</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <DCCReference Include="unit_MCP_Transport.pas"/>
         <DCCReference Include="unit_MCP_Protocol.pas"/>
-        <DCCReference Include="unit_MCP_Json.pas"/>
         <DCCReference Include="unit_MCP_Tools_Library.pas"/>
         <DCCReference Include="unit_MCP_Tools_Text.pas"/>
         <DCCReference Include="unit_MCP_Fb2Extract.pas"/>
         <DCCReference Include="unit_MCP_TextCache.pas"/>
         <DCCReference Include="unit_MCP_CacheSelfTest.pas"/>
         <DCCReference Include="unit_MCP_Fixture.pas"/>
-        <DCCReference Include="..\..\Program\DataModules\dm_user.pas"/>
         <RcCompile Include="MHLMcpServer_SQL.rc">
             <Form>MHLMcpServer_SQL.res</Form>
         </RcCompile>

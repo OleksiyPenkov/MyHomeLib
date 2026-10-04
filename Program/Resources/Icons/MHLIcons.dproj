@@ -2,10 +2,10 @@
     <PropertyGroup>
         <ProjectGuid>{7C4F1A62-9D3B-4E58-B0A7-5F2C8E14D6A9}</ProjectGuid>
         <MainSource>MHLIcons.dpr</MainSource>
-        <ProjectVersion>20.3</ProjectVersion>
+        <ProjectVersion>20.4</ProjectVersion>
         <Base>True</Base>
         <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Win32</Platform>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Library</AppType>
         <GenDll>true</GenDll>

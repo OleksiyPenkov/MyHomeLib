@@ -5,7 +5,7 @@
         <DCC_DCCCompiler>DCC32</DCC_DCCCompiler>
         <DCC_DependencyCheckOutputName>Release\Bin\MyhomeLib.exe</DCC_DependencyCheckOutputName>
         <MainSource>MyHomeLib.dpr</MainSource>
-        <ProjectVersion>20.3</ProjectVersion>
+        <ProjectVersion>20.4</ProjectVersion>
         <Config Condition="'$(Config)'==''">Release</Config>
         <Base>True</Base>
         <AppType>Application</AppType>
@@ -83,6 +83,7 @@
         </DCCReference>
         <DCCReference Include="ImportImpl\unit_ImportFB2ThreadBase.pas"/>
         <DCCReference Include="ImportImpl\unit_ImportInpxThread.pas"/>
+        <DCCReference Include="ImportImpl\unit_ImportMetabibThread.pas"/>
         <DCCReference Include="ImportImpl\unit_Export.pas"/>
         <DCCReference Include="ImportImpl\frm_ExportProgressForm.pas">
             <Form>ExportProgressForm</Form>
@@ -192,10 +193,14 @@
         <DCCReference Include="Units\unit_SearchPresets.pas"/>
         <DCCReference Include="Units\unit_UserData.pas"/>
         <DCCReference Include="Units\unit_xmlUtils.pas"/>
+        <DCCReference Include="Units\unit_ZstdStream.pas"/>
+        <DCCReference Include="Units\unit_MetabibReader.pas"/>
         <DCCReference Include="Forms\Editors\frm_EditGroup.pas">
             <Form>frmEditGroup</Form>
         </DCCReference>
         <DCCReference Include="Units\unit_Logger.pas"/>
+        <DCCReference Include="Units\unit_Localization.pas"/>
+        <DCCReference Include="Units\unit_LangSignature.pas"/>
         <DCCReference Include="Units\unit_Interfaces.pas"/>
         <DCCReference Include="DAO\SQLite\Lib\SQLite3.pas"/>
         <DCCReference Include="DAO\SQLite\Lib\SQLite3UDF.pas"/>
@@ -368,7 +373,7 @@
         <VerInfo_Build>837</VerInfo_Build>
         <DCC_ExeOutput>Out\Bin\</DCC_ExeOutput>
         <DCC_DcuOutput>Out\Units\</DCC_DcuOutput>
-        <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.1\Lib\RX13\Win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.3\Lib\RX13\Win32;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_ResourcePath>..\Components\MHLComponents;$(DCC_ResourcePath)</DCC_ResourcePath>
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
         <VerInfo_Locale>1033</VerInfo_Locale>
@@ -379,7 +384,7 @@
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
-        <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.1\Lib\RX13\Win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>..\Components\MHLComponents\Out\Units;..\Components\MHLComponents;$(BDSCOMMONDIR)\CatalogRepository\BonusKSVC\8.0.3\Lib\RX13\Win64;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <DCC_ResourcePath>..\Components\MHLComponents;$(DCC_ResourcePath)</DCC_ResourcePath>
         <DCC_Namespace>System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
@@ -541,7 +546,6 @@ call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(
             </Platforms>
             <Deployment Version="5">
                 <DeployFile LocalName="Release\Bin\MyHomeLib.exe" Configuration="Release" Class="ProjectOutput"/>
-                <DeployFile LocalName="Resources\Images\splashScreen9.png" Configuration="Release" Class="UWP_DelphiLogo44"/>
                 <DeployFile LocalName="Resources\Images\splashScreen9.png" Configuration="Release" Class="UWP_DelphiLogo44"/>
                 <DeployClass Name="AdditionalDebugSymbols">
                     <Platform Name="iOSSimulator">
@@ -1200,6 +1204,9 @@ call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(
                     <Platform Name="Win64x">
                         <Operation>1</Operation>
                     </Platform>
+                    <Platform Name="WinARM64EC">
+                        <Operation>1</Operation>
+                    </Platform>
                 </DeployClass>
                 <DeployClass Name="ProjectiOSDeviceDebug">
                     <Platform Name="iOSDevice32">
@@ -1270,6 +1277,10 @@ call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(
                         <RemoteDir>Assets</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
+                    <Platform Name="WinARM64EC">
+                        <RemoteDir>Assets</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
                 </DeployClass>
                 <DeployClass Name="UWP_DelphiLogo44">
                     <Platform Name="Win32">
@@ -1277,6 +1288,10 @@ call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(
                         <Operation>1</Operation>
                     </Platform>
                     <Platform Name="Win64">
+                        <RemoteDir>Assets</RemoteDir>
+                        <Operation>1</Operation>
+                    </Platform>
+                    <Platform Name="WinARM64EC">
                         <RemoteDir>Assets</RemoteDir>
                         <Operation>1</Operation>
                     </Platform>
@@ -1494,6 +1509,7 @@ call &quot;$(PROJECTDIR)\copy_icons.cmd&quot; &quot;$(OUTPUTDIR).&quot; &quot;$(
                 <ProjectRoot Platform="Win32" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64" Name="$(PROJECTNAME)"/>
                 <ProjectRoot Platform="Win64x" Name="$(PROJECTNAME)"/>
+                <ProjectRoot Platform="WinARM64EC" Name="$(PROJECTNAME)"/>
             </Deployment>
         </BorlandProject>
         <ProjectFileVersion>12</ProjectFileVersion>
