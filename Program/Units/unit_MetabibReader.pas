@@ -29,8 +29,17 @@ type
     NickName: string;
   end;
 
+  TMetabibGenre = record
+    Code: string;
+    Description: string;
+    Category: string;
+    Catalog: Boolean;
+  end;
+
   TMetabibBook = record
     BookID: Int64;
+    BookIDValid: Boolean;
+    LibraryName: string;
     LocatorKind: string;
     HasArtifact: Boolean;
     ArchiveID: string;
@@ -41,7 +50,7 @@ type
     BookName: string;
     Authors: TArray<TMetabibPerson>;
     Translators: TArray<TMetabibPerson>;
-    Genres: TArray<string>;
+    Genres: TArray<TMetabibGenre>;
     SeriesName: string;
     SeriesNo: Integer;
     Lang: string;
@@ -381,11 +390,24 @@ end;
 
 function FirstClaimBool(Group: TJSONObject; const Field: string): Boolean;
 var
-  v: TJSONValue;
+  v, state: TJSONValue;
 begin
   Result := False;
   for v in ClaimValues(Group, Field) do
   begin
+    // Normalized catalog flags carry a semantic state, not a JSON boolean.
+    if v is TJSONObject then
+    begin
+      state := TJSONObject(v).Values['state'];
+      if state is TJSONString then
+      begin
+        if SameText(TJSONString(state).Value, 'deleted') then
+          Exit(True);
+        if SameText(TJSONString(state).Value, 'active') then
+          Exit(False);
+      end;
+      Continue;
+    end;
     if v is TJSONBool then
       Exit(TJSONBool(v).AsBoolean);
     if v is TJSONNumber then
@@ -485,16 +507,67 @@ begin
   end;
 end;
 
-function ClaimStrings(Group: TJSONObject; const Field: string): TArray<string>;
+// Keep the first usable source list, as for authors. Database claims carry
+// curated genre definitions; FB2, FBD and legacy claims must not create them.
+function ClaimGenres(Group: TJSONObject; const Field: string): TArray<TMetabibGenre>;
 var
-  v: TJSONValue;
-  list: TList<string>;
+  claim: TJSONObject;
+  v, el, obs: TJSONValue;
+  list: TList<TMetabibGenre>;
+  catalog: Boolean;
+
+  function GenreText(o: TJSONObject; const Name: string): string;
+  var
+    fv: TJSONValue;
+  begin
+    Result := '';
+    fv := o.Values[Name];
+    if fv is TJSONString then
+      Result := TJSONString(fv).Value;
+  end;
+
+  procedure AddGenre(Value: TJSONValue);
+  var
+    genre, previous: TMetabibGenre;
+  begin
+    genre.Code := '';
+    genre.Description := '';
+    genre.Category := '';
+    genre.Catalog := catalog;
+    if Value is TJSONString then
+      genre.Code := TJSONString(Value).Value
+    else if Value is TJSONObject then
+    begin
+      genre.Code := GenreText(TJSONObject(Value), 'code');
+      genre.Description := GenreText(TJSONObject(Value), 'description');
+      genre.Category := GenreText(TJSONObject(Value), 'meta');
+    end;
+    if not IsUsableText(genre.Code) then
+      Exit;
+    for previous in list do
+      if previous.Code = genre.Code then
+        Exit;
+    list.Add(genre);
+  end;
+
 begin
-  list := TList<string>.Create;
+  list := TList<TMetabibGenre>.Create;
   try
-    for v in ClaimValues(Group, Field) do
-      if (v is TJSONString) and (TJSONString(v).Value <> '') then
-        list.Add(TJSONString(v).Value);
+    for claim in ClaimsInOrder(Group, Field, CATALOG_SOURCES) do
+    begin
+      obs := claim.Values['observation'];
+      catalog := (obs is TJSONString) and SameText(TJSONString(obs).Value, 'db');
+      v := claim.Values['value'];
+      if v is TJSONArray then
+      begin
+        for el in TJSONArray(v) do
+          AddGenre(el);
+      end
+      else
+        AddGenre(v);
+      if list.Count > 0 then
+        Break;
+    end;
     Result := list.ToArray;
   finally
     list.Free;
@@ -593,14 +666,41 @@ begin
   end;
 end;
 
-// Catalog book id from identities.catalog[] for one observation. The scheme is
-// "<library>.book" -- "flibusta.book" in real dumps.
-function CatalogIdentity(Obj: TJSONObject; const Scheme, Observation: string): Int64;
+// Identity parsing is deliberately stricter than year/series parsing. Never
+// truncate a fractional ID or fall back past a malformed preferred candidate.
+function TryBookID(Value: TJSONValue; out BookID: Int64): Boolean;
+var
+  Text: string;
+  Ch: Char;
+begin
+  BookID := 0;
+  Result := False;
+  if Value is TJSONNumber then
+    Text := TJSONNumber(Value).Value
+  else if Value is TJSONString then
+    Text := TJSONString(Value).Value
+  else
+    Exit;
+  if Text = '' then
+    Exit;
+  for Ch in Text do
+    if not CharInSet(Ch, ['0' .. '9']) then
+      Exit;
+  if TryStrToInt64(Text, BookID) and (BookID > 0) then
+    Result := True
+  else
+    BookID := 0;
+end;
+
+// The first matching identity is authoritative, even when its value is bad.
+function CatalogIdentity(Obj: TJSONObject; const Scheme, Observation: string;
+  out Value: TJSONValue): Boolean;
 var
   item: TJSONValue;
   id: TJSONObject;
 begin
-  Result := 0;
+  Result := False;
+  Value := nil;
   id := ObjValue(Obj, 'identities');
   if not Assigned(id) or not (id.Values['catalog'] is TJSONArray) then
     Exit;
@@ -609,18 +709,19 @@ begin
       SameText(StrValue(TJSONObject(item), 'scheme'), Scheme) and
       SameText(StrValue(TJSONObject(item), 'observation'), Observation) then
     begin
-      Result := JSONToInt64(TJSONObject(item).Values['value']);
-      if Result > 0 then
-        Exit;
+      Value := TJSONObject(item).Values['value'];
+      Exit(True);
     end;
 end;
 
-function PresentObservationBookID(Obj: TJSONObject; const Observation: string): Int64;
+function PresentObservationBookID(Obj: TJSONObject; const Observation: string;
+  out Value: TJSONValue): Boolean;
 var
   item: TJSONValue;
   o, loc: TJSONObject;
 begin
-  Result := 0;
+  Result := False;
+  Value := nil;
   if not (Obj.Values['observations'] is TJSONArray) then
     Exit;
   for item in TJSONArray(Obj.Values['observations']) do
@@ -632,34 +733,47 @@ begin
       begin
         loc := ObjValue(o, 'locator');
         if Assigned(loc) then
-          Result := JSONToInt64(loc.Values['book_id']);
-        if Result > 0 then
-          Exit;
+        begin
+          Value := loc.Values['book_id'];
+          if Assigned(Value) then
+            Exit(True);
+        end;
       end;
     end;
 end;
 
-// Only a "database_book" locator carries book_id. Since metabib 2.1.0 an
-// "archive_entry" locator is a physical position (source + index) and the id
-// lives in identities.catalog. The preference is spelled out rather than taken
-// from array order: the database id is authoritative, the archive one is merely
-// guessed from a numeric entry name and may disagree with the database match.
-function ResolveBookID(Obj, Locator: TJSONObject; const LibraryName: string): Int64;
+// Missing fields can use a fallback. Present malformed IDs cannot: a repair
+// must reject them rather than link source data to a different book.
+function ResolveBookID(Obj, Locator: TJSONObject; const LibraryName: string;
+  out Valid: Boolean): Int64;
 var
   Scheme: string;
+  Value: TJSONValue;
 begin
-  Result := IntValue(Locator, 'book_id', 0);
-  if Result > 0 then
+  Result := 0;
+  Valid := False;
+  Value := nil;
+  if Assigned(Locator) then
+    Value := Locator.Values['book_id'];
+  if Assigned(Value) then
+  begin
+    Valid := TryBookID(Value, Result);
     Exit;
+  end;
 
   Scheme := LibraryName + '.book';
-  Result := CatalogIdentity(Obj, Scheme, 'db');
-  if Result > 0 then
+  if CatalogIdentity(Obj, Scheme, 'db', Value) then
+  begin
+    Valid := TryBookID(Value, Result);
     Exit;
-  Result := PresentObservationBookID(Obj, 'db');
-  if Result > 0 then
+  end;
+  if PresentObservationBookID(Obj, 'db', Value) then
+  begin
+    Valid := TryBookID(Value, Result);
     Exit;
-  Result := CatalogIdentity(Obj, Scheme, 'archive');
+  end;
+  if CatalogIdentity(Obj, Scheme, 'archive', Value) then
+    Valid := TryBookID(Value, Result);
 end;
 
 { TMetabibReader }
@@ -922,9 +1036,12 @@ begin
     Locator := ObjValue(RecObj, 'locator');
     Book.LocatorKind := StrValue(Locator, 'kind');
     LibName := StrValue(RecObj, 'library');
-    if LibName = '' then
+    if not Assigned(RecObj) then
+      LibName := FLibraryName
+    else if not Assigned(RecObj.Values['library']) then
       LibName := FLibraryName;
-    Book.BookID := ResolveBookID(Obj, Locator, LibName);
+    Book.LibraryName := LibName;
+    Book.BookID := ResolveBookID(Obj, Locator, LibName, Book.BookIDValid);
 
     // ------ артефакт: віддаємо перевагу входженню, на яке вказує локатор
     Chosen := nil;
@@ -980,7 +1097,7 @@ begin
     Book.BookName := FirstClaimString(Pub, 'book_name');
     Book.Authors := ClaimPersons(Bib, 'authors', CATALOG_SOURCES);
     Book.Translators := ClaimPersons(Bib, 'translators', CATALOG_SOURCES);
-    Book.Genres := ClaimStrings(Bib, 'genres');
+    Book.Genres := ClaimGenres(Bib, 'genres');
     Book.Lang := FirstClaimString(Bib, 'language');
     Book.Annotation := ClaimStringByObservation(Bib, 'annotation',
       ANNOTATION_SOURCES);

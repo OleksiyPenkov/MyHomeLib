@@ -25,9 +25,15 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 
 - Multiple collections at once, with instant switching between them.
 - Collection types: local or network, your own or an attached external library, FB2 or non-FB2.
-- New Collection wizard: an empty collection, one built from an INPX file, or an existing `.hlc2` file attached.
+- New Collection wizard: an empty collection, one built from INPX or a metabib JSONL dataset (`.jsonl`, `.jsonl.zst`, `.jsonl.gz`, `.zip`), or an existing `.hlc2` file attached.
 - Collection updates from the network and by hand, folder/file synchronisation, database maintenance.
 - Copying books between FB2 collections, exporting a collection to INPX.
+
+Metabib imports prefer the catalogue's database genre claims. Missing genre definitions are added to that collection using their source descriptions and categories; arbitrary FB2 tags do not create new definitions. Existing genre codes and names stay unchanged, and automatic interface-language changes preserve imported definitions. Imports also preserve deletion states. If an earlier import lost genre assignments, import the dataset into a new collection; an application update does not repair stored metadata.
+
+Opening a collection loads the visible book list only. Other tabs load their lists on first use and keep them until a selection or filter changes. Saved language filters and book selections are restored when each tab loads.
+
+**Unsorted** is the last category in the genre tree. The first category is selected by default; Unsorted remains available for manual selection.
 
 **Books**
 
@@ -101,6 +107,8 @@ Swap `/p:Platform=Win64` for `/p:Platform=Win32` for the 32-bit build. Win64 is 
 > **Never run msbuild on `Program\MyhomeLib.dproj` directly.** It re-serialises the project file and moves the `CodeGear.Delphi.Targets` import above the config property groups, after which *every* subsequent build — the group build included — fails with `F2613 Unit 'SysUtils' not found`. The group project does not rewrite the file.
 
 **Build output:** `Program/OUT/Bin64/` and `Program/OUT/BIN/` (executables), `Program/OUT/Units/` (DCUs). The post-build event stages the help folder and `Resources\Icons\<platform>\MHLIcons.dll` next to the exe — every icon is loaded from that DLL at runtime.
+
+After a Win64 group build, run the native collection-view regressions with `powershell -NoProfile -ExecutionPolicy Bypass -File tools/ui/tests/run_tests.ps1`. They use temporary profiles and do not change your collections. The runner requires the same `BDS` and `BDSCOMMONDIR` environment variables as the group build.
 
 ## Repository layout
 

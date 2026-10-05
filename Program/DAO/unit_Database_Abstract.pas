@@ -68,6 +68,7 @@ type
 
   protected
     procedure InsertGenreIfMissing(const GenreData: TGenreData); virtual; abstract;
+    function EnsureGenre(const FB2Code, Alias, Category: string): TGenreData; virtual; abstract;
 
   public
     procedure VerifyCurrentCollection(const DatabaseID: Integer);
@@ -76,14 +77,23 @@ type
   protected type
     TGenreCache = class(TDictionary<string, TGenreData>)
     private
+      FByFB2Code: TDictionary<string, TGenreData>;
+      FRootsByAlias: TDictionary<string, TGenreData>;
+      FLastChildNumber: TDictionary<string, Int64>;
       function GetByFB2Code(const FB2Code: string): TGenreData;
       function GetItems(const Code: string): TGenreData; inline;
 
     public
       constructor Create;
+      destructor Destroy; override;
+
+      procedure Clear; override;
 
       procedure Add(const Genre: TGenreData); inline;
       function HasGenre(const Code: string): Boolean; inline;
+      function TryGetByFB2Code(const FB2Code: string; out Genre: TGenreData): Boolean; inline;
+      function TryGetRootByAlias(const Alias: string; out Genre: TGenreData): Boolean; inline;
+      function NextGenreCode(const ParentCode: string): string;
       function GetRootGenre(const Code: string): TGenreData;
       function GetRootGenreByFB2Code(const FB2Code: string): TGenreData;
 
@@ -329,11 +339,74 @@ end;
 constructor TBookCollection.TGenreCache.Create;
 begin
   inherited Create;
+  FByFB2Code := TDictionary<string, TGenreData>.Create;
+  FRootsByAlias := TDictionary<string, TGenreData>.Create;
+  FLastChildNumber := TDictionary<string, Int64>.Create;
+end;
+
+destructor TBookCollection.TGenreCache.Destroy;
+begin
+  FreeAndNil(FLastChildNumber);
+  FreeAndNil(FRootsByAlias);
+  FreeAndNil(FByFB2Code);
+  inherited Destroy;
+end;
+
+procedure TBookCollection.TGenreCache.Clear;
+begin
+  inherited Clear;
+  if Assigned(FByFB2Code) then
+    FByFB2Code.Clear;
+  if Assigned(FRootsByAlias) then
+    FRootsByAlias.Clear;
+  if Assigned(FLastChildNumber) then
+    FLastChildNumber.Clear;
 end;
 
 procedure TBookCollection.TGenreCache.Add(const Genre: TGenreData);
+var
+  P: Integer;
+  ChildNumber, LastNumber: Int64;
 begin
   inherited Add(Genre.GenreCode, Genre);
+  if (Genre.FB2GenreCode <> '') and not FByFB2Code.ContainsKey(Genre.FB2GenreCode) then
+    FByFB2Code.Add(Genre.FB2GenreCode, Genre);
+  if (Genre.ParentCode = '0') and (Genre.GenreCode <> UNKNOWN_GENRE_CODE) and
+    not FRootsByAlias.ContainsKey(Genre.GenreAlias) then
+    FRootsByAlias.Add(Genre.GenreAlias, Genre);
+
+  P := LastDelimiter('.', Genre.GenreCode);
+  if (P > 0) and (Copy(Genre.GenreCode, 1, P - 1) = Genre.ParentCode) and
+    TryStrToInt64(Copy(Genre.GenreCode, P + 1, MaxInt), ChildNumber) then
+  begin
+    if not FLastChildNumber.TryGetValue(Genre.ParentCode, LastNumber) or
+      (ChildNumber > LastNumber) then
+      FLastChildNumber.AddOrSetValue(Genre.ParentCode, ChildNumber);
+  end;
+end;
+
+function TBookCollection.TGenreCache.TryGetByFB2Code(const FB2Code: string;
+  out Genre: TGenreData): Boolean;
+begin
+  Result := FByFB2Code.TryGetValue(FB2Code, Genre);
+end;
+
+function TBookCollection.TGenreCache.TryGetRootByAlias(const Alias: string;
+  out Genre: TGenreData): Boolean;
+begin
+  Result := FRootsByAlias.TryGetValue(Alias, Genre);
+end;
+
+function TBookCollection.TGenreCache.NextGenreCode(const ParentCode: string): string;
+var
+  ChildNumber: Int64;
+begin
+  if not FLastChildNumber.TryGetValue(ParentCode, ChildNumber) then
+    ChildNumber := 0;
+  repeat
+    Inc(ChildNumber);
+    Result := ParentCode + '.' + IntToStr(ChildNumber);
+  until not ContainsKey(Result);
 end;
 
 function TBookCollection.TGenreCache.HasGenre(const Code: string): Boolean;
@@ -348,19 +421,9 @@ begin
 end;
 
 function TBookCollection.TGenreCache.GetByFB2Code(const FB2Code: string): TGenreData;
-var
-  Genre: TGenreData;
 begin
-  for Genre in Values do
-  begin
-    if FB2Code = Genre.FB2GenreCode then
-    begin
-      Result := Genre;
-      Exit;
-    end;
-  end;
-
-  Result.Clear;
+  if not TryGetByFB2Code(FB2Code, Result) then
+    Result.Clear;
 end;
 
 function TBookCollection.TGenreCache.GetRootGenre(const Code: string): TGenreData;

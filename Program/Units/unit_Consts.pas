@@ -322,6 +322,10 @@ const
   // were filled from the same file. Empty on collections created before this
   // property existed.
   PROP_GENRE_FILE         = PROP_CLASS_COLLECTION or PROP_TYPE_STRING   or $0016;
+
+  // True when curated source genres extend the bundled genre list.
+  PROP_SOURCE_GENRES      = PROP_CLASS_COLLECTION or PROP_TYPE_BOOLEAN  or $0017;
+  PROP_SOURCE_LIBRARY     = PROP_CLASS_COLLECTION or PROP_TYPE_STRING   or $0018;
 type
   TColumnSet = set of 0 .. 255;
 

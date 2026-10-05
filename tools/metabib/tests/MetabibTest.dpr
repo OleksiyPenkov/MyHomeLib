@@ -38,6 +38,8 @@ var
   Report: TJSONObject;
   Books: TJSONArray;
   Obj: TJSONObject;
+  Genres, GenreDetails: TJSONArray;
+  Genre: TMetabibGenre;
   Bad: Integer;
 begin
   if ParamCount < 2 then
@@ -63,6 +65,8 @@ begin
 
           Obj := TJSONObject.Create;
           Obj.AddPair('book_id', TJSONNumber.Create(Book.BookID));
+          Obj.AddPair('book_id_valid', TJSONBool.Create(Book.BookIDValid));
+          Obj.AddPair('library', Book.LibraryName);
           Obj.AddPair('title', Book.Title);
           Obj.AddPair('lang', Book.Lang);
           Obj.AddPair('annotation', Book.Annotation);
@@ -73,6 +77,19 @@ begin
           Obj.AddPair('deleted', TJSONBool.Create(Book.Deleted));
           Obj.AddPair('authors', PersonsJSON(Book.Authors));
           Obj.AddPair('translators', PersonsJSON(Book.Translators));
+          Genres := TJSONArray.Create;
+          GenreDetails := TJSONArray.Create;
+          for Genre in Book.Genres do
+          begin
+            Genres.Add(Genre.Code);
+            GenreDetails.AddElement(TJSONObject.Create
+              .AddPair('code', Genre.Code)
+              .AddPair('description', Genre.Description)
+              .AddPair('category', Genre.Category)
+              .AddPair('catalog', TJSONBool.Create(Genre.Catalog)));
+          end;
+          Obj.AddPair('genres', Genres);
+          Obj.AddPair('genre_details', GenreDetails);
           Obj.AddPair('series', Book.SeriesName);
           Obj.AddPair('series_no', TJSONNumber.Create(Book.SeriesNo));
           Books.AddElement(Obj);

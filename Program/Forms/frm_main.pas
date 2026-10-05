@@ -752,7 +752,11 @@ type
     FInvisible: Boolean;
     FTimerDone: Boolean;
     FIgnoreAuthorChange: Boolean;
-    FLangSelected: Boolean;
+    FViewLanguageSelected: array[TView] of Boolean;
+    FInitializingCollection: Boolean;
+    FPendingBookViews: set of TView;
+    FPendingLanguageFilters: set of TView;
+    FInitialLanguageFilters: array[TView] of Integer;
     FLocales: TArray<TLocaleInfo>;
 
     function IsSelectedBookNode(Node: PVirtualNode; Data: PBookRecord): Boolean;
@@ -941,6 +945,8 @@ type
     procedure FillBookIdList(const Tree: TBookTree; var BookIDList: TBookIdList; const Uncheck: Boolean = True);
     procedure ClearLabels(Tag: Integer; Full: Boolean);
     procedure FillAllBooksTree;
+    procedure LoadBookView(View: TView);
+    function SavedLanguageFilter(View: TView; Selector: TComboBox): Integer;
     function CheckLibUpdates(Auto: Boolean): Boolean;
     procedure SetInfoPanelHeight(Height: Integer);
     procedure SetInfoPanelVisible(State: Boolean);
@@ -1623,10 +1629,10 @@ begin
     FCollection.SetProperty(PROP_LAST_SERIES, FLastSeriesStr);
     FCollection.SetProperty(PROP_LAST_SERIES_BOOK, FLastSeriesBookID.BookID);
 
-    FCollection.SetProperty(PROP_BOOKS_LANG_FILTER, cbLangSelectA.ItemIndex);
-    FCollection.SetProperty(PROP_SERIES_LANG_FILTER, cbLangSelectS.ItemIndex);
-    FCollection.SetProperty(PROP_GENRES_LANG_FILTER, cbLangSelectG.ItemIndex);
-    FCollection.SetProperty(PROP_GROUPS_LANG_FILTER, cbLangSelectF.ItemIndex);
+    FCollection.SetProperty(PROP_BOOKS_LANG_FILTER, SavedLanguageFilter(AuthorsView, cbLangSelectA));
+    FCollection.SetProperty(PROP_SERIES_LANG_FILTER, SavedLanguageFilter(SeriesView, cbLangSelectS));
+    FCollection.SetProperty(PROP_GENRES_LANG_FILTER, SavedLanguageFilter(GenresView, cbLangSelectG));
+    FCollection.SetProperty(PROP_GROUPS_LANG_FILTER, SavedLanguageFilter(FavoritesView, cbLangSelectF));
   end;
 end;
 
@@ -1662,6 +1668,8 @@ begin
     FLastGroupBookID.Clear;
 
     FCollection := nil;
+    FPendingBookViews := [];
+    FPendingLanguageFilters := [];
   finally
     Screen.Cursor := FCursor;
   end;
@@ -1746,6 +1754,7 @@ procedure TfrmMain.SyncGenreLanguage;
 var
   Wanted: string;
   Current: string;
+  SourceGenres: Variant;
 begin
   Assert(Assigned(FCollection));
 
@@ -1754,6 +1763,12 @@ begin
   // own choice.
   if not isFB2Collection(FCollection.CollectionCode) then
     Exit;
+
+  // Imported catalogue definitions are collection data, not a bundled list.
+  SourceGenres := FCollection.GetProperty(PROP_SOURCE_GENRES);
+  if not VarIsEmpty(SourceGenres) and not VarIsNull(SourceGenres) then
+    if Boolean(SourceGenres) then
+      Exit;
 
   Wanted := ExtractFileName(Settings.SystemFileName[sfGenresFB2]);
   Current := VarToStr(FCollection.GetProperty(PROP_GENRE_FILE));
@@ -1782,37 +1797,19 @@ var
   Acount, Scount, GCount: integer;
   Button: TToolButton;
   FSA, FSS: string;
+  View: TView;
 
-  procedure FindLastBook(ID: integer; Tree: TBookTree);
-  var Node: PVirtualNode;
-      Data: PBookRecord;
-  begin
-    if ID = 0 then Exit;
-    
-    Node := Tree.GetFirst;
-    while Node <> Nil do
-    begin
-      Data := Tree.GetNodeData(Node);
-      if Data.BookKey.BookID = ID then
-      begin
-        Tree.ClearSelection;
-        Tree.Selected[Node] := True;
-        Tree.FocusedNode := Node;
-        Tree.ScrollIntoView(Node, True);
-        Break;
-      end;
-      Node := Tree.GetNext(Node);
-    end;
-  end;
 
-  procedure RestoreLangFilter(const Index: integer; LangComboBox: TComboBox);
+  procedure ResetLanguageSelector(Selector: TComboBox);
   begin
-    LangComboBox.ItemIndex := Index;
-    cbLangSelectAChange(LangComboBox);
+    Selector.Items.Clear;
+    Selector.Items.Add('-');
+    Selector.ItemIndex := 0;
   end;
 
 
 begin
+  FInitializingCollection := True;
   FIgnoreAuthorChange := True;
   SavedCursor := Screen.Cursor;
   Screen.Cursor := crHourGlass;
@@ -1887,6 +1884,19 @@ begin
 
     FCollection.GetStatistics(Acount, Scount, GCount);
 
+    FPendingBookViews := [AuthorsView, SeriesView, GenresView, FavoritesView];
+    FPendingLanguageFilters := FPendingBookViews;
+    FInitialLanguageFilters[AuthorsView] := FCollection.GetProperty(PROP_BOOKS_LANG_FILTER);
+    FInitialLanguageFilters[SeriesView] := FCollection.GetProperty(PROP_SERIES_LANG_FILTER);
+    FInitialLanguageFilters[GenresView] := FCollection.GetProperty(PROP_GENRES_LANG_FILTER);
+    FInitialLanguageFilters[FavoritesView] := FCollection.GetProperty(PROP_GROUPS_LANG_FILTER);
+    ResetLanguageSelector(cbLangSelectA);
+    ResetLanguageSelector(cbLangSelectS);
+    ResetLanguageSelector(cbLangSelectG);
+    ResetLanguageSelector(cbLangSelectF);
+    for View := Low(TView) to High(TView) do
+      FViewLanguageSelected[View] := False;
+
     FSA := FCollection.GetProperty(PROP_LAST_AUTHOR);
     if FSA = '' then
       if Acount > 500 then FSA := 'А' else FSA := '*';
@@ -1900,16 +1910,17 @@ begin
 
     FIgnoreAuthorChange := False;
     LocateAuthor(FSA);
+    if Assigned(tvAuthors.FocusedNode) then
+      tvAuthors.Selected[tvAuthors.FocusedNode] := True;
+    tvAuthorsChange(tvAuthors, tvAuthors.FocusedNode);
 
     Button := GetFilterButton(FSerieBars, Copy(FSS, 1, 1));
     InternalSetSeriesFilter(Button);
     LocateSeries(FSS);
+    if Assigned(tvSeries.FocusedNode) then
+      tvSeries.Selected[tvSeries.FocusedNode] := True;
+    tvSeriesChange(tvSeries, tvSeries.FocusedNode);
 
-    // поскольку убрали обязательный FillBooksTree, нужно принудительно чистить список книг в случе пустого списка авторов
-    // в противном случае FillBooksTree вызывалъся повторно
-
-    if tvAuthors.GetFirst = nil then tvAuthorsChange(tvAuthors, nil);
-     if tvSeries.GetFirst = nil then tvAuthorsChange(tvSeries, nil);
 
     //----------------------------------------------------------------------
 
@@ -1923,20 +1934,19 @@ begin
     UpdateActions;
     UpdateAllEditActions;
 
-    // ---- Recover laguage filters
-    RestoreLangFilter(FCollection.GetProperty(PROP_BOOKS_LANG_FILTER), cbLangSelectA);
-    RestoreLangFilter(FCollection.GetProperty(PROP_SERIES_LANG_FILTER), cbLangSelectS);
-    RestoreLangFilter(FCollection.GetProperty(PROP_GENRES_LANG_FILTER), cbLangSelectG);
-    RestoreLangFilter(FCollection.GetProperty(PROP_GROUPS_LANG_FILTER), cbLangSelectF);
-
+    FLastAuthorBookID := CreateBookKey(FCollection.GetProperty(PROP_LAST_AUTHOR_BOOK), FCollection.CollectionID);
+    FLastSeriesBookID := CreateBookKey(FCollection.GetProperty(PROP_LAST_SERIES_BOOK), FCollection.CollectionID);
+    FInitializingCollection := False;
+    LoadBookView(ActiveView);
     FInvisible := False;
-    FindLastBook(FCollection.GetProperty(PROP_LAST_AUTHOR_BOOK), tvBooksA);
-    FindLastBook(FCollection.GetProperty(PROP_LAST_SERIES_BOOK), tvBooksS);
 
-    // Every tree above was filled while FInvisible suppressed the handler.
+    // Focus changes during the initial list build were hidden from the panel.
     RefreshActiveBookInfo;
 
   finally
+    FInitializingCollection := False;
+    FIgnoreAuthorChange := False;
+    FInvisible := False;
     Screen.Cursor := SavedCursor;
   end;
 end;
@@ -1950,7 +1960,6 @@ var
   bookTree: TBookTree;
   bookData: PBookRecord;
   bookKey: TBookKey;
-  filterValue: TFilterValue;
   Button : TToolButton;
 begin
   Assert(Assigned(FCollection));
@@ -1990,9 +1999,8 @@ begin
 
 
     // Fill book tree and locate the book:
-    filterValue := SeriesBookFilter; // uses FLastSeriesID initialized earlier
     FLastSeriesBookID := bookKey;
-    FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
+    Include(FPendingBookViews, SeriesView);
 
     // Change page to Series:
     pgControl.ActivePageIndex := PAGE_SERIES;
@@ -2012,7 +2020,6 @@ var
   bookTree: TBookTree;
   bookData: PBookRecord;
   bookKey: TBookKey;
-  filterValue: TFilterValue;
 begin
   Assert(Assigned(FCollection));
 
@@ -2034,9 +2041,6 @@ begin
       InitCollection;
     end;
 
-    // Change page to Genres:
-    pgControl.ActivePageIndex := PAGE_GENRES;
-    pgControlChange(nil);
 
     // Locate the genre:
     genreCode := Link;
@@ -2057,9 +2061,10 @@ begin
     end;
 
     // Fill book tree and locate the book:
-    filterValue := GenreBookFilter; // uses FLastGenreCode initialized earlier
     FLastGenreBookID := bookKey;
-    FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @filterValue),  True,  True, @FLastGenreBookID);
+    Include(FPendingBookViews, GenresView);
+    pgControl.ActivePageIndex := PAGE_GENRES;
+    pgControlChange(nil);
   finally
     Screen.Cursor := savedCursor;
   end;
@@ -2544,7 +2549,7 @@ procedure TfrmMain.btnSwitchTreeModeClick(Sender: TObject);
 var
   SavedCursor: TCursor;
   Page: Integer;
-  FilterValue: TFilterValue;
+  View: TView;
 begin
   Assert(Assigned(FCollection));
   SavedCursor := Screen.Cursor;
@@ -2565,27 +2570,14 @@ begin
     SetColumns;
 
     case Page of
-      0:
-      begin
-        FilterValue := AuthorBookFilter;
-        FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // авторы
-      end;
-
-      1:
-      begin
-        FilterValue := SeriesBookFilter;
-        FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
-      end;
-
-      2:
-      begin
-        FilterValue := GenreBookFilter;
-        FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),  True,  True, @FLastGenreBookID);      // жанры
-      end;
-
-      3: FillBooksTree(tvBooksSR, nil, FCollection.Search(FSearchCriteria, False), True,  True, nil);  // поиск
-
-      4: FillBooksTree(tvBooksF,cbLangSelectF,  FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // избранное
+      PAGE_AUTHORS, PAGE_SERIES, PAGE_GENRES, PAGE_FAVORITES:
+        begin
+          View := TView(Page);
+          Include(FPendingBookViews, View);
+          LoadBookView(View);
+        end;
+      PAGE_SEARCH:
+        FillBooksTree(tvBooksSR, nil, FCollection.Search(FSearchCriteria, False), True, True, nil);
     end;
 
     SetHeaderPopUp;
@@ -2656,27 +2648,73 @@ begin
 end;
 
 procedure TfrmMain.FillAllBooksTree;
-var
-  SavedCursor: TCursor;
-  FilterValue: TFilterValue;
 begin
-  Assert(Assigned(FCollection));
-  SavedCursor := Screen.Cursor;
-  Screen.Cursor := crHourGlass;
-  try
-    FilterValue := AuthorBookFilter;
-    FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // авторы
+  FPendingBookViews := FPendingBookViews + [AuthorsView, SeriesView, GenresView, FavoritesView];
+  LoadBookView(ActiveView);
+end;
 
-    FilterValue := SeriesBookFilter;
-    FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
+function TfrmMain.SavedLanguageFilter(View: TView; Selector: TComboBox): Integer;
+begin
+  if View in FPendingLanguageFilters then
+    Result := FInitialLanguageFilters[View]
+  else
+    Result := Selector.ItemIndex;
+end;
 
-    FilterValue := GenreBookFilter;
-    FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),   True,  True, @FLastGenreBookID);  // жанры
+procedure TfrmMain.LoadBookView(View: TView);
+var
+  FilterValue: TFilterValue;
+  Selector: TComboBox;
+  Index: Integer;
+begin
+  if FInitializingCollection or not Assigned(FCollection) or
+    (View <> ActiveView) or not (View in FPendingBookViews) then
+    Exit;
 
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // избранное
-  finally
-    Screen.Cursor := SavedCursor;
+  case View of
+    AuthorsView: Selector := cbLangSelectA;
+    SeriesView: Selector := cbLangSelectS;
+    GenresView: Selector := cbLangSelectG;
+    FavoritesView: Selector := cbLangSelectF;
+  else
+    Exit;
   end;
+
+  if View in FPendingLanguageFilters then
+    FViewLanguageSelected[View] := False;
+
+  repeat
+    case View of
+      AuthorsView:
+        begin
+          FilterValue := AuthorBookFilter;
+          FillBooksTree(tvBooksA, Selector, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);
+        end;
+      SeriesView:
+        begin
+          FilterValue := SeriesBookFilter;
+          FillBooksTree(tvBooksS, Selector, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID);
+        end;
+      GenresView:
+        begin
+          FilterValue := GenreBookFilter;
+          FillBooksTree(tvBooksG, Selector, FCollection.GetBookIterator(bmByGenre, False, @FilterValue), True, True, @FLastGenreBookID);
+        end;
+      FavoritesView:
+        FillBooksTree(tvBooksF, Selector, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID);
+    end;
+
+    if not (View in FPendingLanguageFilters) then
+      Break;
+    Index := FInitialLanguageFilters[View];
+    Exclude(FPendingLanguageFilters, View);
+    if (Index < 0) or (Index >= Selector.Items.Count) or
+      (Index = Selector.ItemIndex) then
+      Break;
+    Selector.ItemIndex := Index;
+    FViewLanguageSelected[View] := True;
+  until False;
+  Exclude(FPendingBookViews, View);
 end;
 
 function TfrmMain.CheckLibUpdates(Auto: Boolean): Boolean;
@@ -3271,7 +3309,6 @@ procedure TfrmMain.tvAuthorsChange(Sender: TBaseVirtualTree; Node: PVirtualNode)
 var
   SavedCursor: TCursor;
   Data: PAuthorData;
-  FilterValue: TFilterValue;
 {$IFDEF USELOGGER}
   logger: IScopeLogger;
 {$ENDIF}
@@ -3312,9 +3349,8 @@ begin
       FLastAuthorBookID.Clear;
     end;
 
-    FilterValue := AuthorBookFilter;
-    if Assigned(FCollection) then
-      FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID); // авторы
+    Include(FPendingBookViews, AuthorsView);
+    LoadBookView(AuthorsView);
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -3343,7 +3379,6 @@ procedure TfrmMain.tvSeriesChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   SavedCursor: TCursor;
   Data: PSeriesData;
-  FilterValue: TFilterValue;
 {$IFDEF USELOGGER}
   logger: IScopeLogger;
 {$ENDIF}
@@ -3382,9 +3417,8 @@ begin
       FLastSeriesBookID.Clear;
     end;
 
-    FilterValue := SeriesBookFilter;
-    if Assigned(FCollection) then
-      FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // авторы
+    Include(FPendingBookViews, SeriesView);
+    LoadBookView(SeriesView);
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -3407,7 +3441,6 @@ procedure TfrmMain.tvGenresChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
 var
   SavedCursor: TCursor;
   Data: PGenreData;
-  FilterValue: TFilterValue;
 {$IFDEF USELOGGER}
   logger: IScopeLogger;
 {$ENDIF}
@@ -3437,9 +3470,8 @@ begin
       FLastGenreBookID.Clear;
     end;
 
-    FilterValue := GenreBookFilter;
-    if Assigned(FCollection) then
-      FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue), True, True, @FLastGenreBookID);
+    Include(FPendingBookViews, GenresView);
+    LoadBookView(GenresView);
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -3491,7 +3523,8 @@ begin
       FLastGroupBookID.Clear;
     end;
 
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID);
+    Include(FPendingBookViews, FavoritesView);
+    LoadBookView(FavoritesView);
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -3557,7 +3590,8 @@ begin
       FSystemData.CopyBookToGroup(BookData^.BookKey, SourceGroupID, TargetGroupID, ssShift in Shift);
     end;
   end;
-  FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID);
+  Include(FPendingBookViews, FavoritesView);
+  LoadBookView(FavoritesView);
 end;
 
 procedure TfrmMain.tvGroupsDragOver(Sender: TBaseVirtualTree; Source: TObject; Shift: TShiftState; State: TDragState; Pt: TPoint; Mode: TDropMode; var Effect: Integer; var Accept: Boolean);
@@ -4640,12 +4674,11 @@ begin
       begin
         SelectedLang := LangSelector.Text;
 
-        if not FLangSelected then
+        if not FViewLanguageSelected[TView(Tree.Tag)] then
         begin
           LangSelector.Items.Clear;
           LangSelector.Items.Add('-');
           LangSelector.ItemIndex := 0;
-          FLangSelected := False;
         end;
 
       end;
@@ -5454,7 +5487,8 @@ begin
   try
     FSystemData.ClearGroup(GroupData^.GroupID);
 
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID); // избранное
+    Include(FPendingBookViews, FavoritesView);
+    LoadBookView(FavoritesView);
   finally
     Screen.Cursor := SavedCursor;
   end;
@@ -5888,7 +5922,8 @@ begin
   GroupData := tvGroups.GetNodeData(tvGroups.GetFirstSelected);
   if Assigned(GroupData) and (GroupData^.GroupID = GroupID) then
   begin
-    FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID); // Группы
+    Include(FPendingBookViews, FavoritesView);
+    LoadBookView(FavoritesView);
   end;
 end;
 
@@ -5940,7 +5975,8 @@ begin
       //
       FSystemData.RemoveUnusedBooks;
 
-      FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True, True, @FLastGroupBookID);
+      Include(FPendingBookViews, FavoritesView);
+      LoadBookView(FavoritesView);
     finally
       ShowStatusProgress := False;
     end;
@@ -6180,7 +6216,6 @@ end;
 procedure TfrmMain.LocateAuthorAndBook(const FullAuthorName: string; const BookKey: TBookKey);
 var
   authorData: PAuthorData;
-  filterValue: TFilterValue;
   savedCursor: TCursor;
   Button : TToolButton;
 
@@ -6209,9 +6244,8 @@ begin
     FLastAuthorID := authorData.AuthorID;
 
     // Locate the book:
-    filterValue := AuthorBookFilter; // uses FLastAuthorID
     FLastAuthorBookID := BookKey;
-//    FillBooksTree(tvBooksA, FCollection.GetBookIterator(bmByAuthor, False, @filterValue), False, True, @FLastAuthorBookID);
+    Include(FPendingBookViews, AuthorsView);
 
     // Change current page:
     pgControl.ActivePageIndex := PAGE_AUTHORS;
@@ -6925,6 +6959,7 @@ procedure TfrmMain.pgControlChange(Sender: TObject);
 var
   ToolBuutonVisible: Boolean;
 begin
+  LoadBookView(ActiveView);
   UpdateActions;
 
   // сбрасываем закладки быстрого поиска
@@ -7149,25 +7184,14 @@ end;
 
 procedure TfrmMain.cbLangSelectAChange(Sender: TObject);
 var
-  filterValue: TFilterValue;
+  View: TView;
 begin
-  FLangSelected := True;
-  case (Sender as TComboBox).Tag of
-    0:begin
-        FilterValue := AuthorBookFilter;
-        FillBooksTree(tvBooksA, cbLangSelectA, FCollection.GetBookIterator(bmByAuthor, False, @FilterValue), False, True, @FLastAuthorBookID);  // авторы
-       end;
-
-
-    1: begin
-         FilterValue := SeriesBookFilter;
-         FillBooksTree(tvBooksS, cbLangSelectS, FCollection.GetBookIterator(bmBySeries, False, @FilterValue), False, False, @FLastSeriesBookID); // серии
-       end;
-    2: begin
-         FilterValue := GenreBookFilter;
-         FillBooksTree(tvBooksG, cbLangSelectG, FCollection.GetBookIterator(bmByGenre, False, @FilterValue),   True,  True, @FLastGenreBookID);  // жанры
-       end;
-    4: FillBooksTree(tvBooksF, cbLangSelectF, FSystemData.GetBookIterator(FLastGroupID), True,  True, @FLastGroupBookID);  // избранное
+  if (Sender as TComboBox).Tag in [Ord(AuthorsView), Ord(SeriesView), Ord(GenresView), Ord(FavoritesView)] then
+  begin
+    View := TView((Sender as TComboBox).Tag);
+    FViewLanguageSelected[View] := True;
+    Include(FPendingBookViews, View);
+    LoadBookView(View);
   end;
 end;
 

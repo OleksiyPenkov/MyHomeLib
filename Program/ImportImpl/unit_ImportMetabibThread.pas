@@ -28,7 +28,7 @@ type
   protected
     FGenresType: TGenresType;
 
-    procedure MapBook(const MB: TMetabibBook; var R: TBookRecord);
+    procedure MapBook(const MB: TMetabibBook; var R: TBookRecord; const BookCollection: IBookCollection);
     procedure Import(const DatasetFileName: string; CheckFiles: Boolean;
       BookCollection: IBookCollection);
   end;
@@ -50,6 +50,7 @@ uses
   SysUtils,
   IOUtils,
   ComCtrls,
+  Variants,
   unit_Consts,
   unit_Errors,
   dm_user;
@@ -62,6 +63,8 @@ resourcestring
   rstrMbSkippedNoFile = 'Пропущено записів без файлу в архівах: %u';
   rstrMbSkippedBadLines = 'Пропущено помилкових рядків: %u';
   rstrMbUpdatingDB = 'Оновлення бази даних. Будь ласка зачекайте ... ';
+  rstrMbLibraryMismatch = 'Каталог іншої бібліотеки не відповідає колекції.';
+  rstrMbTransactionLost = 'Транзакцію імпорту було перервано. Зміни не збережено.';
 
 { TImportMetabibThreadBase }
 
@@ -70,10 +73,11 @@ resourcestring
 // Розташування (Folder/IsLocal для онлайн-гілки) добудовує Import:
 // воно залежить від типу колекції.
 //
-procedure TImportMetabibThreadBase.MapBook(const MB: TMetabibBook; var R: TBookRecord);
+procedure TImportMetabibThreadBase.MapBook(const MB: TMetabibBook; var R: TBookRecord; const BookCollection: IBookCollection);
 var
   i: Integer;
   s, t: string;
+  Genre: TGenreData;
 begin
   R.Clear;
 
@@ -89,10 +93,16 @@ begin
         MB.Authors[i].MiddleName);
 
   for i := 0 to High(MB.Genres) do
-    if FGenresType = gtFb2 then
-      TGenresHelper.Add(R.Genres, '', '', MB.Genres[i])
+    if MB.Genres[i].Catalog then
+    begin
+      Genre := BookCollection.EnsureGenre(MB.Genres[i].Code,
+        MB.Genres[i].Description, MB.Genres[i].Category);
+      TGenresHelper.Add(R.Genres, Genre.GenreCode, Genre.GenreAlias, Genre.FB2GenreCode);
+    end
+    else if FGenresType = gtFb2 then
+      TGenresHelper.Add(R.Genres, '', '', MB.Genres[i].Code)
     else
-      TGenresHelper.Add(R.Genres, MB.Genres[i], '', '');
+      TGenresHelper.Add(R.Genres, MB.Genres[i].Code, '', '');
 
   if MB.SeriesName <> '' then
   begin
@@ -153,6 +163,7 @@ var
   Skip: Boolean;
   Res: TMetabibReadResult;
   ParseError: string;
+  SourceLibrary: Variant;
 begin
   SetProgress(0);
   collectionCode := BookCollection.CollectionCode;
@@ -168,6 +179,11 @@ begin
   BookCollection.StartBatchUpdate;
   try
     Reader := TMetabibReader.Create(DatasetFileName);
+    SourceLibrary := BookCollection.GetProperty(PROP_SOURCE_LIBRARY);
+    if not VarIsEmpty(SourceLibrary) and not VarIsNull(SourceLibrary) then
+      if (string(SourceLibrary) <> '') and not SameText(string(SourceLibrary), Reader.LibraryName) then
+        raise EDBError.Create(rstrMbLibraryMismatch);
+    BookCollection.SetProperty(PROP_SOURCE_LIBRARY, Reader.LibraryName);
 
     Teletype(Format(rstrMbProcessingFile,
       [ExtractFileName(DatasetFileName), Reader.LibraryName,
@@ -189,6 +205,8 @@ begin
         on E: Exception do
           ParseError := ' ' + E.Message;
       end;
+      if (Res = mrOk) and not SameText(MB.LibraryName, Reader.LibraryName) then
+        raise EDBError.Create(rstrMbLibraryMismatch);
 
       case Res of
         mrEof:
@@ -203,7 +221,7 @@ begin
 
         mrOk:
           try
-            MapBook(MB, R);
+            MapBook(MB, R, BookCollection);
             Skip := False;
 
             if IsOnline then
@@ -276,6 +294,8 @@ begin
               Teletype(E.Message, tsError);
           end;
       end;
+      if not BookCollection.InBulkOperation then
+        raise EDBError.Create(rstrMbTransactionLost);
 
       Inc(idx);
       if Reader.RecordCount > 0 then
@@ -325,7 +345,8 @@ begin
     on E: Exception do
     begin
       Teletype(E.Message, tsError);
-      FCollection.EndBulkOperation(False);
+      if FCollection.InBulkOperation then
+        FCollection.EndBulkOperation(False);
     end;
   end;
 end;
