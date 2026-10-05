@@ -39,6 +39,7 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 - Sending books to a device with conversion: fb2mobi, fb2epub, fb2lrf, fb2pdf; file name and subfolder templates.
 - Custom scripts run after a send-to-device, with `%DEST%`, `%TMP%`, `%FILENAME%` and other substitutions.
 - Editing book and author details, exporting a book list to HTML.
+- DPI-scaled vertical spacing around main toolbar buttons, including after a monitor DPI change.
 
 **AI assistants**
 

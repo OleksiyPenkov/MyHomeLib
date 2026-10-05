@@ -3076,6 +3076,10 @@ begin
 
   dmImages.ScaleForDPI(Self.CurrentPPI);
 
+  // Raize AutoResize preserves row spacing; VCL AutoSize trims it to the buttons.
+  tlbrMain.AutoSize := False;
+  tlbrMain.TopMargin := MulDiv(4, CurrentPPI, 96);
+
   ConnectTreeControllers;
 
   InitFormFileds;
@@ -3117,6 +3121,7 @@ end;
 procedure TfrmMain.FormAfterMonitorDpiChanged(Sender: TObject; OldDPI, NewDPI: Integer);
 begin
   dmImages.ScaleForDPI(NewDPI);
+  tlbrMain.TopMargin := MulDiv(4, NewDPI, 96);
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
