@@ -129,7 +129,7 @@ begin
     R.LibID := IntToStr(MB.BookID);
 
   // ---- нові поля
-  s := '';
+  s := MB.TranslatorDisplay;
   for i := 0 to High(MB.Translators) do
   begin
     t := Trim(MB.Translators[i].LastName + ' ' + MB.Translators[i].FirstName +

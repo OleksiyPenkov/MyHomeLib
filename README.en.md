@@ -28,12 +28,19 @@ Books are stored as FB2 (loose files or zip archives), FBD, or any other format;
 - New Collection wizard: an empty collection, one built from INPX or a metabib JSONL dataset (`.jsonl`, `.jsonl.zst`, `.jsonl.gz`, `.zip`), or an existing `.hlc2` file attached.
 - Collection updates from the network and by hand, folder/file synchronisation, database maintenance.
 - Copying books between FB2 collections, exporting a collection to INPX.
+- Export a group as a portable metabib collection. Group members can come from several collections; visible filters and book checkmarks do not limit the export.
 
 Metabib imports prefer the catalogue's database genre claims. Missing genre definitions are added to that collection using their source descriptions and categories; arbitrary FB2 tags do not create new definitions. Existing genre codes and names stay unchanged, and automatic interface-language changes preserve imported definitions. Imports also preserve deletion states. If an earlier import lost genre assignments, import the dataset into a new collection; an application update does not repair stored metadata.
 
 Opening a collection loads the visible book list only. Other tabs load their lists on first use and keep them until a selection or filter changes. Saved language filters and book selections are restored when each tab loads.
 
 **Unsorted** is the last category in the genre tree. The first category is selected by default; Unsorted remains available for manual selection.
+
+**Group export:** Create a group, add books, then use **Group → Export group (metabib)** or the group context menu. Choose a destination on first use; later exports use the saved folder. **Group export folder…** changes it. Each run creates a new `MHL-<GUID>` folder with `catalog.jsonl` and ZIP archives of up to 1,000 books. Only available files are exported; nothing is downloaded or converted. The progress log lists skipped books and the final counts. Cancellation does not publish a partial collection.
+
+To use the result, keep the ZIP files beside `catalog.jsonl` and select that catalog in the New Collection wizard, with the package folder as the book root. The package has its own library identity and book IDs; source LibIDs are retained as catalog provenance. Personal groups, ratings, reviews, and reading progress are not included. Stored translator display text is preserved with a tagged claim; structured names and original source observations cannot be recovered from the stored catalog. Other metabib readers may ignore that translator display claim.
+
+When the destination already defines a genre code, import keeps that definition. The exported catalog still carries the source label and category. Conflicting definitions from different source collections get distinct output codes. The derived library ID is filename-safe, so the New Collection wizard can use its default database filename.
 
 **Books**
 

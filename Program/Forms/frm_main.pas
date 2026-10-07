@@ -376,6 +376,12 @@ type
     acGroupCreate: TAction;
     acGroupDelete: TAction;
     acGroupClear: TAction;
+    acGroupExportMetabib: TAction;
+    acGroupExportDestination: TAction;
+    miGroupExportMetabib: TMenuItem;
+    miGroupExportDestination: TMenuItem;
+    miPopupGroupExportMetabib: TMenuItem;
+    miPopupGroupExportDestination: TMenuItem;
     StatusBar: TRzStatusBar;
     spStatus: TRzStatusPane;
     spHint: TRzStatusPane;
@@ -585,6 +591,9 @@ type
     procedure ClearGroupExecute(Sender: TObject);
     procedure ClearGroupUpdate(Sender: TObject);
     procedure DeleteGroupExecute(Sender: TObject);
+    procedure ExportGroupMetabibExecute(Sender: TObject);
+    procedure GroupExportDestinationExecute(Sender: TObject);
+    procedure GroupExportMetabibUpdate(Sender: TObject);
 
     //
     // Меню "Редактирование"
@@ -938,6 +947,7 @@ type
     function AuthorBookFilter: TFilterValue;
     function SeriesBookFilter: TFilterValue;
     function GenreBookFilter: TFilterValue;
+    function ChooseGroupExportDestination(ForcePrompt: Boolean): Boolean;
 
     //
     function GetBookNode(const Tree: TBookTree; const BookKey: TBookKey): PVirtualNode; overload;
@@ -1048,6 +1058,7 @@ uses
   unit_Import,
   unit_Consts,
   unit_Export,
+  unit_ExportMetabibThread,
   unit_Utils,
   ShlObj,
   unit_ExportToDevice,
@@ -5410,6 +5421,81 @@ begin
       Tree.RepaintNode(Node);
     end;
   end;
+end;
+
+resourcestring
+  rstrGroupExportDestination = 'Тека експорту груп';
+  rstrGroupExportDestinationUnavailable = 'Тека недоступна для запису: %s';
+
+function TfrmMain.ChooseGroupExportDestination(ForcePrompt: Boolean): Boolean;
+var
+  Directory, ProbeName: string;
+  ShellItem: IShellItem;
+  GUID: TGUID;
+  FileHandle: THandle;
+
+  function CanWrite(const Path: string): Boolean;
+  begin
+    Result := False;
+    if (Path = '') or IsShellPath(Path) or not DirectoryExists(Path) then
+      Exit;
+    CreateGUID(GUID);
+    ProbeName := TPath.Combine(Path, '.mhl-export-check-' + GUIDToString(GUID));
+    FileHandle := CreateFile(PChar(ProbeName), GENERIC_WRITE, 0, nil, CREATE_NEW,
+      FILE_ATTRIBUTE_TEMPORARY or FILE_FLAG_DELETE_ON_CLOSE, 0);
+    if FileHandle <> INVALID_HANDLE_VALUE then
+    begin
+      CloseHandle(FileHandle);
+      Result := True;
+    end;
+  end;
+
+begin
+  Directory := Settings.GroupExportDir;
+  if not ForcePrompt and CanWrite(Directory) then
+    Exit(True);
+  Result := False;
+  if not GetFolderShellItem(Handle, rstrGroupExportDestination, Directory, ShellItem) then
+    Exit;
+  if not CanWrite(Directory) then
+  begin
+    MHLShowError(Format(rstrGroupExportDestinationUnavailable, [Directory]));
+    Exit;
+  end;
+  Settings.GroupExportDir := Directory;
+  Settings.SaveSettings;
+  Result := True;
+end;
+
+procedure TfrmMain.ExportGroupMetabibExecute(Sender: TObject);
+var
+  Group: PGroupData;
+  GroupID: Integer;
+  Info: TMetabibExportResult;
+begin
+  if ActiveView <> FavoritesView then
+    Exit;
+  Group := tvGroups.GetNodeData(tvGroups.GetFirstSelected);
+  if not Assigned(Group) then
+    Exit;
+  GroupID := Group^.GroupID;
+  if not ChooseGroupExportDestination(False) then
+    Exit;
+  Info := ExportGroupCollection(GroupID, Settings.GroupExportDir);
+  if (Info.Status = mesFailed) and (Info.ErrorText <> '') then
+    MHLShowError(Info.ErrorText);
+end;
+
+procedure TfrmMain.GroupExportDestinationExecute(Sender: TObject);
+begin
+  ChooseGroupExportDestination(True);
+end;
+
+procedure TfrmMain.GroupExportMetabibUpdate(Sender: TObject);
+begin
+  if InternalUpdateGroupAction(acGroupExportMetabib) then
+    Exit;
+  acGroupExportMetabib.Enabled := tvGroups.GetFirstSelected() <> nil;
 end;
 
 procedure TfrmMain.AddGroupExecute(Sender: TObject);
