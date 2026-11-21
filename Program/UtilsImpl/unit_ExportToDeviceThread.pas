@@ -163,6 +163,7 @@ var
   FTargetFileName: string;
   FTargetFullFilePath: string;
   FTempFileName: string;
+  MemStream: TMemoryStream;
 begin
   Result := False;
   try
@@ -270,8 +271,22 @@ begin
 
       FFileOprecord.Stream := R.GetBookStream;
 
-      if (FBookFormat in [bfFb2, bfFb2Archive]) and FOverwriteFB2Info then
+      if (FFileOprecord.Stream <> nil) and (FBookFormat in [bfFb2, bfFb2Archive]) and FOverwriteFB2Info then
+      begin
+        if not (FFileOprecord.Stream is TMemoryStream) then
+        begin
+          MemStream := TMemoryStream.Create;
+          try
+            MemStream.CopyFrom(FFileOprecord.Stream, 0);
+          except
+            MemStream.Free;
+            raise;
+          end;
+          FreeAndNil(FFileOprecord.Stream);
+          FFileOprecord.Stream := MemStream;
+        end;
         WriteFb2InfoToStream(R, FFileOprecord.Stream);
+      end;
 
     end;
 

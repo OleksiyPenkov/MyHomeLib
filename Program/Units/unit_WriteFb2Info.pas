@@ -111,7 +111,10 @@ begin
         end;
       end;
     end;
+    Stream.Position := 0;
+    Stream.Size := 0;
     XML.SaveToStream(Stream);
+    Stream.Position := 0;
     Result := True;
   except
 
