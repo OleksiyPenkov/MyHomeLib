@@ -5,7 +5,7 @@
 Управление на домашната библиотека от електронни книги: каталогизиране на собствената колекция от файлове с книги и работа като клиент на онлайн библиотеки на базата на Librusec.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
+[![Version](https://img.shields.io/badge/version-2.7.1-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64%20%7C%20x86-lightgrey.svg)](#инсталиране)
 [![Built with Delphi](https://img.shields.io/badge/built%20with-Delphi%2013-red.svg)](#компилиране-от-изходния-код)
 

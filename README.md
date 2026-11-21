@@ -5,7 +5,7 @@
 Керування домашньою бібліотекою електронних книг: каталогізація власної колекції файлів і робота як клієнт бібліотек на движку Лібрусек.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.7.0-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
+[![Version](https://img.shields.io/badge/version-2.7.1-blue.svg)](https://github.com/OleksiyPenkov/MyHomeLib/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64%20%7C%20x86-lightgrey.svg)](#встановлення)
 [![Built with Delphi](https://img.shields.io/badge/built%20with-Delphi%2013-red.svg)](#збірка-з-вихідного-коду)
 
